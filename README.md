@@ -18,13 +18,23 @@
 - - - -
 
 ## App structure ##
-	*single asterisks*
-
-	_single underscores_
-
-	**double asterisks**
-
-	__double underscores__
+	
+	├── both/
+	├── client/
+	|   ├── ...
+	|   └── ...
+	├── public/
+	|   ├── ...
+	|   └── ...
+	├── server/
+	|   ├── ...
+	|   ├── ...
+	|   ├── ...
+	|   └── ...
+	├── mup.json
+	├── README.MD
+	├── settings.example.json
+	└── settings.json
 
 - - - -
 
