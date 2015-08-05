@@ -24,7 +24,7 @@
 	|   ├── accounts/			> config files for the accounts package (manages users, logins, pwds, etc.) 
 	|   ├── collections/		> instantiates MongoDB collections and connects them to the easy search package 
 	|   ├── controllers/		> not really sure :P have to look into it. traces from the boilerplate 
-	|   └── router/				> code runs ONLY on client-side 
+	|   └── router/				> config files for Iron Router (manages URL structure and logic) 
 	├── public/				> files which can be publicly accessed
 	|   ├── ...
 	|   └── ...
