@@ -9,7 +9,7 @@
 
 **Goals**
 
-* Users can register, login (tricky part is interaction accounts package with OrientDB..)
+* Users can register, login (tricky part is interaction of accounts package with OrientDB..)
 
 * Browse/search through existing concepts and lessons with a soundcloud/rdio/airbnb inspired search UI
 
@@ -37,10 +37,14 @@
 	|   └── images/				> images
 	|
 	├── server/				> code runs ONLY on server-side 
-	|   ├── ...
-	|   ├── ...
-	|   ├── ...
-	|   └── ...
+	|   ├── emails/				> configuration of Email package (sends emails to users)
+	|   ├── kadira/				> configuration of Kadira package (awesome analytics)
+	|   ├── methods/			> Meteor Methods (basically OrientDB interaction right now)
+	|   ├── orientDB/			> the initial import of OrientDB data is here. prob will be moved
+	|   ├── permissions/			> NOT IN USE (placeholder from boilerplate)
+	|   ├── publications/			> Meteor Publications
+	|   ├── seeds/			> NOT IN USE (placeholder from boilerplate)
+	|   └── templates/			> server side Meteor Templates
 	|
 	├── mup.json
 	├── README.MD
