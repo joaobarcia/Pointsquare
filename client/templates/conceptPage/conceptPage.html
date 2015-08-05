@@ -1,0 +1,16 @@
+<template name="conceptPage">
+    <div class="container">
+        <div class="row">
+            <h4>Learn <strong>{{name}}</strong> by following these units:</h4>
+            {{#each grantedUnit}}
+                {{> unitCard}}
+            {{/each}}
+        </div>
+        <div class="row">
+            <h4>Knowing <strong>{{name}}</strong> unlocks these units:</h4>
+            {{#each helpfulUnit}}
+                {{> unitCard}}
+            {{/each}}
+        </div>
+    </div>
+</template>

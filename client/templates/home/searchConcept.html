@@ -1,0 +1,10 @@
+<template name="searchConcept">
+    {{#ifEsInputIsEmpty index="concepts"}}
+    <h3>Browse all concepts</h3> {{#each concept}} {{> conceptCard}}{{/each}}{{/ifEsInputIsEmpty}} {{#esEach index="concepts"}} {{> conceptCard}} {{/esEach}} {{> esLoadMoreButton index="concepts"}} {{#ifEsHasNoResults index="concepts"}}
+    <div class="no-results">No results found!</div>
+    {{/ifEsHasNoResults}} {{#ifEsIsSearching index="concepts"}}
+    <div class="progress">
+        <div class="indeterminate"></div>
+    </div>
+    {{/ifEsIsSearching}}
+</template>

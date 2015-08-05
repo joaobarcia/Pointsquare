@@ -1,0 +1,96 @@
+.loading {
+    padding-top: 100px;
+}
+
+nav {
+    margin-bottom: 24px;
+}
+
+ul.side-nav li a {
+    line-height: 44px;
+    padding: 24px;
+    display: block;
+}
+
+ul.side-nav li {
+    float: none;
+}
+
+.parallax-container .section {
+    width: 100%;
+}
+
+
+/* label color */
+
+.intro .input-field label {
+    color: #FFF;
+}
+
+
+/* label focus color */
+
+.intro .input-field input[type=text]:focus + label {
+    color: #FFF;
+}
+
+
+/* label underline focus color */
+
+.intro .input-field input[type=text]:focus {
+    border-bottom: 1px solid #FFF;
+    box-shadow: 0 1px 0 0 #FFF;
+}
+
+
+/* valid color */
+
+.intro .input-field input[type=text].valid {
+    border-bottom: 1px solid #FFF;
+    box-shadow: 0 1px 0 0 #FFF;
+}
+
+
+/* invalid color */
+
+.intro .input-field input[type=text].invalid {
+    border-bottom: 1px solid #FFF;
+    box-shadow: 0 1px 0 0 #FFF;
+}
+
+
+/* icon prefix focus color */
+
+.intro .input-field .prefix.active {
+    color: #FFF;
+}
+
+.sidebar {
+    position: fixed;
+    top: 90px;
+    left: 38px;
+}
+
+.sidebar ul li {
+    margin: 20px 0px;
+}
+
+.unit-content {
+    padding: 60px 0px 60px 0px;
+}
+
+.understood-buttons {
+    margin: 60px 0px -50px 0px;
+}
+
+.template-unitPage {
+    margin-top: 30px;
+}
+
+#avatar-thumbnail {
+    width: 30px;
+}
+
+.subContent {
+    margin-bottom: 60px;
+}

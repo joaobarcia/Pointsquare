@@ -1,0 +1,83 @@
+<template name="unitPage">
+    <div class="template-unitPage">
+        <div class="container">
+            <div class="card z-depth-3">
+                <div class="card-content">
+                    <div class="unit-content">
+                        <div class="row">
+                            <div class="col s8 offset-s2 center-align">
+                                {{#each content }}
+                                    {{#if isType 'exerciseString'}}
+                                        <div class="section">
+                                            <h4>{{{question}}}</h4>
+                                            <form>
+                                                <input type="text" name="exerciseString" id="exerciseInputText">
+                                                <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
+                                                </button>
+                                            </form>
+                                        </div>
+                                    {{/if}}
+                                    {{#if isType 'explanation'}}
+                                        {{#each subContent}}
+                                            <div class="subContent">
+                                                {{#if isType 'text'}}
+                                                    <p class="flow-text">{{{text}}}</p>
+                                                {{/if}}
+                                                {{#if isType 'image'}} <img class="responsive-img" src="../images/units/{{imgURL}}">
+                                                {{/if}}
+                                                {{#if isType 'youtube'}}
+                                                    <div class="video-container no-controls">
+                                                        <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
+                                                    </div>
+                                                {{/if}}
+                                            </div>
+                                        {{/each }}
+                                        <div class="row center-align understood-buttons">
+                                            <a class="waves-effect waves-light white-text green btn" id="understood">Gots it!</a>
+                                            <a class="waves-effect waves-light white-text red btn" id="notUnderstood">Nots it!</a>
+                                        </div>
+                                    {{/if}}
+                                {{/each }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <div class="row ">
+                        <div class="col s1">
+                            <i class="right small mdi-action-exit-to-app"></i>
+                        </div>
+                        <div class="col s5">
+                            <span class="grey-text text-darken-2">You should be familiar with:</span>
+                            <br>
+                            {{#each requiredConcepts}}
+                                <p>{{name}}</p>
+                            {{/each}}
+                        </div>
+                        <div class="col s1">
+                            <i class="right small mdi-action-exit-to-app"></i>
+                        </div>
+                        <div class="col s5">
+                            <span class="grey-text text-darken-2">This unit helps you master:</span>
+                            <br>
+                            {{#each grantedConcepts}}
+                                <p>{{name}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-panel ">
+                <div class="row ">
+                    <div class="col s10 ">
+                        <h5>{{name}}</h5>
+                        <p><img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"><span class="grey-text text-darken-2"> by </span>Deslingo Rippoff Team</p>
+                    </div>
+                    <div class="col s2 ">
+                        <span class="grey-text text-darken-2"><p>20,867 views</p><p><i class="tiny mdi-action-star-rate"></i><i class="tiny mdi-action-star-rate"></i><i class="tiny mdi-action-star-rate"></i><i class="tiny mdi-action-star-rate"></i><i class="tiny mdi-action-star-rate"></i>rating </p></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
