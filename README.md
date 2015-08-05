@@ -9,7 +9,7 @@
 
 **Goals**
 
-* Users can register, login, 
+* Users can register, login (tricky part is interaction accounts package with OrientDB..)
 
 * Browse/search through existing concepts and lessons with a soundcloud/rdio/airbnb inspired search UI
 
