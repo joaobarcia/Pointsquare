@@ -19,16 +19,16 @@
 
 ## App structure ##
 	
-	├── both/				---> code runs both on client-side and server-side 
-	├── client/				---> code runs ONLY on client-side 
-	|   ├── accounts/				---> code runs ONLY on client-side 
-	|   ├── collections/				---> code runs ONLY on client-side 
-	|   ├── controllers/				---> code runs ONLY on client-side 
-	|   └── router/				---> code runs ONLY on client-side 
-	├── public/				---> files which can be publicly accessed
+	├── both/				> code runs both on client-side and server-side 
+	├── client/				> code runs ONLY on client-side 
+	|   ├── accounts/			> configurations files for the accounts package (manages users, logins, pwds, etc.) 
+	|   ├── collections/		> code runs ONLY on client-side 
+	|   ├── controllers/		> code runs ONLY on client-side 
+	|   └── router/				> code runs ONLY on client-side 
+	├── public/				> files which can be publicly accessed
 	|   ├── ...
 	|   └── ...
-	├── server/				---> code runs ONLY on server-side 
+	├── server/				> code runs ONLY on server-side 
 	|   ├── ...
 	|   ├── ...
 	|   ├── ...
