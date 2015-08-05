@@ -1,9 +1,11 @@
-### Pointsquare - alpha 2 branch ###
+# Pointsquare - alpha 2 branch #
 
-# Website of awesome #
+**This read-me is under construction**
 
-Will work on a readme later with:
+## Alpha 2 Milestone ##
+* Deadline - Early September
+* Goals - Users can register, login, browse/search through existing concepts and lessons with a soundcloud/rdio/airbnb inspired search UI, do lessons and the website will propagate their knowledge
 
-* Description of app structure
+## App structure ##
 
-* Description of main packages
+## Main packages ##
