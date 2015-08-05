@@ -21,10 +21,10 @@
 	
 	├── both/				> code runs both on client-side and server-side 
 	├── client/				> code runs ONLY on client-side 
-	|   ├── accounts/			> config files for the accounts package (manages users, logins, pwds, etc.) 
-	|   ├── collections/		> instantiates MongoDB collections and connects them to the easy search package 
+	|   ├── accounts/			> config files for the Accounts package (manages users, logins, pwds, etc.) 
+	|   ├── collections/		> instantiates MongoDB collections and connects them to the Easy Search package 
 	|   ├── controllers/		> not really sure :P have to look into it. traces from the boilerplate 
-	|   └── router/				> config files for Iron Router (manages URL structure and logic) 
+	|   └── router/				> config files for Iron Router package (manages URL structure and logic) 
 	├── public/				> files which can be publicly accessed
 	|   ├── ...
 	|   └── ...
