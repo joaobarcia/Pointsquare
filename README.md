@@ -33,8 +33,8 @@
 	|   └── templates/			> Meteor Templates, organized by folders with template name. Folders contain html and js
 	| 
 	├── public/				> files which can be publicly accessed
-	|   ├── fonts/			> fonts
-	|   └── images/			> images
+	|   ├── fonts/				> fonts
+	|   └── images/				> images
 	|
 	├── server/				> code runs ONLY on server-side 
 	|   ├── ...
