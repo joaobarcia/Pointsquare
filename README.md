@@ -43,8 +43,8 @@
 	|   ├── orientDB/			> the initial import of OrientDB data is here. prob will be moved
 	|   ├── permissions/		> NOT IN USE (placeholder from boilerplate)
 	|   ├── publications/		> Meteor Publications
-	|   ├── seeds/			> NOT IN USE (placeholder from boilerplate)
-	|   └── templates/				> server side Meteor Templates
+	|   ├── seeds/				> NOT IN USE (placeholder from boilerplate)
+	|   └── templates/			> server side Meteor Templates
 	|
 	├── mup.json
 	├── README.MD
