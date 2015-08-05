@@ -46,10 +46,10 @@
 	|   ├── seeds/				> NOT IN USE (placeholder from boilerplate)
 	|   └── templates/			> server side Meteor Templates
 	|
-	├── mup.json
-	├── README.MD
-	├── settings.example.json
-	└── settings.json
+	├── mup.json					> config for MUP package (server deployment)
+	├── README.MD					> this readme
+	├── settings.example.json		> need to check later
+	└── settings.json				> need to check later
 
 - - - -
 
