@@ -13,7 +13,7 @@
 
 * Browse/search through existing concepts and lessons with a soundcloud/rdio/airbnb inspired search UI
 
-* Do lessons and the website will propagate their knowledge
+* Visualize/execute lessons and the database will propagate and record their knowledge
 
 - - - -
 
