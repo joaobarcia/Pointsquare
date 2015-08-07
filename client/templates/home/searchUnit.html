@@ -1,10 +1,15 @@
 <template name="searchUnit">
-    {{#ifEsInputIsEmpty index="units"}}
-    <h3>Browse all units</h3> {{#each unit}} {{> unitCard}}{{/each}}{{/ifEsInputIsEmpty}} {{#esEach index="units"}} {{> unitCard}} {{/esEach}} {{> esLoadMoreButton index="units"}} {{#ifEsHasNoResults index="units"}}
-    <div class="no-results">No results found!</div>
-    {{/ifEsHasNoResults}} {{#ifEsIsSearching index="units"}}
-    <div class="progress">
-        <div class="indeterminate"></div>
-    </div>
+    {{#ifEsInputIsEmpty index="units" }}
+        <h3>Browse all units</h3>
+        {{#each unit}} {{> unitCard}}{{/each}}
+    {{/ifEsInputIsEmpty}}
+    {{#esEach index="units" }} {{> unitCard}} {{/esEach}} {{> esLoadMoreButton index="units"}}
+    {{#ifEsHasNoResults index="units" }}
+        <div class="no-results">No results found!</div>
+    {{/ifEsHasNoResults}}
+    {{#ifEsIsSearching index="units" }}
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
     {{/ifEsIsSearching}}
 </template>

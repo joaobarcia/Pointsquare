@@ -11,6 +11,16 @@ Template.conceptPage.helpers({
     },
 });
 
+Template.conceptPage.helpers({
+    'state': function() {
+        var stateFromDB = Links.findOne({
+            'in': this['@rid']
+        })
+        if (stateFromDB != undefined) return stateFromDB.state
+        else return 0;
+    }
+});
+
 // Workaround because spacebars does not accept special characters such as "@" from @rid
 Template.conceptPage.helpers({
     'rid': function(obj) {

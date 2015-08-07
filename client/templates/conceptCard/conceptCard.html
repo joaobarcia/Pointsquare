@@ -1,3 +1,4 @@
+<!--
 <template name="conceptCard">
     <div class="col s12 m3">
         <div class="card small">
@@ -15,4 +16,15 @@
             </div>
         </div>
     </div>
+</template>
+-->
+<template name="conceptCard">
+    <a href="../concept/{{name}}" class="collection-item avatar black-text ">
+        <h5><i class="material-icons md-36 circle green">face</i></h5>
+        <span class="title"><h5>{{name}}</h5></span>
+        <h6 class="grey-text">{{state}}
+            <br>{{description}}
+        </h6>
+        <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+    </a>
 </template>

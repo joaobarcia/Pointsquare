@@ -1,10 +1,20 @@
 <template name="searchConcept">
-    {{#ifEsInputIsEmpty index="concepts"}}
-    <h3>Browse all concepts</h3> {{#each concept}} {{> conceptCard}}{{/each}}{{/ifEsInputIsEmpty}} {{#esEach index="concepts"}} {{> conceptCard}} {{/esEach}} {{> esLoadMoreButton index="concepts"}} {{#ifEsHasNoResults index="concepts"}}
-    <div class="no-results">No results found!</div>
-    {{/ifEsHasNoResults}} {{#ifEsIsSearching index="concepts"}}
-    <div class="progress">
-        <div class="indeterminate"></div>
+    {{#ifEsInputIsEmpty index="concepts" }}
+        <h4>Browse all concepts</h4>
+        <div class="collection z-depth-1">
+            {{#each concept}} {{> conceptCard}}
+            {{/each}}
+        </div>
+    {{/ifEsInputIsEmpty}}
+    <div class="collection z-depth-1">
+        {{#esEach index="concepts" }} {{> conceptCard}} {{/esEach}} {{> esLoadMoreButton index="concepts"}}
     </div>
+    {{#ifEsHasNoResults index="concepts" }}
+        <div class="no-results">No results found!</div>
+    {{/ifEsHasNoResults}}
+    {{#ifEsIsSearching index="concepts" }}
+        <div class="progress">
+            <div class="indeterminate"></div>
+        </div>
     {{/ifEsIsSearching}}
 </template>
