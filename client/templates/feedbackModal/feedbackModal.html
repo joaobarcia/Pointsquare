@@ -1,0 +1,27 @@
+<template name="feedbackModal">
+    <div class="modal-content">
+        <h4>Send us your opinion!</h4>
+        <p>Let us know how you think we could improve Pointsquare, {{currentUser.emails.[0].address}}</p>
+        <div class="section">
+            <form id="feedbackForm">
+                <div class="row">
+                    <div class="input-field">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input name="name" type="text" class="validate">
+                        <label for="name">Name</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field">
+                        <i class="material-icons prefix">chat</i>
+                        <textarea name="opinion" class="materialize-textarea"></textarea>
+                        <label for="opinion">Your opinion</label>
+                    </div>
+                </div>
+                <div class="row right-align">
+                    <input type="submit" class="modal-action modal-close waves-effect waves-green btn" value="Send">
+                </div>
+            </form>
+        </div>
+    </div>
+</template>

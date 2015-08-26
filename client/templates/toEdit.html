@@ -1,0 +1,12 @@
+<template name='knowledge_list'>
+    {{#each list_all}}
+        {{> list_item}}
+    {{/each}}
+    {{#if currentUser}}
+        <input type="button" class="learn" value="learn">
+        <input type="button" class="reset" value="reset">
+    {{/if}}
+</template>
+<template name='list_item'>
+    <li class="node {{selected_class}}"> {{class}} : {{name}} : {{state}} </li>
+</template>
