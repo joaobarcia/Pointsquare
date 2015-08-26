@@ -1,5 +1,15 @@
 Router.route('/', {
-    name: 'home'
+    name: 'home',
+    template: 'home',
+    waitOn: function() {
+        if (Meteor.user()) {
+            console.log("logged");
+            return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            console.log("not logged");
+            return Meteor.subscribe('knowledge_network');;
+        };
+    }
 });
 
 Router.route('/unit/:_name', {

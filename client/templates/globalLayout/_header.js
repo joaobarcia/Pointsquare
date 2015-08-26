@@ -18,14 +18,10 @@ Template._header.rendered = function() {
         });
 
     }.bind(this), 200);
-};
 
-Template._header.events({
-    //USER (#17:1) IS HARDCODED. MUST IMPROVE 
-    'click #retrieveOrient': function() {
-        Meteor.call('retrieveOrientDB');
-    },
-    'click #resetOrient': function() {
-        Meteor.call('resetOrientDB');
-    },
-});
+    $(document).ready(function() {
+        $('.tooltipped').tooltip({
+            delay: 20
+        });
+    });
+};

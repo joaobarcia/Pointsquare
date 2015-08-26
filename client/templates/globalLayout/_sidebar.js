@@ -4,4 +4,5 @@ Template._sidebar.rendered = function() {
             delay: 20
         });
     });
+    $('.modal-trigger').leanModal();
 };

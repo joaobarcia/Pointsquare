@@ -1,11 +1,13 @@
 <template name="_sidebar">
     <div class="sidebar">
         <ul>
-            <li><a class="btn-floating btn-large cyan btn tooltipped" data-position="right" data-delay="20" data-tooltip="My Page"><i class="large mdi-social-person"></i></a></li>
-            <li><a class="btn-floating btn-large cyan btn tooltipped" data-position="right" data-delay="20" data-tooltip="Explore"><i class="large mdi-action-explore"></i></a></li>
-            <li><a class="btn-floating btn-large cyan btn tooltipped" data-position="right" data-delay="20" data-tooltip="My Network"><i class="large mdi-social-people"></i></a></li>
-            <li><a class="btn-floating btn-large cyan btn tooltipped" data-position="right" data-delay="20" data-tooltip="Gamification"><i class="large mdi-maps-local-florist"></i></a></li>
-            <li><a class="btn-floating btn-large cyan btn tooltipped" data-position="right" data-delay="20" data-tooltip="Settings"><i class="large mdi-action-settings"></i></a></li>
+            <li>
+                <a class="btn-floating btn-large cyan btn tooltipped modal-trigger" data-position="right" data-delay="20" data-tooltip="Send us your feedback!" href="#feedbackModal">
+                    <i class="material-icons">feedback</i></a>
+            </li>
         </ul>
+    </div>
+    <div id="feedbackModal" class="modal">
+        {{> feedbackModal}}
     </div>
 </template>

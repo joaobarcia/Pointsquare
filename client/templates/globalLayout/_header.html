@@ -3,18 +3,16 @@
         <nav>
             <div class="nav-wrapper cyan">
                 <div class="container">
-                    <a class="brand-logo" href="{{pathFor 'home'}}">Pointsquare<sub><small> α2</small></sub></a>
+                    <a class="brand-logo" href="{{pathFor 'home'}}">PS<sub><small> αlpha2</small></sub></a>
                     <ul class="right">
                         {{#if currentUser}}
                             <li><a>Hi {{currentUser.emails.[0].address}}</a></li>
-                            <li><a><i class="small mdi-communication-message"></i></a></li>
                             <li><a href="#" data-action="logout">Sign Out</a></li>
                         {{else}}
-                            <li><a href="{{ pathFor 'atSignIn' }}">Sign in</a></li>
-                            <li><a href="{{ pathFor 'atSignUp' }}">Register</a></li>
+                            <li>
+                                <a href="{{ pathFor 'atSignIn' }}">Sign in</a>
+                            </li>
                         {{/if}}
-                        <li><a class="waves-effect waves-light white-text purple btn" id="retrieveOrient">RETRIEVE</a></li>
-                        <li><a class="waves-effect waves-light white-text purple btn" id="resetOrient">RESET</a></li>
                     </ul>
                     <a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>
                 </div>
