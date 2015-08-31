@@ -9,11 +9,11 @@
 
 **Goals**
 
-* Users can register, login (tricky part is interaction of accounts package with OrientDB..)
+* DONE ~~Users can register, login (tricky part is interaction of accounts package with OrientDB..)~~
 
-* Browse/search through existing concepts and lessons with a soundcloud/rdio/airbnb inspired search UI
+* DONE ~~Browse/search through existing concepts and lessons with a soundcloud/rdio/airbnb inspired search UI~~
 
-* Visualize/execute lessons and the database will propagate and record their knowledge
+* DONE ~~Visualize/execute lessons and the database will propagate and record their knowledge~~
 
 - - - -
 
