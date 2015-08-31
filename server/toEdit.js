@@ -85,7 +85,7 @@ Meteor.methods({
         var query = "http://95.85.45.153:2480/function/Pointsquare/createPerson/" + escape(person_email) + "/" + escape(person_name) + "/" + '';
         var user_rid = HTTP.call("POST", query, {
             auth: "root:4f0g4.o.orientDB!"
-        }).data.result[0]['value'];
+        }).data.result[0]['rid'];
         var new_info = HTTP.call("GET", "http://95.85.45.153:2480/query/Pointsquare/sql/select%20nodeInfo(" + escape(user_rid) + ")", {
             auth: "root:4f0g4.o.orientDB!"
         }).data.result[0]['nodeInfo'];
