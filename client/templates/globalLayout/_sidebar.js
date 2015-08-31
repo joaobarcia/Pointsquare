@@ -6,3 +6,9 @@ Template._sidebar.rendered = function() {
     });
     $('.modal-trigger').leanModal();
 };
+
+Template._sidebar.events({
+    'click #resetUserKnowledge': function() {
+        Meteor.call("reset");
+    },
+});

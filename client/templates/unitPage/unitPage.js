@@ -1,10 +1,11 @@
 Template.unitPage.events({
-    //USER (#17:1) IS HARDCODED. MUST IMPROVE 
     'click #understood': function() {
-        Meteor.call("learn", "1", Blaze.getData()["@rid"], "#27:1");
+        Meteor.call("learn", "1", Blaze.getData()["rid"]);
+        Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
     },
     'click #notUnderstood': function() {
-        Meteor.call("learn", "0", Blaze.getData()["@rid"], "#27:1");
+        Meteor.call("learn", "0", Blaze.getData()["rid"]);
+        Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
     },
     'submit form': function(event) {
         event.preventDefault();

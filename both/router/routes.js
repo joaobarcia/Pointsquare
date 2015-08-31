@@ -1,12 +1,9 @@
 Router.route('/', {
     name: 'home',
-    template: 'home',
     waitOn: function() {
         if (Meteor.user()) {
-            console.log("logged");
             return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
         } else {
-            console.log("not logged");
             return Meteor.subscribe('knowledge_network');;
         };
     }
@@ -14,29 +11,46 @@ Router.route('/', {
 
 Router.route('/unit/:_name', {
     name: 'unitPage',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return Meteor.subscribe('knowledge_network');;
+        };
+    },
     data: function() {
-        return Units.findOne({
+        return knowledge.findOne({
             name: this.params._name
         });
     }
 });
 Router.route('/concept/:_name', {
     name: 'conceptPage',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return Meteor.subscribe('knowledge_network');;
+        };
+    },
     data: function() {
-        return Concepts.findOne({
+        return knowledge.findOne({
             name: this.params._name
         });
     }
 });
 
-//Router.route('/dashboard', {
-//  name: 'dashboard'
-//});
-//
-//Router.route('/items/new', {
-//  name: 'items.new'
-//});
-//
-//Router.plugin('ensureSignedIn', {
-//  only: ['dashboard']
-//});
+Router.route('/dashboard', {
+    name: 'dashboard',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return Meteor.subscribe('knowledge_network');;
+        };
+    },
+});
+
+Router.plugin('ensureSignedIn', {
+    only: ['dashboard']
+});

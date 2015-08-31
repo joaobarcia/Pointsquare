@@ -8,23 +8,18 @@
                     </div>
                     <div class="row center">
                         <span class="white-text"><div class="input-field col s6 offset-s3">
-                            {{> esInput index="concepts" placeholder="Type here anything you want to learn" }}
+                            {{> esInput index="knowledge" placeholder="Type here anything you want to learn" }}
                         </div></span>
                     </div>
                 </div>
             </div>
-            <div class="parallax"><img alt="journey img" src="images/journey.jpg" style="display: block; transform: translate3d(-50%, 0px, 0px);"></div>
+            <div class="parallax"><img alt="journey img" src="../images/journey.jpg" style="display: block; transform: translate3d( -25%, 0px, 0px);"></div>
         </div>
     </div>
     <div class="row">
         <div class="section">
             <div class="container">
-                {{!-- {{> searchConcept}}
-                --}} {{#if currentUser}}
-                    {{#each allKnowledge}}
-                        <p>{{name}} - {{class}} - {{rid}} {{state}}</p>
-                    {{/each}}
-                    {{/if}}
+                {{> search}}
             </div>
         </div>
     </div>

@@ -7,15 +7,19 @@
         </div>
         <div class="row">
             <h5>Learn by doing these units:</h5>
-            {{#each grantedUnit}}
-                {{> unitCard}}
-            {{/each}}
+            <div class="collection z-depth-1">
+                {{#each grantedUnit}}
+                    {{> unitCard}}
+                {{/each}}
+            </div>
         </div>
         <div class="row">
             <h5>Leads to:</h5>
-            {{#each helpfulUnit}}
-                {{> unitCard}}
-            {{/each}}
+            <div class="collection z-depth-1">
+                {{#each requiredUnit}}
+                    {{> unitCard}}
+                {{/each}}
+            </div>
         </div>
     </div>
 </template>

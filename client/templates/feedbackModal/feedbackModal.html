@@ -1,16 +1,18 @@
 <template name="feedbackModal">
     <div class="modal-content">
         <h4>Send us your opinion!</h4>
-        <p>Let us know how you think we could improve Pointsquare, {{currentUser.emails.[0].address}}</p>
+        <p>Let us know how you think we could improve Pointsquare, {{currentUser.username}}</p>
         <div class="section">
             <form id="feedbackForm">
-                <div class="row">
-                    <div class="input-field">
-                        <i class="material-icons prefix">account_circle</i>
-                        <input name="name" type="text" class="validate">
-                        <label for="name">Name</label>
-                    </div>
-                </div>
+                {{!-- Code for when we didnt have usernames
+<div class="row">
+    <div class="input-field">
+        <i class="material-icons prefix">account_circle</i>
+        <input name="name" type="text" class="validate">
+        <label for="name">Name</label>
+    </div>
+</div>
+ --}}
                 <div class="row">
                     <div class="input-field">
                         <i class="material-icons prefix">chat</i>

@@ -103,3 +103,32 @@ h5,
 h6 {
     font-weight: 300;
 }
+
+
+/*SQUARES FOR THE UNIT LISTING. COPIED FROM MATERIALIZE CIRCLES*/
+
+.collection .collection-item.avatar i.square {
+    background-color: #999;
+    color: #fff;
+    font-size: 18px;
+    line-height: 42px;
+    text-align: center;
+}
+
+.collection .collection-item.avatar .square {
+    display: inline-block;
+    height: 42px;
+    left: 15px;
+    overflow: hidden;
+    position: absolute;
+    vertical-align: middle;
+    width: 42px;
+}
+
+.square {
+    border-radius: 7%;
+}
+
+.parallax-container {
+    height: 220px;
+}

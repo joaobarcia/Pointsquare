@@ -51,7 +51,8 @@
                             <span class="grey-text text-darken-2">You should be familiar with:</span>
                             <br>
                             {{#each requiredConcepts}}
-                                <p>{{name}}</p>
+                                <a href="../concept/{{name}}">{{name}}</a>
+                                <br>
                             {{/each}}
                         </div>
                         <div class="col s1">
@@ -61,7 +62,8 @@
                             <span class="grey-text text-darken-2">This unit helps you master:</span>
                             <br>
                             {{#each grantedConcepts}}
-                                <p>{{name}}</p>
+                                <a href="../concept/{{name}}">{{name}}</a>
+                                <br>
                             {{/each}}
                         </div>
                     </div>

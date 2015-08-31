@@ -1,18 +1,14 @@
 <template name="unitCard">
-    <div class="col s12 m3">
-        <div class="card small">
-            <div class="card-image waves-effect waves-block waves-light">
-                <img class="activator" src="../images/sample-1.jpg">
+    <a href="../unit/{{name}}" class="collection-item avatar black-text">
+        <div class="row">
+            <div class="col s6">
+                <h5><i class="square {{mapToColor state}}"><span class="ti-book"></span></i></h5>
+                <span class="title"><h5>{{name}}{{#if currentUser}} - {{state}}{{/if}}</h5></span>
+                <h6 class="grey-text">by {{nameOf authors}}</h6>
             </div>
-            <div class="card-content activator">
-                <span class="card-title activator grey-text text-darken-4">{{name}} - {{state}}<i class="mdi-navigation-more-vert right"></i></span>
-                <p><a href="../unit/{{name}}">Do this lesson!</a></p>
-            </div>
-            <div class="card-reveal">
-                <span class="card-title grey-text text-darken-4">{{name}} - {{state}}<i class="mdi-navigation-close right"></i></span>
-                <p>More info about the lesson</p>
-                <p><a href="../unit/{{name}}">Do this lesson!</a></p>
+            <div class="col s5">
+                <h6 class="grey-text">{{description}}</h6>
             </div>
         </div>
-    </div>
+    </a>
 </template>

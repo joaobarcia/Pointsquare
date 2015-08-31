@@ -9,7 +9,10 @@ Template.feedbackModal.events({
     'submit #feedbackForm': function(event) {
         event.preventDefault();
 
-        var name = event.target.name.value;
+        //var name = event.target.name.value;
+        var name = people.findOne({
+            'email': Meteor.user().emails[0].address
+        }).name;
         var sender = Meteor.user().emails[0].address;
         var msg = event.target.opinion.value;
 
@@ -21,24 +24,5 @@ Template.feedbackModal.events({
         event.target.opinion.value = "";
 
         Materialize.toast('Thanks! :)', 4000)
-
-        //firstname = template.find("input[name=firstname]");
-        //lastname = template.find("input[name=lastname]");
-        //email = template.find("input[name=email]");
-
-        // Do form validation
-
-        //var data = {
-        //    firstname: firstname.value,
-        //    lastname: lastname.value,
-        //    email: email.value
-        //};
-        //
-        //        email.value = "";
-        //        firstname.value = "";
-        //        lastname.value = "";
-        //
-        //        MyCollection.insert(data, function(err) { /* handle error */ });
-
     }
 });
