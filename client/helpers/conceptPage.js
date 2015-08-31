@@ -12,4 +12,18 @@ Template.conceptPage.helpers({
             'requires.rid': this.rid
         });
     },
+    'parentConcepts': function() {
+        return knowledge.find({
+            'class': 'Concept',
+            'contains.rid': this.rid
+        });
+
+    },
+    'childConcepts': function() {
+        return knowledge.find({
+            'class': 'Concept',
+            'belongs_to.rid': this.rid
+        });
+
+    },
 });

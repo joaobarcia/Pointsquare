@@ -107,14 +107,6 @@ h6 {
 
 /*SQUARES FOR THE UNIT LISTING. COPIED FROM MATERIALIZE CIRCLES*/
 
-.collection .collection-item.avatar i.square {
-    background-color: #999;
-    color: #fff;
-    font-size: 18px;
-    line-height: 42px;
-    text-align: center;
-}
-
 .collection .collection-item.avatar .square {
     display: inline-block;
     height: 42px;
@@ -123,6 +115,46 @@ h6 {
     position: absolute;
     vertical-align: middle;
     width: 42px;
+}
+
+.collection .collection-item.avatar i.square {
+    background-color: #999;
+    color: #fff;
+    font-size: 18px;
+    line-height: 42px;
+    text-align: center;
+}
+
+i.circle {
+    background-color: #999;
+    color: #fff;
+    font-size: 18px;
+    line-height: 42px;
+    text-align: center;
+}
+
+.circle {
+    display: inline-block;
+    height: 42px;
+    left: 15px;
+    vertical-align: middle;
+    width: 42px;
+}
+
+.square {
+    display: inline-block;
+    height: 42px;
+    left: 15px;
+    vertical-align: middle;
+    width: 42px;
+}
+
+i.square {
+    background-color: #999;
+    color: #fff;
+    font-size: 18px;
+    line-height: 42px;
+    text-align: center;
 }
 
 .square {
