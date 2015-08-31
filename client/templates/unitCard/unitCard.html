@@ -5,6 +5,14 @@
                 <h5><i class="square {{mapToColor state}}"><span class="ti-book"></span></i></h5>
                 <span class="title"><h5>{{name}}{{#if currentUser}} - {{state}}{{/if}}</h5></span>
                 <h6 class="grey-text">by {{nameOf authors}}</h6>
+                <div class="row">
+                	<div class="col s3">
+                		<h6 class="grey-text"><i class="tiny material-icons">thumbs_up_down</i> + {{likes}} - {{dislikes}}</h6>
+                	</div>
+                	<div class="col s2">
+                		<h6 class="grey-text"><i class="tiny material-icons">visibility</i> {{views}}</h6>
+                	</div>
+                </div>
             </div>
             <div class="col s5">
                 <h6 class="grey-text">{{description}}</h6>
