@@ -4,7 +4,7 @@ Router.route('/', {
         if (Meteor.user()) {
             return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
         } else {
-            return Meteor.subscribe('knowledge_network');;
+            return Meteor.subscribe('knowledge_network');
         };
     }
 });
@@ -15,7 +15,7 @@ Router.route('/unit/:_name', {
         if (Meteor.user()) {
             return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
         } else {
-            return Meteor.subscribe('knowledge_network');;
+            return Meteor.subscribe('knowledge_network');
         };
     },
     data: function() {
@@ -30,7 +30,7 @@ Router.route('/concept/:_name', {
         if (Meteor.user()) {
             return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
         } else {
-            return Meteor.subscribe('knowledge_network');;
+            return Meteor.subscribe('knowledge_network');
         };
     },
     data: function() {
@@ -46,7 +46,7 @@ Router.route('/dashboard', {
         if (Meteor.user()) {
             return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
         } else {
-            return Meteor.subscribe('knowledge_network');;
+            return Meteor.subscribe('knowledge_network');
         };
     },
 });
