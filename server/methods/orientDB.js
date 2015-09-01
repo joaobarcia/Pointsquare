@@ -16,6 +16,9 @@ Meteor.startup(function() {
     for (var i = 0; i < orient_users.length; i++) {
         people.insert(orient_users[i]);
     };
+    Meteor.publish('user_names', function(){ 
+        return people.find({},{fields:{"name":1,"rid":1}});
+    });
 });
 
 
