@@ -99,6 +99,14 @@ Meteor.methods({
             auth: "root:4f0g4.o.orientDB!"
         });
         Meteor.call('retrieve_user_info');
+    },
+
+    incrementViews: function(rid) {
+        var query = "http://95.85.45.153:2480/function/Pointsquare/incrementViews/" + escape(rid);
+        HTTP.call("POST", query, {
+            auth: "root:4f0g4.o.orientDB!"
+        });
+        knowledge.update({'rid':rid},{$inc: {'views': 1} })
     }
 
 
