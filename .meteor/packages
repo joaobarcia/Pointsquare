@@ -5,22 +5,15 @@
 
 meteor-platform
 accounts-password
-alanning:roles
-zimme:iron-router-active
-cmather:handlebars-server@0.2.0
-dburles:collection-helpers
 reywood:publish-composite
 momentjs:moment
 mrt:underscore-string-latest
-matb33:collection-hooks
 dburles:factory
 cunneen:mailgun
 iron:router
 yasinuslu:blaze-meta
 materialize:materialize
 useraccounts:materialize
-aldeed:autoform
-gildaspk:autoform-materialize
 http
 matteodem:easy-search
 okgrow:iron-router-autoscroll
@@ -29,3 +22,7 @@ useraccounts:iron-routing
 email
 accounts-base
 meteorhacks:fast-render
+aldeed:autoform@5.0.0
+gildaspk:autoform-materialize
+cmather:handlebars-server
+zimme:active-route
