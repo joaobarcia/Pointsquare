@@ -1,13 +1,7 @@
-Template.registerHelper('nameOf', function(rid) {
-    var nameString;
+// ONLY SHOWS 
 
-    //console.log(people.findOne());
-
-    /*    function getNameByRid() {
-            people.findOne({
-                'rid': rid
-            }).name;
-        }
-    */
-
+Template.registerHelper('nameOf', function(authorsRid, options) {
+    return people.findOne({
+        'rid': authorsRid[0].rid
+    }).name;
 });

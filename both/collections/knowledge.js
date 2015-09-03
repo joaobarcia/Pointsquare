@@ -1,10 +1,15 @@
 knowledge = new Mongo.Collection('knowledge');
 
 EasySearch.createSearchIndex('knowledge', {
-    'field': ['name', 'description'],
+    'field': ['name', 'description', 'views', 'state'],
     'collection': knowledge,
     'props': {
         'filteredClasses': []
+    },
+    sort: function() {
+        return {
+            'views': 1
+        };
     },
     'limit': 50,
     'query': function(searchString) {

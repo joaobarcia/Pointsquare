@@ -164,3 +164,7 @@ i.square {
 .parallax-container {
     height: 220px;
 }
+
+.data-icons {
+    vertical-align: middle;
+}

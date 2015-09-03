@@ -13,10 +13,10 @@
                 <h5 class="center-align"><i class="square cyan"><span class="ti-book"></span></i> Units</h5>
                 <div class="col s6">
                     <h6>is taught by:</h6>
+                    {{#unless grantedUnit.count}}
+                        <p> No units teach this concept directly. Check child concepts below</p>
+                    {{/unless}}
                     <div class="collection z-depth-1">
-                        {{#unless grantedUnit.count}}
-                            <p> No units that teach this concept directly. Please, check its child concepts.</p>
-                        {{/unless}}
                         {{#each grantedUnit}}
                             {{> unitCard}}
                         {{/each}}
@@ -37,17 +37,17 @@
             <div class="row">
                 <h5 class="center-align"><i class="circle cyan"><span class="ti-light-bulb"></span></i> Concepts</h5>
                 <div class="col s6">
-                    <h6>parent concepts:</h6>
+                    <h6>child concepts:</h6>
                     <div class="collection z-depth-1">
-                        {{#each parentConcepts}}
+                        {{#each childConcepts}}
                             {{> conceptCard}}
                         {{/each}}
                     </div>
                 </div>
                 <div class="col s6">
-                    <h6>child concepts:</h6>
+                    <h6>parent concepts:</h6>
                     <div class="collection z-depth-1">
-                        {{#each childConcepts}}
+                        {{#each parentConcepts}}
                             {{> conceptCard}}
                         {{/each}}
                     </div>
