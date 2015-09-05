@@ -3,22 +3,32 @@
         <nav>
             <div class="nav-wrapper cyan">
                 <div class="container">
-                    <a class="brand-logo" href="{{pathFor 'home'}}">Pointsquare
-<sub><small> αlpha2</small></sub></a>
-                    <ul class="right">
-                        {{#if currentUser}}
-                            <li><a href="{{ pathFor 'dashboard' }}">Hi {{currentUser.username}}</a></li>
-                            <li><a href="#" data-action="logout">Sign Out</a></li>
-                        {{else}}
-                            <li>
-                                <a href="{{ pathFor 'atSignIn' }}">Sign in</a>
-                            </li>
-                        {{/if}}
-                    </ul>
-                    <a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>
+                    <a class="brand-logo" href="{{pathFor 'home'}}">Pointsquare<sub><small> αlpha2</small></sub></a>{{!--                     <form>
+                        <div class="input-field center navsearch">
+                            <input id="search" type="search" required>
+                            <label for="search"><i class="material-icons">search</i></label>
+                            <i class="material-icons">close</i>
+                        </div>
+                    </form> --}}
+                    {{!-- <span class="white-text"><div class="input-field col s6 offset-s3">
+                            {{> esInput index="knowledge" placeholder="Type here anything you want to learn" }}
                 </div>
+                </span>
+                --}}
+                <ul class="right">
+                    {{#if currentUser}}
+                        <li><a href="{{ pathFor 'dashboard' }}">Hi {{currentUser.username}}</a></li>
+                        <li><a href="#" data-action="logout">Sign Out</a></li>
+                    {{else}}
+                        <li>
+                            <a href="{{ pathFor 'atSignIn' }}">Sign in</a>
+                        </li>
+                    {{/if}}
+                </ul>
+                <a class="button-collapse" href="#" data-activates="nav-mobile"><i class="mdi-navigation-menu"></i></a>
             </div>
-        </nav>
+    </div>
+    </nav>
     </div>
     <ul id="nav-mobile" class="side-nav">
         <li class="bold {{ isActiveRoute regex='home' }}"><a href="{{ pathFor 'home' }}" title="Home"><i class="mdi-action-home"></i> Home</a></li>

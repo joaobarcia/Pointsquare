@@ -1,12 +1,23 @@
+Template.unitPage.rendered = function() {
+    $(document).ready(function() {
+        $('.tooltipped').tooltip({
+            delay: 20
+        });
+    });
+    $('.modal-trigger').leanModal();
+};
+
+
+
 Template.unitPage.events({
     'click #understood': function() {
         Meteor.call("learn", "1", Blaze.getData()["rid"]);
-        Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
+        //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
     },
     'click #notUnderstood': function() {
         Meteor.call("learn", "0", Blaze.getData()["rid"]);
-        Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
+        //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
     },
     'submit form': function(event) {

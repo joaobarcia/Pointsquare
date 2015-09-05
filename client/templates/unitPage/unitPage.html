@@ -32,10 +32,17 @@
                                                 {{/if}}
                                             </div>
                                         {{/each }}
-                                        <div class="row center-align understood-buttons">
-                                            <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">Gots it!</a>
-                                            <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">Nots it!</a>
-                                        </div>
+                                        {{#if currentUser}}
+                                            <div class="row center-align understood-buttons">
+                                                <a href="#learnModal" class="waves-effect waves-light white-text green btn modal-trigger" id="understood">Gots it!</a>
+                                                <a href="#learnModal" class="waves-effect waves-light white-text red btn modal-trigger" id="notUnderstood">Nots it!</a>
+                                            </div>
+                                        {{else}}
+                                            <div class="row center-align understood-buttons">
+                                                <a href="#!" class="white-text green btn disabled tooltipped" data-position="bottom" data-delay="20" data-tooltip="Register so we can follow your progress!">Gots it!</a>
+                                                <a href="#!" class="white-text green btn disabled tooltipped" data-position="bottom" data-delay="20" data-tooltip="Register so we can follow your progress!">Nots it!</a>
+                                            </div>
+                                        {{/if}}
                                     {{/if}}
                                 {{/each }}
                             </div>
@@ -69,18 +76,21 @@
                     </div>
                 </div>
             </div>
-            <div class="card-panel ">
-                <div class="row ">
-                    <div class="col s10 ">
-                        <h5>{{name}}</h5>
-                        <p><img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"><span class="grey-text text-darken-2"> by </span>Deslingo Rippoff Team</p>
+            <div class="card-panel">
+                <div class="row">
+                    <div class="col s10">
+                        <h3>{{name}}</h3>
+                        <p><img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"><span class="grey-text"> by {{nameOf authors}}</span></p>
                         <p>{{description}}</p>
                     </div>
-                    <div class="col s2 ">
-                        <span class="grey-text text-darken-2"><p>20,867 views</p><p><i class="tiny mdi-action-star-rate"></i><i class="tiny mdi-action-star-rate"></i><i class="tiny mdi-action-star-rate"></i><i class="tiny mdi-action-star-rate"></i><i class="tiny mdi-action-star-rate"></i>rating </p></span>
+                    <div class="col s2">
+                        <span class="grey-text"><p>{{views}} views</p><p>{{likes}} <i class="tiny material-icons data-icons">thumbs_up_down</i> {{dislikes}}</p></span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div id="learnModal" class="modal">
+        {{> learnModal}}
     </div>
 </template>

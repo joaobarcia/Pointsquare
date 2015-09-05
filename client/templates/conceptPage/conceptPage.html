@@ -2,15 +2,15 @@
     <div class="container">
         <div class="section">
             <div class="row center-align">
-                <h4>{{name}}</h4>
-                <h5 class="grey-text">{{state}}</h5>
+                <h5 class="grey-text"><span class="ti-light-bulb"></span> Concept</h5>
+                <h3>{{name}}</h3>
                 <h5 class="grey-text">{{description}}</h5>
             </div>
         </div>
         <div class="divider"></div>
         <div class="section">
             <div class="row">
-                <h5 class="center-align"><i class="square cyan"><span class="ti-book"></span></i> Units</h5>
+                <h4 class="center-align"><i class="square grey"><span class="ti-book"></span></i> Units</h4>
                 <div class="col s6">
                     <h6>is taught by:</h6>
                     {{#unless grantedUnit.count}}
@@ -35,7 +35,7 @@
         <div class="divider"></div>
         <div class="section">
             <div class="row">
-                <h5 class="center-align"><i class="circle cyan"><span class="ti-light-bulb"></span></i> Concepts</h5>
+                <h4 class="center-align"><i class="circle grey"><span class="ti-light-bulb"></span></i> Concepts</h4>
                 <div class="col s6">
                     <h6>child concepts:</h6>
                     <div class="collection z-depth-1">

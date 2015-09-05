@@ -58,4 +58,24 @@ Template.search.events({
         $("#searchConcepts").removeClass("grey-text");
         $("#searchConcepts").addClass("cyan lighten-2");
     },
+    'click #sortName': function() {
+        var instance = EasySearch.getComponentInstance({
+            index: 'knowledge'
+        });
+
+        // Change the currently filteredCategories like this
+        EasySearch.changeProperty('knowledge', 'orderBy', 'name');
+        // Trigger the search again, to reload the new products
+        instance.triggerSearch();
+    },
+    'click #sortViews': function() {
+        var instance = EasySearch.getComponentInstance({
+            index: 'knowledge'
+        });
+
+        // Change the currently filteredCategories like this
+        EasySearch.changeProperty('knowledge', 'orderBy', 'views');
+        // Trigger the search again, to reload the new products
+        instance.triggerSearch();
+    },
 });

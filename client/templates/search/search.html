@@ -13,14 +13,39 @@
         <div class="col s2">
             <div class="toc-wrapper">
                 <div class="section">
-                    <ul>
-                        <li><a class="btn-flat cyan lighten-2" id="searchBoth"><i class="material-icons left"></i><span class="ti-search"></span> Both</a></li>
-                        <li><a class="btn-flat grey-text" id="searchUnits"><i class="material-icons left"></i><span class="ti-book"></span> Units</a></li>
-                        <li><a class="btn-flat grey-text" id="searchConcepts"><i class="material-icons left"></i><span class="ti-light-bulb"></span> Concepts</a></li>
-                    </ul>
+                    <h5><a class="btn-flat cyan lighten-2" id="searchBoth"><i class="material-icons left"></i><span class="ti-search"></span> Both</a></h5>
+                    <h5><a class="btn-flat grey-text" id="searchUnits"><i class="material-icons left"></i><span class="ti-book"></span> Units</a></h5>
+                    <h5><a class="btn-flat grey-text" id="searchConcepts"><i class="material-icons left"></i><span class="ti-light-bulb"></span> Concepts</a></h5>
                 </div>
-                <div class="divider"></div>
-                <h6 class="grey-text">Filter results</h6>
+                <div class="section">
+                    <h6 class="grey-text">Filter</h6>
+                    <div class="divider"></div>
+                    <div class="switch">
+                        <label>
+                            All
+                            <input type="checkbox">
+                            <span class="lever"></span> NEW only
+                        </label>
+                    </div>
+                </div>
+                <div class="section">
+                    <h6 class="grey-text">Sort</h6>
+                    <div class="divider"></div>
+                    <form action="#">
+                        <p>
+                            <input name="group1" type="radio" id="sortEasy" />
+                            <label for="sortEasy">Easy for me</label>
+                        </p>
+                        <p>
+                            <input name="group1" type="radio" id="sortName" />
+                            <label for="sortName">Name</label>
+                        </p>
+                        <p>
+                            <input name="group1" type="radio" id="sortViews" />
+                            <label for="sortViews">Views</label>
+                        </p>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="col s10">
