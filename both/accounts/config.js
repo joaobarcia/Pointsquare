@@ -13,4 +13,4 @@ AccountsTemplates.addField({
     displayName: "Name",
     required: true,
     minLength: 5,
-})
+});

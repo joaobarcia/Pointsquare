@@ -16,8 +16,13 @@ Meteor.startup(function() {
     for (var i = 0; i < orient_users.length; i++) {
         people.insert(orient_users[i]);
     };
-    Meteor.publish('user_names', function(){ 
-        return people.find({},{fields:{"name":1,"rid":1}});
+    Meteor.publish('user_names', function() {
+        return people.find({}, {
+            fields: {
+                "name": 1,
+                "rid": 1
+            }
+        });
     });
 });
 
@@ -56,6 +61,7 @@ Meteor.methods({
                 'email': user_address
             });
             var user_rid = orient_user.rid;
+            console.log(user_rid);
             return user_rid;
         } else console.log("tried to run get_user_rid but noone is logged")
     },
@@ -109,7 +115,13 @@ Meteor.methods({
         HTTP.call("POST", query, {
             auth: "root:4f0g4.o.orientDB!"
         });
-        knowledge.update({'rid':rid},{$inc: {'views': 1} })
+        knowledge.update({
+            'rid': rid
+        }, {
+            $inc: {
+                'views': 1
+            }
+        })
     }
 
 
