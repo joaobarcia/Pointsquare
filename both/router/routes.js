@@ -10,13 +10,21 @@ Router.route('/', {
 });
 
 Router.route('/search', {
-    name: 'searchPage',
+    name: 'search',
     waitOn: function() {
         if (Meteor.user()) {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
         } else {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };
+    },
+    // Reset easy search when leaving search results
+    onStop: function() {
+        var instance = EasySearch.getComponentInstance({
+            index: 'knowledge'
+        });
+        $("#search").val("");
+        instance.clear();
     }
 })
 

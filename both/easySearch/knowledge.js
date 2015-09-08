@@ -31,8 +31,6 @@ EasySearch.createSearchIndex('knowledge', {
     },
     'limit': 50,
     'query': function(searchString, opts) {
-
-        console.log(searchString);
         // Default query that will be used for searching
         var query = EasySearch.getSearcher(this.use).defaultQuery(this, searchString);
 
@@ -56,7 +54,6 @@ EasySearch.createSearchIndex('knowledge', {
                 $gt: 0.5
             };
         };
-        console.log(query);
         return query;
 
     }
