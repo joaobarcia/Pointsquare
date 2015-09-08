@@ -58,6 +58,16 @@ Template.search.events({
         $("#searchConcepts").removeClass("grey-text");
         $("#searchConcepts").addClass("cyan lighten-2");
     },
+    'click #sortState': function() {
+        var instance = EasySearch.getComponentInstance({
+            index: 'knowledge'
+        });
+
+        // Change the currently filteredCategories like this
+        EasySearch.changeProperty('knowledge', 'orderBy', 'state');
+        // Trigger the search again, to reload the new products
+        instance.triggerSearch();
+    },
     'click #sortName': function() {
         var instance = EasySearch.getComponentInstance({
             index: 'knowledge'
@@ -75,6 +85,23 @@ Template.search.events({
 
         // Change the currently filteredCategories like this
         EasySearch.changeProperty('knowledge', 'orderBy', 'views');
+        // Trigger the search again, to reload the new products
+        instance.triggerSearch();
+    },
+    'click #onlyNewUnits': function(event, template) {
+        var instance = EasySearch.getComponentInstance({
+            index: 'knowledge'
+        });
+        switchStatus = template.$('#onlyNewUnits').is(":checked");
+        // Change the value of the onlyNewUnits prop of easySearch
+        if (switchStatus) {
+            console.log("CHECKED!");
+            EasySearch.changeProperty('knowledge', 'onlyNewUnits', true);
+        } else {
+            console.log("NOT CHECKED!");
+            EasySearch.changeProperty('knowledge', 'onlyNewUnits', false);
+        };
+
         // Trigger the search again, to reload the new products
         instance.triggerSearch();
     },

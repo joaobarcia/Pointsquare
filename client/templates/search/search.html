@@ -1,7 +1,7 @@
 <template name="search">
     <div class="row">
-        {{#ifEsInputIsEmpty index="knowledge" }}
-            <h4>Browse all Concepts and Units</h4>{{/ifEsInputIsEmpty}}
+        {{!--         {{#ifEsInputIsEmpty index="knowledge" }}
+        <h4>Browse all Concepts and Units</h4>{{/ifEsInputIsEmpty}}
         {{#ifEsInputIsEmpty index="knowledge" }}
             <div class="collection z-depth-1">
                 {{#each knowledge}}
@@ -9,13 +9,13 @@
                     {{#if isUnit}}{{> unitCard}}{{/if}}
                 {{/each}}
             </div>
-        {{/ifEsInputIsEmpty}}
+        {{/ifEsInputIsEmpty}} --}}
         <div class="col s2">
             <div class="toc-wrapper">
                 <div class="section">
-                    <h5><a class="btn-flat cyan lighten-2" id="searchBoth"><i class="material-icons left"></i><span class="ti-search"></span> Both</a></h5>
-                    <h5><a class="btn-flat grey-text" id="searchUnits"><i class="material-icons left"></i><span class="ti-book"></span> Units</a></h5>
+                    <h5><a class="btn-flat cyan lighten-2" id="searchUnits"><i class="material-icons left"></i><span class="ti-book"></span> Units</a></h5>
                     <h5><a class="btn-flat grey-text" id="searchConcepts"><i class="material-icons left"></i><span class="ti-light-bulb"></span> Concepts</a></h5>
+                    <h5><a class="btn-flat grey-text" id="searchBoth"><i class="material-icons left"></i><span class="ti-search"></span> Both</a></h5>
                 </div>
                 <div class="section">
                     <h6 class="grey-text">Filter</h6>
@@ -23,7 +23,7 @@
                     <div class="switch">
                         <label>
                             All
-                            <input type="checkbox">
+                            <input type="checkbox" id="onlyNewUnits">
                             <span class="lever"></span> NEW only
                         </label>
                     </div>
@@ -33,11 +33,11 @@
                     <div class="divider"></div>
                     <form action="#">
                         <p>
-                            <input name="group1" type="radio" id="sortEasy" />
-                            <label for="sortEasy">Easy for me</label>
+                            <input name="group1" type="radio" id="sortState" />
+                            <label for="sortState">Easy for me</label>
                         </p>
                         <p>
-                            <input name="group1" type="radio" id="sortName" />
+                            <input name="group1" type="radio" id="sortName" checked/>
                             <label for="sortName">Name</label>
                         </p>
                         <p>

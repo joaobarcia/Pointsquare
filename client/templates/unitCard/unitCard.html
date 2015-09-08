@@ -2,15 +2,17 @@
     <a href="../unit/{{name}}" class="collection-item avatar black-text">
         <div class="row no-bottom-margin">
             <div class="col s6">
-                <h5><i class="square {{mapUnitStateToColor state}}"><span class="ti-book"></span></i></h5>
-                <span class="title"><h4>{{name}}</h4></span>
-                <h6 class="grey-text">by {{nameOf authors}}</h6>
+                <h5>{{#if unitDone}}<i class="square cyan"><span class="ti-book"></span><i class="small material-icons data-icons icon-overlap">done</i></i>{{else}}<i class="square {{mapUnitStateToColor state}}"><span class="ti-book"></span></i>{{/if}}</h5>{{!-- <img class="responsive-img" src="http://img.youtube.com/vi/{{content.[0].subContent.[0].youtubeVidID}}
+                /0.jpg ">
+ --}}
+                <span class="title "><h4>{{name}} </h4></span>
+                <h6 class="grey-text ">by {{nameOf authors}}</h6>
             </div>
-            <div class="col s6">
-                <h6 class="grey-text">{{description}}</h6>
-                <div class="row no-bottom-margin">
-                    <div class="col s12">
-                        <h6 class="grey-text right-align"><span class="unit-info-icons">{{likes}} <i class="tiny material-icons">thumbs_up_down</i> {{dislikes}} </span><span class="unit-info-icons"><i class="tiny material-icons data-icons">visibility</i> {{views}}</span></h6>
+            <div class="col s6 ">
+                <h6 class="grey-text ">{{description}}</h6>
+                <div class="row no-bottom-margin ">
+                    <div class="col s12 ">
+                        <h6 class="grey-text right-align "><span class="unit-info-icons ">{{likes}} <i class="tiny material-icons ">thumbs_up_down</i> {{dislikes}} </span><span class="unit-info-icons "><i class="tiny material-icons data-icons ">visibility</i> {{views}}</span></h6>
                     </div>
                 </div>
             </div>

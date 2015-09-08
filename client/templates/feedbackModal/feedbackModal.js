@@ -17,7 +17,7 @@ Template.feedbackModal.events({
         var msg = event.target.opinion.value;
 
         Meteor.call('sendFeedbackEmail',
-            'joaobarcia@gmail.com', sender,
+            'contact@pointsquare.org', sender,
             'Feedback Email from ' + name, msg);
 
         event.target.name.value = "";

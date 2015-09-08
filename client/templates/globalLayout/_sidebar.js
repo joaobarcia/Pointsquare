@@ -1,8 +1,6 @@
 Template._sidebar.rendered = function() {
-    $(document).ready(function() {
-        $('.tooltipped').tooltip({
-            delay: 20
-        });
+    $('.tooltipped').tooltip({
+        delay: 20
     });
     $('.modal-trigger').leanModal();
 };
