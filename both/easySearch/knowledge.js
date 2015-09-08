@@ -53,6 +53,7 @@ EasySearch.createSearchIndex('knowledge', {
                 $in: [0]
             };
         };
+        console.log(query);
         return query;
 
     }
