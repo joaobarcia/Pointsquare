@@ -47,11 +47,11 @@ EasySearch.createSearchIndex('knowledge', {
         };
         // filter for only new units
         if (this.props.onlyNewUnits) {
-            var query = EasySearch.getSearcher(this.use).defaultQuery(this, searchString);
-            currentUserRID = Session.get('currentUserRID');
-            query['user_dependent_info.' + currentUserRID + '.succeeded'] = {
-                $and: [$in: [0]]
-            };
+            // var query = EasySearch.getSearcher(this.use).defaultQuery(this, searchString);
+            // currentUserRID = Session.get('currentUserRID');
+            // query['user_dependent_info.' + currentUserRID + '.succeeded'] = {
+            //     $and: [$in: [0]]
+            // };
         };
         return query;
 
