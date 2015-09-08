@@ -9,6 +9,17 @@ Router.route('/', {
     }
 });
 
+Router.route('/search', {
+    name: 'searchPage',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
+        };
+    }
+})
+
 Router.route('/unit/:_name', {
     name: 'unitPage',
     waitOn: function() {
