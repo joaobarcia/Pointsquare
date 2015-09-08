@@ -247,3 +247,7 @@ i.square {
     width: 100%;
     text-align: center;
 }
+
+nav .brand-logo {
+    position: relative;
+}

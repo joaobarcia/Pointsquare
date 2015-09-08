@@ -3,8 +3,9 @@ EasySearch.createSearchIndex('knowledge', {
     'collection': knowledge,
     'props': {
         'filteredClasses': ['Unit'],
-        'orderBy': 'name',
-        'onlyNewUnits': false,
+        'orderBy': 'state',
+        'onlyNewUnits': true,
+        'onlyHighProspect': true,
     },
     sort: function() {
         if (this.props.orderBy) {
@@ -30,29 +31,32 @@ EasySearch.createSearchIndex('knowledge', {
     },
     'limit': 50,
     'query': function(searchString, opts) {
-        if (searchString.length == 0) {
-            console.log("NULLLS!")
-        } else {
-            console.log(searchString);
-            // Default query that will be used for searching
-            var query = EasySearch.getSearcher(this.use).defaultQuery(this, searchString);
 
-            // filter for categories if set
-            if (this.props.filteredClasses.length > 0) {
-                query.class = {
-                    $in: this.props.filteredClasses
-                };
+        console.log(searchString);
+        // Default query that will be used for searching
+        var query = EasySearch.getSearcher(this.use).defaultQuery(this, searchString);
+
+        // filter for categories if set
+        if (this.props.filteredClasses.length > 0) {
+            query.class = {
+                $in: this.props.filteredClasses
             };
-
         };
+
         // filter for only new units
         if (this.props.onlyNewUnits) {
-            // var query = EasySearch.getSearcher(this.use).defaultQuery(this, searchString);
-            // currentUserRID = Session.get('currentUserRID');
-            // query['user_dependent_info.' + currentUserRID + '.succeeded'] = {
-            //     $and: [$in: [0]]
-            // };
+            currentUserRID = Session.get('currentUserRID');
+            query['user_dependent_info.' + currentUserRID + '.succeeded'] = {
+                $in: [0]
+            };
         };
+        if (this.props.onlyHighProspect) {
+            currentUserRID = Session.get('currentUserRID');
+            query['user_dependent_info.' + currentUserRID + '.prospect'] = {
+                $gt: 0.5
+            };
+        };
+        console.log(query);
         return query;
 
     }

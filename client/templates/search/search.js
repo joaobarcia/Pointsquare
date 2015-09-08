@@ -105,4 +105,21 @@ Template.search.events({
         // Trigger the search again, to reload the new products
         instance.triggerSearch();
     },
+    'click #onlyHighProspect': function(event, template) {
+        var instance = EasySearch.getComponentInstance({
+            index: 'knowledge'
+        });
+        switchStatus = template.$('#onlyHighProspect').is(":checked");
+        // Change the value of the onlyNewUnits prop of easySearch
+        if (switchStatus) {
+            console.log("CHECKED!");
+            EasySearch.changeProperty('knowledge', 'onlyHighProspect', true);
+        } else {
+            console.log("NOT CHECKED!");
+            EasySearch.changeProperty('knowledge', 'onlyHighProspect', false);
+        };
+
+        // Trigger the search again, to reload the new products
+        instance.triggerSearch();
+    },
 });
