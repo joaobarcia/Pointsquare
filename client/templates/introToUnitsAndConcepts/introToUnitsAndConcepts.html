@@ -1,19 +1,63 @@
 <template name="introToUnitsAndConcepts">
     <div class="container">
         <div class="row">
-            <div class="col s4 cyan white-text">
-                <h1 class="center-align"><span class="ti-book"></span> UNITS</h1>
-                <h3>Are lessons or pieces of knowledge in any other form</h3>
+            <div class="section">
+                <h4 class="center-align"> Pointsquare recommends content based on your present knowledge. </h4>
             </div>
-            <div class="col s8">
+            <div class="col s2  offset-s3">
+                <h3 class="center-align"><i class="square {{mapUnitStateToColor 1}}"><span class="ti-book"></span></i></h3>
+                <h4 class="center-align"> easy </h4>
+            </div>
+            <div class="col s2">
+                <h3 class="center-align"><i class="square {{mapUnitStateToColor 0.5}}"><span class="ti-book"></span></i></h3>
+                <h4 class="center-align"> medium </h4>
+            </div>
+            <div class="col s2">
+                <h3 class="center-align"><i class="square {{mapUnitStateToColor 0}}"><span class="ti-book"></span></i></h3>
+                <h4 class="center-align"> hard </h4>
             </div>
         </div>
         <div class="row">
-            <div class="col s4 cyan white-text">
-                <h1 class="center-align"><span class="ti-light-bulb"></span> CONCEPTS</h1>
-                <h3>Are lessons or pieces of knowledge in any other form</h3>
+            <div class="section">
+                <h4 class="center-align"> Your knowledge is made of concepts: some you know, some you don't.</h4>
+                <div class="col s2  offset-s4">
+                    <h3 class="center-align"><i class="circle {{mapConceptStateToColor 1}}"><span class="ti-light-bulb"></span></i></h3>
+                    <h4 class="center-align"> You know. </h4>
+                </div>
+                <div class="col s2">
+                    <h3 class="center-align"><i class="circle {{mapConceptStateToColor 0}}"><span class="ti-light-bulb"></span></i></h3>
+                    <h4 class="center-align"> You don't know. </h4>
+                </div>
             </div>
-            <div class="col s8">
+        </div>
+        <div class="row">
+            <div class="section">
+                <h4 class="center-align"> When you follow content, you acquire new concepts. New concepts unlock new content. </h4>
+            </div>
+            <div class="col s2  offset-s1">
+                <h3 class="center-align"><i class="square cyan"><span class="ti-book"></span><i class="small material-icons data-icons icon-overlap">done</i></i></h3>
+                <h4 class="center-align"> Basic Addition </h4>
+            </div>
+            <div class="col s2">
+                <h2 class="center-align"><span class="ti-arrow-right"></span></h2>
+                <h4 class="center-align"> grants </h4>
+            </div>
+            <div class="col s2">
+                <h3 class="center-align"><i class="circle {{mapConceptStateToColor 1}}"><span class="ti-light-bulb"></span></i></h3>
+                <h4 class="center-align"> addition </h4>
+            </div>
+            <div class="col s2">
+                <h2 class="center-align"><span class="ti-arrow-right"></span></h2>
+                <h4 class="center-align"> needed for </h4>
+            </div>
+            <div class="col s2">
+                <h3 class="center-align"><i class="square {{mapUnitStateToColor 1}}"><span class="ti-book"></span></i></h3>
+                <h4 class="center-align"> 2 + 4 = ? </h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="section">
+                <h4 class="center-align"> Sign in to begin growing your knowledge! </h4>
             </div>
         </div>
     </div>
