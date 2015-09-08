@@ -50,7 +50,7 @@ EasySearch.createSearchIndex('knowledge', {
             var query = EasySearch.getSearcher(this.use).defaultQuery(this, searchString);
             currentUserRID = Session.get('currentUserRID');
             query['user_dependent_info.' + currentUserRID + '.succeeded'] = {
-                $and: [$in: [0]]
+                $in: [0]
             };
         };
         return query;
