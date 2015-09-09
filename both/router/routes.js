@@ -1,12 +1,6 @@
 Router.route('/', {
     name: 'home',
-    waitOn: function() {
-        if (Meteor.user()) {
-            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
-        } else {
-            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
-        };
-    }
+    waitOn: function() {}
 });
 
 Router.route('/search', {

@@ -10,14 +10,12 @@ Meteor.startup(function() {
 });
 
 Accounts.onLogin(function() {
-    console.log("client side onLogin")
     Meteor.call('get_user_rid', function(err, data) {
         if (err)
             console.log(err);
 
         Session.set('currentUserRID', data);
     });
-    console.log("trying to woopra");
     woopra.identify({
         //email: "<<YOUR CUSTOMER EMAIL HERE>>",
         name: Meteor.user().username,

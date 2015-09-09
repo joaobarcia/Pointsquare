@@ -242,9 +242,9 @@ i.square {
 }
 
 .icon-overlap {
-    position: absolute;
+    position: relative;
     left: 5px;
-    width: 100%;
+    top: -38px;
     text-align: center;
 }
 

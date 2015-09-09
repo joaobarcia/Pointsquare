@@ -42,23 +42,30 @@ Meteor.publish('user_info', function() {
 
 Meteor.methods({
     fetchAllUserData: function() {
+        console.log("start pulling knowledge");
         var orient_network = HTTP.call("GET", "http://95.85.45.153:2480/query/Pointsquare/sql/select%20allLibrary()", {
             auth: "root:4f0g4.o.orientDB!"
         }).data.result[0]['allLibrary'];
+        console.log("finished http knowledge");
         knowledge.remove({});
         for (var i = 0; i < orient_network.length; i++) {
             knowledge.insert(orient_network[i]);
         };
+        console.log("finished inserting knowledge");
         /*        Meteor.publish('knowledge_network', function() {
                     return knowledge.find();
                 })*/
+        console.log("start pulling users");
         var orient_users = HTTP.call("GET", "http://95.85.45.153:2480/query/Pointsquare/sql/select%20allUsers()", {
             auth: "root:4f0g4.o.orientDB!"
         }).data.result[0]['allUsers'];
+
+        console.log("finished http users");
         people.remove({});
         for (var i = 0; i < orient_users.length; i++) {
             people.insert(orient_users[i]);
         };
+        console.log("finished inserting users");
         /*        Meteor.publish('user_names', function() {
                     return people.find({}, {
                         fields: {
