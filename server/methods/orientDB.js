@@ -33,7 +33,7 @@ Meteor.publish('user_info', function() {
         var user_email = Meteor.users.findOne({
             '_id': this.userId
         }).emails[0].address;
-        console.log("personal info of" + user_email + "fetched")
+        //console.log("personal info of" + user_email + "fetched")
         return people.find({
             'email': user_email
         });
