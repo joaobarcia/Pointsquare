@@ -95,12 +95,11 @@ Meteor.methods({
         if (this.userId) {
             var user_rid = Meteor.call('get_user_rid');
             var query = "http://95.85.45.153:2480/function/Pointsquare/learn2/" + escape(result) + "/" + escape(unit) + "/" + escape(user_rid);
-            HTTP.call("POST", query, {
-                auth: "root:4f0g4.o.orientDB!"
-            });
-            console.log(query);
+            var temp = 0;
+            var res = null;
+            res = HTTP.call("POST", query, { auth: "root:4f0g4.o.orientDB!"});
             Meteor.call('fetchAllUserData');
-        } else console.log("tried to run learn method but noone is logged")
+        } else console.log("tried to run learn method but no one is logged")
     },
 
     retrieve_user_info: function() {
