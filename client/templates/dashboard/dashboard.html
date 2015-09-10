@@ -1,34 +1,24 @@
 <template name="dashboard">
     <div class="container">
         <div class="row center">
-            <h4>{{currentUser.username}}</h4>
-            <div class="divider"></div>
-            <h3 class="cyan-text"><i class="material-icons">thumb_up</i> Awesomeness <i class="material-icons">thumb_up</i></h3>
-            <div class="divider"></div>
-            <h5>Suggested content:</h5>
-            {{> suggestedContent}}
-            <h5>Acquired Concepts:</h5>
-            {{> acquiredConcepts}}
+            <div class="section">
+                <h4>{{currentUser.username}}, welcome to your dashboard</h4>
+            </div>
         </div>
-    </div>
-</template>
-
-<template name="suggestedContent">
-    <div class="col s9">
-        <div class="collection z-depth-1">
-            {{#each unit}}
-                {{> unitCard}}
-            {{/each}}
-        </div>
-    </div>
-</template>
-
-<template name="acquiredConcepts">
-    <div class="col s9">
-        <div class="collection z-depth-1">
-            {{#each concept}}
-                {{> conceptCard}}
-            {{/each}}
+        <div class="divider"></div>
+        <div class="row">
+            <div class="col s6">
+                <div class="section">
+                    <h3 class="center-align">Content recommendations</h3>
+                    <h5 class="grey-text center-align">easy for your to learn while teaching you new knowledge</h5> {{> unitSuggestions}}
+                </div>
+            </div>
+            <div class="col s6">
+                <div class="section">
+                    <h3 class="center-align">Knowledge</h3>
+                    <h5 class="grey-text center-align">all the concepts you currently master</h5> {{> conceptsAcquired}}
+                </div>
+            </div>
         </div>
     </div>
 </template>

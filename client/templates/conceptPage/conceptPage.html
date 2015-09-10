@@ -1,9 +1,12 @@
 <template name="conceptPage">
     <div class="container">
         <div class="section">
-            <div class="row center-align">
-                <h6 class="grey-text"><span class="ti-light-bulb"></span>Parent Concepts</h6>
+            <div class="row">
+                <h6 class="grey-text center-align"><span class="ti-light-bulb"></span>Parent Concepts</h6>
                 <div class="col s4 offset-s4">
+                    {{#unless parentConcepts.count}}
+                        <p>no parent concepts</p>
+                    {{/unless}}
                     <div class="collection z-depth-1">
                         {{#each parentConcepts}}
                             {{> conceptCard}}
@@ -13,11 +16,11 @@
             </div>
         </div>
         <div class="section">
-            <div class="row center-align">
+            <div class="row">
                 <div class="col s4">
                     <div class="divider"></div>
                     <div class="section">
-                        <h6 class="grey-text"><span class="ti-book"></span> is taught by</h6>
+                        <h6 class="grey-text center-align"><span class="ti-book"></span> is taught by</h6>
                         {{#unless grantedUnit.count}}
                             <p> No units teach this concept directly. Check child concepts below</p>
                         {{/unless}}
@@ -29,14 +32,14 @@
                     </div>
                 </div>
                 <div class="col s4">
-                    <h4 class="grey-text"><i class="circle {{mapConceptStateToColor state}}"><span class="ti-light-bulb"></span></i> Concept</h4>
-                    <h2>{{name}}</h2>
-                    <h5 class="grey-text">{{description}}</h5>
+                    <h4 class="grey-text center-align"><i class="circle {{mapConceptStateToColor state}}"><span class="ti-light-bulb"></span></i> Concept</h4>
+                    <h2 class="center-align">{{name}}</h2>
+                    <h5 class="grey-text center-align">{{description}}</h5>
                 </div>
                 <div class="col s4">
                     <div class="divider"></div>
                     <div class="section">
-                        <h6 class="grey-text"><span class="ti-book"></span> unlocks</h6>
+                        <h6 class="grey-text center-align"><span class="ti-book"></span> unlocks</h6>
                         <div class="collection z-depth-1">
                             {{#each requiredUnit}}
                                 {{> unitCard}}
@@ -47,9 +50,12 @@
             </div>
         </div>
         <div class="section">
-            <div class="row center-align">
-                <h6 class="grey-text"><span class="ti-light-bulb"></span>child concepts</h6>
+            <div class="row">
+                <h6 class="grey-text center-align"><span class="ti-light-bulb"></span>child concepts</h6>
                 <div class="col s4 offset-s4">
+                    {{#unless childConcepts.count}}
+                        <p>no child concepts</p>
+                    {{/unless}}
                     <div class="collection z-depth-1">
                         {{#each childConcepts}}
                             {{> conceptCard}}
@@ -58,42 +64,5 @@
                 </div>
             </div>
         </div>
-        {{!-- <div class="divider"></div>
-        <div class="section">
-            <div class="row">
-                <h4 class="center-align"><i class="square grey"><span class="ti-book"></span></i> Units</h4>
-                <div class="col s6">
-                    <h6>is taught by:</h6>
-                    {{#unless grantedUnit.count}}
-        <p> No units teach this concept directly. Check child concepts below</p>
-        {{/unless}}
-        <div class="collection z-depth-1">
-            {{#each grantedUnit}}
-                {{> unitCard}}
-            {{/each}}
-        </div>
-    </div>
-    <div class="col s6">
-        <h6>opens up:</h6>
-    </div>
-    </div>
-    </div>
-    <div class="divider"></div>
-    <div class="section">
-        <div class="row">
-            <h4 class="center-align"><i class="circle grey"><span class="ti-light-bulb"></span></i> Concepts</h4>
-            <div class="col s6">
-                <h6>child concepts:</h6>
-            </div>
-            <div class="col s6">
-                <h6>parent concepts:</h6>
-                <div class="collection z-depth-1">
-                    {{#each parentConcepts}}
-                        {{> conceptCard}}
-                    {{/each}}
-                </div>
-            </div>
-        </div>
-    </div> --}}
     </div>
 </template>
