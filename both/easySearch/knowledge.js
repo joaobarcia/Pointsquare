@@ -45,13 +45,18 @@ EasySearch.createSearchIndex('knowledge', {
         if (this.props.onlyNewUnits) {
             currentUserRID = Session.get('currentUserRID');
             query['user_dependent_info.' + currentUserRID + '.succeeded'] = {
-                $in: [0]
+                $not: {
+                    $gt: 0
+                }
+
             };
         };
         if (this.props.onlyHighProspect) {
             currentUserRID = Session.get('currentUserRID');
             query['user_dependent_info.' + currentUserRID + '.prospect'] = {
-                $gt: 0.5
+                $not: {
+                    $lt: 0.5
+                }
             };
         };
         return query;
