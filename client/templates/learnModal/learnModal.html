@@ -3,12 +3,18 @@
         <h4>{{currentUser.username}}, your knowledge is growing!</h4>
         <div class="divider"></div>
         <div class="section">
+            {{#if waiting}}
+                <p class="grey-text">Quis saber quem soooouuuu...</p>
+            {{else}}
             <p class="grey-text">You have just learnt these</p>
             <h3><span class="ti-light-bulb"></span>Concepts</h3>
             {{#each learnedConcept}}
                 <a href="../concept/{{name}}">{{name}}</a>
                 <br>
             {{/each}}
+<!--             {{else}}
+                <p class="grey-text">O que faco aquiiiiii...</p> -->
+            {{/if}}
         </div>
         <div class="section">
             <p class="grey-text">you can reach the following</p>

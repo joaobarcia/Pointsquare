@@ -11,12 +11,24 @@ Template.unitPage.rendered = function() {
 
 Template.unitPage.events({
     'click #understood': function() {
-        Meteor.call("learn", "1", Blaze.getData()["rid"]);
+        Session.set('callStatus','learning');
+        Meteor.call("learn", "1", Blaze.getData()["rid"], function(error,result){
+            if(result.statusCode == 200){ Session.set('callStatus','OK'); }
+            var newStuff = result.data.result[0]['value']//["content"];//["result"];//[0]["value"];
+            Session.set('newConcepts',newStuff[1]);
+            Session.set('newUnits',newStuff[0]);
+        });
         //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
     },
     'click #notUnderstood': function() {
-        Meteor.call("learn", "0", Blaze.getData()["rid"]);
+        Session.set('callStatus','learning');
+        Meteor.call("learn", "0", Blaze.getData()["rid"], function(error,result){
+            if(result.statusCode == 200){ Session.set('callStatus','OK'); }
+            var newStuff = result.data.result[0]['value'];
+            Session.set('lostConcepts',newStuff[3]);
+            Session.set('lostUnits',newStuff[2]);
+        });
         //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
     },
@@ -44,7 +56,10 @@ Template.unitPage.events({
             $("#exerciseInputText").removeClass("green-text");
             $("#exerciseInputText").addClass("red-text");
 
-            Meteor.call("learn", "0", Blaze.getData()["@rid"], "#27:1");
+            Session.set('callStatus','learning');
+            Meteor.call("learn", "0", Blaze.getData()["@rid"], "#27:1", function(error,result){
+                if(result.statusCode == 200){ Session.set('callStatus','OK'); }
+            });
         }
     }
 });

@@ -99,6 +99,7 @@ Meteor.methods({
             var res = null;
             res = HTTP.call("POST", query, { auth: "root:4f0g4.o.orientDB!"});
             Meteor.call('fetchAllUserData');
+            return res;
         } else console.log("tried to run learn method but no one is logged")
     },
 
