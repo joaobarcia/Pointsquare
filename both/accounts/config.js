@@ -3,7 +3,8 @@ AccountsTemplates.configureRoute('signIn', {
     redirect: '/dashboard',
 });
 AccountsTemplates.configureRoute('signUp', {
-    layoutTemplate: 'appLayout'
+    layoutTemplate: 'appLayout',
+    redirect: '/dashboard'
 });
 AccountsTemplates.configureRoute('ensureSignedIn', {
     layoutTemplate: 'appLayout'

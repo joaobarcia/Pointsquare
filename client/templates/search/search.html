@@ -1,6 +1,9 @@
 <template name="search">
     <div class="container">
         <div class="row">
+            <div class="section">{{> esInput index="knowledge" placeholder="Search..." allDocsOnEmpty="true" }}</div>
+        </div>
+        <div class="row">
             <div class="col s3">
                 <div class="toc-wrapper">
                     <div class="section">
@@ -47,6 +50,11 @@
                 </div>
             </div>
             <div class="col s9">
+                {{#ifEsIsSearching index="knowledge" }}
+                    <div class="progress">
+                        <div class="indeterminate"></div>
+                    </div>
+                {{/ifEsIsSearching}}
                 <div class="collection z-depth-1">
                     {{#esEach index="knowledge" }}
                         {{#if isConcept}}{{> conceptCard}}{{/if}}
@@ -54,14 +62,9 @@
                     {{/esEach}} {{> esLoadMoreButton index="knowledge"}}
                 </div>
                 {{#ifEsHasNoResults index="knowledge" }}
-                    <div class="no-results">No results found!</div>
+                    <div class="no-results">No results found</div>
                 {{/ifEsHasNoResults}}
             </div>
-            {{#ifEsIsSearching index="knowledge" }}
-                <div class="progress">
-                    <div class="indeterminate"></div>
-                </div>
-            {{/ifEsIsSearching}}
         </div>
     </div>
 </template>

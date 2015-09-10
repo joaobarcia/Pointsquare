@@ -26,7 +26,7 @@ Template._header.rendered = function() {
     });
 };
 
-Template._header.events({
+/*Template._header.events({
     'keyup #search': function(e) {
         e.preventDefault();
         searchInput = $(e.target).val();
@@ -41,3 +41,4 @@ Template._header.events({
         e.preventDefault();
     },
 });
+*/
