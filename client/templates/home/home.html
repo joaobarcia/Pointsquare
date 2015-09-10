@@ -1,24 +1,36 @@
 <template name="home">
     <div class="container">
         {{#if currentUser}}
-            <div class="card">
-                <div class="row center-align">
-                    <div class="section">
-                        <h4>Welcome, {{currentUser.username}}</h4>
+            <div class="section">
+                <div class="card">
+                    <div class="row center-align">
+                        <div class="section">
+                            <h4>Welcome, {{currentUser.username}}</h4>
+                        </div>
+                        <div class="col s5 right-align"><a class="waves-effect waves-light btn cyan" href="{{ pathFor 'dashboard' }}"><i class="material-icons left">person</i>Go to your dashboard</a></div>
+                        <div class="col s2"> or </div>
+                        <div class="col s5 left-align"><a class="waves-effect waves-light btn cyan" href="{{ pathFor 'search' }}"><i class="material-icons left">search</i>Search for content</a></div>
                     </div>
-                    <div class="col s5 right-align"><a class="waves-effect waves-light btn cyan" href="{{ pathFor 'dashboard' }}"><i class="material-icons left">person</i>Go to your dashboard</a></div>
-                    <div class="col s2"> or </div>
-                    <div class="col s5 left-align"><a class="waves-effect waves-light btn cyan" href="{{ pathFor 'search' }}"><i class="material-icons left">search</i>Search for content</a></div>
+                </div>
+            </div>
+            <div class="section">
+                <ul class="collapsible" data-collapsible="accordion">
+                    <li>
+                        <div class="collapsible-header">
+                            <i class="material-icons">info_outline</i>Guide</div>
+                        <div class="collapsible-body">
+                            {{> introToUnitsAndConcepts}}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        {{else}}
+            {{> introToUnitsAndConcepts}}
+            <div class="row center-align">
+                <div class="section">
+                    <a class="waves-effect waves-light btn-large green z-depth-5" href="{{ pathFor 'atSignUp' }}"><i class="material-icons left">person_add</i>Register to begin growing your knowledge!</a>
                 </div>
             </div>
         {{/if}}
     </div>
-    {{> introToUnitsAndConcepts}}
-    {{#unless currentUser}}
-        <div class="row center-align">
-            <div class="section">
-                <a class="waves-effect waves-light btn-large green z-depth-5" href="{{ pathFor 'atSignUp' }}"><i class="material-icons left">person_add</i>Register to begin growing your knowledge!</a>
-            </div>
-        </div>
-    {{/unless}}
 </template>

@@ -3,9 +3,7 @@ Template._sidebar.rendered = function() {
         $('.tooltipped').tooltip({
             delay: 20
         });
-    });
 
-    $(document).ready(function() {
         $('.modal-trigger').leanModal();
     });
 }
