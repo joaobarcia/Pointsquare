@@ -1,10 +1,8 @@
 Template.unitPage.rendered = function() {
-    Session.set('callStatus','doingExercise');
     $(document).ready(function() {
         $('.tooltipped').tooltip({
             delay: 20
         });
-        $('.modal-trigger').leanModal();
     });
 };
 
@@ -39,7 +37,7 @@ Template.unitPage.events({
         //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
     },
-    
+
     'submit form': function(event) {
         event.preventDefault();
         var answerIsCorrect = false;

@@ -40,6 +40,9 @@ Router.route('/unit/:_name', {
         return knowledge.findOne({
             name: this.params._name
         });
+    },
+    onStop: function() {
+        Session.set('callStatus', 'doingExercise')
     }
 });
 Router.route('/concept/:_name', {

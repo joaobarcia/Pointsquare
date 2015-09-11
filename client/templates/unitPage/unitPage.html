@@ -1,17 +1,17 @@
 <template name="unitPage">
     <div class="template-unitPage">
         <div class="container">
-            <div class="card z-depth-3">
+            <div class="card z-depth-1">
                 {{#if doingExercise}}
-                    <!-- {{> unit}} -->
+                    {{> unitContent}}
                 {{/if}}
                 {{#if learning}}
-                    <p> Quis saber quem soooouuuuu </p>
+                    {{> propagatingKnowledge}}
                 {{/if}}
                 {{#if results}}
-                    <p> O que faco aquiiiiii </p>
+                    {{> unitResults learnedConcept=learnedConcept}}
                 {{/if}}
-                {{> relatedConcepts grantedConcepts=grantedConcepts  requiredConcepts=requiredConcepts }}  
+                {{> relatedConcepts grantedConcepts=grantedConcepts requiredConcepts=requiredConcepts }}
             </div>
             <div class="card-panel">
                 <div class="row">
@@ -28,8 +28,7 @@
         </div>
     </div>
 </template>
-
-<template name = "unit">
+<template name="unitContent">
     <div class="card-content">
         <div class="unit-content">
             <div class="row">
@@ -47,19 +46,17 @@
         </div>
     </div>
 </template>
-
-<template name = "stringExercise">
+<template name="stringExercise">
     <div class="section">
         <h4>{{{question}}}</h4>
         <form>
             <input type="text" name="exerciseString" id="exerciseInputText">
-        <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
-        </button>
+            <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
+            </button>
         </form>
     </div>
 </template>
-
-<template name = "explanation">
+<template name="explanation">
     {{#each subContent}}
         <div class="subContent">
             {{#if isType 'text'}}
@@ -77,8 +74,8 @@
     {{/each }}
     {{#if currentUser}}
         <div class="row center-align understood-buttons">
-            <a href="#learnModal" class="waves-effect waves-light white-text green btn modal-trigger" id="understood">Gots it!</a>
-            <a href="#learnModal" class="waves-effect waves-light white-text red btn modal-trigger" id="notUnderstood">Nots it!</a>
+            <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
+            <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">I didn't understand</a>
         </div>
     {{else}}
         <div class="row center-align understood-buttons">
@@ -87,8 +84,7 @@
         </div>
     {{/if}}
 </template>
-
-<template name = "relatedConcepts">
+<template name="relatedConcepts">
     <div class="card-action">
         <div class="row ">
             <div class="col s1">
@@ -112,6 +108,45 @@
                     <a href="../concept/{{name}}">{{name}}</a>
                     <br>
                 {{/each}}
+            </div>
+        </div>
+    </div>
+</template>
+<template name="propagatingKnowledge">
+    <div class="row center-align">
+        <div class="section">
+            <div class="preloader-wrapper big active">
+                <div class="spinner-layer spinner-blue-only">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <h4>We are propagating your knowledge</h4>
+        </div>
+    </div>
+</template>
+<template name="unitResults">
+    <div class="row center-align">
+        <div class="section">
+            <h5>Congraulations! You have learnt</h5>
+            <div class="row">
+                <div class="col s4 offset-s4">
+                    {{#each learnedConcept}}
+                        <a href="../concept/{{name}}">{{name}}</a>
+                        <br>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <h5>Why don't you try one of this units next</h5>
+            <div class="row">
+                <div class="col s6 offset-s3">
+                    {{> unitSuggestions}}
+                </div>
             </div>
         </div>
     </div>
