@@ -1,4 +1,5 @@
 Template.unitPage.rendered = function() {
+    Session.set('callStatus','doingExercise');
     $(document).ready(function() {
         $('.tooltipped').tooltip({
             delay: 20
@@ -10,6 +11,7 @@ Template.unitPage.rendered = function() {
 
 
 Template.unitPage.events({
+
     'click #understood': function() {
         Session.set('callStatus', 'learning');
         Meteor.call("learn", "1", Blaze.getData()["rid"], function(error, result) {
@@ -23,6 +25,7 @@ Template.unitPage.events({
         //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
     },
+
     'click #notUnderstood': function() {
         Session.set('callStatus', 'learning');
         Meteor.call("learn", "0", Blaze.getData()["rid"], function(error, result) {
@@ -36,6 +39,7 @@ Template.unitPage.events({
         //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
     },
+    
     'submit form': function(event) {
         event.preventDefault();
         var answerIsCorrect = false;
@@ -68,4 +72,5 @@ Template.unitPage.events({
             });
         }
     }
+
 });
