@@ -14,7 +14,7 @@ Template.unitPage.events({
         Session.set('callStatus', 'learning');
         Meteor.call("learn", "1", Blaze.getData()["rid"], function(error, result) {
             if (result.statusCode == 200) {
-                Session.set('callStatus', 'OK');
+                Session.set('callStatus', 'learned');
             }
             var newStuff = result.data.result[0]['value'] //["content"];//["result"];//[0]["value"];
             Session.set('newConcepts', newStuff[1]);
@@ -28,7 +28,7 @@ Template.unitPage.events({
         Session.set('callStatus', 'learning');
         Meteor.call("learn", "0", Blaze.getData()["rid"], function(error, result) {
             if (result.statusCode == 200) {
-                Session.set('callStatus', 'OK');
+                Session.set('callStatus', 'unlearned');
             }
             var newStuff = result.data.result[0]['value'];
             Session.set('lostConcepts', newStuff[3]);

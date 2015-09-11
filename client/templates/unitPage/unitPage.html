@@ -8,21 +8,20 @@
                 {{#if learning}}
                     {{> propagatingKnowledge}}
                 {{/if}}
-                {{#if results}}
+                {{#if learned}}
                     {{> unitResults learnedConcept=learnedConcept}}
+                {{/if}}
+                {{#if unlearned}}
+                    LOOZAH!
                 {{/if}}
                 {{> relatedConcepts grantedConcepts=grantedConcepts requiredConcepts=requiredConcepts }}
             </div>
             <div class="card-panel">
                 <div class="row">
-                    <div class="col s10">
-                        <h3>{{name}}</h3>
-                        <p><img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"><span class="grey-text"> by {{nameOf authors}}</span></p>
-                        <p>{{description}}</p>
-                    </div>
-                    <div class="col s2">
-                        <span class="grey-text"><p>{{views}} views</p><p>{{likes}} <i class="tiny material-icons data-icons">thumbs_up_down</i> {{dislikes}}</p></span>
-                    </div>
+                    <h3>{{name}}</h3>
+                    <p><img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"><span class="grey-text"> by {{nameOf authors}}</span></p>
+                    <h6 class="grey-text"><span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
+                    <p>{{description}}</p>
                 </div>
             </div>
         </div>
