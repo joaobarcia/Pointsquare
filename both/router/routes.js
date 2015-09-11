@@ -1,6 +1,6 @@
 Router.route('/', {
     name: 'home',
-    waitOn: function() {}
+    //waitOn: function() {}
 });
 
 Router.route('/search', {
@@ -17,8 +17,13 @@ Router.route('/search', {
         var instance = EasySearch.getComponentInstance({
             index: 'knowledge'
         });
-        $("#search").val("");
+        EasySearch.changeProperty('knowledge', 'filteredClasses', ['Unit']);
+        EasySearch.changeProperty('knowledge', 'onlyNewUnits', true);
+        EasySearch.changeProperty('knowledge', 'onlyHighProspect', true);
+        EasySearch.changeProperty('knowledge', 'orderBy', 'state');
         instance.clear();
+
+
     }
 })
 
@@ -41,7 +46,7 @@ Router.route('/concept/:_name', {
     name: 'conceptPage',
     waitOn: function() {
         if (Meteor.user()) {
-            return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
         } else {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };
@@ -57,7 +62,7 @@ Router.route('/dashboard', {
     name: 'dashboard',
     waitOn: function() {
         if (Meteor.user()) {
-            return [Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
         } else {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };

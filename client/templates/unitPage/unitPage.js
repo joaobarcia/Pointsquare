@@ -3,31 +3,35 @@ Template.unitPage.rendered = function() {
         $('.tooltipped').tooltip({
             delay: 20
         });
+        $('.modal-trigger').leanModal();
     });
-    $('.modal-trigger').leanModal();
 };
 
 
 
 Template.unitPage.events({
     'click #understood': function() {
-        Session.set('callStatus','learning');
-        Meteor.call("learn", "1", Blaze.getData()["rid"], function(error,result){
-            if(result.statusCode == 200){ Session.set('callStatus','OK'); }
-            var newStuff = result.data.result[0]['value']//["content"];//["result"];//[0]["value"];
-            Session.set('newConcepts',newStuff[1]);
-            Session.set('newUnits',newStuff[0]);
+        Session.set('callStatus', 'learning');
+        Meteor.call("learn", "1", Blaze.getData()["rid"], function(error, result) {
+            if (result.statusCode == 200) {
+                Session.set('callStatus', 'OK');
+            }
+            var newStuff = result.data.result[0]['value'] //["content"];//["result"];//[0]["value"];
+            Session.set('newConcepts', newStuff[1]);
+            Session.set('newUnits', newStuff[0]);
         });
         //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
     },
     'click #notUnderstood': function() {
-        Session.set('callStatus','learning');
-        Meteor.call("learn", "0", Blaze.getData()["rid"], function(error,result){
-            if(result.statusCode == 200){ Session.set('callStatus','OK'); }
+        Session.set('callStatus', 'learning');
+        Meteor.call("learn", "0", Blaze.getData()["rid"], function(error, result) {
+            if (result.statusCode == 200) {
+                Session.set('callStatus', 'OK');
+            }
             var newStuff = result.data.result[0]['value'];
-            Session.set('lostConcepts',newStuff[3]);
-            Session.set('lostUnits',newStuff[2]);
+            Session.set('lostConcepts', newStuff[3]);
+            Session.set('lostUnits', newStuff[2]);
         });
         //Materialize.toast('Give us a few seconds to propagate your knowledge', 5000);
         Meteor.call("incrementViews", Blaze.getData()["rid"]);
@@ -56,9 +60,11 @@ Template.unitPage.events({
             $("#exerciseInputText").removeClass("green-text");
             $("#exerciseInputText").addClass("red-text");
 
-            Session.set('callStatus','learning');
-            Meteor.call("learn", "0", Blaze.getData()["@rid"], "#27:1", function(error,result){
-                if(result.statusCode == 200){ Session.set('callStatus','OK'); }
+            Session.set('callStatus', 'learning');
+            Meteor.call("learn", "0", Blaze.getData()["@rid"], "#27:1", function(error, result) {
+                if (result.statusCode == 200) {
+                    Session.set('callStatus', 'OK');
+                }
             });
         }
     }

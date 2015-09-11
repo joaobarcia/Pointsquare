@@ -10,7 +10,11 @@
                 <h6 class="grey-text ">{{description}}</h6>
                 <div class="row no-bottom-margin ">
                     <div class="col s12 ">
-                        <h6 class="grey-text right-align "><span class="unit-info-icons ">{{likes}} <i class="tiny material-icons ">thumbs_up_down</i> {{dislikes}} </span><span class="unit-info-icons "><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
+                        <h6 class="grey-text right-align ">
+                        {{!-- <span class="unit-info-icons ">{{likes}}<i class="tiny material-icons ">thumbs_up_down</i> {{dislikes}} </span> --}}    
+                        <span class="unit-info-icons tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span>                    
+                        <span class="unit-info-icons tooltipped" data-position="top" data-delay="1" data-tooltip="{{prospect}} concepts will be learnt"><span class="ti-light-bulb"></span> {{prospect}}</span>
+                        </h6>
                     </div>
                 </div>
             </div>

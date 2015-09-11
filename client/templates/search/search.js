@@ -1,3 +1,13 @@
+//Fixed search options
+/*Template.search.rendered = function() {
+    $(document).ready(function() {
+        console.log("entrou!");
+        $('.toc-wrapper .row').pushpin({
+            top: $('.toc-wrapper').offset().top
+        });
+    });
+}*/
+
 Template.search.events({
     'click #searchBoth': function() {
         var instance = EasySearch.getComponentInstance({
