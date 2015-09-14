@@ -26,19 +26,8 @@ Template._header.rendered = function() {
     });
 };
 
-/*Template._header.events({
-    'keyup #search': function(e) {
-        e.preventDefault();
-        searchInput = $(e.target).val();
-        EasySearch
-            .getComponentInstance({
-                index: 'knowledge'
-            })
-            .search(searchInput);
-        Router.go("search", this);
-    },
-    'submit #search': function(e) {
-        e.preventDefault();
+Template._header.helpers({
+    'callStatus': function() {
+        return Session.get('callStatus')
     },
 });
-*/
