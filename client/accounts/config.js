@@ -26,3 +26,11 @@ Accounts.onLogin(function() {
     // The identify code should be added before the "track()" function
     woopra.track();
 });
+
+Template.atForm.events({
+
+    'click .at-btn': function(){
+        Session.set('callStatus','creatingUser');
+    }
+
+});

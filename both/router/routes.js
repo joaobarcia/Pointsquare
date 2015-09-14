@@ -1,5 +1,9 @@
 Router.route('/', {
     name: 'home',
+    onRun: function() {
+        Session.set('callStatus', 'OK');
+        this.next();
+    }
     //waitOn: function() {}
 });
 
@@ -11,6 +15,10 @@ Router.route('/search', {
         } else {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };
+    },
+    onRun: function() {
+        Session.set('callStatus', 'OK');
+        this.next();
     },
     // Reset easy search when leaving search results
     onStop: function() {
@@ -74,6 +82,10 @@ Router.route('/dashboard', {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };
     },
+    onRun: function() {
+        Session.set('callStatus', 'OK');
+        this.next();
+    }
 });
 
 Router.plugin('ensureSignedIn', {
