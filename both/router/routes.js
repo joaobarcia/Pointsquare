@@ -41,8 +41,11 @@ Router.route('/unit/:_name', {
             name: this.params._name
         });
     },
+    onRun: function() {
+        Session.set('callStatus','doingExercise');
+    },
     onStop: function() {
-        Session.set('callStatus', 'doingExercise')
+        Session.set('callStatus', 'OK')
     }
 });
 Router.route('/concept/:_name', {

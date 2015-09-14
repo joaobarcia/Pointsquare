@@ -117,22 +117,21 @@ Meteor.methods({
 
     create_person: function(person_email, person_name) {
         var query = "http://95.85.45.153:2480/function/Pointsquare/createPerson/" + escape(person_email) + "/" + escape(person_name) + "/" + '';
-        var user_rid = HTTP.call("POST", query, {
+        var user_rid = HTTP.call("POST", query, {auth: "root:4f0g4.o.orientDB!"}).data.result[0]['rid'];
+        var res = HTTP.call("GET", "http://95.85.45.153:2480/query/Pointsquare/sql/select%20nodeInfo(" + escape(user_rid) + ")", {
             auth: "root:4f0g4.o.orientDB!"
-        }).data.result[0]['rid'];
-        var new_info = HTTP.call("GET", "http://95.85.45.153:2480/query/Pointsquare/sql/select%20nodeInfo(" + escape(user_rid) + ")", {
-            auth: "root:4f0g4.o.orientDB!"
-        }).data.result[0]['nodeInfo'];
+        });
+        var new_info = res.data.result[0]['nodeInfo'];
         people.insert(new_info);
+        return res;
     },
 
     reset: function() {
         var user_rid = Meteor.call('get_user_rid');
         var query = "http://95.85.45.153:2480/function/Pointsquare/resetAll/" + escape(user_rid);
-        HTTP.call("POST", query, {
-            auth: "root:4f0g4.o.orientDB!"
-        });
+        var res = HTTP.call("POST", query, {auth: "root:4f0g4.o.orientDB!"});
         Meteor.call('fetchAllUserData');
+        return res;
     },
 
     incrementViews: function(rid) {

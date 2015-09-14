@@ -8,9 +8,13 @@ Template._sidebar.rendered = function() {
     });
 }
 
-
 Template._sidebar.events({
     'click #resetUserKnowledge': function() {
-        Meteor.call("reset");
+    	Session.set('callStatus','resetting');
+        Meteor.call("reset", function(error,result){
+            if (result.statusCode >= 200 && result.statusCode < 300) {
+                Session.set('callStatus', 'OK');
+            }
+        });
     },
 });

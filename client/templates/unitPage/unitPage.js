@@ -13,7 +13,7 @@ Template.unitPage.events({
     'click #understood': function() {
         Session.set('callStatus', 'learning');
         Meteor.call("learn", "1", Blaze.getData()["rid"], function(error, result) {
-            if (result.statusCode == 200) {
+            if (result.statusCode >= 200 && result.statusCode < 300) {
                 Session.set('callStatus', 'learned');
             }
             var newStuff = result.data.result[0]['value'] //["content"];//["result"];//[0]["value"];
@@ -64,7 +64,7 @@ Template.unitPage.events({
 
             Session.set('callStatus', 'learning');
             Meteor.call("learn", "0", Blaze.getData()["@rid"], "#27:1", function(error, result) {
-                if (result.statusCode == 200) {
+                if (result.statusCode >= 200 && result.statusCode < 300) {
                     Session.set('callStatus', 'OK');
                 }
             });
