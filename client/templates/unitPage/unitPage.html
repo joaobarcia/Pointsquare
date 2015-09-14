@@ -9,10 +9,10 @@
                     {{> propagatingKnowledge}}
                 {{/if}}
                 {{#if learned}}
-                    {{> unitResults learnedConcept=learnedConcept}}
+                    {{>learnedResults learnedConcept=learnedConcept}}
                 {{/if}}
                 {{#if unlearned}}
-                    LOOZAH!
+                    {{>unlearnedResults unlearnedConcept=unlearnedConcept}}
                 {{/if}}
                 {{> relatedConcepts grantedConcepts=grantedConcepts requiredConcepts=requiredConcepts }}
             </div>
@@ -127,13 +127,36 @@
         </div>
     </div>
 </template>
-<template name="unitResults">
+<template name="learnedResults">
     <div class="row center-align">
         <div class="section">
             <h5>Congraulations! You have learnt</h5>
             <div class="row">
                 <div class="col s4 offset-s4">
                     {{#each learnedConcept}}
+                        <a href="../concept/{{name}}">{{name}}</a>
+                        <br>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <h5>Why don't you try one of this units next</h5>
+            <div class="row">
+                <div class="col s6 offset-s3">
+                    {{> unitSuggestions}}
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<template name="unlearnedResults">
+    <div class="row center-align">
+        <div class="section">
+            <h5>These concepts have been deactivated, but don't worry!</h5>
+            <div class="row">
+                <div class="col s4 offset-s4">
+                    {{#each unlearnedConcept}}
                         <a href="../concept/{{name}}">{{name}}</a>
                         <br>
                     {{/each}}

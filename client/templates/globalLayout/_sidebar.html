@@ -1,25 +1,21 @@
 <template name="_sidebar">
+    <div id="feedbackModal" class="modal">
+        {{> feedbackModal}}
+    </div>
+    <div id="resetModal" class="modal">
+        {{> resetModal}}
+    </div>
     <div class="sidebar">
-        <ul>
-            {{#if currentUser}}
+        {{#if currentUser}}
+            {{> _sidebarUserButtons}}
+        {{else}}
+            <ul>
                 <li>
-                    <a class="btn-floating btn-large cyan btn tooltipped modal-trigger" data-position="right" data-delay="20" data-tooltip="Send us your feedback!" href="#feedbackModal">
-                        <i class="material-icons">feedback</i></a>
-                </li>
-                <li>
-                    <button class="btn-floating btn-large red lighten-2 btn tooltipped" data-position="right" data-delay="20" data-tooltip="Reset your user knowledge (testing purposes)" id="resetUserKnowledge">
-                        <i class="material-icons">delete</i></button>
-                </li>
-            {{else}}
-                <li>
-                    <a class="btn-floating btn-large green btn tooltipped" data-position="right" data-delay="20" data-tooltip="Register!" href="{{ pathFor 'atSignUp' }}">
+                    <a class="modal-trigger btn-floating btn-large green btn tooltipped" data-position="right" data-delay="20" data-tooltip="Register!" href="{{ pathFor 'atSignUp' }}">
                         <i class="material-icons">person_add</i>
                     </a>
                 </li>
-            {{/if}}
-        </ul>
-    </div>
-    <div id="feedbackModal" class="modal">
-        {{> feedbackModal}}
+            </ul>
+        {{/if}}
     </div>
 </template>

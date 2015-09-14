@@ -1,0 +1,12 @@
+<template name="resetModal">
+    <div class="modal-content">
+        <h4>Reset your user knowledge?</h4>
+        {{#if resetting}}
+            {{> loading}}
+        {{/if}}
+        <div class="row right-align">
+            <button class="btn waves-effect waves-light red lighten-2" id="resetButton">Submit
+            </button>
+        </div>
+    </div>
+</template>
