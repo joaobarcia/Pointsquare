@@ -7,7 +7,7 @@
                     {{#unless parentConcepts.count}}
                         <p>no parent concepts</p>
                     {{/unless}}
-                    <div class="collection z-depth-1">
+                    <div class="collection">
                         {{#each parentConcepts}}
                             {{> conceptCard}}
                         {{/each}}
@@ -24,7 +24,7 @@
                         {{#unless grantedUnit.count}}
                             <p> No units teach this concept directly. Check child concepts below</p>
                         {{/unless}}
-                        <div class="collection z-depth-1">
+                        <div class="collection">
                             {{#each grantedUnit}}
                                 {{> unitCard}}
                             {{/each}}
@@ -40,7 +40,7 @@
                     <div class="divider"></div>
                     <div class="section">
                         <h6 class="grey-text center-align"><span class="ti-book"></span> unlocks</h6>
-                        <div class="collection z-depth-1">
+                        <div class="collection">
                             {{#each requiredUnit}}
                                 {{> unitCard}}
                             {{/each}}
@@ -56,7 +56,7 @@
                     {{#unless childConcepts.count}}
                         <p>no child concepts</p>
                     {{/unless}}
-                    <div class="collection z-depth-1">
+                    <div class="collection">
                         {{#each childConcepts}}
                             {{> conceptCard}}
                         {{/each}}

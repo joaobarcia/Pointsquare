@@ -42,7 +42,8 @@ Router.route('/unit/:_name', {
         });
     },
     onRun: function() {
-        Session.set('callStatus','doingExercise');
+        Session.set('callStatus', 'doingExercise');
+        this.next();
     },
     onStop: function() {
         Session.set('callStatus', 'OK')
