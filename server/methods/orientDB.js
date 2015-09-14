@@ -97,7 +97,9 @@ Meteor.methods({
             var query = "http://95.85.45.153:2480/function/Pointsquare/learn2/" + escape(result) + "/" + escape(unit) + "/" + escape(user_rid);
             var temp = 0;
             var res = null;
-            res = HTTP.call("POST", query, { auth: "root:4f0g4.o.orientDB!"});
+            res = HTTP.call("POST", query, {
+                auth: "root:4f0g4.o.orientDB!"
+            });
             Meteor.call('fetchAllUserData');
             return res;
         } else console.log("tried to run learn method but no one is logged")
@@ -117,7 +119,9 @@ Meteor.methods({
 
     create_person: function(person_email, person_name) {
         var query = "http://95.85.45.153:2480/function/Pointsquare/createPerson/" + escape(person_email) + "/" + escape(person_name) + "/" + '';
-        var user_rid = HTTP.call("POST", query, {auth: "root:4f0g4.o.orientDB!"}).data.result[0]['rid'];
+        var user_rid = HTTP.call("POST", query, {
+            auth: "root:4f0g4.o.orientDB!"
+        }).data.result[0]['rid'];
         var res = HTTP.call("GET", "http://95.85.45.153:2480/query/Pointsquare/sql/select%20nodeInfo(" + escape(user_rid) + ")", {
             auth: "root:4f0g4.o.orientDB!"
         });
@@ -129,7 +133,9 @@ Meteor.methods({
     reset: function() {
         var user_rid = Meteor.call('get_user_rid');
         var query = "http://95.85.45.153:2480/function/Pointsquare/resetAll/" + escape(user_rid);
-        var res = HTTP.call("POST", query, {auth: "root:4f0g4.o.orientDB!"});
+        var res = HTTP.call("POST", query, {
+            auth: "root:4f0g4.o.orientDB!"
+        });
         Meteor.call('fetchAllUserData');
         return res;
     },

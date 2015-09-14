@@ -11,9 +11,3 @@
         });
     });
 };*/
-
-Template._header.helpers({
-    'callStatus': function() {
-        return Session.get('callStatus')
-    },
-});

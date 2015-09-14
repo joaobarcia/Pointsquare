@@ -1,10 +1,10 @@
 Router.route('/', {
     name: 'home',
     onRun: function() {
-        Session.set('callStatus', 'OK');
-        this.next();
-    }
-    //waitOn: function() {}
+            Session.set('callStatus', 'OK');
+            this.next();
+        }
+        //waitOn: function() {}
 });
 
 Router.route('/search', {
@@ -30,8 +30,6 @@ Router.route('/search', {
         EasySearch.changeProperty('knowledge', 'onlyHighProspect', true);
         EasySearch.changeProperty('knowledge', 'orderBy', 'state');
         instance.clear();
-
-
     }
 })
 
@@ -81,10 +79,6 @@ Router.route('/dashboard', {
         } else {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };
-    },
-    onRun: function() {
-        Session.set('callStatus', 'OK');
-        this.next();
     }
 });
 
