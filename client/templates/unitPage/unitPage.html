@@ -64,6 +64,9 @@
             {{#if isType 'image'}}
                 <img class="responsive-img" src="../images/units/{{imgURL}}">
             {{/if}}
+            {{#if isType 'remoteImage'}}
+                <img class="responsive-img" src="{{remoteImgURL}}">
+            {{/if}}
             {{#if isType 'youtube'}}
                 <div class="video-container no-controls">
                     <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
@@ -141,10 +144,17 @@
             </div>
         </div>
         <div class="section">
-            <h5>Why don't you try one of this units next</h5>
+            <h5>Why don't you try one of these units next</h5>
             <div class="row">
                 <div class="col s6 offset-s3">
                     {{> unitSuggestions}}
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="row">
+                <div class="col s6 offset-s3">
+                    <a href="#!" class="waves-effect waves-light white-text cyan btn" id="backToUnit">back to unit</a>
                 </div>
             </div>
         </div>
@@ -168,6 +178,13 @@
             <div class="row">
                 <div class="col s6 offset-s3">
                     {{> unitSuggestions}}
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="row">
+                <div class="col s6 offset-s3">
+                    <a href="#!" class="waves-effect waves-light white-text cyan btn" id="backToUnit">back to unit</a>
                 </div>
             </div>
         </div>

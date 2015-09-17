@@ -22,8 +22,16 @@ useraccounts:iron-routing
 email
 accounts-base
 meteorhacks:fast-render
-aldeed:autoform@5.0.0
+aldeed:autoform
 gildaspk:autoform-materialize
 cmather:handlebars-server
 zimme:active-route
 erasaur:meteor-lodash
+poetic:materialize-scss
+meteor
+sergeyt:typeahead
+comerc:bs-typeahead
+comerc:autoform-typeahead
+comerc:autoform-selectize
+jeremy:selectize
+themeteorchef:html5-sortable

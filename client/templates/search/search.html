@@ -1,7 +1,13 @@
 <template name="search">
     <div class="container">
-        <div class="row search-input">
-            <div class="section">{{> esInput index="knowledge" placeholder="Search..." allDocsOnEmpty="true" }}</div>
+        <div class="section">
+            <div class="row search-input">
+                <div class="section">
+                    <div class="col">
+                        <h3><i class="material-icons right">search</i></h3></div>
+                    <div class="col s11">{{> esInput index="knowledge" placeholder="Search..." allDocsOnEmpty="true" }}</div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col s3">

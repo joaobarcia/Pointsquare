@@ -82,6 +82,38 @@ Router.route('/dashboard', {
     }
 });
 
+
+
 Router.plugin('ensureSignedIn', {
     only: ['dashboard']
+});
+
+
+Router.route('/create', {
+    name: 'create',
+    waitOn: function() {
+        return Meteor.subscribe('user_names')
+    }
+});
+
+Router.route('/create/unit', {
+    name: 'createUnit',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
+        };
+    }
+});
+
+Router.route('/create/concept', {
+    name: 'createConcept',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
+        };
+    }
 });
