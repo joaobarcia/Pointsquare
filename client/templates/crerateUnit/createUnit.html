@@ -1,0 +1,89 @@
+<template name="createUnit">
+    <div class="container">
+        <div class="section">
+            <h4>Create Unit</h4>
+            {{#autoForm schema=createUnitSchema id="createUnit" type="method" meteormethod="createUnit" }}
+                <fieldset>
+                    {{!-- <legend>Contact Us</legend> --}}
+                    <div class="card">
+                        <div class="section">
+                            <div class="container">
+                                <h3 class="center-align">Info</h3> {{> afQuickField name="name"}} {{> afQuickField name="description"}}
+                                <div class="section">
+                                    <div class="divider"></div>
+                                    <h3 class="center-align">Concepts</h3> {{> afQuickField name="requiredConcepts"}}{{> afQuickField name="grantedConcepts"}}
+                                    <p>If you you don't find the concept you need, you can</p>
+                                    <button type="" class="btn btn-default">Add Concept</button>
+                                </div>
+                                <div class="section">
+                                    <div class="divider"></div>
+                                    <h3 class="center-align">Type of evaluation</h3>{{> afQuickField name="type"}}
+                                </div>
+                                <div class="section">
+                                    <div class="divider"></div>
+                                    <h3 class="center-align">Content</h3>
+                                    <p>
+                                        <button id="" class="btn btn-default">+ Text</button>
+                                        <button id="" class="btn btn-default">+ Picture</button>
+                                        <button id="" class="btn btn-default">+ Youtube</button>
+                                    </p>
+                                    <p>
+                                        <button id="" class="btn btn-default">+ Exercise - Multiple Choice</button>
+                                        <button id="" class="btn btn-default">+ Exercise - Answer</button>
+                                    </p>
+                                    <ul class="list-group sortable">
+                                        {{#each tempSubContent}}
+                                            {{#if isType 'text'}}
+                                                <li class="list-group-item">
+                                                    <div class="card" style="height: 100px">
+                                                        <div class="row">
+                                                            <p class="flow-text">{{{text}}}</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            {{/if}}
+                                            {{#if isType 'image'}}
+                                                <li class="list-group-item">
+                                                    <div class="card" style="height: 100px">
+                                                        <div class="row">
+                                                            <img class="responsive-img" src="../images/units/{{imgURL}}">
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            {{/if}}
+                                            {{#if isType 'remoteImage'}}
+                                                <li class="list-group-item">
+                                                    <div class="card" style="height: 100px">
+                                                        <div class="row">
+                                                            <img class="responsive-img" src="{{remoteImgURL}}">
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            {{/if}}
+                                            {{#if isType 'youtube'}}
+                                                <li class="list-group-item">
+                                                    <div class="card" style="height: 100px">
+                                                        <div class="row">
+                                                            <div class="video-container no-controls">
+                                                                <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            {{/if}}
+                                        {{/each }}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-large">Submit</button>
+                        <button type="reset" class="btn btn-default btn-large">Reset</button>
+                        <button type="" class="btn btn-default btn-large">Preview</button>
+                    </div>
+                </fieldset>
+            {{/autoForm}}
+        </div>
+    </div>
+</template>

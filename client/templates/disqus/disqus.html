@@ -1,0 +1,33 @@
+<template name="comments">
+    {{!--     <div id="disqus_thread"></div>
+    <script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES * * */
+    var disqus_shortname = 'pointsquare';
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> --}}
+    <script type="text/javascript">
+    ! function(t, e, n) {
+        function a(t) {
+            var a = e.createElement("script");
+            a.type = "text/javascript", a.async = !0, a.src = ("https:" === e.location.protocol ? "https" : "http") + ":" + n, (t || e.body || e.head).appendChild(a)
+        }
+
+        function o() {
+            var t = e.getElementsByTagName("script"),
+                n = t[t.length - 1];
+            return n.parentNode
+        }
+        var p = o();
+        t.spotId = "sp_MvCrwE1o", t.parentElement = p, a(p)
+    }(window.SPOTIM = {}, document, "//www.spot.im/launcher/bundle.js");
+    </script>
+</template>
