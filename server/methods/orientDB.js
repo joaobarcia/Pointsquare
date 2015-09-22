@@ -153,7 +153,28 @@ Meteor.methods({
             }
         })
     },
-    createUnit: function() {}
+
+    createConcept: function() {
+        var query = "http://95.85.45.153:2480/function/Pointsquare/justCreateConcept";
+        var res = HTTP.call("POST", query, {auth: "root:4f0g4.o.orientDB!"}).data.result[0]['value'];
+        var rid = res.data.result[0]['justCreateConcept'];
+        knowledge.insert({'rid':rid,'class':'Concept'});
+        return res;
+    },
+
+    createUnit: function() {
+        var query = "http://95.85.45.153:2480/function/Pointsquare/justCreateUnit";
+        var res = HTTP.call("POST", query, {auth: "root:4f0g4.o.orientDB!"}).data.result[0]['value'];
+        var rid = res.data.result[0]['justCreateUnit'];
+        knowledge.insert({'rid':rid,'class':'Unit'});
+        return res;
+    },
+
+    addAuthor: function(author,unit) {
+        var query = "http://95.85.45.153:2480/function/Pointsquare/addAuthor/"+escape(author)+"/"+escape(unit);
+        var res = HTTP.call("POST", query, {auth: "root:4f0g4.o.orientDB!"}).data.result[0]['value'];
+        return res;
+    }
 
 
 })
