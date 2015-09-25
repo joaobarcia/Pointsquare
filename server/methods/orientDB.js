@@ -178,5 +178,4 @@ Meteor.methods({
         return res;
     }
 
-
 })
