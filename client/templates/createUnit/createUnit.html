@@ -1,0 +1,101 @@
+<template name="createUnit">
+    <div class="container">
+        <div class="section">
+            <h4>Create Unit</h4>
+            {{#autoForm schema=createUnitSchema id="createUnit" type="method" meteormethod="createUnit" }}
+                <fieldset>
+                    {{!-- <legend>Contact Us</legend> --}}
+                    <div class="card">
+                        <div class="section">
+                            <div class="container">
+                                {{> afArrayField name="items" template='customArrayField'}}
+                                <h3 class="center-align">Info</h3> {{> afQuickField name="name"}} {{> afQuickField name="description"}}
+                                <div class="section">
+                                    <div class="divider"></div>
+                                    <h3 class="center-align">Concepts</h3> {{> afQuickField name="requiredConcepts"}}{{> afQuickField name="grantedConcepts"}}
+                                    <div class="center-align">
+                                        <p class="center-align">If you you don't find the concept you need, you can</p>
+                                        <button type="" class="waves-effect waves-teal btn-flat blue-text">Add Concept</button>
+                                    </div>
+                                </div>
+                                <div class="section">
+                                    <div class="divider"></div>
+                                    <h3 class="center-align">Content</h3>
+                                    <p>
+                                        <button id="" class="btn btn-default">+ Section</button>
+                                    </p>
+                                    <p>
+                                        <button id="" class="btn btn-default">+ Text</button>
+                                        <button id="" class="btn btn-default">+ Picture</button>
+                                        <button id="" class="btn btn-default">+ Youtube</button>
+                                    </p>
+                                </div>
+                                <div class="section">
+                                    <div class="divider"></div>
+                                    <h3 class="center-align">Evaluation</h3>{{> afQuickField name="evaluationType"}}
+                                    {{#if afFieldValueIs name="evaluationType" value="exerciseRadioButton" }}
+                                        {{> afQuickField name="exerciseRadioButton"}}
+                                    {{/if}}
+                                    {{#if afFieldValueIs name="evaluationType" value="exerciseString" }}
+                                        {{> afQuickField name="exerciseString"}}
+                                    {{/if}}
+                                    {{#if afFieldValueIs name="evaluationType" value="userConfirmation" }}
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary btn-large">Submit</button>
+                        <button type="reset" class="btn btn-default btn-large">Reset</button>
+                        <button type="" class="btn btn-default btn-large">Preview</button>
+                    </div>
+                </fieldset>
+            {{/autoForm}}
+        </div>
+    </div>
+</template>
+<!-- 
+<template name="afArrayField_customPointsquare">
+    <div class="collection">
+        <div class="collection-item">
+            {{afFieldLabelText name=atts.name}}
+            {{#if afArrayFieldHasLessThanMaximum name=atts.name minCount=this.atts.minCount maxCount=this.atts.maxCount}}
+                <button type="button" class="btn autoform-add-item" data-autoform-field="{{atts.name}}" data-autoform-minCount="{{atts.minCount}}" data-autoform-maxCount="{{atts.maxCount}}">
+                    Add <i class="mdi-content-add"></i>
+                </button>
+            {{/if}}
+        </div>
+        {{#if afFieldIsInvalid name=atts.name}}
+            <div class="collection-item">
+                <span class="red-text">{{{afFieldMessage name=atts.name}}}</span>
+            </div>
+        {{/if}}
+        {{#afEachArrayItem name=atts.name minCount=this.atts.minCount maxCount=this.atts.maxCount}}
+            <div class="collection-item">
+                {{> afQuickField name=this.name label=false options=afOptionsFromSchema}}
+                {{#if afArrayFieldHasMoreThanMinimum name=../atts.name minCount=../atts.minCount maxCount=../atts.maxCount}}
+                    <button type="button" class="btn autoform-remove-item">
+                        Remove <span class="mdi-content-clear"></span>
+                    </button>
+                {{/if}}
+            </div>
+        {{/afEachArrayItem}}
+    </div>
+</template>
+<template name="afObjectField_customPointsquare">
+    <div class="card-panel autoform-object-field">
+        <div class="card-content">
+            {{!--             {{#with afFieldLabelText name=this.name}}
+            <div class="card-title">
+                {{this}}
+            </div>
+            {{/with}} --}}
+            {{#if afFieldIsInvalid name=this.name}}
+                <div class="red-text">{{{afFieldMessage name=this.name}}}</div>
+            {{/if}}
+            {{> afQuickFields name=this.name}}
+        </div>
+    </div>
+</template>
+ -->

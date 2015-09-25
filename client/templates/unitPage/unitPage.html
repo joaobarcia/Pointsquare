@@ -29,62 +29,103 @@
 </template>
 <template name="unitContent">
     <div class="card-content">
-        <div class="unit-content">
-            <div class="row">
-                <div class="col s8 offset-s2 center-align">
-                    {{#each content }}
-                        {{#if isType 'exerciseString'}}
-                            {{> stringExercise}}
-                        {{/if}}
-                        {{#if isType 'explanation'}}
-                            {{> explanation}}
-                        {{/if}}
-                    {{/each }}
+        {{#if unitIsOneSectionAndNoExercise}}
+            {{> contentByType}}
+        {{else}}
+            <div class="unit-tabs">
+                <div class="row">
+                    <ul class="tabs tab-demo z-depth-1">
+                        {{#each content}}
+                            {{#if isType 'unitSection'}}
+                                <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Part {{increaseByOne @index}}</a></li>
+                            {{/if}}
+                            {{#if isType 'unitEvaluationSection'}}
+                                <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Evaluation</a></li>
+                            {{/if}}
+                        {{/each }}
+                    </ul>
                 </div>
             </div>
-        </div>
-    </div>
-</template>
-<template name="stringExercise">
-    <div class="section">
-        <h4>{{{question}}}</h4>
-        <form>
-            <input type="text" name="exerciseString" id="exerciseInputText">
-            <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
-            </button>
-        </form>
-    </div>
-</template>
-<template name="explanation">
-    {{#each subContent}}
-        <div class="subContent">
-            {{#if isType 'text'}}
-                <p class="flow-text">{{{text}}}</p>
-            {{/if}}
-            {{#if isType 'image'}}
-                <img class="responsive-img" src="../images/units/{{imgURL}}">
-            {{/if}}
-            {{#if isType 'remoteImage'}}
-                <img class="responsive-img" src="{{remoteImgURL}}">
-            {{/if}}
-            {{#if isType 'youtube'}}
-                <div class="video-container no-controls">
-                    <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
+            <div class="unit-content">
+                <div class="section">
+                    {{> contentByType}}
                 </div>
+            </div>
+        {{/if}}
+    </div>
+</template>
+<template name="contentByType">
+    {{#each content }}
+        <div id="unitTab{{increaseByOne @index}}" class="col s12">
+            <div class="container">
+                {{#if isType 'unitSection'}}
+                    {{#each subContent}}
+                        {{#if isType 'text'}}
+                            <div class="section">
+                                <p class="flow-text">{{{text}}}</p>
+                            </div>
+                        {{/if}}
+                        {{#if isType 'image'}}
+                            <img class="responsive-img" src="../images/units/{{imgURL}}">
+                        {{/if}}
+                        {{#if isType 'remoteImage'}}
+                            <img class="responsive-img" src="{{remoteImgURL}}">
+                        {{/if}}
+                        {{#if isType 'youtube'}}
+                            <div class="section">
+                                <div class="video-container no-controls">
+                                    <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/each }}
+                {{/if}}
+            </div>
+            {{#if isType 'unitEvaluationSection'}}
+                {{#if evaluationIsType 'exerciseRadioButton'}}
+                    <h3 class="center-align">{{question}}</h3>
+                    <form id="exerciseRadioButtonForm" action="#">
+                        {{#each options}}
+                            <h3 class="center-align">
+                                <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}"/>
+                                <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel" >{{label}}</label>
+                            </h3>
+                        {{/each}}
+                    </form>
+                {{/if}}
+                {{#if evaluationIsType 'exerciseString'}}
+                    {{> exerciseString}}
+                {{/if}}
+                {{#if evaluationIsType 'userConfirmation'}}
+                    <div class="section">
+                        {{#if currentUser}}
+                            <div class="row center-align understood-buttons">
+                                <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
+                                <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">I didn't understand</a>
+                            </div>
+                        {{else}}
+                            <div class="row center-align understood-buttons">
+                                <a href="#!" class="white-text green btn disabled tooltipped" data-position="bottom" data-delay="20" data-tooltip="Register so we can follow your progress!">Gots it!</a>
+                                <a href="#!" class="white-text green btn disabled tooltipped" data-position="bottom" data-delay="20" data-tooltip="Register so we can follow your progress!">Nots it!</a>
+                            </div>
+                        {{/if}}
+                    </div>
+                {{/if}}
             {{/if}}
         </div>
     {{/each }}
-    {{#if currentUser}}
-        <div class="row center-align understood-buttons">
-            <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
-            <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">I didn't understand</a>
+</template>
+<template name="exerciseString">
+    <div class="section center-align">
+        <div class="container">
+            <h4>{{{question}}}</h4>
+            <form id="exerciseStringForm">
+                <input type="text" name="exerciseString" id="exerciseInputText">
+                <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
+                </button>
+            </form>
         </div>
-    {{else}}
-        <div class="row center-align understood-buttons">
-            <a href="#!" class="white-text green btn disabled tooltipped" data-position="bottom" data-delay="20" data-tooltip="Register so we can follow your progress!">Gots it!</a>
-            <a href="#!" class="white-text green btn disabled tooltipped" data-position="bottom" data-delay="20" data-tooltip="Register so we can follow your progress!">Nots it!</a>
-        </div>
-    {{/if}}
+    </div>
 </template>
 <template name="relatedConcepts">
     <div class="card-action">

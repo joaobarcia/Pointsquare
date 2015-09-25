@@ -80,6 +80,24 @@ Template.unitPage.helpers({
             limit: 3
         });
         //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-    }
+    },
+
+
 
 });
+Template.unitContent.helpers({
+    'unitIsOneSectionAndNoExercise': function() {
+        var unitContent = this.content;
+        var numberOfSections = _.filter(unitContent, {
+            'type': 'unitSection'
+        }).length;
+        var noExercise = _.includes(_.find(unitContent, {
+            'type': 'unitEvaluationSection'
+        }), 'userConfirmation');
+        console.log(numberOfSections);
+        console.log(noExercise);
+        if (numberOfSections == 1 && noExercise) {
+            return 1
+        } else return 0;
+    }
+})

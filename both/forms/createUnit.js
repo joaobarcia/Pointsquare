@@ -56,15 +56,77 @@ Schema.createUnit = new SimpleSchema({
             }
         }
     },
-    type: {
-        type: Boolean,
+    evaluationType: {
+        type: String,
         autoform: {
-            label: false,
-            type: 'boolean-radios',
-            falseLabel: "result of last exercise determines if user understood",
-            trueLabel: "user chooses if he understood the unit"
-
+            type: "select-radio-inline",
+            options: function() {
+                return [{
+                    label: "Multiple Choice",
+                    value: "exerciseRadioButton"
+                }, {
+                    label: "Question and answer",
+                    value: "exerciseString"
+                }, {
+                    label: "Let the user decide if he understood the lesson",
+                    value: "userConfirmation"
+                }];
+            }
         }
+    },
+    exerciseRadioButton: {
+        type: Object,
+        optional: true,
+        minCount: 0,
+        maxCount: 5
+    },
+    "exerciseRadioButton.question": {
+        type: String,
+    },
+    "exerciseRadioButton.options": {
+        type: Array,
+        optional: true,
+        minCount: 0,
+        maxCount: 5
+    },
+    "exerciseRadioButton.options.$": {
+        type: Object
+    },
+    "exerciseRadioButton.options.$.label": {
+        label: "Answer text",
+        type: String
+    },
+    "exerciseRadioButton.options.$.type": {
+        type: String,
+        autoform: {
+            type: "select-radio-inline",
+            options: function() {
+                return [{
+                    label: "true",
+                    value: "true"
+                }, {
+                    label: "false",
+                    value: "false"
+                }];
+            }
+        }
+    },
+    exerciseString: {
+        type: Object,
+        optional: true,
+        minCount: 0,
+        maxCount: 5
+    },
+    "exerciseString.question": {
+        type: String,
+    },
+    "exerciseString.answers": {
+        type: Array,
+        optional: true,
+        minCount: 0,
+        maxCount: 5
+    },
+    "exerciseString.answers.$": {
+        type: String,
     }
-
 });

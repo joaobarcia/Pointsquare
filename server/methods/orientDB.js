@@ -92,6 +92,7 @@ Meteor.methods({
     },
 
     learn: function(result, unit) {
+        console.log("sent learning request");
         if (this.userId) {
             var user_rid = Meteor.call('get_user_rid');
             var query = "http://95.85.45.153:2480/function/Pointsquare/learn2/" + escape(result) + "/" + escape(unit) + "/" + escape(user_rid);
@@ -101,6 +102,7 @@ Meteor.methods({
                 auth: "root:4f0g4.o.orientDB!"
             });
             Meteor.call('fetchAllUserData');
+            console.log("receved learning results");
             return res;
         } else console.log("tried to run learn method but no one is logged")
     },
