@@ -40,7 +40,7 @@ Template.unitPage.events({
 
     'click #notUnderstood': function(event) {
         event.preventDefault();
-        Session.set('callStatus', 'learning');
+        Session.set('callStatus', 'unlearning');
         Meteor.call("fail",Blaze.getData()["rid"], function(error, result) {
             console.log(result.statusCode);
             if (result.statusCode >= 200 && result.statusCode < 300) {
@@ -107,7 +107,7 @@ Template.unitPage.events({
             $("#exerciseInputText").removeClass("green-text");
             $("#exerciseInputText").addClass("red-text");
 
-            Session.set('callStatus', 'learning');
+            Session.set('callStatus', 'unlearning');
             Meteor.call("fail",Blaze.getData()["rid"], function(error, result) {
                 console.log(result.statusCode);
                 if (result.statusCode >= 200 && result.statusCode < 300) {
@@ -156,7 +156,7 @@ Template.unitPage.events({
         $(".trueRadioButtonLabel").addClass("green-text");
         $(".falseRadioButtonLabel").addClass("red-text");
         setTimeout(function() {
-            Session.set('callStatus', 'learning')
+            Session.set('callStatus', 'unlearning')
         }, 4000);
         Meteor.call("learn", "0", Blaze.getData()["rid"], function(error, result) {
             if (result.statusCode >= 200 && result.statusCode < 300) {
