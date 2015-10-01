@@ -18,7 +18,7 @@ Template.unitPage.helpers({
     },
 
     'learning': function() {
-        return Session.get('callStatus') == 'learning';
+        return Session.get('callStatus') == 'learning' || Session.get('callStatus') == 'unlearning';
     },
 
     'learned': function() {
