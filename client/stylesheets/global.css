@@ -269,3 +269,19 @@ nav .brand-logo {
 .container {
     width: 75%;
 }
+
+.no-padding {
+    padding: 0px
+}
+
+.no-margin {
+    margin: 0px
+}
+
+.content-handle {
+    cursor: move;
+}
+
+.section-handle {
+    cursor: move;
+}

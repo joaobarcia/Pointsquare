@@ -2,7 +2,15 @@ Template.createUnit.helpers({
     createUnitSchema: function() {
         return Schema.createUnit;
     },
-    tempSubContent: function() {
-        return Session.get('tempSubContent');
-    }
+    /*    requiredConcepts: function() {
+            return knowledge.find({
+                'class': 'Concept'
+            }).fetch();
+        },*/
+});
+Template.createUnitContent.helpers({
+    tempContent: function() {
+        console.log('entered helper');
+        return Session.get('tempContent');
+    },
 });

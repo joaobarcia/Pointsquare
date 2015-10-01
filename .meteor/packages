@@ -32,7 +32,6 @@ comerc:bs-typeahead
 comerc:autoform-typeahead
 comerc:autoform-selectize
 jeremy:selectize
-themeteorchef:html5-sortable
 standard-minifiers
 meteor-base
 mobile-experience
@@ -47,5 +46,5 @@ random
 ejson
 spacebars
 check
-rubaxa:sortable
 okgrow:router-autoscroll
+rubaxa:sortable

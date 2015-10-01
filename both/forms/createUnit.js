@@ -10,6 +10,7 @@ Schema.createUnit = new SimpleSchema({
         type: String,
         label: "Description",
         max: 800,
+        optional: true,
         autoform: {
             afFieldInput: {
                 type: "textarea"
@@ -62,14 +63,14 @@ Schema.createUnit = new SimpleSchema({
             type: "select-radio-inline",
             options: function() {
                 return [{
+                    label: "User decides if unit was understood",
+                    value: "userConfirmation"
+                }, {
                     label: "Multiple Choice",
                     value: "exerciseRadioButton"
                 }, {
                     label: "Question and answer",
                     value: "exerciseString"
-                }, {
-                    label: "Let the user decide if he understood the lesson",
-                    value: "userConfirmation"
                 }];
             }
         }
