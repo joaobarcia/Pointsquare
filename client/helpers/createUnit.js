@@ -10,7 +10,6 @@ Template.createUnit.helpers({
 });
 Template.createUnitContent.helpers({
     tempContent: function() {
-        console.log('entered helper');
         return Session.get('tempContent');
     },
 });

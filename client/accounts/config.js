@@ -1,6 +1,5 @@
 Meteor.startup(function() {
     if (Meteor.user() && Session.get('callStatus') != 'creatingUser') {
-        console.log("a correr o on startup do rid manhoso");
         Meteor.call('get_user_rid', function(err, data) {
             if (err)
                 console.log(err);

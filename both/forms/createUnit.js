@@ -19,7 +19,7 @@ Schema.createUnit = new SimpleSchema({
     },
     requiredConcepts: {
         type: [String],
-        label: "Concepts necessary to understand the unit",
+        label: " ",
         autoform: {
             type: "selectize",
             multiple: true,
@@ -39,7 +39,7 @@ Schema.createUnit = new SimpleSchema({
     },
     grantedConcepts: {
         type: [String],
-        label: "Concepts the unit will teach",
+        label: " ",
         autoform: {
             type: "selectize",
             multiple: true,

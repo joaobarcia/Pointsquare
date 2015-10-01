@@ -2,25 +2,28 @@
     <div class="container">
         <div class="section">
             <h4>Create Unit</h4>
-            {{#autoForm schema=createUnitSchema id="createUnit" type="method" meteormethod="createUnit" }}
+            {{#autoForm schema=createUnitSchema id="createUnit" meteormethod="createUnit" resetOnSuccess=false}}
                 <fieldset>
                     {{!-- <legend>Contact Us</legend> --}}
                     <div class="card">
                         <div class="section">
                             <div class="container">
                                 <div class="section">
-                                    {{> afArrayField name="items" template='customArrayField'}}
-                                    <h3 class="center-align">Info</h3> {{> afQuickField name="name"}} {{> afQuickField name="description"}}
+                                    {{!-- {{> afArrayField name="items" template='customArrayField'}}
+                                    --}} <h3 class="center-align">Info</h3> {{> afQuickField name="name"}} {{> afQuickField name="description"}}
                                 </div>
                                 <div class="section">
                                     <div class="divider"></div>
                                     <h3 class="center-align">Concepts</h3>{{!--                                     <input class="form-control typeahead" name="XXX" type="text" placeholder="open source projects by Twitter" autocomplete="off" spellcheck="off" data-source="requiredConcepts" data-template="requiredConcept" />
                                     {{#each requiredConcepts}}
                                     {{> requiredConcept}}
-                                        {{/each}} --}} {{> afQuickField name="requiredConcepts"}} {{> afQuickField name="grantedConcepts"}}
+                                        {{/each}} --}}
+                                        <h5>Necessary to understand this unit</h5>{{> afQuickField name="requiredConcepts"}}
+                                        <h5>Will be taught by this unit</h5>{{> afQuickField name="grantedConcepts"}}
                                         <div class="center-align">
-                                            <p class="center-align">If you you don't find the concept you need, you can</p>
-                                            {{!-- <button class="btn blue-text disabled">Add Concept</button> --}}
+                                            {{!-- <p class="center-align">If you you don't find the concept you need, you can</p>
+<button class="btn blue-text disabled">Add Concept</button>
+ --}}
                                         </div>
                                 </div>
                                 <div class="section">
@@ -47,7 +50,7 @@
                     </div>
                     <div>
                         <button type="submit" class="btn btn-primary btn-large">Submit</button>
-                        <button type="" class="btn btn-default btn-large disabled">Preview</button>
+                        {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
                     </div>
                 </fieldset>
             {{/autoForm}}
@@ -88,10 +91,10 @@
                                     {{>createUnitText sectionIndex=sectionIndex contentIndex=@index}}
                                 {{/if}}
                                 {{#if isType 'youtube'}}
-                                    {{>createUnitYoutube sectionIndex=sectionIndex contentIndex=@index}}
+                                    {{>createUnitYoutube sectionIndex=sectionIndex contentIndex=@index youtubeVidID=youtubeVidID}}
                                 {{/if}}
                                 {{#if isType 'remoteImage'}}
-                                    {{>createUnitRemoteImage sectionIndex=sectionIndex contentIndex=@index}}
+                                    {{>createUnitRemoteImage remoteImgURL=remoteImgURL sectionIndex=sectionIndex contentIndex=@index}}
                                 {{/if}}
                                 {{#if isType 'image'}}
                                     {{>createUnitImage sectionIndex=sectionIndex contentIndex=@index}}
@@ -111,9 +114,9 @@
             <i class="material-icons small cyan-text valign">library_books</i>
         </div>
         <form class="col s10">
-            <div class="input-field col s12">
-                <textarea value= {{text}} id="textarea1" class="materialize-textarea"></textarea>
-                <label for="textarea1">text</label>
+            <div class="input-field">
+                <textarea value= {{text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
+                <label for="{{sectionIndex}} {{contentIndex}} text">text</label>
             </div>
         </form>
         <div class="col s1">
@@ -127,8 +130,8 @@
             <i class="material-icons small cyan-text valign">video_library</i>
         </div>
         <div class="input-field col s8">
-            <input value= {{youtubeVidID}} id="first_name2" type="text" class="validate">
-            <label class="active" for="first_name2">Youtube video id</label>
+            <input value= {{youtubeVidID}} id="{{sectionIndex}} {{contentIndex}} youtubeVidID" type="text" class="content-input">
+            <label for="{{sectionIndex}} {{contentIndex}} youtubeVidID">Youtube video id</label>
         </div>
         <div class="col s2 right-align">
             <a href="http://www.youtube.com/watch?v={{youtubeVidID}}" target="_blank">
@@ -146,8 +149,8 @@
             <i class="material-icons small cyan-text valign">collections</i>
         </div>
         <div class="input-field col s8">
-            <input value= {{remoteImgURL}} id="first_name2" type="text" class="validate">
-            <label class="active" for="first_name2">Link to picture</label>
+            <input value= {{remoteImgURL}} id="{{sectionIndex}} {{contentIndex}} remoteImgURL" type="text" class="content-input">
+            <label for="{{sectionIndex}} {{contentIndex}} remoteImgURL">Link to picture</label>
         </div>
         <div class="col s2 right-align">
             <a href="{{remoteImgURL}}" target="_blank">
