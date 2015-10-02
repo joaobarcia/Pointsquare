@@ -101,7 +101,7 @@ Meteor.methods({
     precompute: function(unit) {
         if (this.userId) {
             var user_rid = Meteor.call('get_user_rid');
-            var query = orientURL + "/function/" + databaseName + "/precompute/" + escape(unit) + "/" + escape(user_rid);
+            var query = orientURL + "/function/" + databaseName + "/precompute/" + encodeURIComponent(unit) + "/" + encodeURIComponent(user_rid);
             res = HTTP.call("POST", query, {
                 auth: "root:" + root_password
             });
@@ -112,7 +112,7 @@ Meteor.methods({
     succeed: function(unit) {
         if (this.userId) {
             var user_rid = Meteor.call('get_user_rid');
-            var query = orientURL + "/function/" + databaseName + "/succeed/" + escape(unit) + "/" + escape(user_rid);
+            var query = orientURL + "/function/" + databaseName + "/succeed/" + encodeURIComponent(unit) + "/" + encodeURIComponent(user_rid);
             res = HTTP.call("POST", query, {
                 auth: "root:" + root_password
             });
@@ -124,7 +124,7 @@ Meteor.methods({
     fail: function(unit) {
         if (this.userId) {
             var user_rid = Meteor.call('get_user_rid');
-            var query = orientURL + "/function/" + databaseName + "/fail/" + escape(unit) + "/" + escape(user_rid);
+            var query = orientURL + "/function/" + databaseName + "/fail/" + encodeURIComponent(unit) + "/" + encodeURIComponent(user_rid);
             res = HTTP.call("POST", query, {
                 auth: "root:" + root_password
             });
@@ -137,7 +137,7 @@ Meteor.methods({
         console.log("sent learning request");
         if (this.userId) {
             var user_rid = Meteor.call('get_user_rid');
-            var query = orientURL + "/function/" + databaseName + "/learn2/" + escape(result) + "/" + escape(unit) + "/" + escape(user_rid);
+            var query = orientURL + "/function/" + databaseName + "/learn2/" + encodeURIComponent(result) + "/" + encodeURIComponent(unit) + "/" + encodeURIComponent(user_rid);
             var temp = 0;
             var res = null;
             res = HTTP.call("POST", query, {
@@ -152,7 +152,7 @@ Meteor.methods({
     retrieve_user_info: function() {
         if (this.userId) {
             var user_rid = Meteor.call('get_user_rid');
-            var new_info = HTTP.call("GET", orientURL + "/query/" + databaseName + "/sql/select%20nodeInfo(" + escape(user_rid) + ")", {
+            var new_info = HTTP.call("GET", orientURL + "/query/" + databaseName + "/sql/select%20nodeInfo(" + encodeURIComponent(user_rid) + ")", {
                 auth: "root:" + root_password
             }).data.result[0]['nodeInfo'];
             people.update({
@@ -162,11 +162,11 @@ Meteor.methods({
     },
 
     create_person: function(person_email, person_name) {
-        var query = orientURL + "/function/" + databaseName + "/createPerson/" + escape(person_email) + "/" + escape(person_name) + "/" + '';
+        var query = orientURL + "/function/" + databaseName + "/createPerson/" + encodeURIComponent(person_email) + "/" + encodeURIComponent(person_name) + "/" + '';
         var user_rid = HTTP.call("POST", query, {
             auth: "root:" + root_password
         }).data.result[0]['rid'];
-        var res = HTTP.call("GET", orientURL + "/query/" + databaseName + "/sql/select%20nodeInfo(" + escape(user_rid) + ")", {
+        var res = HTTP.call("GET", orientURL + "/query/" + databaseName + "/sql/select%20nodeInfo(" + encodeURIComponent(user_rid) + ")", {
             auth: "root:" + root_password
         });
         var new_info = res.data.result[0]['nodeInfo'];
@@ -176,7 +176,7 @@ Meteor.methods({
 
     reset: function() {
         var user_rid = Meteor.call('get_user_rid');
-        var query = orientURL + "/function/" + databaseName + "/resetAll/" + escape(user_rid);
+        var query = orientURL + "/function/" + databaseName + "/resetAll/" + encodeURIComponent(user_rid);
         var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
         });
@@ -185,7 +185,7 @@ Meteor.methods({
     },
 
     incrementViews: function(rid) {
-        var query = orientURL + "/function/" + databaseName + "/incrementViews/" + escape(rid);
+        var query = orientURL + "/function/" + databaseName + "/incrementViews/" + encodeURIComponent(rid);
         HTTP.call("POST", query, {
             auth: "root:" + root_password
         });
@@ -198,25 +198,30 @@ Meteor.methods({
         })
     },
 
-    createConcept: function() {
-        var query = orientURL + "/function/" + databaseName + "/justCreateConcept";
+    createConcept: function(properties,subsets) {
+        var jsonString = encodeURIComponent(JSON.stringify(properties));
+        var setsString = encodeURIComponent(JSON.stringify(subsets));
+        var query = orientURL + "/function/" + databaseName + "/createConcept2/"+jsonString+"/"+setsString+"/";
         var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
         }).data.result[0]['value'];
-        var rid = res.data.result[0]['justCreateConcept'];
+        var rid = res.data.result[0]['createConcept2'];
         knowledge.insert({
             'rid': rid,
-            'class': 'Concept'
+            'class': 'Unit'
         });
         return res;
     },
 
-    createUnit: function() {
-        var query = orientURL + "/function/" + databaseName + "/justCreateUnit";
+    createUnit: function(properties,subsets,grantset) {
+        var jsonString = encodeURIComponent(JSON.stringify(properties));
+        var setsString = encodeURIComponent(JSON.stringify(subsets));
+        var grantString = encodeURIComponent(JSON.stringify(grantset));
+        var query = orientURL + "/function/" + databaseName + "/createUnit/"+jsonString+"/"+setsString+"/"+grantString+"/";
         var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
         }).data.result[0]['value'];
-        var rid = res.data.result[0]['justCreateUnit'];
+        var rid = res.data.result[0]['createUnit'];
         knowledge.insert({
             'rid': rid,
             'class': 'Unit'
@@ -225,7 +230,7 @@ Meteor.methods({
     },
 
     addAuthor: function(author, unit) {
-        var query = orientURL + "/function/" + databaseName + "/addAuthor/" + escape(author) + "/" + escape(unit);
+        var query = orientURL + "/function/" + databaseName + "/addAuthor/" + encodeURIComponent(author) + "/" + encodeURIComponent(unit);
         var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
         }).data.result[0]['value'];
