@@ -151,7 +151,7 @@ AutoForm.hooks({
             evaluation.evaluationType = doc.evaluationType; // define evaluation type from autoform
             if (doc.evaluationType == "exerciseRadioButton") { // add options or answers to evaluation
                 evaluation.question = doc.exerciseRadioButton.question;
-                evaluation.answers = doc.exerciseRadioButton.options;
+                evaluation.options = doc.exerciseRadioButton.options;
             } else if (doc.evaluationType == "exerciseString") {
                 evaluation.question = doc.exerciseString.question;
                 evaluation.answers = doc.exerciseString.answers;
@@ -172,9 +172,11 @@ AutoForm.hooks({
             var requiredConceptsArray = [];
             requiredConceptsArray.push(requiredConcepts);
 
-
-            var grantedConcepts = doc.grantedConcepts.toString();
-
+            var grantedConcepts = "";
+            console.log(typeof doc.grantedConcepts != "undefined");
+            if (typeof doc.grantedConcepts != "undefined") {
+                grantedConcepts = doc.grantedConcepts.toString();
+            };
 
             console.log("requiredConcepts", requiredConceptsArray);
             console.log("grantedConcepts", grantedConcepts);
