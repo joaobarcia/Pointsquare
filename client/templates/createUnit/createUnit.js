@@ -162,11 +162,22 @@ AutoForm.hooks({
 
             console.log("Properties", properties);
 
-            var grantedConcepts = doc.grantedConcepts;
-            var requiredConcepts = doc.requiredConcepts;
 
-            console.log("requiredConcepts", requiredConcepts);
+            var requiredConcepts = {};
+            _.forEach(doc.requiredConcepts, function(n) {
+                requiredConcepts[n] = 1
+            });
+
+            var requiredConceptsArray = [];
+            requiredConceptsArray.push(requiredConcepts);
+
+
+            var grantedConcepts = doc.grantedConcepts;
+
+
+            console.log("requiredConcepts", requiredConceptsArray);
             console.log("grantedConcepts", grantedConcepts);
+            Meteor.call('createUnit', properties, requiredConcepts, grantedConcepts);
             this.done();
             return false;
         }

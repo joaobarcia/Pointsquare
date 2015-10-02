@@ -198,10 +198,10 @@ Meteor.methods({
         })
     },
 
-    createConcept: function(properties,subsets) {
+    createConcept: function(properties, subsets) {
         var jsonString = encodeURIComponent(JSON.stringify(properties));
         var setsString = encodeURIComponent(JSON.stringify(subsets));
-        var query = orientURL + "/function/" + databaseName + "/createConcept2/"+jsonString+"/"+setsString+"/";
+        var query = orientURL + "/function/" + databaseName + "/createConcept2/" + jsonString + "/" + setsString + "/";
         var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
         }).data.result[0]['value'];
@@ -214,11 +214,20 @@ Meteor.methods({
         return res;
     },
 
-    createUnit: function(properties,subsets,grantset) {
+    createUnit: function(properties, subsets, grantset) {
         var jsonString = encodeURIComponent(JSON.stringify(properties));
+        console.log('properties:');
+        console.log(properties);
+        console.log(jsonString);
         var setsString = encodeURIComponent(JSON.stringify(subsets));
+        console.log('subsets:');
+        console.log(subsets);
+        console.log(setsString);
         var grantString = encodeURIComponent(JSON.stringify(grantset));
-        var query = orientURL + "/function/" + databaseName + "/createUnit/"+jsonString+"/"+setsString+"/"+grantString+"/";
+        console.log('grantset');
+        console.log(grantset);
+        console.log(grantString);
+        var query = orientURL + "/function/" + databaseName + "/createUnit/" + jsonString + "/" + setsString + "/" + grantString + "/";
         var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
         }).data.result[0]['value'];
@@ -228,7 +237,7 @@ Meteor.methods({
         //     'class': 'Unit'
         // });
         var user_rid = Meteor.call('get_user_rid');
-        Meteor.call('addAuthor',user_rid,rid);
+        Meteor.call('addAuthor', user_rid, rid);
         Meteor.call('fetchAllUserData');
         return res;
     },
