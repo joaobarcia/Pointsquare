@@ -206,10 +206,11 @@ Meteor.methods({
             auth: "root:" + root_password
         }).data.result[0]['value'];
         var rid = res.data.result[0]['createConcept2'];
-        knowledge.insert({
-            'rid': rid,
-            'class': 'Unit'
-        });
+        // knowledge.insert({
+        //     'rid': rid,
+        //     'class': 'Unit'
+        // });
+        Meteor.call('fetchAllUserData');
         return res;
     },
 
@@ -222,10 +223,13 @@ Meteor.methods({
             auth: "root:" + root_password
         }).data.result[0]['value'];
         var rid = res.data.result[0]['createUnit'];
-        knowledge.insert({
-            'rid': rid,
-            'class': 'Unit'
-        });
+        // knowledge.insert({
+        //     'rid': rid,
+        //     'class': 'Unit'
+        // });
+        var user_rid = Meteor.call('get_user_rid');
+        Meteor.call('addAuthor',user_rid,rid);
+        Meteor.call('fetchAllUserData');
         return res;
     },
 
