@@ -96,10 +96,10 @@ Schema.createUnit = new SimpleSchema({
         type: Object
     },
     "exerciseRadioButton.options.$.label": {
-        label: "Answer text",
+        label: "Option text",
         type: String
     },
-    "exerciseRadioButton.options.$.type": {
+    "exerciseRadioButton.options.$.isCorrectOption": {
         type: String,
         autoform: {
             type: "select-radio-inline",
