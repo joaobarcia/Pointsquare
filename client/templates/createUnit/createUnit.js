@@ -158,6 +158,7 @@ AutoForm.hooks({
             };
 
             content.push(evaluation); // push evaluation object into content array
+            content = JSON.stringify(content);
             properties.content = content; // insert content object into properties object
 
             console.log("Properties", properties);
@@ -172,12 +173,12 @@ AutoForm.hooks({
             requiredConceptsArray.push(requiredConcepts);
 
 
-            var grantedConcepts = doc.grantedConcepts;
+            var grantedConcepts = doc.grantedConcepts.toString();
 
 
             console.log("requiredConcepts", requiredConceptsArray);
             console.log("grantedConcepts", grantedConcepts);
-            Meteor.call('createUnit', properties, requiredConcepts, grantedConcepts);
+            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts);
             this.done();
             return false;
         }

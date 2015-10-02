@@ -216,22 +216,26 @@ Meteor.methods({
 
     createUnit: function(properties, subsets, grantset) {
         var jsonString = encodeURIComponent(JSON.stringify(properties));
-        console.log('properties:');
-        console.log(properties);
-        console.log(jsonString);
+        //console.log('properties:');
+        /*        console.log(properties);
+                console.log(JSON.stringify(properties));
+                console.log(jsonString);*/
         var setsString = encodeURIComponent(JSON.stringify(subsets));
-        console.log('subsets:');
-        console.log(subsets);
-        console.log(setsString);
-        var grantString = encodeURIComponent(JSON.stringify(grantset));
-        console.log('grantset');
-        console.log(grantset);
-        console.log(grantString);
+        /*        console.log('subsets:');
+                console.log(subsets);
+                console.log(JSON.stringify(subsets));
+                console.log(setsString);*/
+        var grantString = encodeURIComponent(grantset);
+        /*        console.log('grantset');
+                console.log(grantset);*/
+        //console.log(JSON.stringify(grantset));
+        /*        console.log(grantString);*/
         var query = orientURL + "/function/" + databaseName + "/createUnit/" + jsonString + "/" + setsString + "/" + grantString + "/";
         var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
         }).data.result[0]['value'];
-        var rid = res.data.result[0]['createUnit'];
+        console.log(res);
+        var rid = res; //.data.result[0]['createUnit'];
         // knowledge.insert({
         //     'rid': rid,
         //     'class': 'Unit'
@@ -244,10 +248,10 @@ Meteor.methods({
 
     addAuthor: function(author, unit) {
         var query = orientURL + "/function/" + databaseName + "/addAuthor/" + encodeURIComponent(author) + "/" + encodeURIComponent(unit);
-        var res = HTTP.call("POST", query, {
+        HTTP.call("POST", query, {
             auth: "root:" + root_password
-        }).data.result[0]['value'];
-        return res;
+        }); //.data.result[0]['value'];
+        //return res;
     }
 
 })
