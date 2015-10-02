@@ -20,6 +20,7 @@ Schema.createUnit = new SimpleSchema({
     requiredConcepts: {
         type: [String],
         label: " ",
+        optional: true,
         autoform: {
             type: "selectize",
             multiple: true,
@@ -40,6 +41,7 @@ Schema.createUnit = new SimpleSchema({
     grantedConcepts: {
         type: [String],
         label: " ",
+        optional: true,
         autoform: {
             type: "selectize",
             multiple: true,

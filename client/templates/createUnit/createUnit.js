@@ -140,29 +140,33 @@ Template.createUnitContent.events({
 AutoForm.hooks({
     createUnit: {
         onSubmit: function(doc) {
-            var unit = doc; // fetch autoform input object
+            var properties = {};
+            properties.name = "'" + doc.name + "'"; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
+            properties.description = "'" + doc.description + "'";
+
             var content = Session.get('tempContent'); // fetch content
             var evaluation = { // create evaluation object
                 "type": "unitEvaluationSection"
             };
-            evaluation.evaluationType = unit.evaluationType; // define evaluation type from autoform
-            if (unit.evaluationType == "exerciseRadioButton") { // add options or answers to evaluation
-                evaluation.question = unit.exerciseRadioButton.question;
-                evaluation.answers = unit.exerciseRadioButton.options;
-                delete unit.exerciseRadioButton;
-            } else if (unit.evaluationType == "exerciseString") {
-                evaluation.question = unit.exerciseString.question;
-                evaluation.answers = unit.exerciseString.answers;
-                delete unit.exerciseString;
+            evaluation.evaluationType = doc.evaluationType; // define evaluation type from autoform
+            if (doc.evaluationType == "exerciseRadioButton") { // add options or answers to evaluation
+                evaluation.question = doc.exerciseRadioButton.question;
+                evaluation.answers = doc.exerciseRadioButton.options;
+            } else if (doc.evaluationType == "exerciseString") {
+                evaluation.question = doc.exerciseString.question;
+                evaluation.answers = doc.exerciseString.answers;
             };
 
             content.push(evaluation); // push evaluation object into content array
-            unit.content = content; // insert content object into unit object
+            properties.content = content; // insert content object into properties object
 
-            delete unit.evaluationType; // we don't need this anymore
+            console.log("Properties", properties);
 
-            console.log("Unit", unit);
+            var grantedConcepts = doc.grantedConcepts;
+            var requiredConcepts = doc.requiredConcepts;
 
+            console.log("requiredConcepts", requiredConcepts);
+            console.log("grantedConcepts", grantedConcepts);
             this.done();
             return false;
         }
