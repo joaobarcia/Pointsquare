@@ -205,7 +205,7 @@ Meteor.methods({
         var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
         }).data.result[0]['value'];
-        var rid = res.data.result[0]['createConcept2'];
+        var rid = res; //.data.result[0]['createConcept2'];
         // knowledge.insert({
         //     'rid': rid,
         //     'class': 'Unit'

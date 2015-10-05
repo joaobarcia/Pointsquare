@@ -21,7 +21,7 @@ AutoForm.hooks({
             childConceptsArray.push(childConcepts);
 
             console.log("childConcepts", childConceptsArray);
-            //Meteor.call('createConcept', properties, childConceptsArray);
+            Meteor.call('createConcept', properties, childConceptsArray);
 
             this.done();
             return false;
