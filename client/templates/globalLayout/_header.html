@@ -8,6 +8,7 @@
                         <ul class="right">
                             <li><a href="{{ pathFor 'search' }}"><i class="material-icons left">search</i> Search</a></li>
                             {{#if currentUser}}
+                                <li><a href="{{ pathFor 'create' }}"><i class="material-icons left">add_circle_outline</i> Create</a></li>
                                 <li><a href="{{ pathFor 'dashboard' }}"><i class="material-icons left">person</i> Dashboard</a></li>
                                 <li><a href="#" data-action="logout">Sign Out</a></li>
                             {{else}}

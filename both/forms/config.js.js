@@ -1,5 +1,46 @@
 Schema = {};
 
+Schema.createConcept = new SimpleSchema({
+    name: {
+        type: String,
+        label: "Name",
+        max: 50
+    },
+    description: {
+        type: String,
+        label: "Description",
+        max: 800,
+        optional: true,
+        autoform: {
+            afFieldInput: {
+                type: "textarea"
+            }
+        }
+    },
+    childConcepts: {
+        type: [String],
+        label: " ",
+        optional: true,
+        autoform: {
+            type: "selectize",
+            multiple: true,
+            options: function() {
+                // return names and rids of concepts in the format [{label: 'name', value:'rid'}]
+                function nameAndRID(n) {
+                    var newObject = {};
+                    newObject.label = n.name
+                    newObject.value = n.rid
+                    return newObject
+                }
+                return lodash.map(knowledge.find({
+                    class: 'Concept'
+                }).fetch(), nameAndRID);
+            }
+        }
+    },
+});
+
+
 Schema.createUnit = new SimpleSchema({
     name: {
         type: String,
