@@ -61,7 +61,6 @@ Router.route('/unit/:_escrid', {
                 //     return result;
                 // }
                 if (Session.get('callStatus') == 'learning') {
-                    console.log("ai meu deus");
                     Meteor.call("succeed", unit, function(error, result) {
                         if (result.statusCode >= 200 && result.statusCode < 300) {
                             Session.set('callStatus', 'learned');
