@@ -1,6 +1,6 @@
 Template.createUnit.helpers({
     createUnitSchema: function() {
-        return Schema.createUnit;
+        return Schema.Unit;
     },
     /*    requiredConcepts: function() {
             return knowledge.find({

@@ -1,7 +1,3 @@
-/*Array.prototype.move = function(from, to) { // Array move prototype until ECMA 2015 Array.prototype.copyWithin() is implemented
-    this.splice(to, 0, this.splice(from, 1)[0]);
-};*/
-
 function applySort() { // must apply sort and dropdown properties everytime the content is changed
     Sortable.create(document.getElementById('content-sections'), {
         animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
@@ -48,10 +44,12 @@ function applyDropdown() { // jquery was being called before the changes were pr
     };
 };
 
-Template.createUnitContent.rendered = function() {
-    if (Session.get('tempContent') == undefined) { // if session variable 'tempContent' does not exist, create one
-        Session.set('tempContent', []);
-    }
+Template.unitEditContent.rendered = function() {
+    var tempContent = Template.currentData().content;
+    _.remove(tempContent, {
+        type: 'unitEvaluationSection'
+    });
+    Session.set('tempContent', tempContent);
 
     applySort(); // apply once the template is loaded
     applyDropdown();
@@ -64,7 +62,7 @@ Template.createUnitContent.rendered = function() {
     });
 };
 
-Template.createUnitContent.events({
+Template.unitEditContent.events({
     'click .remove-section': function(event) {
         event.preventDefault();
         var section = event.target.id;
@@ -138,9 +136,9 @@ Template.createUnitContent.events({
 });
 
 AutoForm.hooks({
-    createUnit: {
+    unitEdit: {
         onSubmit: function(doc) {
-            var properties = {};
+            /*var properties = {};
             properties.name = "'" + doc.name + "'"; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
             properties.description = "''"; // create empty string with extra quotes for OrientDB parsing
             if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
@@ -183,7 +181,9 @@ AutoForm.hooks({
 
             console.log("requiredConcepts", requiredConceptsArray);
             console.log("grantedConcepts", grantedConcepts);
-            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts);
+            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts);*/
+            console.log(doc.requiredConcepts)
+            console.log('unit edited!');
             this.done();
             return false;
         }

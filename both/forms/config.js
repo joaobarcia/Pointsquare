@@ -1,6 +1,6 @@
 Schema = {};
 
-Schema.createConcept = new SimpleSchema({
+Schema.Concept = new SimpleSchema({
     name: {
         type: String,
         label: "Name",
@@ -41,7 +41,7 @@ Schema.createConcept = new SimpleSchema({
 });
 
 
-Schema.createUnit = new SimpleSchema({
+Schema.Unit = new SimpleSchema({
     name: {
         type: String,
         label: "Name",
