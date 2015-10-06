@@ -20,7 +20,6 @@ useraccounts:iron-routing
 email
 accounts-base
 meteorhacks:fast-render
-aldeed:autoform
 gildaspk:autoform-materialize
 cmather:handlebars-server
 zimme:active-route
@@ -48,3 +47,4 @@ spacebars
 check
 okgrow:router-autoscroll
 rubaxa:sortable
+aldeed:autoform@5.6.0

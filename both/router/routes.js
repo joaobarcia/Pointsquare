@@ -44,22 +44,24 @@ Router.route('/unit/:_escrid', {
     },
     data: function() {
         var rid = decodeURIComponent(this.params._escrid);
-        return knowledge.findOne({rid: rid});
+        return knowledge.findOne({
+            rid: rid
+        });
     },
     onRun: function() {
         Session.set('callStatus', 'doingExercise');
         var unit = decodeURIComponent(this.params._escrid);
         var user = Session.get('currentUserRID');
-        Session.set("temp","precomputing");
-        Meteor.call('precompute',unit, function(error,result){
+        Session.set("temp", "precomputing");
+        Meteor.call('precompute', unit, function(error, result) {
             if (result.statusCode >= 200 && result.statusCode < 300) {
-                Session.set("temp","ready");
+                Session.set("temp", "ready");
                 console.log('ready to learn');
                 // if( Session.get('callStatus') == 'doingExercise' ){
                 //     return result;
                 // }
-                if( Session.get('callStatus') == 'learning' ){
-                    Meteor.call("succeed",unit, function(error, result) {
+                if (Session.get('callStatus') == 'learning') {
+                    Meteor.call("succeed", unit, function(error, result) {
                         if (result.statusCode >= 200 && result.statusCode < 300) {
                             Session.set('callStatus', 'learned');
                         }
@@ -68,9 +70,8 @@ Router.route('/unit/:_escrid', {
                         Session.set('newUnits', newStuff[0]);
                     });
                     Meteor.call("incrementViews", unit);
-                }
-                else if( Session.get('callStatus') == 'unlearning' ){
-                    Meteor.call("fail",unit, function(error, result) {
+                } else if (Session.get('callStatus') == 'unlearning') {
+                    Meteor.call("fail", unit, function(error, result) {
                         if (result.statusCode >= 200 && result.statusCode < 300) {
                             Session.set('callStatus', 'unlearned');
                         }
@@ -88,6 +89,25 @@ Router.route('/unit/:_escrid', {
         Session.set('callStatus', 'OK')
     }
 });
+
+Router.route('/unit/:_escrid/edit', {
+    name: 'unitEdit',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
+        };
+    },
+    data: function() {
+        var rid = decodeURIComponent(this.params._escrid);
+        return knowledge.findOne({
+            rid: rid
+        });
+    },
+});
+
+
 Router.route('/concept/:_escrid', {
     name: 'conceptPage',
     waitOn: function() {
@@ -99,7 +119,9 @@ Router.route('/concept/:_escrid', {
     },
     data: function() {
         var rid = decodeURIComponent(this.params._escrid);
-        return knowledge.findOne({rid: rid});
+        return knowledge.findOne({
+            rid: rid
+        });
     }
 });
 
