@@ -125,6 +125,23 @@ Router.route('/concept/:_escrid', {
     }
 });
 
+Router.route('/concept/:_escrid/edit', {
+    name: 'conceptEdit',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
+        };
+    },
+    data: function() {
+        var rid = decodeURIComponent(this.params._escrid);
+        return knowledge.findOne({
+            rid: rid
+        });
+    }
+});
+
 Router.route('/dashboard', {
     name: 'dashboard',
     waitOn: function() {
