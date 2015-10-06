@@ -89,6 +89,7 @@ Router.route('/unit/:_escrid', {
         Session.set('callStatus', 'OK')
     }
 });
+
 Router.route('/unit/:_escrid/edit', {
     name: 'unitEdit',
     waitOn: function() {
@@ -105,7 +106,9 @@ Router.route('/unit/:_escrid/edit', {
         });
     },
 });
-Router.route('/concept/:_name', {
+
+
+Router.route('/concept/:_escrid', {
     name: 'conceptPage',
     waitOn: function() {
         if (Meteor.user()) {
@@ -115,10 +118,11 @@ Router.route('/concept/:_name', {
         };
     },
     data: function() {
+        var rid = decodeURIComponent(this.params._escrid);
         return knowledge.findOne({
-            name: this.params._name
+            rid: rid
         });
-    },
+    }
 });
 
 Router.route('/dashboard', {

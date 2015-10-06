@@ -1,9 +1,9 @@
 var orientURL = "http://95.85.45.153:2480";
 var databaseName = "Pointsquare";
 var root_password = "4f0g4.o.orientDB!";
-//var orientURL = "http://localhost:2480";
-//var databaseName = "alfa4";
-//var root_password = "4f0g4.o.orientE!";
+// var orientURL = "http://localhost:2480";
+// var databaseName = "alfa5";
+// var root_password = "4f0g4.o.orientE!";
 
 Meteor.startup(function() {
     var orient_network = HTTP.call("GET", orientURL + "/query/" + databaseName + "/sql/select%20allLibrary()", {
@@ -106,7 +106,7 @@ Meteor.methods({
                 auth: "root:" + root_password
             });
             return res;
-        } else console.log("Precompute error: no one is logged.")
+        } else console.log("Precompute error: no one is logged.");
     },
 
     succeed: function(unit) {
