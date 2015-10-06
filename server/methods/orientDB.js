@@ -273,7 +273,7 @@ Meteor.methods({
         return res;
     },
 
-    createConcept: function(rid, properties, subsets) {
+    editConcept: function(rid, properties, subsets) {
         var concept = encodeURIComponent(rid);
         var jsonString = encodeURIComponent(JSON.stringify(properties));
         var setsString = encodeURIComponent(JSON.stringify(subsets));
