@@ -88,7 +88,7 @@ Router.route('/unit/:_escrid', {
         Session.set('callStatus', 'OK')
     }
 });
-Router.route('/concept/:_name', {
+Router.route('/concept/:_escrid', {
     name: 'conceptPage',
     waitOn: function() {
         if (Meteor.user()) {
@@ -98,9 +98,8 @@ Router.route('/concept/:_name', {
         };
     },
     data: function() {
-        return knowledge.findOne({
-            name: this.params._name
-        });
+        var rid = decodeURIComponent(this.params._escrid);
+        return knowledge.findOne({rid: rid});
     }
 });
 
