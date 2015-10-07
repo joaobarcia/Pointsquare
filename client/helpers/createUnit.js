@@ -12,4 +12,8 @@ Template.createUnitContent.helpers({
     tempContent: function() {
         return Session.get('tempContent');
     },
+    submitting: function() {
+        console.log(Session.get("callStatus"));
+        return Session.get("callStatus")=="submitting unit";
+    }
 });

@@ -199,51 +199,55 @@ Meteor.methods({
     },
 
     createConcept: function(properties, subsets) {
-        var jsonString = encodeURIComponent(JSON.stringify(properties));
-        var setsString = encodeURIComponent(JSON.stringify(subsets));
-        var query = orientURL + "/function/" + databaseName + "/createConcept2/" + jsonString + "/" + setsString + "/";
-        var res = HTTP.call("POST", query, {
-            auth: "root:" + root_password
-        }).data.result[0]['value'];
-        var rid = res; //.data.result[0]['createConcept2'];
-        // knowledge.insert({
-        //     'rid': rid,
-        //     'class': 'Unit'
-        // });
-        Meteor.call('fetchAllUserData');
-        return res;
+        if( this.userId ){
+            var jsonString = encodeURIComponent(JSON.stringify(properties));
+            var setsString = encodeURIComponent(JSON.stringify(subsets));
+            var query = orientURL + "/function/" + databaseName + "/createConcept2/" + jsonString + "/" + setsString + "/";
+            var res = HTTP.call("POST", query, {
+                auth: "root:" + root_password
+            }).data.result[0]['value'];
+            var rid = res; //.data.result[0]['createConcept2'];
+            // knowledge.insert({
+            //     'rid': rid,
+            //     'class': 'Unit'
+            // });
+            Meteor.call('fetchAllUserData');
+            return res;
+        }
     },
 
     createUnit: function(properties, subsets, grantset) {
-        var jsonString = encodeURIComponent(JSON.stringify(properties));
-        //console.log('properties:');
-        /*        console.log(properties);
-                console.log(JSON.stringify(properties));
-                console.log(jsonString);*/
-        var setsString = encodeURIComponent(JSON.stringify(subsets));
-        /*        console.log('subsets:');
-                console.log(subsets);
-                console.log(JSON.stringify(subsets));
-                console.log(setsString);*/
-        var grantString = encodeURIComponent(grantset);
-        /*        console.log('grantset');
-                console.log(grantset);*/
-        //console.log(JSON.stringify(grantset));
-        /*        console.log(grantString);*/
-        var query = orientURL + "/function/" + databaseName + "/createUnit/" + jsonString + "/" + setsString + "/" + grantString + "/";
-        var res = HTTP.call("POST", query, {
-            auth: "root:" + root_password
-        }).data.result[0]['value'];
-        console.log(res);
-        var rid = res; //.data.result[0]['createUnit'];
-        // knowledge.insert({
-        //     'rid': rid,
-        //     'class': 'Unit'
-        // });
-        var user_rid = Meteor.call('get_user_rid');
-        Meteor.call('addAuthor', user_rid, rid);
-        Meteor.call('fetchAllUserData');
-        return res;
+        if( this.userId ){
+            var jsonString = encodeURIComponent(JSON.stringify(properties));
+            //console.log('properties:');
+            /*        console.log(properties);
+                    console.log(JSON.stringify(properties));
+                    console.log(jsonString);*/
+            var setsString = encodeURIComponent(JSON.stringify(subsets));
+            /*        console.log('subsets:');
+                    console.log(subsets);
+                    console.log(JSON.stringify(subsets));
+                    console.log(setsString);*/
+            var grantString = encodeURIComponent(grantset);
+            /*        console.log('grantset');
+                    console.log(grantset);*/
+            //console.log(JSON.stringify(grantset));
+            /*        console.log(grantString);*/
+            var query = orientURL + "/function/" + databaseName + "/createUnit/" + jsonString + "/" + setsString + "/" + grantString + "/";
+            var res = HTTP.call("POST", query, {
+                auth: "root:" + root_password
+            }).data.result[0]['value'];
+            console.log(res);
+            var rid = res; //.data.result[0]['createUnit'];
+            // knowledge.insert({
+            //     'rid': rid,
+            //     'class': 'Unit'
+            // });
+            var user_rid = Meteor.call('get_user_rid');
+            Meteor.call('addAuthor', user_rid, rid);
+            Meteor.call('fetchAllUserData');
+            return res;
+        }
     },
 
     addAuthor: function(author, unit) {
@@ -255,41 +259,49 @@ Meteor.methods({
     },
 
     editUnit: function(rid, properties, subsets, grantset) {
-        var unit = encodeURIComponent(rid);
-        var jsonString = encodeURIComponent(JSON.stringify(properties));
-        var setsString = encodeURIComponent(JSON.stringify(subsets));
-        var grantString = encodeURIComponent(grantset);
-        var query = orientURL + "/function/" + databaseName + "/editUnit/" + unit + "/" + jsonString + "/" + setsString + "/" + grantString + "/";
-        var res = HTTP.call("POST", query, {
-            auth: "root:" + root_password
-        }).data.result[0]['value'];
-        console.log(res);
-        //var rid = res; //.data.result[0]['createUnit'];
-        // knowledge.insert({
-        //     'rid': rid,
-        //     'class': 'Unit'
-        // });
-        var user_rid = Meteor.call('get_user_rid');
-        Meteor.call('addAuthor', user_rid, rid);
-        Meteor.call('fetchAllUserData');
-        return res;
+        if( this.userId ){
+            var unit = encodeURIComponent(rid);
+            var jsonString = encodeURIComponent(JSON.stringify(properties));
+            var setsString = encodeURIComponent(JSON.stringify(subsets));
+            var grantString = encodeURIComponent(grantset);
+            var query = orientURL + "/function/" + databaseName + "/editUnit/" + unit + "/" + jsonString + "/" + setsString + "/" + grantString + "/";
+            var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
+            console.log(res);
+            //var rid = res; //.data.result[0]['createUnit'];
+            // knowledge.insert({
+            //     'rid': rid,
+            //     'class': 'Unit'
+            // });
+            var user_rid = Meteor.call('get_user_rid');
+            Meteor.call('addAuthor', user_rid, rid);
+            Meteor.call('fetchAllUserData');
+            return res;
+        }
     },
 
     editConcept: function(rid, properties, subsets) {
-        var concept = encodeURIComponent(rid);
-        var jsonString = encodeURIComponent(JSON.stringify(properties));
-        var setsString = encodeURIComponent(JSON.stringify(subsets));
-        var query = orientURL + "/function/" + databaseName + "/editConcept/" + concept + "/" + jsonString + "/" + setsString + "/";
-        var res = HTTP.call("POST", query, {
-            auth: "root:" + root_password
-        }).data.result[0]['value'];
-        //var rid = res; //.data.result[0]['createConcept2'];
-        // knowledge.insert({
-        //     'rid': rid,
-        //     'class': 'Unit'
-        // });
-        Meteor.call('fetchAllUserData');
-        return res;
+        if( this.userId ){
+            var concept = encodeURIComponent(rid);
+            var jsonString = encodeURIComponent(JSON.stringify(properties));
+            var setsString = encodeURIComponent(JSON.stringify(subsets));
+            var query = orientURL + "/function/" + databaseName + "/editConcept/" + concept + "/" + jsonString + "/" + setsString + "/";
+            var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
+            //var rid = res; //.data.result[0]['createConcept2'];
+            // knowledge.insert({
+            //     'rid': rid,
+            //     'class': 'Unit'
+            // });
+            Meteor.call('fetchAllUserData');
+            return res;
+        }
+    },
+
+    removeNode: function(rid) {
+        if( this.userId ){
+            var query = orientURL + "/function/" + databaseName + "/deleteNode/"+encodeURIComponent(rid);
+            var res = HTTP.call("POST",query);
+            return res;
+        }
     }
 
 })
