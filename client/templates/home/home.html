@@ -46,10 +46,12 @@
                 </ul>
             </div>
         {{else}}
-            {{> introToUnitsAndConcepts}}
-            <div class="row center-align">
-                <div class="section">
-                    <a class="waves-effect waves-light btn-large green" href="{{ pathFor 'atSignUp' }}"><i class="material-icons left">person_add</i>Register to begin growing your knowledge!</a>
+            <div class="card">
+                {{> introToUnitsAndConcepts}}
+                <div class="row center-align">
+                    <div class="section">
+                        <a class="waves-effect waves-light btn-large green" href="{{ pathFor 'atSignUp' }}"><i class="material-icons left">person_add</i>Register to begin growing your knowledge!</a>
+                    </div>
                 </div>
             </div>
         {{/if}}

@@ -125,6 +125,23 @@ Router.route('/concept/:_escrid', {
     }
 });
 
+Router.route('/concept/:_escrid/edit', {
+    name: 'conceptEdit',
+    waitOn: function() {
+        if (Meteor.user()) {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+        } else {
+            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
+        };
+    },
+    data: function() {
+        var rid = decodeURIComponent(this.params._escrid);
+        return knowledge.findOne({
+            rid: rid
+        });
+    }
+});
+
 Router.route('/dashboard', {
     name: 'dashboard',
     waitOn: function() {
@@ -135,13 +152,6 @@ Router.route('/dashboard', {
         };
     }
 });
-
-
-
-Router.plugin('ensureSignedIn', {
-    only: ['dashboard']
-});
-
 
 Router.route('/create', {
     name: 'create',
@@ -184,4 +194,8 @@ Router.route('/create/concept', {
     onStop: function() {
         Session.set("callStatus","OK");
     }
+});
+
+Router.plugin('ensureSignedIn', {
+    only: ['dashboard', 'create', 'createUnit', 'createConcept', 'conceptEdit', 'unitEdit']
 });

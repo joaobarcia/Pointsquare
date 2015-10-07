@@ -94,8 +94,6 @@ Template.unitContent.helpers({
         var noExercise = _.includes(_.find(unitContent, {
             'type': 'unitEvaluationSection'
         }), 'userConfirmation');
-        console.log(numberOfSections);
-        console.log(noExercise);
         if (numberOfSections == 1 && noExercise) {
             return 1
         } else return 0;

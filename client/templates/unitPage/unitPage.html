@@ -17,11 +17,24 @@
                 {{> relatedConcepts grantedConcepts=grantedConcepts requiredConcepts=requiredConcepts }}
             </div>
             <div class="card-panel">
+                <div class="row no-margin">
+                    <div class="col s10">
+                        <h3>{{name}}</h3>
+                        <p>{{!-- <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> --}}<span class="grey-text"> by {{nameOf authors}}</span></p>
+                    </div>
+                    <div class="col s2 right-align">
+                        {{#if userIsAuthor}}
+                            <a href="{{escrid}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"><i class="material-icons">create</i></a>
+                        {{else}}
+                            <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="You can only edit lessons you have created"><i class="material-icons">create</i></a>
+                        {{/if}}
+                    </div>
+                </div>
                 <div class="row">
-                    <h3>{{name}}</h3>
-                    <p><img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"><span class="grey-text"> by {{nameOf authors}}</span></p>
-                    <h6 class="grey-text"><span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
-                    <p>{{description}}</p>
+                    <div class="col s12">
+                        <h6 class="grey-text"><span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
+                        <p>{{description}}</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -34,7 +47,7 @@
         {{else}}
             <div class="unit-tabs">
                 <div class="row">
-                    <ul class="tabs tab-demo z-depth-1">
+                    <ul class="tabs tab-demo">
                         {{#each content}}
                             {{#if isType 'unitSection'}}
                                 <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Part {{increaseByOne @index}}</a></li>
@@ -139,7 +152,7 @@
                 <span class="grey-text text-darken-2">You should be familiar with:</span>
                 <br>
                 {{#each requiredConcepts}}
-                    <a href="../concept/{{name}}">{{name}}</a>
+                    <a href="../concept/{{escrid}}">{{name}}</a>
                     <br>
                 {{/each}}
             </div>
@@ -150,7 +163,7 @@
                 <span class="grey-text text-darken-2">This unit helps you master:</span>
                 <br>
                 {{#each grantedConcepts}}
-                    <a href="../concept/{{name}}">{{name}}</a>
+                    <a href="../concept/{{escrid}}">{{name}}</a>
                     <br>
                 {{/each}}
             </div>
@@ -180,7 +193,7 @@
             <div class="row">
                 <div class="col s4 offset-s4">
                     {{#each learnedConcept}}
-                        <a href="../concept/{{name}}">{{name}}</a>
+                        <a href="../concept/{{escrid}}">{{name}}</a>
                         <br>
                     {{/each}}
                 </div>
@@ -210,7 +223,7 @@
             <div class="row">
                 <div class="col s4 offset-s4">
                     {{#each unlearnedConcept}}
-                        <a href="../concept/{{name}}">{{name}}</a>
+                        <a href="../concept/{{escrid}}">{{name}}</a>
                         <br>
                     {{/each}}
                 </div>

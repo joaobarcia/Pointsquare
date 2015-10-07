@@ -1,8 +1,8 @@
 <template name="unitEdit">
     <div class="container">
         <div class="section">
-            <h4>Editing {{name}}</h4>
-            {{#autoForm schema=unitEditSchema id="unitEdit" doc=unitEditDoc resetOnSuccess=false}}
+            <h4>Editing <a href="../{{escrid}}">{{name}}</a></h4>
+            {{#autoForm schema=unitEditSchema id="unitEdit" doc=unitEditDoc resetOnSuccess=false unitRID=rid}}
                 <fieldset>
                     {{!-- <legend>Contact Us</legend> --}}
                     <div class="card">

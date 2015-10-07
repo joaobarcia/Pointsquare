@@ -6,7 +6,7 @@ Template.unitEdit.helpers({
         // load stored unit values and pass them with necessary modif to autoform doc 'unitEditDoc'
         var unitEditDoc = {};
         unitEditDoc.name = Template.currentData().name;
-        unitEditDoc.description = Template.currentData().name;
+        unitEditDoc.description = Template.currentData().description;
 
 
         unitEditDoc.requiredConcepts = _.pluck(Template.currentData().requires, 'rid');

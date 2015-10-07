@@ -3,30 +3,14 @@ Template.conceptEdit.helpers({
         return Schema.Concept;
     },
     conceptEditDoc: function() {
-        // load stored unit values and pass them with necessary modif to autoform doc 'unitEditDoc'
-        var unitEditDoc = {};
-        unitEditDoc.name = Template.currentData().name;
-        unitEditDoc.description = Template.currentData().name;
+        // load stored concept values and pass them with necessary modif to autoform doc 'conceptEditDoc'
+        var conceptEditDoc = {};
+        conceptEditDoc.name = Template.currentData().name;
+        conceptEditDoc.description = Template.currentData().description;
 
 
-        unitEditDoc.requiredConcepts = _.pluck(Template.currentData().requires, 'rid');
-        unitEditDoc.grantedConcepts = _.pluck(Template.currentData().grants, 'rid');
+        conceptEditDoc.childConcepts = _.pluck(Template.currentData().contains, 'rid');
 
-        var evaluation = _.find(Template.currentData().content, {
-            type: 'unitEvaluationSection'
-        });
-        console.log(evaluation);
-        unitEditDoc.evaluationType = evaluation.evaluationType;
-
-
-        unitEditDoc.exerciseRadioButton = {};
-        unitEditDoc.exerciseRadioButton.question = evaluation.question;
-        unitEditDoc.exerciseRadioButton.options = evaluation.options;
-
-        unitEditDoc.exerciseString = {};
-        unitEditDoc.exerciseString.question = evaluation.question;
-        unitEditDoc.exerciseString.answers = evaluation.answers;
-
-        return unitEditDoc;
+        return conceptEditDoc;
     }
 });

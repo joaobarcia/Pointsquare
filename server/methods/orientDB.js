@@ -260,7 +260,7 @@ Meteor.methods({
 
     editUnit: function(rid, properties, subsets, grantset) {
         if( this.userId ){
-            var unit = encodeURIComponent(unit);
+            var unit = encodeURIComponent(rid);
             var jsonString = encodeURIComponent(JSON.stringify(properties));
             var setsString = encodeURIComponent(JSON.stringify(subsets));
             var grantString = encodeURIComponent(grantset);
