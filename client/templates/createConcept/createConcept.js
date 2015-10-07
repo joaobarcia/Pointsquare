@@ -16,7 +16,12 @@ AutoForm.hooks({
             var childConceptsArray = [];
             childConceptsArray.push(childConcepts);
 
-            Meteor.call('createConcept', properties, childConceptsArray);
+            Session.set("callStatus", "submitting concept");
+            Meteor.call('createConcept', properties, childConceptsArray, function(error,result){
+                console.log(result);
+                Session.set("callStatus", "submitted");
+                Router.go('/concept/' + encodeURIComponent(result));
+            });
 
             this.done();
             return false;
