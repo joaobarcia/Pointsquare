@@ -49,8 +49,13 @@
                         </div>
                     </div>
                     <div>
-                        <button type="submit" class="btn btn-primary btn-large">Submit</button>
-                        {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
+                        {{#if submitting}}
+                            <p> Loading, yo</p>
+                            {{> loading}}
+                        {{else}}
+                            <button type="submit" class="btn btn-primary btn-large">Submit</button>
+                            {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
+                        {{/if}}
                     </div>
                 </fieldset>
             {{/autoForm}}

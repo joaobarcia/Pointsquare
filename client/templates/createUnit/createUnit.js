@@ -183,11 +183,20 @@ AutoForm.hooks({
 
             console.log("requiredConcepts", requiredConceptsArray);
             console.log("grantedConcepts", grantedConcepts);
-            Session.set("callStatus","submitting unit");
-            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts, function(error,result){
+            Session.set("callStatus", "submitting unit");
+            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts, function(error, result) {
                 console.log(result);
-                Session.set("callStatus","submitted");
+                Session.set("callStatus", "submitted");
             });
+
+            // temos de implementar uma cena tipo isto, para o router.go ser activado no fim do submit 
+            /*function loopUntilSubmitted() {
+                if (Session.get("callStatus") == "submitting unit") {
+                    loopUntilSubmitted();
+                } else Router.go('/unit/' + encodeURIComponent(unitRID));
+            };
+            loopUntilSubmitted();*/
+
             this.done();
             return false;
         }
