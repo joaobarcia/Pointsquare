@@ -255,12 +255,14 @@ Meteor.methods({
     },
 
     editUnit: function(rid, properties, subsets, grantset) {
-        var unit = encodeURIComponent(unit);
+        var unit = encodeURIComponent(rid);
         var jsonString = encodeURIComponent(JSON.stringify(properties));
         var setsString = encodeURIComponent(JSON.stringify(subsets));
         var grantString = encodeURIComponent(grantset);
         var query = orientURL + "/function/" + databaseName + "/editUnit/" + unit + "/" + jsonString + "/" + setsString + "/" + grantString + "/";
-        var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
+        var res = HTTP.call("POST", query, {
+            auth: "root:" + root_password
+        }).data.result[0]['value'];
         console.log(res);
         //var rid = res; //.data.result[0]['createUnit'];
         // knowledge.insert({
@@ -278,7 +280,9 @@ Meteor.methods({
         var jsonString = encodeURIComponent(JSON.stringify(properties));
         var setsString = encodeURIComponent(JSON.stringify(subsets));
         var query = orientURL + "/function/" + databaseName + "/editConcept/" + concept + "/" + jsonString + "/" + setsString + "/";
-        var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
+        var res = HTTP.call("POST", query, {
+            auth: "root:" + root_password
+        }).data.result[0]['value'];
         //var rid = res; //.data.result[0]['createConcept2'];
         // knowledge.insert({
         //     'rid': rid,

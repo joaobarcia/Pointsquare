@@ -1,3 +1,12 @@
+Template.unitEdit.rendered = function() {
+    $(document).ready(function() {
+        $('.tooltipped').tooltip({
+            delay: 20
+        });
+    });
+};
+
+
 function applySort() { // must apply sort and dropdown properties everytime the content is changed
     Sortable.create(document.getElementById('content-sections'), {
         animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
@@ -138,7 +147,8 @@ Template.unitEditContent.events({
 AutoForm.hooks({
     unitEdit: {
         onSubmit: function(doc) {
-            /*var properties = {};
+            var unitRID = this.formAttributes.unitRID;
+            var properties = {};
             properties.name = "'" + doc.name + "'"; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
             properties.description = "''"; // create empty string with extra quotes for OrientDB parsing
             if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
@@ -162,8 +172,6 @@ AutoForm.hooks({
             content = JSON.stringify(content);
             properties.content = content; // insert content object into properties object
 
-            console.log("Properties", properties);
-
 
             var requiredConcepts = {};
             _.forEach(doc.requiredConcepts, function(n) {
@@ -178,12 +186,8 @@ AutoForm.hooks({
             if (typeof doc.grantedConcepts != "undefined") {
                 grantedConcepts = doc.grantedConcepts.toString();
             };
-
-            console.log("requiredConcepts", requiredConceptsArray);
-            console.log("grantedConcepts", grantedConcepts);
-            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts);*/
-            console.log(doc.requiredConcepts)
-            console.log('unit edited!');
+            Meteor.call('editUnit', unitRID, properties, requiredConceptsArray, grantedConcepts);
+            Router.go('/unit/' + encodeURIComponent(unitRID));
             this.done();
             return false;
         }

@@ -153,13 +153,6 @@ Router.route('/dashboard', {
     }
 });
 
-
-
-Router.plugin('ensureSignedIn', {
-    only: ['dashboard']
-});
-
-
 Router.route('/create', {
     name: 'create',
     waitOn: function() {
@@ -187,4 +180,8 @@ Router.route('/create/concept', {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };
     }
+});
+
+Router.plugin('ensureSignedIn', {
+    only: ['dashboard', 'create', 'createUnit', 'createConcept', 'conceptEdit', 'unitEdit']
 });

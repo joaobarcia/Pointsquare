@@ -1,8 +1,8 @@
 <template name="conceptEdit">
     <div class="container">
         <div class="section">
-            <h4>Create Concept</h4>
-            {{#autoForm schema=conceptEditSchema doc=conceptEditDoc id="conceptEdit" resetOnSuccess=false}}
+            <h4>Editing <a href="../{{escrid}}">{{name}}</a></h4>
+            {{#autoForm schema=conceptEditSchema doc=conceptEditDoc id="conceptEdit" conceptRID=rid resetOnSuccess=false }}
                 <fieldset>
                     {{!-- <legend>Contact Us</legend> --}}
                     <div class="card dropdown-overflow">
