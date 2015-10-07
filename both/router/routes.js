@@ -158,6 +158,13 @@ Router.route('/create/unit', {
         } else {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };
+    },
+    onRun: function() {
+        Session.set("callStatus","editing unit");
+        this.next();
+    },
+    onStop: function() {
+        Session.set("callStatus","OK");
     }
 });
 
@@ -169,5 +176,12 @@ Router.route('/create/concept', {
         } else {
             return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
         };
+    },
+    onRun: function() {
+        Session.set("callStatus","editing concept");
+        this.next();
+    },
+    onStop: function() {
+        Session.set("callStatus","OK");
     }
 });

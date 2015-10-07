@@ -183,7 +183,11 @@ AutoForm.hooks({
 
             console.log("requiredConcepts", requiredConceptsArray);
             console.log("grantedConcepts", grantedConcepts);
-            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts);
+            Session.set("callStatus","submitting unit");
+            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts, function(error,result){
+                console.log(result);
+                Session.set("callStatus","submitted");
+            });
             this.done();
             return false;
         }
