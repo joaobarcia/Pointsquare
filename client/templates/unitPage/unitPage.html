@@ -98,33 +98,13 @@
             </div>
             {{#if isType 'unitEvaluationSection'}}
                 {{#if evaluationIsType 'exerciseRadioButton'}}
-                    <h3 class="center-align">{{question}}</h3>
-                    <form id="exerciseRadioButtonForm" action="#">
-                        {{#each options}}
-                            <h3 class="center-align">
-                                <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}"/>
-                                <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel" >{{label}}</label>
-                            </h3>
-                        {{/each}}
-                    </form>
+                    {{> exerciseRadioButton}}
                 {{/if}}
                 {{#if evaluationIsType 'exerciseString'}}
                     {{> exerciseString}}
                 {{/if}}
                 {{#if evaluationIsType 'userConfirmation'}}
-                    <div class="section">
-                        {{#if currentUser}}
-                            <div class="row center-align understood-buttons">
-                                <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
-                                <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">I didn't understand</a>
-                            </div>
-                        {{else}}
-                            <div class="row center-align understood-buttons">
-                                <a href="#!" class="white-text green btn disabled tooltipped" data-position="bottom" data-delay="20" data-tooltip="Register so we can follow your progress!">Gots it!</a>
-                                <a href="#!" class="white-text green btn disabled tooltipped" data-position="bottom" data-delay="20" data-tooltip="Register so we can follow your progress!">Nots it!</a>
-                            </div>
-                        {{/if}}
-                    </div>
+                    {{> userConfirmation}}
                 {{/if}}
             {{/if}}
         </div>
@@ -133,13 +113,56 @@
 <template name="exerciseString">
     <div class="section center-align">
         <div class="container">
-            <h4>{{{question}}}</h4>
-            <form id="exerciseStringForm">
-                <input type="text" name="exerciseString" id="exerciseInputText">
-                <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
-                </button>
-            </form>
+            {{#if currentUser}}
+                <h4>{{{question}}}</h4>
+                <form id="exerciseStringForm">
+                    <input type="text" name="exerciseString" id="exerciseInputText">
+                    <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
+                    </button>
+                </form>
+            {{else}}
+                <h4>{{{question}}}</h4>
+                <form id="exerciseStringForm">
+                    <input disabled value="Login so we can follow your progress " type="text" name="exerciseString" id="exerciseInputText">
+                    <button class="btn waves-effect waves-light {{answerFeedback}} disabled disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!" type="submit" name="action" id="exerciseButton">Submit</button>
+                </form>
+            {{/if}}
         </div>
+    </div>
+</template>
+<template name="exerciseRadioButton">
+    <h3 class="center-align">{{question}}</h3>
+    <form id="exerciseRadioButtonForm" action="#">
+        {{#if currentUser}}
+            {{#each options}}
+                <h3 class="center-align">
+                <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}"/>
+                <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel" >{{label}}</label>
+            </h3>
+            {{/each}}
+        {{else}}
+            {{#each options}}
+                <h3 class="center-align tooltipped" data-position="bottom" data-delay="20" data-tooltip="Login so we can follow your progress!">
+                <input name="group1" class="{{isCorrectOption}}RadioButton" disabled="disabled" type="radio" id="radioButton{{@index}}"/>
+                <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel" >{{label}}</label>
+            </h3>
+            {{/each}}
+        {{/if}}
+    </form>
+</template>
+<template name="userConfirmation">
+    <div class="section">
+        {{#if currentUser}}
+            <div class="row center-align understood-buttons">
+                <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
+                <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">I didn't understand</a>
+            </div>
+        {{else}}
+            <div class="row center-align understood-buttons">
+                <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Gots it!</a>
+                <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Nots it!</a>
+            </div>
+        {{/if}}
     </div>
 </template>
 <template name="relatedConcepts">
