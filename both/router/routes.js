@@ -105,6 +105,13 @@ Router.route('/unit/:_escrid/edit', {
             rid: rid
         });
     },
+    onRun: function() {
+        Session.set("callStatus","editing unit");
+        this.next();
+    },
+    onStop: function() {
+        Session.set("callStatus","OK");
+    }
 });
 
 
@@ -139,6 +146,13 @@ Router.route('/concept/:_escrid/edit', {
         return knowledge.findOne({
             rid: rid
         });
+    },
+    onRun: function() {
+        Session.set("callStatus","editing concept");
+        this.next();
+    },
+    onStop: function() {
+        Session.set("callStatus","OK");
     }
 });
 

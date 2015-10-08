@@ -187,6 +187,7 @@ AutoForm.hooks({
             Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts, function(error, result) {
                 console.log(result);
                 Session.set("callStatus", "submitted");
+                Router.go('/unit/' + encodeURIComponent(result));
             });
 
             // temos de implementar uma cena tipo isto, para o router.go ser activado no fim do submit 
