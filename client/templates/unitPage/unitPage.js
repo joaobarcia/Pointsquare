@@ -4,18 +4,18 @@ Template.unitPage.rendered = function() {
             delay: 20
         });
     });
+};
+
+Template.unitContent.rendered = function() {
     $(document).ready(function() {
         $('ul.tabs').tabs();
     });
 };
 
-
-
-
 Template.unitPage.events({
     'click #understood': function(event) {
         event.preventDefault();
-        if( Meteor.userId() ){
+        if (Meteor.userId()) {
             Session.set('callStatus', 'learning');
             if (Session.get("temp") == "ready") {
                 Meteor.call("succeed", Blaze.getData()["rid"], function(error, result) {
@@ -36,7 +36,7 @@ Template.unitPage.events({
 
     'click #notUnderstood': function(event) {
         event.preventDefault();
-        if( Meteor.userId() ){
+        if (Meteor.userId()) {
             Session.set('callStatus', 'unlearning');
             if (Session.get("temp") == "ready") {
                 Meteor.call("fail", Blaze.getData()["rid"], function(error, result) {
@@ -69,8 +69,8 @@ Template.unitPage.events({
         if (answerIsCorrect) {
             $("#exerciseButton").removeClass("orange red").addClass("green");
             $("#exerciseInputText").removeClass("red-text").addClass("green-text");
-            if( Meteor.userId() ){
-                Session.set("unit_rid",Blaze.getData()["rid"]);
+            if (Meteor.userId()) {
+                Session.set("unit_rid", Blaze.getData()["rid"]);
                 setTimeout(function() {
                     Session.set('callStatus', 'learning');
                     if (Session.get("temp") == "ready") {
@@ -97,8 +97,8 @@ Template.unitPage.events({
             $("#exerciseInputText").removeClass("green-text");
             $("#exerciseInputText").addClass("red-text");
 
-            if( Meteor.userId() ){
-                Session.set("unit_rid",Blaze.getData()["rid"]);
+            if (Meteor.userId()) {
+                Session.set("unit_rid", Blaze.getData()["rid"]);
                 setTimeout(function() {
                     Session.set('callStatus', 'unlearning');
                     if (Session.get("temp") == "ready") {
@@ -125,8 +125,8 @@ Template.unitPage.events({
         $(".falseRadioButton").prop('disabled', 'disabled');
         $(".trueRadioButtonLabel").addClass("green-text");
         $(".falseRadioButtonLabel").addClass("red-text");
-        if( Meteor.userId() ){
-            Session.set("unit_rid",Blaze.getData()["rid"]);
+        if (Meteor.userId()) {
+            Session.set("unit_rid", Blaze.getData()["rid"]);
             setTimeout(function() {
                 Session.set('callStatus', 'learning');
                 if (Session.get("temp") == "ready") {
@@ -154,8 +154,8 @@ Template.unitPage.events({
         $(".falseRadioButton").prop('disabled', 'disabled');
         $(".trueRadioButtonLabel").addClass("green-text");
         $(".falseRadioButtonLabel").addClass("red-text");
-        if( Meteor.userId() ){
-            Session.set("unit_rid",Blaze.getData()["rid"]);
+        if (Meteor.userId()) {
+            Session.set("unit_rid", Blaze.getData()["rid"]);
             setTimeout(function() {
                 Session.set('callStatus', 'unlearning');
                 if (Session.get("temp") == "ready") {

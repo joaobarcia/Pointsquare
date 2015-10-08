@@ -175,6 +175,10 @@ small {
 
 /*SQUARES FOR THE UNIT LISTING. COPIED FROM MATERIALIZE CIRCLES*/
 
+.collection-item.avatar {
+    width: 100%;
+}
+
 .collection .collection-item.avatar .square {
     display: inline-block;
     height: 42px;
