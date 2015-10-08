@@ -7,6 +7,13 @@ Template.conceptEdit.rendered = function() {
 };
 
 
+Template.conceptEdit.events({
+    'click #deleteConcept': function(event) {
+        event.preventDefault();
+        console.log("DELETEZ");
+    },
+});
+
 AutoForm.hooks({
     conceptEdit: {
         onSubmit: function(doc) {

@@ -6,6 +6,13 @@ Template.unitEdit.rendered = function() {
     });
 };
 
+Template.unitEdit.events({
+    'click #deleteUnit': function(event) {
+        event.preventDefault();
+        console.log("DELETEZ");
+    },
+});
+
 
 function applySort() { // must apply sort and dropdown properties everytime the content is changed
     Sortable.create(document.getElementById('content-sections'), {
@@ -141,7 +148,7 @@ Template.unitEditContent.events({
         var tempContent = Session.get('tempContent');
         tempContent[section].subContent[content][keyToChange] = event.target.value;
         Session.set('tempContent', tempContent);
-    }
+    },
 });
 
 AutoForm.hooks({
