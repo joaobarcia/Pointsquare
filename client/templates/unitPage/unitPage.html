@@ -37,6 +37,11 @@
                     </div>
                 </div>
             </div>
+            <div class="card-panel">
+                <div class="comment-section">
+                    {{> commentsBox id=escrid}}
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -268,4 +273,13 @@
             </div>
         </div>
     </div>
+</template>
+<template name="unitComments">
+    <ul>
+        {{#each comment}}
+            ...
+            <li>{{content}}</li>
+            ...
+        {{/each}}
+    </ul>
 </template>

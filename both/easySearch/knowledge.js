@@ -29,7 +29,7 @@ EasySearch.createSearchIndex('knowledge', {
             }
         }
     },
-    'limit': 50,
+    'limit': 10,
     'query': function(searchString, opts) {
         // Default query that will be used for searching
         var query = EasySearch.getSearcher(this.use).defaultQuery(this, searchString);
