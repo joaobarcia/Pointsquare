@@ -9,7 +9,10 @@ Template.unitEdit.rendered = function() {
 Template.unitEdit.events({
     'click #deleteUnit': function(event) {
         event.preventDefault();
-        console.log("DELETEZ");
+        var rid = Template.currentData().rid;
+        Meteor.call('removeNode',rid,function(error,result){
+            Router.go('/dashboard');
+        });
     },
 });
 
@@ -193,8 +196,13 @@ AutoForm.hooks({
             if (typeof doc.grantedConcepts != "undefined") {
                 grantedConcepts = doc.grantedConcepts.toString();
             };
-            Meteor.call('editUnit', unitRID, properties, requiredConceptsArray, grantedConcepts);
-            Router.go('/unit/' + encodeURIComponent(unitRID));
+            console.log(unitRID);
+            Session.set("callStatus", "submitting unit");
+            Meteor.call('editUnit', unitRID, properties, requiredConceptsArray, grantedConcepts, function(error, result) {
+                console.log(result);
+                Session.set("callStatus", "submitted");
+                Router.go('/unit/' + encodeURIComponent(result));
+            });
             this.done();
             return false;
         }

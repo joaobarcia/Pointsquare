@@ -73,14 +73,7 @@ Meteor.methods({
             people.insert(orient_users[i]);
         };
         console.log("finished inserting users");
-        /*        Meteor.publish('user_names', function() {
-                    return people.find({}, {
-                        fields: {
-                            "name": 1,
-                            "rid": 1
-                        }
-                    });
-                });*/
+        return 1;
 
     },
 
@@ -234,15 +227,9 @@ Meteor.methods({
             //console.log(JSON.stringify(grantset));
             /*        console.log(grantString);*/
             var query = orientURL + "/function/" + databaseName + "/createUnit/" + jsonString + "/" + setsString + "/" + grantString + "/";
-            var res = HTTP.call("POST", query, {
-                auth: "root:" + root_password
-            }).data.result[0]['value'];
+            var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
             console.log(res);
-            var rid = res; //.data.result[0]['createUnit'];
-            // knowledge.insert({
-            //     'rid': rid,
-            //     'class': 'Unit'
-            // });
+            var rid = res;
             var user_rid = Meteor.call('get_user_rid');
             Meteor.call('addAuthor', user_rid, rid);
             Meteor.call('fetchAllUserData');
@@ -252,10 +239,10 @@ Meteor.methods({
 
     addAuthor: function(author, unit) {
         var query = orientURL + "/function/" + databaseName + "/addAuthor/" + encodeURIComponent(author) + "/" + encodeURIComponent(unit);
-        HTTP.call("POST", query, {
+        var res = HTTP.call("POST", query, {
             auth: "root:" + root_password
-        }); //.data.result[0]['value'];
-        //return res;
+        });
+        return res;
     },
 
     editUnit: function(rid, properties, subsets, grantset) {
@@ -267,30 +254,22 @@ Meteor.methods({
             var query = orientURL + "/function/" + databaseName + "/editUnit/" + unit + "/" + jsonString + "/" + setsString + "/" + grantString + "/";
             var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
             console.log(res);
-            //var rid = res; //.data.result[0]['createUnit'];
-            // knowledge.insert({
-            //     'rid': rid,
-            //     'class': 'Unit'
-            // });
             var user_rid = Meteor.call('get_user_rid');
-            Meteor.call('addAuthor', user_rid, rid);
+            // Meteor.call('addAuthor', user_rid, rid);
             Meteor.call('fetchAllUserData');
             return res;
         }
     },
 
     editConcept: function(rid, properties, subsets) {
+        console.log("editconcept");
         if( this.userId ){
             var concept = encodeURIComponent(rid);
             var jsonString = encodeURIComponent(JSON.stringify(properties));
             var setsString = encodeURIComponent(JSON.stringify(subsets));
             var query = orientURL + "/function/" + databaseName + "/editConcept/" + concept + "/" + jsonString + "/" + setsString + "/";
+            console.log(query);
             var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
-            //var rid = res; //.data.result[0]['createConcept2'];
-            // knowledge.insert({
-            //     'rid': rid,
-            //     'class': 'Unit'
-            // });
             Meteor.call('fetchAllUserData');
             return res;
         }
@@ -299,7 +278,9 @@ Meteor.methods({
     removeNode: function(rid) {
         if( this.userId ){
             var query = orientURL + "/function/" + databaseName + "/deleteNode/"+encodeURIComponent(rid);
-            var res = HTTP.call("POST",query);
+            console.log(query);
+            var res = HTTP.call("POST",query,{auth: "root:" + root_password});
+            Meteor.call('fetchAllUserData');
             return res;
         }
     }

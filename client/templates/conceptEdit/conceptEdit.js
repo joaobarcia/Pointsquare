@@ -10,7 +10,10 @@ Template.conceptEdit.rendered = function() {
 Template.conceptEdit.events({
     'click #deleteConcept': function(event) {
         event.preventDefault();
-        console.log("DELETEZ");
+        var rid = Template.currentData().rid;
+        Meteor.call('removeNode',rid,function(error,result){
+            Router.go('/dashboard');
+        });
     },
 });
 
@@ -39,12 +42,15 @@ AutoForm.hooks({
             childConceptsArray.push(childConcepts);
 
             console.log("childConcepts", childConceptsArray);
-            Meteor.call('editConcept', conceptRID, properties, childConceptsArray);
 
-
-
+            Session.set("callStatus", "submitting concept");
+            console.log("rid: "+conceptRID);
+            Meteor.call('editConcept', conceptRID, properties, childConceptsArray, function(error, result) {
+                console.log(result);
+                Session.set("callStatus", "submitted");
+                Router.go('/concept/' + encodeURIComponent(result));
+            });
             this.done();
-            Router.go('/concept/' + encodeURIComponent(conceptRID));
             return false;
         }
     }

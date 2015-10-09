@@ -189,15 +189,6 @@ AutoForm.hooks({
                 Session.set("callStatus", "submitted");
                 Router.go('/unit/' + encodeURIComponent(result));
             });
-
-            // temos de implementar uma cena tipo isto, para o router.go ser activado no fim do submit 
-            /*function loopUntilSubmitted() {
-                if (Session.get("callStatus") == "submitting unit") {
-                    loopUntilSubmitted();
-                } else Router.go('/unit/' + encodeURIComponent(unitRID));
-            };
-            loopUntilSubmitted();*/
-
             this.done();
             return false;
         }
