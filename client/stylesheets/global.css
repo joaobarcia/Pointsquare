@@ -177,6 +177,7 @@ small {
 
 .collection-item.avatar {
     width: 100%;
+    height: 100%;
 }
 
 .collection .collection-item.avatar .square {
@@ -292,4 +293,8 @@ nav .brand-logo {
 
 .dropdown-overflow {
     overflow: visible;
+}
+
+.collapsible-body {
+    background-color: #fafafa;
 }

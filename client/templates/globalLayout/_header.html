@@ -8,9 +8,7 @@
                         <ul class="right">
                             <li><a href="{{ pathFor 'search' }}"><i class="material-icons left">search</i> Search</a></li>
                             {{#if currentUser}}
-                                <li><a href="{{ pathFor 'create' }}"><i class="material-icons left">add_circle_outline</i> Create</a></li>
-                                <li><a href="{{ pathFor 'dashboard' }}"><i class="material-icons left">person</i> Dashboard</a></li>
-                                <li><a href="#" data-action="logout">Sign Out</a></li>
+                                {{>_headerUserIsLogged}}
                             {{else}}
                                 <li>
                                     <a href="{{ pathFor 'atSignIn' }}">Sign in</a>
@@ -25,5 +23,15 @@
     </div>
     <ul id="nav-mobile" class="side-nav">
         <li class="bold {{ isActiveRoute regex='home' }}"><a href="{{ pathFor 'home' }}" title="Home"><i class="mdi-action-home"></i> Home</a></li>
+    </ul>
+</template>
+<template name="_headerUserIsLogged">
+    <li><a class='dropdown-button' href='#' data-activates='createDropdown'><i class="material-icons left">add_circle_outline</i> Create</a></li>
+    <li><a href="{{ pathFor 'dashboard' }}"><i class="material-icons left">person</i> Dashboard</a></li>
+    <li><a href="#" data-action="logout">Sign Out</a></li>
+    <ul id='createDropdown' class='dropdown-content'>
+        <li><a href="{{ pathFor 'createUnit' }}"><span class="ti-book"></span> Unit</a></li>
+        <li class="divider"></li>
+        <li><a href="{{ pathFor 'createConcept' }}"><span class="ti-light-bulb"></span> Concept</a></li>
     </ul>
 </template>
