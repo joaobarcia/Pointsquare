@@ -32,9 +32,9 @@ function applySort() { // must apply sort and dropdown properties everytime the 
 
 function applyDropdown() { // jquery was being called before the changes were propagated to the DOM
     var sectionsInJSON = Session.get('tempContent').length;
-    var sectionsInHTML = $('.dropdown-button').length;
+    var sectionsInHTML = $('.dropdown-button.add-content').length;
     if (sectionsInJSON == sectionsInHTML) { // if the changes have been propagated, call jquery
-        $('.dropdown-button').dropdown({
+        $('.dropdown-button.add-content').dropdown({
             inDuration: 300,
             outDuration: 225,
             //constrain_width: false, // Does not change width of dropdown to that of the activator
