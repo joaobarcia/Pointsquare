@@ -161,10 +161,10 @@ AutoForm.hooks({
         onSubmit: function(doc) {
             var unitRID = this.formAttributes.unitRID;
             var properties = {};
-            properties.name = "'" + doc.name + "'"; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
+            properties.name = "'" + JSON.stringify(doc.name) + "'"; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
             properties.description = "''"; // create empty string with extra quotes for OrientDB parsing
             if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
-                properties.description = "'" + doc.description + "'";
+                properties.description = "'" + escape(doc.description) + "'";
             };
 
             var content = Session.get('tempContent'); // fetch content
@@ -185,18 +185,19 @@ AutoForm.hooks({
             properties.content = content; // insert content object into properties object
 
 
-            var requiredConcepts = {};
-            _.forEach(doc.requiredConcepts, function(n) {
-                requiredConcepts[n] = 1
-            });
-
             var requiredConceptsArray = [];
-            requiredConceptsArray.push(requiredConcepts);
+            if (typeof doc.requiredConcepts != "undefined") {
+                var requiredConceptsElement = {};
+                _.forEach(doc.requiredConcepts, function(n) {
+                    requiredConceptsElement[n] = 1
+                });
+                requiredConceptsArray.push(requiredConceptsElement);
+            };
 
-            var grantedConcepts = "";
-            console.log(typeof doc.grantedConcepts != "undefined");
+
+            var grantedConcepts = [];
             if (typeof doc.grantedConcepts != "undefined") {
-                grantedConcepts = doc.grantedConcepts.toString();
+                var grantedConcepts = doc.grantedConcepts;
             };
             console.log(unitRID);
             Session.set("callStatus", "submitting unit");

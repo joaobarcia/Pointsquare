@@ -167,18 +167,18 @@ AutoForm.hooks({
             console.log("Properties", properties);
 
 
-            var requiredConcepts = {};
-            _.forEach(doc.requiredConcepts, function(n) {
-                requiredConcepts[n] = 1
-            });
-
             var requiredConceptsArray = [];
-            requiredConceptsArray.push(requiredConcepts);
+            if (typeof doc.requiredConcepts != "undefined") {
+                var requiredConceptsElement = {};
+                _.forEach(doc.requiredConcepts, function(n) {
+                    requiredConceptsElement[n] = 1
+                });
+                requiredConceptsArray.push(requiredConceptsElement);
+            };
 
-            var grantedConcepts = "";
-            console.log(typeof doc.grantedConcepts != "undefined");
+            var grantedConcepts = [];
             if (typeof doc.grantedConcepts != "undefined") {
-                grantedConcepts = doc.grantedConcepts.toString();
+                var grantedConcepts = doc.grantedConcepts;
             };
 
             console.log("requiredConcepts", requiredConceptsArray);

@@ -298,3 +298,7 @@ nav .brand-logo {
 .collapsible-body {
     background-color: #fafafa;
 }
+
+.pre {
+    white-space: pre;
+}

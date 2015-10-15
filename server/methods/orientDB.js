@@ -189,7 +189,7 @@ Meteor.methods({
     },
 
     createConcept: function(properties, subsets) {
-        if( this.userId ){
+        if (this.userId) {
             var setsString = JSON.stringify(subsets);
             var query = orientURL + "/function/" + databaseName + "/createConceptNew";
             var data = {};
@@ -207,20 +207,18 @@ Meteor.methods({
     },
 
     createUnit: function(properties, subsets, grantset) {
-        if( this.userId ){
+        if (this.userId) {
             var setsString = JSON.stringify(subsets);
-            var grantString = grantset;
             var query = orientURL + "/function/" + databaseName + "/createUnitNew";
             var data = {};
             data["json"] = properties;
             data["needed"] = setsString;
-            data["granted"] = [];
-            var res = HTTP.call("POST", query,
-                {
-                    auth: "root:" + root_password,
-                    data: data
-                }).data.result[0]['value'];
-            console.log("result: "+res);
+            data["granted"] = grantset;
+            var res = HTTP.call("POST", query, {
+                auth: "root:" + root_password,
+                data: data
+            }).data.result[0]['value'];
+            console.log("result: " + res);
             var rid = res;
             console.log('we did it!');
             var user_rid = Meteor.call('get_user_rid');
@@ -240,21 +238,20 @@ Meteor.methods({
     },
 
     editUnit: function(rid, properties, subsets, grantset) {
-        if( this.userId ){
-            var unit = rid.substr(1);
+        if (this.userId) {
+            var unit = rid.substr(1); //remove # from rid so OrientDB can read as string
             var setsString = JSON.stringify(subsets);
-            var grantString = grantset;
             var query = orientURL + "/function/" + databaseName + "/editUnitNew";
             var data = {};
-            data["rid"] = rid;
+            data["rid"] = unit;
             data["json"] = properties;
             data["needed"] = setsString;
-            data["granted"] = [];
-            var res = HTTP.call("POST", query,
-                {
-                    auth: "root:" + root_password,
-                    data: data
-                }).data.result[0]['value'];
+            data["granted"] = grantset;
+            console.log(JSON.stringify(data));
+            var res = HTTP.call("POST", query, {
+                auth: "root:" + root_password,
+                data: data
+            }).data.result[0]['value'];
             console.log(res);
             console.log('we did it!');
             Meteor.call('fetchAllUserData');
@@ -264,7 +261,7 @@ Meteor.methods({
 
     editConcept: function(rid, properties, subsets) {
         console.log("editconcept");
-        if( this.userId ){
+        if (this.userId) {
             var concept = rid;
             var setsString = JSON.stringify(subsets);
             var query = orientURL + "/function/" + databaseName + "/editConceptNew";
@@ -272,11 +269,10 @@ Meteor.methods({
             data["rid"] = rid.substr(1);
             data["json"] = properties;
             data["needed"] = setsString;
-            var res = HTTP.call("POST", query,
-                {
-                    auth: "root:" + root_password,
-                    data: data
-                }).data.result[0]['value'];
+            var res = HTTP.call("POST", query, {
+                auth: "root:" + root_password,
+                data: data
+            }).data.result[0]['value'];
             console.log(res);
             Meteor.call('fetchAllUserData');
             return rid;
@@ -284,9 +280,11 @@ Meteor.methods({
     },
 
     removeNode: function(rid) {
-        if( this.userId ){
-            var query = orientURL + "/function/" + databaseName + "/deleteNode/"+encodeURIComponent(rid);
-            var res = HTTP.call("POST",query,{auth: "root:" + root_password});
+        if (this.userId) {
+            var query = orientURL + "/function/" + databaseName + "/deleteNode/" + encodeURIComponent(rid);
+            var res = HTTP.call("POST", query, {
+                auth: "root:" + root_password
+            });
             Meteor.call('fetchAllUserData');
             return res;
         }
