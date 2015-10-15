@@ -4,7 +4,7 @@ Schema.Concept = new SimpleSchema({
     name: {
         type: String,
         label: "Name",
-        max: 50
+        max: 150
     },
     description: {
         type: String,
@@ -45,7 +45,7 @@ Schema.Unit = new SimpleSchema({
     name: {
         type: String,
         label: "Name",
-        max: 50
+        max: 150
     },
     description: {
         type: String,
