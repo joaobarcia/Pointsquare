@@ -78,15 +78,12 @@ Meteor.methods({
     },
 
     get_user_rid: function() {
-        if (this.userId) {
-            var user_address = Meteor.users.findOne({
-                '_id': Meteor.userId()
-            }).emails[0].address;
+        if (Meteor.userId()) {
+            var user_address = Meteor.user().emails[0].address;
             var orient_user = people.findOne({
                 'email': user_address
             });
             var user_rid = orient_user.rid;
-            console.log(user_rid);
             return user_rid;
         } else console.log("tried to run get_user_rid but noone is logged")
     },
@@ -193,17 +190,17 @@ Meteor.methods({
 
     createConcept: function(properties, subsets) {
         if( this.userId ){
-            var jsonString = encodeURIComponent(JSON.stringify(properties));
-            var setsString = encodeURIComponent(JSON.stringify(subsets));
-            var query = orientURL + "/function/" + databaseName + "/createConcept2/" + jsonString + "/" + setsString + "/";
+            var setsString = JSON.stringify(subsets);
+            var query = orientURL + "/function/" + databaseName + "/createConceptNew";
+            var data = {};
+            data["json"] = properties;
+            data["needed"] = setsString;
+            console.log(data);
             var res = HTTP.call("POST", query, {
-                auth: "root:" + root_password
+                auth: "root:" + root_password,
+                data: data
             }).data.result[0]['value'];
-            var rid = res; //.data.result[0]['createConcept2'];
-            // knowledge.insert({
-            //     'rid': rid,
-            //     'class': 'Unit'
-            // });
+            var rid = res;
             Meteor.call('fetchAllUserData');
             return res;
         }
@@ -211,26 +208,23 @@ Meteor.methods({
 
     createUnit: function(properties, subsets, grantset) {
         if( this.userId ){
-            var jsonString = encodeURIComponent(JSON.stringify(properties));
-            //console.log('properties:');
-            /*        console.log(properties);
-                    console.log(JSON.stringify(properties));
-                    console.log(jsonString);*/
-            var setsString = encodeURIComponent(JSON.stringify(subsets));
-            /*        console.log('subsets:');
-                    console.log(subsets);
-                    console.log(JSON.stringify(subsets));
-                    console.log(setsString);*/
-            var grantString = encodeURIComponent(grantset);
-            /*        console.log('grantset');
-                    console.log(grantset);*/
-            //console.log(JSON.stringify(grantset));
-            /*        console.log(grantString);*/
-            var query = orientURL + "/function/" + databaseName + "/createUnit/" + jsonString + "/" + setsString + "/" + grantString + "/";
-            var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
-            console.log(res);
+            var setsString = JSON.stringify(subsets);
+            var grantString = grantset;
+            var query = orientURL + "/function/" + databaseName + "/createUnitNew";
+            var data = {};
+            data["json"] = properties;
+            data["needed"] = setsString;
+            data["granted"] = [];
+            var res = HTTP.call("POST", query,
+                {
+                    auth: "root:" + root_password,
+                    data: data
+                }).data.result[0]['value'];
+            console.log("result: "+res);
             var rid = res;
+            console.log('we did it!');
             var user_rid = Meteor.call('get_user_rid');
+            console.log('we did it!');
             Meteor.call('addAuthor', user_rid, rid);
             Meteor.call('fetchAllUserData');
             return res;
@@ -247,38 +241,51 @@ Meteor.methods({
 
     editUnit: function(rid, properties, subsets, grantset) {
         if( this.userId ){
-            var unit = encodeURIComponent(rid);
-            var jsonString = encodeURIComponent(JSON.stringify(properties));
-            var setsString = encodeURIComponent(JSON.stringify(subsets));
-            var grantString = encodeURIComponent(grantset);
-            var query = orientURL + "/function/" + databaseName + "/editUnit/" + unit + "/" + jsonString + "/" + setsString + "/" + grantString + "/";
-            var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
+            var unit = rid.substr(1);
+            var setsString = JSON.stringify(subsets);
+            var grantString = grantset;
+            var query = orientURL + "/function/" + databaseName + "/editUnitNew";
+            var data = {};
+            data["rid"] = rid;
+            data["json"] = properties;
+            data["needed"] = setsString;
+            data["granted"] = [];
+            var res = HTTP.call("POST", query,
+                {
+                    auth: "root:" + root_password,
+                    data: data
+                }).data.result[0]['value'];
             console.log(res);
-            var user_rid = Meteor.call('get_user_rid');
-            // Meteor.call('addAuthor', user_rid, rid);
+            console.log('we did it!');
             Meteor.call('fetchAllUserData');
-            return res;
+            return rid;
         }
     },
 
     editConcept: function(rid, properties, subsets) {
         console.log("editconcept");
         if( this.userId ){
-            var concept = encodeURIComponent(rid);
-            var jsonString = encodeURIComponent(JSON.stringify(properties));
-            var setsString = encodeURIComponent(JSON.stringify(subsets));
-            var query = orientURL + "/function/" + databaseName + "/editConcept/" + concept + "/" + jsonString + "/" + setsString + "/";
-            console.log(query);
-            var res = HTTP.call("POST", query, {auth: "root:" + root_password}).data.result[0]['value'];
+            var concept = rid;
+            var setsString = JSON.stringify(subsets);
+            var query = orientURL + "/function/" + databaseName + "/editConceptNew";
+            var data = {};
+            data["rid"] = rid.substr(1);
+            data["json"] = properties;
+            data["needed"] = setsString;
+            var res = HTTP.call("POST", query,
+                {
+                    auth: "root:" + root_password,
+                    data: data
+                }).data.result[0]['value'];
+            console.log(res);
             Meteor.call('fetchAllUserData');
-            return res;
+            return rid;
         }
     },
 
     removeNode: function(rid) {
         if( this.userId ){
             var query = orientURL + "/function/" + databaseName + "/deleteNode/"+encodeURIComponent(rid);
-            console.log(query);
             var res = HTTP.call("POST",query,{auth: "root:" + root_password});
             Meteor.call('fetchAllUserData');
             return res;
