@@ -12,5 +12,9 @@ Template.conceptEdit.helpers({
         conceptEditDoc.childConcepts = _.pluck(Template.currentData().contains, 'rid');
 
         return conceptEditDoc;
-    }
+    },
+    submitting: function() {
+        console.log(Session.get("callStatus"));
+        return Session.get("callStatus") == "submitting concept";
+    },
 });

@@ -28,7 +28,11 @@ Template.unitEdit.helpers({
         unitEditDoc.exerciseString.answers = evaluation.answers;
 
         return unitEditDoc;
-    }
+    },
+    submitting: function() {
+        console.log(Session.get("callStatus"));
+        return Session.get("callStatus") == "submitting unit";
+    },
 });
 Template.unitEditContent.helpers({
     tempContent: function() {

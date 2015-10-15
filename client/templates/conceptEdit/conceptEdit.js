@@ -11,8 +11,10 @@ Template.conceptEdit.events({
     'click #deleteConcept': function(event) {
         event.preventDefault();
         var rid = Template.currentData().rid;
-        Meteor.call('removeNode',rid,function(error,result){
+        Session.set("callStatus", "submitting concept");
+        Meteor.call('removeNode', rid, function(error, result) {
             Router.go('/dashboard');
+            Session.set("callStatus", "submitted");
         });
     },
 });
@@ -44,7 +46,7 @@ AutoForm.hooks({
             console.log("childConcepts", childConceptsArray);
 
             Session.set("callStatus", "submitting concept");
-            console.log("rid: "+conceptRID);
+            console.log("rid: " + conceptRID);
             Meteor.call('editConcept', conceptRID, properties, childConceptsArray, function(error, result) {
                 console.log(result);
                 Session.set("callStatus", "submitted");

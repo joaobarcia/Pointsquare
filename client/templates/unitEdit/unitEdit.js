@@ -10,8 +10,10 @@ Template.unitEdit.events({
     'click #deleteUnit': function(event) {
         event.preventDefault();
         var rid = Template.currentData().rid;
+        Session.set("callStatus", "submitting unit");
         Meteor.call('removeNode', rid, function(error, result) {
             Router.go('/dashboard');
+            Session.set("callStatus", "submitted");
         });
     },
 });
