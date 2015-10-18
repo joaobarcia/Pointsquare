@@ -161,10 +161,10 @@ AutoForm.hooks({
         onSubmit: function(doc) {
             var unitRID = this.formAttributes.unitRID;
             var properties = {};
-            properties.name = "'" + JSON.stringify(doc.name) + "'"; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
-            properties.description = "''"; // create empty string with extra quotes for OrientDB parsing
+            properties.name = JSON.stringify(doc.name); // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
+            properties.description = "";
             if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
-                properties.description = "'" + escape(doc.description) + "'";
+                properties.description = escape(doc.description);
             };
 
             var content = Session.get('tempContent'); // fetch content

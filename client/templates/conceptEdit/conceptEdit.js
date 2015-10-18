@@ -26,10 +26,10 @@ AutoForm.hooks({
             console.log("rid", this.formAttributes.conceptRID);
             var conceptRID = this.formAttributes.conceptRID;
             var properties = {};
-            properties.name = "'" + doc.name + "'"; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
-            properties.description = "''"; // create empty string with extra quotes for OrientDB parsing
+            properties.name = doc.name; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
+            properties.description = "";
             if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
-                properties.description = "'" + doc.description + "'";
+                properties.description = doc.description;
             };
 
             console.log("Properties", properties);
