@@ -50,7 +50,7 @@ Router.route('/unit/:_escrid', {
     },
     onRun: function() {
         Session.set('callStatus', 'doingExercise');
-        if( Meteor.userId() ){
+        if (Meteor.userId()) {
             console.log(Session.get('callStatus'));
             var unit = decodeURIComponent(this.params._escrid);
             var user = Session.get('currentUserRID');
@@ -109,11 +109,12 @@ Router.route('/unit/:_escrid/edit', {
         });
     },
     onRun: function() {
-        Session.set("callStatus","editing unit");
+        Session.set("callStatus", "editing unit");
+        Session
         this.next();
     },
     onStop: function() {
-        Session.set("callStatus","OK");
+        Session.set("callStatus", "OK");
     }
 });
 
@@ -151,11 +152,11 @@ Router.route('/concept/:_escrid/edit', {
         });
     },
     onRun: function() {
-        Session.set("callStatus","editing concept");
+        Session.set("callStatus", "editing concept");
         this.next();
     },
     onStop: function() {
-        Session.set("callStatus","OK");
+        Session.set("callStatus", "OK");
     }
 });
 
@@ -187,11 +188,12 @@ Router.route('/create/unit', {
         };
     },
     onRun: function() {
-        Session.set("callStatus","editing unit");
+        Session.set("callStatus", "editing unit");
+        Session.set("tempContent", null);
         this.next();
     },
     onStop: function() {
-        Session.set("callStatus","OK");
+        Session.set("callStatus", "OK");
     }
 });
 
@@ -205,11 +207,11 @@ Router.route('/create/concept', {
         };
     },
     onRun: function() {
-        Session.set("callStatus","editing concept");
+        Session.set("callStatus", "editing concept");
         this.next();
     },
     onStop: function() {
-        Session.set("callStatus","OK");
+        Session.set("callStatus", "OK");
     }
 });
 

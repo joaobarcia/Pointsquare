@@ -93,7 +93,7 @@
                         {{#each subContent}}
                             <li class="collection-item">
                                 {{#if isType 'text'}}
-                                    {{>createUnitText sectionIndex=sectionIndex contentIndex=@index}}
+                                    {{>createUnitText sectionIndex=sectionIndex contentIndex=@index text=text}}
                                 {{/if}}
                                 {{#if isType 'youtube'}}
                                     {{>createUnitYoutube sectionIndex=sectionIndex contentIndex=@index youtubeVidID=youtubeVidID}}
@@ -120,7 +120,7 @@
         </div>
         <form class="col s10">
             <div class="input-field">
-                <textarea value= {{text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
+                <textarea value= {{unescape text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
                 <label for="{{sectionIndex}} {{contentIndex}} text">text</label>
             </div>
         </form>

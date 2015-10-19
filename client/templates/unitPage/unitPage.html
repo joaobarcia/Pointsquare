@@ -19,7 +19,7 @@
             <div class="card-panel">
                 <div class="row no-margin">
                     <div class="col s10">
-                        <h3>{{name}}</h3>
+                        <h3>{{unescape name}}</h3>
                         <p>{{!-- <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> --}}<span class="grey-text"> by {{nameOf authors}}</span></p>
                     </div>
                     <div class="col s2 right-align">
@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col s12">
                         <h6 class="grey-text"><span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
-                        <p>{{description}}</p>
+                        <p class="pre">{{unescape description}}</p>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                     {{#each subContent}}
                         {{#if isType 'text'}}
                             <div class="section">
-                                <p class="flow-text">{{{text}}}</p>
+                                <p class="flow-text pre">{{unescape text}}</p>
                             </div>
                         {{/if}}
                         {{#if isType 'image'}}

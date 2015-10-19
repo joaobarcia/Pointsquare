@@ -1,7 +1,7 @@
 var orientURL = "http://95.85.45.153:2480";
 var databaseName = "Pointsquare";
 var root_password = "4f0g4.o.orientDB!";
-// var orientURL = "http://localhost:2480";
+//var orientURL = "http://localhost:2480";
 // var databaseName = "alfa5";
 // var root_password = "4f0g4.o.orientE!";
 

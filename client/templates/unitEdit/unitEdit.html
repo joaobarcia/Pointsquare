@@ -1,7 +1,7 @@
 <template name="unitEdit">
     <div class="container">
         <div class="section">
-            <h4>Editing <a href="../{{escrid}}">{{name}}</a></h4>
+            <h4>Editing <a href="../{{escrid}}">{{unescape name}}</a></h4>
             <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
             {{#autoForm schema=unitEditSchema id="unitEdit" doc=unitEditDoc resetOnSuccess=false unitRID=rid}}
                 <fieldset>
@@ -14,7 +14,7 @@
                                     <div class="section">
                                         <h5 class="center-align grey-text">Created by <span class="black-text">{{nameOf authors}}</span> on <span class="black-text">{{date_of_creation}}</span></h5>
                                     </div>
-                                    {{> afQuickField name="name"}} {{> afQuickField name="description" value=description}}
+                                    {{> afQuickField name="name" value=(unescape name)}} {{> afQuickField name="description" value= (unescape description)}}
                                 </div>
                                 <div class="section">
                                     <div class="divider"></div>
@@ -87,7 +87,7 @@
                         {{#each subContent}}
                             <li class="collection-item">
                                 {{#if isType 'text'}}
-                                    {{>unitEditText sectionIndex=sectionIndex contentIndex=@index}}
+                                    {{>unitEditText sectionIndex=sectionIndex contentIndex=@index text=text}}
                                 {{/if}}
                                 {{#if isType 'youtube'}}
                                     {{>unitEditYoutube sectionIndex=sectionIndex contentIndex=@index youtubeVidID=youtubeVidID}}
@@ -114,7 +114,7 @@
         </div>
         <form class="col s10">
             <div class="input-field">
-                <textarea value= {{text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
+                <textarea value= {{unescape text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
                 <label for="{{sectionIndex}} {{contentIndex}} text" class="active">text</label>
             </div>
         </form>

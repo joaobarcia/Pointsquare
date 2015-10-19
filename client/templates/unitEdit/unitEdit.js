@@ -151,7 +151,12 @@ Template.unitEditContent.events({
         var content = arrayOfIds[1];
         var keyToChange = arrayOfIds[2]
         var tempContent = Session.get('tempContent');
-        tempContent[section].subContent[content][keyToChange] = event.target.value;
+        if (keyToChange == 'text') { // text strings need to be escaped
+            console.log("IT IS TEXT!!!");
+            tempContent[section].subContent[content][keyToChange] = escape(event.target.value);
+        } else {
+            tempContent[section].subContent[content][keyToChange] = event.target.value;
+        };
         Session.set('tempContent', tempContent);
     },
 });
@@ -161,7 +166,7 @@ AutoForm.hooks({
         onSubmit: function(doc) {
             var unitRID = this.formAttributes.unitRID;
             var properties = {};
-            properties.name = JSON.stringify(doc.name); // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
+            properties.name = escape(doc.name); // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
             properties.description = "";
             if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
                 properties.description = escape(doc.description);
