@@ -151,12 +151,12 @@ Template.unitEditContent.events({
         var content = arrayOfIds[1];
         var keyToChange = arrayOfIds[2]
         var tempContent = Session.get('tempContent');
-        if (keyToChange == 'text') { // text strings need to be escaped
+        /*if (keyToChange == 'text') { // text strings need to be escaped
             console.log("IT IS TEXT!!!");
             tempContent[section].subContent[content][keyToChange] = escape(event.target.value);
-        } else {
-            tempContent[section].subContent[content][keyToChange] = event.target.value;
-        };
+        } else {*/
+        tempContent[section].subContent[content][keyToChange] = event.target.value;
+        //};
         Session.set('tempContent', tempContent);
     },
 });
@@ -166,12 +166,15 @@ AutoForm.hooks({
         onSubmit: function(doc) {
             var unitRID = this.formAttributes.unitRID;
             var properties = {};
-            properties.name = escape(doc.name); // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
+            console.log(doc.name);
+            properties.name = doc.name; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
+            console.log(properties.name);
             properties.description = "";
             if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
-                properties.description = escape(doc.description);
+                properties.description = doc.description;
             };
 
+            console.log(String(properties.description));
             var content = Session.get('tempContent'); // fetch content
             var evaluation = { // create evaluation object
                 "type": "unitEvaluationSection"
@@ -199,18 +202,18 @@ AutoForm.hooks({
                 requiredConceptsArray.push(requiredConceptsElement);
             };
 
-
+            console.log(properties);
             var grantedConcepts = [];
             if (typeof doc.grantedConcepts != "undefined") {
                 var grantedConcepts = doc.grantedConcepts;
             };
-            console.log(unitRID);
             Session.set("callStatus", "submitting unit");
             Meteor.call('editUnit', unitRID, properties, requiredConceptsArray, grantedConcepts, function(error, result) {
                 console.log(result);
                 Session.set("callStatus", "submitted");
                 Router.go('/unit/' + encodeURIComponent(result));
             });
+
             this.done();
             return false;
         }
