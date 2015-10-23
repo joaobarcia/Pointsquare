@@ -1,7 +1,7 @@
 <template name="conceptEdit">
     <div class="container">
         <div class="section">
-            <h4>Editing <a href="../{{escrid}}">{{unescape name}}</a></h4>
+            <h4>Editing <a href="../{{escrid}}">{{name}}</a></h4>
             <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
             {{#autoForm schema=conceptEditSchema doc=conceptEditDoc id="conceptEdit" conceptRID=rid resetOnSuccess=false }}
                 <fieldset>

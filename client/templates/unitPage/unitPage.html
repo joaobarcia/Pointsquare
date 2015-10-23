@@ -19,7 +19,7 @@
             <div class="card-panel">
                 <div class="row no-margin">
                     <div class="col s10">
-                        <h3>{{unescape name}}</h3>
+                        <h3>{{name}}</h3>
                         <p>{{!-- <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> --}}<span class="grey-text"> by {{nameOf authors}}</span></p>
                     </div>
                     <div class="col s2 right-align">
@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col s12">
                         <h6 class="grey-text"><span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
-                        <p class="pre">{{unescape description}}</p>
+                        <p class="pre">{{description}}</p>
                     </div>
                 </div>
             </div>
@@ -80,38 +80,44 @@
                     {{#each subContent}}
                         {{#if isType 'text'}}
                             <div class="section">
-                                <p class="flow-text pre">{{unescape text}}</p>
+                                {{#mathjax}}
+                                    {{!-- {{#markdown}}
+                                    --}} <div class="flow-text">
+                                        {{#markdown}}{{text}}{{/markdown}}
                             </div>
-                        {{/if}}
-                        {{#if isType 'image'}}
-                            <img class="responsive-img" src="../images/units/{{imgURL}}">
-                        {{/if}}
-                        {{#if isType 'remoteImage'}}
-                            <div class="section center-align">
-                                <img class="responsive-img" src="{{remoteImgURL}}">
-                            </div>
-                        {{/if}}
-                        {{#if isType 'youtube'}}
-                            <div class="section">
-                                <div class="video-container no-controls">
-                                    <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        {{/if}}
-                    {{/each }}
-                {{/if}}
+                            {{!-- {{/markdown}}
+                            --}} {{/mathjax}}
             </div>
-            {{#if isType 'unitEvaluationSection'}}
-                {{#if evaluationIsType 'exerciseRadioButton'}}
-                    {{> exerciseRadioButton}}
-                {{/if}}
-                {{#if evaluationIsType 'exerciseString'}}
-                    {{> exerciseString}}
-                {{/if}}
-                {{#if evaluationIsType 'userConfirmation'}}
-                    {{> userConfirmation}}
-                {{/if}}
             {{/if}}
+            {{#if isType 'image'}}
+                <img class="responsive-img" src="../images/units/{{imgURL}}">
+            {{/if}}
+            {{#if isType 'remoteImage'}}
+                <div class="section center-align">
+                    <img class="responsive-img" src="{{remoteImgURL}}">
+                </div>
+            {{/if}}
+            {{#if isType 'youtube'}}
+                <div class="section">
+                    <div class="video-container no-controls">
+                        <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </div>
+            {{/if}}
+            {{/each }}
+            {{/if}}
+        </div>
+        {{#if isType 'unitEvaluationSection'}}
+            {{#if evaluationIsType 'exerciseRadioButton'}}
+                {{> exerciseRadioButton}}
+            {{/if}}
+            {{#if evaluationIsType 'exerciseString'}}
+                {{> exerciseString}}
+            {{/if}}
+            {{#if evaluationIsType 'userConfirmation'}}
+                {{> userConfirmation}}
+            {{/if}}
+        {{/if}}
         </div>
     {{/each }}
 </template>

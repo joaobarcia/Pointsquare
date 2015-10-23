@@ -67,9 +67,12 @@ function applyDropdown() { // jquery was being called before the changes were pr
 
 Template.unitEditContent.rendered = function() {
     var tempContent = Template.currentData().content;
+    console.log(Template.currentData());
+    console.log(tempContent);
     _.remove(tempContent, {
         type: 'unitEvaluationSection'
     });
+    console.log(tempContent);
     Session.set('tempContent', tempContent);
 
     applySort(); // apply once the template is loaded

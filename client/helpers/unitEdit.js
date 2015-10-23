@@ -15,7 +15,7 @@ Template.unitEdit.helpers({
         var evaluation = _.find(Template.currentData().content, {
             type: 'unitEvaluationSection'
         });
-        console.log(evaluation);
+        //console.log(evaluation);
         unitEditDoc.evaluationType = evaluation.evaluationType;
 
 

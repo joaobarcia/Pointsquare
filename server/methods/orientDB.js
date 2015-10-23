@@ -214,6 +214,7 @@ Meteor.methods({
             data["json"] = properties;
             data["needed"] = setsString;
             data["granted"] = grantset;
+            console.log(JSON.stringify(data));
             var res = HTTP.call("POST", query, {
                 auth: "root:" + root_password,
                 data: data

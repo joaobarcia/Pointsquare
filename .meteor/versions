@@ -19,6 +19,7 @@ caching-html-compiler@1.0.2
 callback-hook@1.0.4
 check@1.0.6
 chuangbo:cookie@1.1.0
+chuangbo:marked@0.3.5_1
 cmather:handlebars-server@2.0.0
 coffeescript@1.0.10
 comerc:autoform-selectize@2.2.3
@@ -91,6 +92,7 @@ momentjs:moment@2.10.6
 mongo@1.1.2
 mongo-id@1.0.1
 mongo-livedata@1.0.9
+mrt:mathjax@0.6.3
 mrt:underscore-string-latest@2.3.3
 npm-bcrypt@0.7.8_2
 npm-mongo@1.4.39_1

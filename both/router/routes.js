@@ -110,7 +110,7 @@ Router.route('/unit/:_escrid/edit', {
     },
     onRun: function() {
         Session.set("callStatus", "editing unit");
-        Session
+        //Session
         this.next();
     },
     onStop: function() {
