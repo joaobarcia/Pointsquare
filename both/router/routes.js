@@ -46,6 +46,8 @@ Router.route('/unit/:_escrid', {
         var rid = decodeURIComponent(this.params._escrid);
         return knowledge.findOne({
             rid: rid
+        }, {
+            reactive: false
         });
     },
     onRun: function() {
@@ -106,6 +108,8 @@ Router.route('/unit/:_escrid/edit', {
         var rid = decodeURIComponent(this.params._escrid);
         return knowledge.findOne({
             rid: rid
+        }, {
+            reactive: false
         });
     },
     onRun: function() {
@@ -132,6 +136,8 @@ Router.route('/concept/:_escrid', {
         var rid = decodeURIComponent(this.params._escrid);
         return knowledge.findOne({
             rid: rid
+        }, {
+            reactive: false
         });
     }
 });
@@ -149,6 +155,8 @@ Router.route('/concept/:_escrid/edit', {
         var rid = decodeURIComponent(this.params._escrid);
         return knowledge.findOne({
             rid: rid
+        }, {
+            reactive: false
         });
     },
     onRun: function() {
