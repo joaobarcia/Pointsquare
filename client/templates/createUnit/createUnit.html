@@ -15,20 +15,6 @@
                                 </div>
                                 <div class="section">
                                     <div class="divider"></div>
-                                    <h3 class="center-align">Concepts</h3>{{!--                                     <input class="form-control typeahead" name="XXX" type="text" placeholder="open source projects by Twitter" autocomplete="off" spellcheck="off" data-source="requiredConcepts" data-template="requiredConcept" />
-                                    {{#each requiredConcepts}}
-                                    {{> requiredConcept}}
-                                        {{/each}} --}}
-                                        <h5>Necessary to understand this unit</h5>{{> afQuickField name="requiredConcepts"}}
-                                        <h5>Will be taught by this unit</h5>{{> afQuickField name="grantedConcepts"}}
-                                        <div class="center-align">
-                                            {{!-- <p class="center-align">If you you don't find the concept you need, you can</p>
-<button class="btn blue-text disabled">Add Concept</button>
- --}}
-                                        </div>
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
                                     <h3 class="center-align">Content</h3>{{!-- <h5 class="center-align">Re-order sections by dragging the title and content by dragging the icon</h5> --}}
                                     <h5 class="center-align"><a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a> and <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a> are supported in text boxes</h5>
                                     <div class="card-panel">
@@ -46,6 +32,20 @@
                                     {{/if}}
                                     {{#if afFieldValueIs name="evaluationType" value="userConfirmation" }}
                                     {{/if}}
+                                </div>
+                                <div class="section">
+                                    <div class="divider"></div>
+                                    <h3 class="center-align">Concepts</h3>{{!--                                     <input class="form-control typeahead" name="XXX" type="text" placeholder="open source projects by Twitter" autocomplete="off" spellcheck="off" data-source="requiredConcepts" data-template="requiredConcept" />
+                                    {{#each requiredConcepts}}
+                                    {{> requiredConcept}}
+                                        {{/each}} --}}
+                                        <h5>Necessary to understand this unit</h5>{{> afQuickField name="requiredConcepts"}}
+                                        <h5>Will be taught by this unit</h5>{{> afQuickField name="grantedConcepts"}}
+                                        <div class="center-align">
+                                            {{!-- <p class="center-align">If you you don't find the concept you need, you can</p>
+<button class="btn blue-text disabled">Add Concept</button>
+ --}}
+                                        </div>
                                 </div>
                             </div>
                         </div>

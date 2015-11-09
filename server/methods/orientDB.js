@@ -1,4 +1,4 @@
-var orientURL = "http://95.85.45.153:2480";
+/*var orientURL = "http://95.85.45.153:2480";
 var databaseName = "Pointsquare";
 var root_password = "4f0g4.o.orientDB!";
 //var orientURL = "http://localhost:2480";
@@ -6,6 +6,8 @@ var root_password = "4f0g4.o.orientDB!";
 // var root_password = "4f0g4.o.orientE!";
 
 Meteor.startup(function() {
+
+
     var orient_network = HTTP.call("GET", orientURL + "/query/" + databaseName + "/sql/select%20allLibrary()", {
         auth: "root:" + root_password
     }).data.result[0]['allLibrary'];
@@ -40,7 +42,6 @@ Meteor.publish('user_info', function() {
         var user_email = Meteor.users.findOne({
             '_id': this.userId
         }).emails[0].address;
-        //console.log("personal info of" + user_email + "fetched")
         return people.find({
             'email': user_email
         });
@@ -59,9 +60,6 @@ Meteor.methods({
             knowledge.insert(orient_network[i]);
         };
         console.log("finished inserting knowledge");
-        /*        Meteor.publish('knowledge_network', function() {
-                    return knowledge.find();
-                })*/
         console.log("start pulling users");
         var orient_users = HTTP.call("GET", orientURL + "/query/" + databaseName + "/sql/select%20allUsers()", {
             auth: "root:" + root_password
@@ -141,7 +139,8 @@ Meteor.methods({
 
     retrieve_user_info: function() {
         if (this.userId) {
-            var user_rid = Meteor.call('get_user_rid');
+            var user_rid = Meteor
+.call('get_user_rid');
             var new_info = HTTP.call("GET", orientURL + "/query/" + databaseName + "/sql/select%20nodeInfo(" + encodeURIComponent(user_rid) + ")", {
                 auth: "root:" + root_password
             }).data.result[0]['nodeInfo'];
@@ -292,3 +291,4 @@ Meteor.methods({
     }
 
 })
+*/

@@ -4,10 +4,7 @@ AccountsTemplates.configureRoute('signIn', {
 });
 AccountsTemplates.configureRoute('signUp', {
     layoutTemplate: 'appLayout',
-    redirect: function() {
-        Session.set('callStatus', 'creatingUser');
-        Router.go('dashboard');
-    }
+    redirect: '/dashboard',
 });
 
 AccountsTemplates.configureRoute('ensureSignedIn', {

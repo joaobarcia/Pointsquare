@@ -1,20 +1,26 @@
 Router.route('/', {
     name: 'home',
     onRun: function() {
-            Session.set('callStatus', 'OK');
-            this.next();
-        }
-        //waitOn: function() {}
+        Session.set('callStatus', 'OK');
+        this.next();
+    },
+    // tests
+    waitOn: function() {
+        return [Meteor.subscribe('tests'), Meteor.subscribe('people')];
+    },
 });
 
 Router.route('/search', {
     name: 'search',
     waitOn: function() {
-        if (Meteor.user()) {
-            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
-        } else {
-            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
-        };
+        /*
+                if (Meteor.user()) {
+                    return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+                } else {
+                    return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
+                };*/
+        return Meteor.subscribe('knowledge_network');
+
     },
     onRun: function() {
         Session.set('callStatus', 'OK');
@@ -31,7 +37,7 @@ Router.route('/search', {
         EasySearch.changeProperty('knowledge', 'orderBy', 'state');
         instance.clear();
     }
-})
+});
 
 Router.route('/unit/:_escrid', {
     name: 'unitPage',
@@ -170,13 +176,13 @@ Router.route('/concept/:_escrid/edit', {
 
 Router.route('/dashboard', {
     name: 'dashboard',
-    waitOn: function() {
-        if (Meteor.user()) {
-            return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
-        } else {
-            return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
-        };
-    }
+    /*    waitOn: function() {
+            if (Meteor.user()) {
+                return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
+            } else {
+                return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
+            };
+        }*/
 });
 
 Router.route('/create', {
