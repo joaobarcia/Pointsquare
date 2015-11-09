@@ -1,17 +1,28 @@
 // Dummy content for tests
 Meteor.startup(function() {
-    knowledge.remove({});
-    knowledge.insert({
-        _id: 'DPtRtpZtqSqofWHve',
+    nodes.remove({});
+    Knowledge.remove({});
+    Comments.remove({});
+    Scores.remove({});
+    var a1 = nodes.insert({
+        type: "concept",
+        name: "a1",
+        description: "",
+        createdAt: Date.now(),
+        requirements: [], 
+        belongsTo: [],
+        grantedBy: []
+    })._id;
+    var lesson = nodes.insert({
+        type: "content",
+        name: "lesson",
+        description: "So magics, much nice numbers are good",
         authors: [],
-        class: 'Unit',
-        name: 'Learning Numbers with DJ Khan',
         views: 0,
         likes: 0,
         dislikes: 0,
         totalAttempts: 0,
-        createdAt: 1446834836024,
-        description: 'So magics, much nice numbers are good',
+        createdAt: Date.now(),
         content: [{
             "type": "unitSection",
             "subContent": [{
@@ -21,16 +32,74 @@ Meteor.startup(function() {
         }, {
             "evaluationType": "userConfirmation",
             "type": "unitEvaluationSection"
-        }]
-    });
-    knowledge.insert({
-        _id: 'eNrKkjT9rfJPDAYjj',
-        class: 'Concept',
-        name: 'Numbers',
-        description: '1 2 and 3'
-    });
-    Meteor.publish('knowledge_network', function() {
-        return knowledge.find();
+        }],
+        requirements: [],
+        grants: []
+    })._id;
+    nodes.update({_id: a1 },{$push: {grantedBy: lesson } });
+    nodes.update({_id: lesson },{$push: {grants: a1 } });
+    var r1 = nodes.insert({
+        type: "set",
+        name: "r1",
+        createdAt: Date.now(),
+        concepts: [], 
+        neededFor: []
+    })._id;
+    var r2 = nodes.insert({
+        type: "set",
+        name: "r2",
+        createdAt: Date.now(),
+        concepts: [], 
+        neededFor: []
+    })._id;
+    nodes.update({_id: lesson },{$push: {requirements: {$each: [r1,r2] } } });
+    nodes.update({_id: r1 },{$push: {neededFor: lesson } });
+    nodes.update({_id: r2 },{$push: {neededFor: lesson } });
+    var b11 = nodes.insert({
+        type: "concept",
+        name: "b11",
+        description: "",
+        createdAt: Date.now(),
+        requirements: [], 
+        belongsTo: [],
+        grantedBy: []
+    })._id;
+    var b12 = nodes.insert({
+        type: "concept",
+        name: "b12",
+        description: "",
+        createdAt: Date.now(),
+        requirements: [], 
+        belongsTo: [],
+        grantedBy: []
+    })._id;
+    nodes.update({_id: r1 },{$push: {concepts: {$each: [b11,b12] } } });
+    nodes.update({_id: b11 },{$push: {belongsTo: r1 } });
+    nodes.update({_id: b12 },{$push: {belongsTo: r1 } });
+    var b21 = nodes.insert({
+        type: "concept",
+        name: "b21",
+        description: "",
+        createdAt: Date.now(),
+        requirements: [], 
+        belongsTo: [],
+        grantedBy: []
+    })._id;
+    var b22 = nodes.insert({
+        type: "concept",
+        name: "b22",
+        description: "",
+        createdAt: Date.now(),
+        requirements: [], 
+        belongsTo: [],
+        grantedBy: []
+    })._id;
+    nodes.update({_id: r2 },{$push: {concepts: {$each: [b21,b22] } } });
+    nodes.update({_id: b21 },{$push: {belongsTo: r2 } });
+    nodes.update({_id: b22 },{$push: {belongsTo: r2 } });
+
+    Meteor.publish('nodes', function() {
+        return nodes.find();
     });
 });
 
