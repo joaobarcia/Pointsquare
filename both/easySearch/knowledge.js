@@ -1,11 +1,11 @@
-EasySearch.createSearchIndex('knowledge', {
+EasySearch.createSearchIndex('nodes', {
     'field': ['name', 'description', 'views', 'state', 'date'],
     'collection': Nodes,
     'props': {
         'filteredClasses': ['content'],
-        'orderBy': 'state',
-        'onlyNewUnits': true,
-        'onlyHighProspect': true,
+        'orderBy': 'name',
+        'onlyNewUnits': false,
+        'onlyHighProspect': false,
     },
     sort: function() {
         if (this.props.orderBy) {
@@ -36,7 +36,7 @@ EasySearch.createSearchIndex('knowledge', {
 
         // filter for categories if set
         if (this.props.filteredClasses.length > 0) {
-            query.class = {
+            query.type = {
                 $in: this.props.filteredClasses
             };
         };

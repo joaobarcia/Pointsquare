@@ -5,7 +5,7 @@
                 <div class="card z-depth-0">
                     <div class="col s1">
                         <h3><i class="material-icons right">search</i></h3></div>
-                    <div class="col s11">{{> esInput index="knowledge" placeholder="Search..." allDocsOnEmpty="true" }}</div>
+                    <div class="col s11">{{> esInput index="nodes" placeholder="Search..." allDocsOnEmpty="true" }}</div>
                 </div>
             </div>
         </div>
@@ -56,18 +56,18 @@
                 </div>
             </div>
             <div class="col s9">
-                {{#ifEsIsSearching index="knowledge" }}
+                {{#ifEsIsSearching index="nodes" }}
                     <div class="progress">
                         <div class="indeterminate"></div>
                     </div>
                 {{/ifEsIsSearching}}
                 <div class="collection">
-                    {{#esEach index="knowledge" }}
+                    {{#esEach index="nodes" }}
                         {{#if isConcept}}{{> conceptCard}}{{/if}}
                         {{#if isUnit}}{{> unitCard}}{{/if}}
-                    {{/esEach}} {{> esLoadMoreButton index="knowledge"}}
+                    {{/esEach}} {{> esLoadMoreButton index="nodes"}}
                 </div>
-                {{#ifEsHasNoResults index="knowledge" }}
+                {{#ifEsHasNoResults index="nodes" }}
                     <div class="no-results">No results found</div>
                 {{/ifEsHasNoResults}}
             </div>

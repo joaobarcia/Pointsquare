@@ -12,18 +12,18 @@ Template.search.onCreated(function() {
     var self = this;
     self.autorun(function() {
         //var postId = FlowRouter.getParam('postId');
-        self.subscribe('knowledge_network');
+        self.subscribe('nodes');
     });
 });
 
 Template.search.events({
     'click #searchBoth': function() {
         var instance = EasySearch.getComponentInstance({
-            index: 'knowledge'
+            index: 'nodes'
         });
 
         // Change the currently filteredCategories like this
-        EasySearch.changeProperty('knowledge', 'filteredClasses', []);
+        EasySearch.changeProperty('nodes', 'filteredClasses', []);
         // Trigger the search again, to reload the new products
         instance.triggerSearch();
 
@@ -40,11 +40,11 @@ Template.search.events({
     'click #searchUnits': function() {
 
         var instance = EasySearch.getComponentInstance({
-            index: 'knowledge'
+            index: 'nodes'
         });
 
         // Change the currently filteredCategories like this
-        EasySearch.changeProperty('knowledge', 'filteredClasses', ['Unit']);
+        EasySearch.changeProperty('nodes', 'filteredClasses', ['content']);
         // Trigger the search again, to reload the new products
         instance.triggerSearch();
 
@@ -59,11 +59,11 @@ Template.search.events({
     },
     'click #searchConcepts': function() {
         var instance = EasySearch.getComponentInstance({
-            index: 'knowledge'
+            index: 'nodes'
         });
 
         // Change the currently filteredCategories like this
-        EasySearch.changeProperty('knowledge', 'filteredClasses', ['Concept']);
+        EasySearch.changeProperty('nodes', 'filteredClasses', ['concept']);
         // Trigger the search again, to reload the new products
         instance.triggerSearch();
 
@@ -78,46 +78,46 @@ Template.search.events({
     },
     'click #sortState': function() {
         var instance = EasySearch.getComponentInstance({
-            index: 'knowledge'
+            index: 'nodes'
         });
 
         // Change the currently filteredCategories like this
-        EasySearch.changeProperty('knowledge', 'orderBy', 'state');
+        EasySearch.changeProperty('nodes', 'orderBy', 'state');
         // Trigger the search again, to reload the new products
         instance.triggerSearch();
     },
     'click #sortName': function() {
         var instance = EasySearch.getComponentInstance({
-            index: 'knowledge'
+            index: 'nodes'
         });
 
         // Change the currently filteredCategories like this
-        EasySearch.changeProperty('knowledge', 'orderBy', 'name');
+        EasySearch.changeProperty('nodes', 'orderBy', 'name');
         // Trigger the search again, to reload the new products
         instance.triggerSearch();
     },
     'click #sortViews': function() {
         var instance = EasySearch.getComponentInstance({
-            index: 'knowledge'
+            index: 'nodes'
         });
 
         // Change the currently filteredCategories like this
-        EasySearch.changeProperty('knowledge', 'orderBy', 'views');
+        EasySearch.changeProperty('nodes', 'orderBy', 'views');
         // Trigger the search again, to reload the new products
         instance.triggerSearch();
     },
     'click #onlyNewUnits': function(event, template) {
         var instance = EasySearch.getComponentInstance({
-            index: 'knowledge'
+            index: 'nodes'
         });
         switchStatus = template.$('#onlyNewUnits').is(":checked");
         // Change the value of the onlyNewUnits prop of easySearch
         if (switchStatus) {
             console.log("CHECKED!");
-            EasySearch.changeProperty('knowledge', 'onlyNewUnits', true);
+            EasySearch.changeProperty('nodes', 'onlyNewUnits', true);
         } else {
             console.log("NOT CHECKED!");
-            EasySearch.changeProperty('knowledge', 'onlyNewUnits', false);
+            EasySearch.changeProperty('nodes', 'onlyNewUnits', false);
         };
 
         // Trigger the search again, to reload the new products
@@ -125,16 +125,16 @@ Template.search.events({
     },
     'click #onlyHighProspect': function(event, template) {
         var instance = EasySearch.getComponentInstance({
-            index: 'knowledge'
+            index: 'nodes'
         });
         switchStatus = template.$('#onlyHighProspect').is(":checked");
         // Change the value of the onlyNewUnits prop of easySearch
         if (switchStatus) {
             console.log("CHECKED!");
-            EasySearch.changeProperty('knowledge', 'onlyHighProspect', true);
+            EasySearch.changeProperty('nodes', 'onlyHighProspect', true);
         } else {
             console.log("NOT CHECKED!");
-            EasySearch.changeProperty('knowledge', 'onlyHighProspect', false);
+            EasySearch.changeProperty('nodes', 'onlyHighProspect', false);
         };
 
         // Trigger the search again, to reload the new products

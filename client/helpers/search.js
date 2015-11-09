@@ -1,12 +1,12 @@
 Template.search.helpers({
     'isConcept': function() {
-        return this.class == "Concept"
+        return this.type == "concept"
     },
     'isUnit': function() {
-        return this.class == "Unit"
+        return this.type == "content"
     },
-    'knowledge': function() {
-        return knowledge.find({}, {
+    'nodes': function() {
+        return Nodes.find({}, {
             sort: {
                 'name': 1
             }
