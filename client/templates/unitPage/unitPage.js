@@ -1,8 +1,9 @@
 Template.unitPage.onCreated(function() {
     var self = this;
     self.autorun(function() {
-        var unitId = FlowRouter.getParam('unitId');
-        self.subscribe('knowledge_network', unitId);
+        var contentId = FlowRouter.getParam('contentId');
+        console.log(contentId);
+        self.subscribe('singleContent', contentId);
     });
 });
 

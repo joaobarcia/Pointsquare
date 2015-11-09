@@ -1,48 +1,51 @@
 <template name="unitPage">
     <div class="template-unitPage">
-        <div class="container">
-            <div class="card">
-                {{#if doingExercise}}
-                    {{> unitContent}}
-                {{/if}}
-                {{#if learning}}
-                    {{> propagatingKnowledge}}
-                {{/if}}
-                {{#if learned}}
-                    {{>learnedResults learnedConcept=learnedConcept}}
-                {{/if}}
-                {{#if unlearned}}
-                    {{>unlearnedResults unlearnedConcept=unlearnedConcept}}
-                {{/if}}
-                {{> relatedConcepts grantedConcepts=grantedConcepts requiredConcepts=requiredConcepts }}
-            </div>
-            <div class="card-panel">
-                <div class="row no-margin">
-                    <div class="col s10">
-                        <h3>{{name}}</h3>
-                        <p>{{!-- <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> --}}<span class="grey-text"> by {{nameOf authors}}</span></p>
+        {{#with contentPage}}
+            <div class="container">
+                <div class="card">
+                    {{#if doingExercise}}
+                        {{> unitContent}}
+                    {{/if}}
+                    {{#if learning}}
+                        {{> propagatingKnowledge}}
+                    {{/if}}
+                    {{#if learned}}
+                        {{>learnedResults learnedConcept=learnedConcept}}
+                    {{/if}}
+                    {{#if unlearned}}
+                        {{>unlearnedResults unlearnedConcept=unlearnedConcept}}
+                    {{/if}}
+                    <!-- {{> relatedConcepts grantedConcepts=grantedConcepts requiredConcepts=requiredConcepts }}
+                -->
+                </div>
+                <div class="card-panel">
+                    <div class="row no-margin">
+                        <div class="col s10">
+                            <h3>{{name}}</h3>
+                            <p>{{!-- <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> --}}<span class="grey-text"> by {{!-- {{nameOf authors}} --}}</span></p>
+                        </div>
+                        <div class="col s2 right-align">
+                            {{#if userIsAuthor}}
+                                <a href="{{escrid}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"><i class="material-icons">create</i></a>
+                            {{else}}
+                                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="You can only edit lessons you have created"><i class="material-icons">create</i></a>
+                            {{/if}}
+                        </div>
                     </div>
-                    <div class="col s2 right-align">
-                        {{#if userIsAuthor}}
-                            <a href="{{escrid}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"><i class="material-icons">create</i></a>
-                        {{else}}
-                            <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="You can only edit lessons you have created"><i class="material-icons">create</i></a>
-                        {{/if}}
+                    <div class="row">
+                        <div class="col s12">
+                            <h6 class="grey-text"><span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
+                            <p class="pre">{{description}}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col s12">
-                        <h6 class="grey-text"><span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
-                        <p class="pre">{{description}}</p>
+                <div class="card-panel">
+                    <div class="comment-section">
+                        {{> commentsBox id=escrid}}
                     </div>
                 </div>
             </div>
-            <div class="card-panel">
-                <div class="comment-section">
-                    {{> commentsBox id=escrid}}
-                </div>
-            </div>
-        </div>
+        {{/with}}
     </div>
 </template>
 <template name="unitContent">
@@ -195,11 +198,10 @@
             </div>
             <div class="col s5">
                 <span class="grey-text text-darken-2">This unit helps you master:</span>
+                <br>{{!-- {{#each grantedConcepts}}
+                <a href="../concept/{{escrid}}">{{name}}</a>
                 <br>
-                {{#each grantedConcepts}}
-                    <a href="../concept/{{escrid}}">{{name}}</a>
-                    <br>
-                {{/each}}
+                {{/each}} --}}
             </div>
         </div>
     </div>
@@ -226,10 +228,10 @@
             <h5>Congratulations! You have learnt</h5>
             <div class="row">
                 <div class="col s4 offset-s4">
-                    {{#each learnedConcept}}
-                        <a href="../concept/{{escrid}}">{{name}}</a>
-                        <br>
-                    {{/each}}
+                    {{!-- {{#each learnedConcept}}
+                    <a href="../concept/{{escrid}}">{{name}}</a>
+                    <br>
+                    {{/each}} --}}
                 </div>
             </div>
         </div>

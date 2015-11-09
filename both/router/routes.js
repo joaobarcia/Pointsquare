@@ -2,7 +2,7 @@ FlowRouter.route('/', {
     name: 'home',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
-            content: "home"
+            main: "home"
         });
     }
 });
@@ -11,16 +11,28 @@ FlowRouter.route('/search', {
     name: 'search',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
-            content: "search"
+            main: "search"
         });
     }
 });
 
-FlowRouter.route('/unit/:unitId', {
+FlowRouter.route('/content/:contentId', {
     name: 'unitPage',
-    action: function(params, queryParams) {
+    triggersEnter: function() {
+        Session.set('callStatus', 'doingExercise');
+    },
+    action: function(params) {
         BlazeLayout.render("mainLayout", {
-            content: "unitPage"
+            main: "unitPage"
+        });
+
+    }
+});
+FlowRouter.route('/concept/:conceptId', {
+    name: 'conceptPage',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "conceptPage"
         });
 
     }

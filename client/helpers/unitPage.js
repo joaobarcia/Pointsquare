@@ -1,4 +1,13 @@
 Template.unitPage.helpers({
+    contentPage: function() {
+        var contentId = FlowRouter.getParam('contentId');
+        var content = Nodes.findOne({
+            _id: contentId
+        }) || {};
+        return content;
+    },
+
+
     grantedConcepts: function() {
         return knowledge.find({
             'class': 'Concept',

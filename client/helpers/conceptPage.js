@@ -1,4 +1,11 @@
 Template.conceptPage.helpers({
+    conceptPage: function() {
+        var conceptId = FlowRouter.getParam('conceptId');
+        var concept = Nodes.findOne({
+            _id: conceptId
+        }) || {};
+        return concept;
+    },
     'grantedUnit': function() {
         return knowledge.find({
             'class': 'Unit',

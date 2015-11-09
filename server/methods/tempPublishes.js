@@ -170,11 +170,25 @@ Meteor.startup(function() {
         }
     });
 
-    Meteor.publish('nodes', function() {
-        return Nodes.find();
+});
+
+Meteor.publish('nodes', function() {
+    return Nodes.find();
+});
+
+Meteor.publish('singleContent', function(contentId) {
+    return Nodes.find({
+        type: 'content',
+        _id: contentId
     });
 });
 
+Meteor.publish('singleConcept', function(conceptId) {
+    return Nodes.find({
+        type: 'concept',
+        _id: conceptId
+    });
+});
 
 Meteor.publish('people', function() {
     var userCursor = Meteor.users.find({}, {
