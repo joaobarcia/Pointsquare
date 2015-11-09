@@ -1,3 +1,4 @@
-AppController = RouteController.extend({
+/*AppController = RouteController.extend({
   layoutTemplate: 'appLayout'
 });
+*/

@@ -8,6 +8,14 @@
     });
 }*/
 
+Template.search.onCreated(function() {
+    var self = this;
+    self.autorun(function() {
+        //var postId = FlowRouter.getParam('postId');
+        self.subscribe('knowledge_network');
+    });
+});
+
 Template.search.events({
     'click #searchBoth': function() {
         var instance = EasySearch.getComponentInstance({

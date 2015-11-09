@@ -1,4 +1,4 @@
-HomeController = AppController.extend({
+/*HomeController = AppController.extend({
     data: {
 
     },
@@ -6,3 +6,4 @@ HomeController = AppController.extend({
         Meta.setTitle('Pointsquare');
     }
 });
+*/

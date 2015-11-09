@@ -9,14 +9,12 @@ momentjs:moment
 mrt:underscore-string-latest
 dburles:factory
 cunneen:mailgun
-iron:router
 yasinuslu:blaze-meta
 materialize:materialize@=0.97.0
 useraccounts:materialize
 http
 matteodem:easy-search
 meteorhacks:kadira
-useraccounts:iron-routing
 email
 accounts-base
 meteorhacks:fast-render
@@ -52,3 +50,6 @@ arkham:comments-ui
 mrt:mathjax
 chuangbo:marked
 kadira:flow-router
+kadira:blaze-layout
+useraccounts:flow-routing
+arillo:flow-router-helpers

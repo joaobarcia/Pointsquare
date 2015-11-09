@@ -1,4 +1,4 @@
-Router.configure({
+/*Router.configure({
     controller: 'AppController',
     loadingTemplate: 'loading',
     notFoundtemplate: "notFound",
@@ -7,3 +7,4 @@ Router.configure({
 Router.plugin('dataNotFound', {
     dataNotFoundTemplate: 'notFound'
 });
+*/

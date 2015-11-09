@@ -1,4 +1,32 @@
-Router.route('/', {
+FlowRouter.route('/', {
+    name: 'home',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            content: "home"
+        });
+    }
+});
+
+FlowRouter.route('/search', {
+    name: 'search',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            content: "search"
+        });
+    }
+});
+
+FlowRouter.route('/unit/:unitId', {
+    name: 'unitPage',
+    action: function(params, queryParams) {
+        BlazeLayout.render("mainLayout", {
+            content: "unitPage"
+        });
+
+    }
+});
+
+/*Router.route('/', {
     name: 'home',
     onRun: function() {
         Session.set('callStatus', 'OK');
@@ -9,16 +37,18 @@ Router.route('/', {
         return [Meteor.subscribe('tests'), Meteor.subscribe('people')];
     },
 });
+*/
 
+/*
 Router.route('/search', {
     name: 'search',
     waitOn: function() {
-        /*
+        
                 if (Meteor.user()) {
                     return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
                 } else {
                     return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
-                };*/
+                };
         return Meteor.subscribe('knowledge_network');
 
     },
@@ -176,13 +206,13 @@ Router.route('/concept/:_escrid/edit', {
 
 Router.route('/dashboard', {
     name: 'dashboard',
-    /*    waitOn: function() {
+        waitOn: function() {
             if (Meteor.user()) {
                 return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
             } else {
                 return [Meteor.subscribe('user_names'), Meteor.subscribe('knowledge_network')];
             };
-        }*/
+        }
 });
 
 Router.route('/create', {
@@ -232,3 +262,4 @@ Router.route('/create/concept', {
 Router.plugin('ensureSignedIn', {
     only: ['dashboard', 'create', 'createUnit', 'createConcept', 'conceptEdit', 'unitEdit']
 });
+*/

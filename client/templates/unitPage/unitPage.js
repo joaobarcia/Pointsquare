@@ -1,3 +1,11 @@
+Template.unitPage.onCreated(function() {
+    var self = this;
+    self.autorun(function() {
+        var unitId = FlowRouter.getParam('unitId');
+        self.subscribe('knowledge_network', unitId);
+    });
+});
+
 Template.unitPage.rendered = function() {
     $(document).ready(function() {
         $('.tooltipped').tooltip({
