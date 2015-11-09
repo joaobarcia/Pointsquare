@@ -1,8 +1,8 @@
 EasySearch.createSearchIndex('knowledge', {
     'field': ['name', 'description', 'views', 'state', 'date'],
-    'collection': knowledge,
+    'collection': Nodes,
     'props': {
-        'filteredClasses': ['Unit'],
+        'filteredClasses': ['content'],
         'orderBy': 'state',
         'onlyNewUnits': true,
         'onlyHighProspect': true,

@@ -1,19 +1,19 @@
 // Dummy content for tests
 Meteor.startup(function() {
-    nodes.remove({});
+    Nodes.remove({});
     Knowledge.remove({});
-    Comments.remove({});
+    //Comments.remove({});
     Scores.remove({});
-    var a1 = nodes.insert({
+    var a1 = Nodes.insert({
         type: "concept",
         name: "a1",
         description: "",
         createdAt: Date.now(),
-        requirements: [], 
+        requirements: [],
         belongsTo: [],
         grantedBy: []
     })._id;
-    var lesson = nodes.insert({
+    var lesson = Nodes.insert({
         type: "content",
         name: "lesson",
         description: "So magics, much nice numbers are good",
@@ -36,70 +36,142 @@ Meteor.startup(function() {
         requirements: [],
         grants: []
     })._id;
-    nodes.update({_id: a1 },{$push: {grantedBy: lesson } });
-    nodes.update({_id: lesson },{$push: {grants: a1 } });
-    var r1 = nodes.insert({
+    Nodes.update({
+        _id: a1
+    }, {
+        $push: {
+            grantedBy: lesson
+        }
+    });
+    Nodes.update({
+        _id: lesson
+    }, {
+        $push: {
+            grants: a1
+        }
+    });
+    var r1 = Nodes.insert({
         type: "set",
         name: "r1",
         createdAt: Date.now(),
-        concepts: [], 
+        concepts: [],
         neededFor: []
     })._id;
-    var r2 = nodes.insert({
+    var r2 = Nodes.insert({
         type: "set",
         name: "r2",
         createdAt: Date.now(),
-        concepts: [], 
+        concepts: [],
         neededFor: []
     })._id;
-    nodes.update({_id: lesson },{$push: {requirements: {$each: [r1,r2] } } });
-    nodes.update({_id: r1 },{$push: {neededFor: lesson } });
-    nodes.update({_id: r2 },{$push: {neededFor: lesson } });
-    var b11 = nodes.insert({
+    Nodes.update({
+        _id: lesson
+    }, {
+        $push: {
+            requirements: {
+                $each: [r1, r2]
+            }
+        }
+    });
+    Nodes.update({
+        _id: r1
+    }, {
+        $push: {
+            neededFor: lesson
+        }
+    });
+    Nodes.update({
+        _id: r2
+    }, {
+        $push: {
+            neededFor: lesson
+        }
+    });
+    var b11 = Nodes.insert({
         type: "concept",
         name: "b11",
         description: "",
         createdAt: Date.now(),
-        requirements: [], 
+        requirements: [],
         belongsTo: [],
         grantedBy: []
     })._id;
-    var b12 = nodes.insert({
+    var b12 = Nodes.insert({
         type: "concept",
         name: "b12",
         description: "",
         createdAt: Date.now(),
-        requirements: [], 
+        requirements: [],
         belongsTo: [],
         grantedBy: []
     })._id;
-    nodes.update({_id: r1 },{$push: {concepts: {$each: [b11,b12] } } });
-    nodes.update({_id: b11 },{$push: {belongsTo: r1 } });
-    nodes.update({_id: b12 },{$push: {belongsTo: r1 } });
-    var b21 = nodes.insert({
+    Nodes.update({
+        _id: r1
+    }, {
+        $push: {
+            concepts: {
+                $each: [b11, b12]
+            }
+        }
+    });
+    Nodes.update({
+        _id: b11
+    }, {
+        $push: {
+            belongsTo: r1
+        }
+    });
+    Nodes.update({
+        _id: b12
+    }, {
+        $push: {
+            belongsTo: r1
+        }
+    });
+    var b21 = Nodes.insert({
         type: "concept",
         name: "b21",
         description: "",
         createdAt: Date.now(),
-        requirements: [], 
+        requirements: [],
         belongsTo: [],
         grantedBy: []
     })._id;
-    var b22 = nodes.insert({
+    var b22 = Nodes.insert({
         type: "concept",
         name: "b22",
         description: "",
         createdAt: Date.now(),
-        requirements: [], 
+        requirements: [],
         belongsTo: [],
         grantedBy: []
     })._id;
-    nodes.update({_id: r2 },{$push: {concepts: {$each: [b21,b22] } } });
-    nodes.update({_id: b21 },{$push: {belongsTo: r2 } });
-    nodes.update({_id: b22 },{$push: {belongsTo: r2 } });
+    Nodes.update({
+        _id: r2
+    }, {
+        $push: {
+            concepts: {
+                $each: [b21, b22]
+            }
+        }
+    });
+    Nodes.update({
+        _id: b21
+    }, {
+        $push: {
+            belongsTo: r2
+        }
+    });
+    Nodes.update({
+        _id: b22
+    }, {
+        $push: {
+            belongsTo: r2
+        }
+    });
 
     Meteor.publish('nodes', function() {
-        return nodes.find();
+        return Nodes.find();
     });
 });
 
