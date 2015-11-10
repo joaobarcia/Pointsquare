@@ -1,7 +1,7 @@
 AccountsTemplates.configure({
     defaultLayout: 'mainLayout',
     defaultLayoutRegions: {},
-    defaultContentRegion: 'content'
+    defaultContentRegion: 'main'
 });
 
 AccountsTemplates.addField({

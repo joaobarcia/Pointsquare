@@ -1,4 +1,11 @@
 Template.conceptEdit.helpers({
+    conceptEditPage: function() {
+        var conceptId = FlowRouter.getParam('conceptId');
+        var concept = Nodes.findOne({
+            _id: conceptId
+        }) || {};
+        return concept;
+    },
     conceptEditSchema: function() {
         return Schema.Concept;
     },
@@ -13,8 +20,8 @@ Template.conceptEdit.helpers({
 
         return conceptEditDoc;
     },
-    submitting: function() {
-        console.log(Session.get("callStatus"));
-        return Session.get("callStatus") == "submitting concept";
-    },
+    /*    submitting: function() {
+            console.log(Session.get("callStatus"));
+            return Session.get("callStatus") == "submitting concept";
+        },*/
 });

@@ -9,9 +9,28 @@ FlowRouter.route('/', {
 
 FlowRouter.route('/search', {
     name: 'search',
+    triggersEnter: function() {
+        var instance = EasySearch.getComponentInstance({
+            index: 'nodes'
+        });
+        EasySearch.changeProperty('nodes', 'filteredClasses', ['content']);
+        EasySearch.changeProperty('nodes', 'onlyNewUnits', true);
+        EasySearch.changeProperty('nodes', 'onlyHighProspect', true);
+        EasySearch.changeProperty('nodes', 'orderBy', 'state');
+        instance.clear();
+    },
     action: function(params) {
         BlazeLayout.render("mainLayout", {
             main: "search"
+        });
+    }
+});
+
+FlowRouter.route('/dashboard', {
+    name: 'dashboard',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "dashboard"
         });
     }
 });
@@ -25,16 +44,54 @@ FlowRouter.route('/content/:contentId', {
         BlazeLayout.render("mainLayout", {
             main: "unitPage"
         });
+    },
+    triggersExit: function() {
+        Session.set('callStatus', 'doingExercise');
+    },
+});
 
+FlowRouter.route('/content/:contentId/edit', {
+    name: 'unitEdit',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "unitEdit"
+        });
     }
 });
+
 FlowRouter.route('/concept/:conceptId', {
     name: 'conceptPage',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
             main: "conceptPage"
         });
+    }
+});
 
+FlowRouter.route('/concept/:conceptId/edit', {
+    name: 'conceptEdit',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "conceptEdit"
+        });
+    }
+});
+
+FlowRouter.route('/create/concept', {
+    name: 'conceptCreate',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "createConcept"
+        });
+    }
+});
+
+FlowRouter.route('/create/content', {
+    name: 'contentCreate',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "createUnit"
+        });
     }
 });
 

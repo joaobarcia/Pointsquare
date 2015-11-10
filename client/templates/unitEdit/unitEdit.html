@@ -1,70 +1,72 @@
 <template name="unitEdit">
-    <div class="container">
-        <div class="section">
-            <h4>Editing <a href="../{{escrid}}">{{name}}</a></h4>
-            <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
-            {{#autoForm schema=unitEditSchema id="unitEdit" doc=unitEditDoc resetOnSuccess=false unitRID=rid}}
-                <fieldset>
-                    {{!-- <legend>Contact Us</legend> --}}
-                    <div class="card">
-                        <div class="section">
-                            <div class="container">
-                                <div class="section">
-                                    <h3 class="center-align">Info</h3>
+    {{#with contentEditPage}}
+        <div class="container">
+            <div class="section">
+                <h4>Editing <a href="../{{_id}}">{{name}}</a></h4>
+                <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
+                {{#autoForm schema=unitEditSchema id="unitEdit" doc=unitEditDoc resetOnSuccess=false unitRID=rid}}
+                    <fieldset>
+                        {{!-- <legend>Contact Us</legend> --}}
+                        <div class="card">
+                            <div class="section">
+                                <div class="container">
                                     <div class="section">
-                                        <h5 class="center-align grey-text">Created by <span class="black-text">{{nameOf authors}}</span> on <span class="black-text">{{date_of_creation}}</span></h5>
+                                        <h3 class="center-align">Info</h3>
+                                        <div class="section">
+                                            <h5 class="center-align grey-text">Created by <span class="black-text">{{nameOf authors}}</span> on <span class="black-text">{{date_of_creation}}</span></h5>
+                                        </div>
+                                        {{> afQuickField name="name" value=name}} {{> afQuickField name="description" value= description}}
                                     </div>
-                                    {{> afQuickField name="name" value=name}} {{> afQuickField name="description" value= description}}
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Content</h3>{{!-- <h5 class="center-align">Re-order sections by dragging the title and content by dragging the icon</h5> --}}
-                                    <h5 class="center-align"><a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a> and <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a> are supported in text boxes</h5>
-                                    <div class="card-panel">
-                                        {{>unitEditContent}}
+                                    <div class="section">
+                                        <div class="divider"></div>
+                                        <h3 class="center-align">Content</h3>{{!-- <h5 class="center-align">Re-order sections by dragging the title and content by dragging the icon</h5> --}}
+                                        <h5 class="center-align"><a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a> and <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a> are supported in text boxes</h5>
+                                        <div class="card-panel">
+                                            {{>unitEditContent content=content}}
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Evaluation</h3>{{> afQuickField name="evaluationType"}}
-                                    {{#if afFieldValueIs name="evaluationType" value="exerciseRadioButton" }}
-                                        {{> afQuickField name="exerciseRadioButton"}}
-                                    {{/if}}
-                                    {{#if afFieldValueIs name="evaluationType" value="exerciseString" }}
-                                        {{> afQuickField name="exerciseString"}}
-                                    {{/if}}
-                                    {{#if afFieldValueIs name="evaluationType" value="userConfirmation" }}
-                                    {{/if}}
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Concepts</h3>
-                                    <h5>Necessary to understand this unit</h5>{{> afQuickField name="requiredConcepts"}}
-                                    <h5>Will be taught by this unit</h5>{{> afQuickField name="grantedConcepts"}}
-                                    <div class="center-align">
+                                    <div class="section">
+                                        <div class="divider"></div>
+                                        <h3 class="center-align">Evaluation</h3>{{> afQuickField name="evaluationType"}}
+                                        {{#if afFieldValueIs name="evaluationType" value="exerciseRadioButton" }}
+                                            {{> afQuickField name="exerciseRadioButton"}}
+                                        {{/if}}
+                                        {{#if afFieldValueIs name="evaluationType" value="exerciseString" }}
+                                            {{> afQuickField name="exerciseString"}}
+                                        {{/if}}
+                                        {{#if afFieldValueIs name="evaluationType" value="userConfirmation" }}
+                                        {{/if}}
+                                    </div>
+                                    <div class="section">
+                                        <div class="divider"></div>
+                                        <h3 class="center-align">Concepts</h3>
+                                        <h5>Necessary to understand this unit</h5>{{> afQuickField name="requiredConcepts"}}
+                                        <h5>Will be taught by this unit</h5>{{> afQuickField name="grantedConcepts"}}
+                                        <div class="center-align">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        {{#if submitting}}
-                            {{> smallLoading}}
-                        {{else}}
-                            <button type="submit" class="btn btn-primary btn-large">Submit</button>
-                            <button id="deleteUnit" class="btn btn-primary btn-large red">Delete</button>
+                        <div>
+                            {{#if submitting}}
+                                {{> smallLoading}}
+                            {{else}}
+                                <button type="submit" class="btn btn-primary btn-large">Submit</button>
+                                <button id="deleteUnit" class="btn btn-primary btn-large red">Delete</button>
+                                {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
+                            {{/if}}
                             {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
-                        {{/if}}
-                        {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
-                    </div>
-                </fieldset>
-            {{/autoForm}}
+                        </div>
+                    </fieldset>
+                {{/autoForm}}
+            </div>
         </div>
-    </div>
+    {{/with}}
 </template>
 <template name="unitEditContent">
     <div id="content-sections">
-        {{#each tempContent}}
+        {{#each content}}
             <div class="section section-card">
                 <div class="row valign-wrapper no-margin">
                     <div class="col s6">

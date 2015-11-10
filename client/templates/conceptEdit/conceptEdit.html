@@ -1,37 +1,39 @@
 <template name="conceptEdit">
-    <div class="container">
-        <div class="section">
-            <h4>Editing <a href="../{{escrid}}">{{name}}</a></h4>
-            <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
-            {{#autoForm schema=conceptEditSchema doc=conceptEditDoc id="conceptEdit" conceptRID=rid resetOnSuccess=false }}
-                <fieldset>
-                    {{!-- <legend>Contact Us</legend> --}}
-                    <div class="card dropdown-overflow">
-                        <div class="section">
-                            <div class="container">
-                                <div class="section">
-                                    {{!-- {{> afArrayField name="items" template='customArrayField'}}
-                                    --}} <h3 class="center-align">Info</h3> {{> afQuickField name="name" value=(unescape name)}} {{> afQuickField name="description" value= (unescape description)}}
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Child Concepts</h3> {{> afQuickField name="childConcepts"}}
+    {{#with conceptEditPage}}
+        <div class="container">
+            <div class="section">
+                <h4>Editing <a href="../{{_id}}">{{name}}</a></h4>
+                <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
+                {{#autoForm schema=conceptEditSchema doc=conceptEditDoc id="conceptEdit" conceptRID=rid resetOnSuccess=false }}
+                    <fieldset>
+                        {{!-- <legend>Contact Us</legend> --}}
+                        <div class="card dropdown-overflow">
+                            <div class="section">
+                                <div class="container">
+                                    <div class="section">
+                                        {{!-- {{> afArrayField name="items" template='customArrayField'}}
+                                        --}} <h3 class="center-align">Info</h3> {{> afQuickField name="name" value=name}} {{> afQuickField name="description" value= description}}
+                                    </div>
+                                    <div class="section">
+                                        <div class="divider"></div>
+                                        <h3 class="center-align">Child Concepts</h3> {{> afQuickField name="childConcepts"}}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        {{#if submitting}}
-                            {{> smallLoading}}
-                        {{else}}
-                            <button type="submit" class="btn btn-primary btn-large">Submit</button>
-                            <button id="deleteConcept" class="btn btn-primary btn-large red">Delete</button>
+                        <div>
+                            {{#if submitting}}
+                                {{> smallLoading}}
+                            {{else}}
+                                <button type="submit" class="btn btn-primary btn-large">Submit</button>
+                                <button id="deleteConcept" class="btn btn-primary btn-large red">Delete</button>
+                                {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
+                            {{/if}}
                             {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
-                        {{/if}}
-                        {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
-                    </div>
-                </fieldset>
-            {{/autoForm}}
+                        </div>
+                    </fieldset>
+                {{/autoForm}}
+            </div>
         </div>
-    </div>
+    {{/with}}
 </template>

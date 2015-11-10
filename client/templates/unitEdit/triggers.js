@@ -1,3 +1,11 @@
+Template.unitEdit.onCreated(function() {
+    var self = this;
+    self.autorun(function() {
+        var contentId = FlowRouter.getParam('contentId');
+        self.subscribe('singleContent', contentId);
+    });
+});
+
 Template.unitEdit.rendered = function() {
     $(document).ready(function() {
         $('.tooltipped').tooltip({
@@ -17,7 +25,6 @@ Template.unitEdit.events({
         });
     },
 });
-
 
 function applySort() { // must apply sort and dropdown properties everytime the content is changed
     Sortable.create(document.getElementById('content-sections'), {

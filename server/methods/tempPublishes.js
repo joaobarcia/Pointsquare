@@ -190,6 +190,12 @@ Meteor.publish('singleConcept', function(conceptId) {
     });
 });
 
+Meteor.publish('allConcepts', function(conceptId) {
+    return Nodes.find({
+        type: 'concept'
+    });
+});
+
 Meteor.publish('people', function() {
     var userCursor = Meteor.users.find({}, {
         fields: {

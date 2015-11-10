@@ -2,7 +2,6 @@ Template.unitPage.onCreated(function() {
     var self = this;
     self.autorun(function() {
         var contentId = FlowRouter.getParam('contentId');
-        console.log(contentId);
         self.subscribe('singleContent', contentId);
     });
 });

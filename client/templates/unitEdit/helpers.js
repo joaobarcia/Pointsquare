@@ -1,4 +1,11 @@
 Template.unitEdit.helpers({
+    contentEditPage: function() {
+        var contentId = FlowRouter.getParam('contentId');
+        var content = Nodes.findOne({
+            _id: contentId
+        }) || {};
+        return content;
+    },
     unitEditSchema: function() {
         return Schema.Unit;
     },

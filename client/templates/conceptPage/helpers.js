@@ -6,7 +6,7 @@ Template.conceptPage.helpers({
         }) || {};
         return concept;
     },
-    'grantedUnit': function() {
+    /*'grantedUnit': function() {
         return knowledge.find({
             'class': 'Unit',
             'grants.rid': this.rid
@@ -32,5 +32,5 @@ Template.conceptPage.helpers({
             'belongs_to.rid': this.rid
         });
 
-    },
+    },*/
 });

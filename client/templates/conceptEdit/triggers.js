@@ -1,3 +1,11 @@
+Template.conceptEdit.onCreated(function() {
+    var self = this;
+    self.autorun(function() {
+        var conceptId = FlowRouter.getParam('conceptId');
+        self.subscribe('singleConcept', conceptId);
+    });
+});
+
 Template.conceptEdit.rendered = function() {
     $(document).ready(function() {
         $('.tooltipped').tooltip({
