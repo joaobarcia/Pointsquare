@@ -26,7 +26,7 @@
                         </div>
                         <div class="col s2 right-align">
                             {{#if userIsAuthor}}
-                                <a href="{{escrid}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"><i class="material-icons">create</i></a>
+                                <a href="{{_id}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"><i class="material-icons">create</i></a>
                             {{else}}
                                 <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="You can only edit lessons you have created"><i class="material-icons">create</i></a>
                             {{/if}}
@@ -41,7 +41,7 @@
                 </div>
                 <div class="card-panel">
                     <div class="comment-section">
-                        {{> commentsBox id=escrid}}
+                        {{> commentsBox id=contentPage._id}}
                     </div>
                 </div>
             </div>
