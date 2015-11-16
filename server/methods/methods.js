@@ -1,3 +1,109 @@
+//math functions
+
+sigmoid = function(x){
+	return 1./(1+Math.exp(-x));
+}
+
+inverseSigmoid = function(x){
+	return -Math.log(x/(1-x));
+}
+
+//server variables
+
+MINIMUM_EASY = sigmoid(2);
+MINIMUM_MEDIUM = sigmoid(-2);
+MAXIMUM_HARD = sigmoid(-4);
+WIDTH = 4;
+
+//server functions
+
+buildSet = function(list){
+	var set = {};
+	for( var i = 0 ; i < list.length ; i++ ){
+		var key = list[i];
+		set[key] = WIDTH;
+	}
+	set["bias"] = WIDTH*(list.length - 1);
+	return set;
+}
+
+removeOcurrences = function(item,list){
+    for(var i = list.length; i--;) {
+        if(list[i] === item) {
+            list.splice(i, 1);
+        }
+    }
+}
+
+backOneStep = function(set,states,errors){
+	//
+}
+
+backpropagate = function(){
+	//
+}
+
+propagate = function(){
+	//
+}
+/*
+updateNode = function(nodeID,userID){
+	var state = Edges.findOne({
+		from: userID,
+		to: nodeID
+	}).state;
+	var requirements = Nodes.findOne({ _id: nodeID }).from.need;
+	for( var i = 0 ; i < requirements.length ; i++ ){
+		var setID = requirements[i];
+		var set = Nodes.findOne({ _id: setID }).set;
+		//DEPRECATED!!!!!
+	}
+}
+
+//getState should only be used for content or concepts!
+getState = function(nodeID,userID){
+	var node = Nodes.findOne({ _id: nodeID });
+	if( node.type == "concept" || node.type == "content" ){
+		var edge = Edges.findOne({
+			from: userID,
+			to: nodeID
+		});
+		if( edge ){ return edge.state; }
+		else{ return 0; }
+	}
+	//if it's content or a concept, compute the activations of its sets and return their maximum activation
+	else if( node.type == "set" ){
+		return computeState(nodeID,userID);
+	}
+}
+
+//returns the new state of a node
+computeState = function(nodeID,userID){
+	//if it's a set compute it's activation function
+	var node = Nodes.findOne({ _id: nodeID });
+	if( node.type == "set" ){
+		var set = node.set;
+		var arg = 0;
+		for( var id in set ){
+			var weight = set[id];
+			var state = getState(id,userID);
+			arg += weight*state;
+		}
+		return sigmoid(arg);
+	}
+	//if it's content or a concept, compute the activations of its sets and return their maximum activation
+	else if( node.type == "concept" || node.type == "content" ){
+		var requirements = node.from.need;
+		var max = 0;
+		for( var i = 0 ; i < requirements.length ; i++ ){
+			var id = requirements[i];
+			var state = computeState(nodeID,userID);
+			max = state > max ? state : max;
+		}
+		return max;
+	}
+}
+*/
 Meteor.methods[{
 
 	"createContent": function(parameters){
@@ -24,7 +130,7 @@ Meteor.methods[{
 		return id;
 	},
 
-	"createConcept": function(parameters){
+	"createConcept": function(){
 		var id = Nodes.insert({
 			type: "concept",
 			createdOn: Date.now(),
@@ -38,22 +144,18 @@ Meteor.methods[{
 				include: []
 			}
 		});
-		Nodes.update({_id: id},{
+		/*Nodes.update({_id: id},{
 			$set: parameters
-		});
+		});*/
 		return id;
-	},
+	}/*,
 
 	"addSet": function(nodeID,list){
 		var set = buildSet(list);
 		var id = Nodes.insert({
 			type: "set",
-			from: {
-				include: []
-			},
-			to: {
-				need: [nodeID]
-			},
+			from: { include: [] },
+			to: { need: [nodeID] },
 			set: set
 		});
 		Nodes.update(
@@ -80,7 +182,7 @@ Meteor.methods[{
 		Nodes.update({
 			_id: setID
 		},{
-			set = set
+			$set: { set: set }
 		});
 		for( var id in set ){
 			Nodes.update({
@@ -176,6 +278,19 @@ Meteor.methods[{
 		}
 		//at last, remove the set
 		Nodes.remove({ _id: setID });
-	}
+	},
 
-}]
+	"updateState": function(nodeID,userID){
+		var state = Edges.findOne({
+			from: userID,
+			to: nodeID
+		}).state;
+		var requirements = Nodes.findOne({ _id: nodeID }).from.need;
+		for( var i = 0 ; i < requirements.length ; i++ ){
+			var setID = requirements[i];
+			var set = Nodes.findOne({ _id: setID }).set;
+
+		}
+	}
+*/
+}];

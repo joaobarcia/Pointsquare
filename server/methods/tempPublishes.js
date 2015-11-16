@@ -1,10 +1,12 @@
 // Dummy content for tests
 Meteor.startup(function() {
     Nodes.remove({});
-    Knowledge.remove({});
+    Edges.remove({});
+    //Knowledge.remove({});
     //Comments.remove({});
-    Scores.remove({});
-    var a1 = Nodes.insert({
+    //Scores.remove({});
+    var test = Meteor.call("createConcept");
+    /*var a1 = Nodes.insert({
         type: "concept",
         name: "a1",
         description: "",
@@ -155,12 +157,9 @@ Meteor.startup(function() {
             }
         }
     });
-    Nodes.update({
-        _id: b21
-    }, {
-        $push: {
-            belongsTo: r2
-        }
+    Nodes.update({ _id: b21 }, 
+    {
+        $push: { belongsTo: r2 }
     });
     Nodes.update({
         _id: b22
@@ -169,7 +168,7 @@ Meteor.startup(function() {
             belongsTo: r2
         }
     });
-
+*/
 });
 
 Meteor.publish('nodes', function() {
