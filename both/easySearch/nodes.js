@@ -84,15 +84,15 @@ NodesSearchIndex = new EasySearch.Index({
             console.log(doc.name + ":" + doc.state);
             return doc;
         },
-        /*        selector: function(searchObject, options, aggregation) {
-                    var selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
+        selector: function(searchObject, options, aggregation) {
+            var selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
 
-                    // filter for the brand if set
-                    if (options.search.props.type) {
-                        selector.type = options.search.props.type;
-                    };
-                    return selector;
-                },*/
+            // filter for the brand if set
+            if (options.search.props.type) {
+                selector.type = options.search.props.type;
+            };
+            return selector;
+        },
         //        sort: function(searchObject, options) {
         sort: function() {
             return {

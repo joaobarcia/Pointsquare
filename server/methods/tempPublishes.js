@@ -1,9 +1,19 @@
 // Dummy content for tests
 Meteor.startup(function() {
     Nodes.remove({});
+    Edges.remove({});
     Knowledge.remove({});
     //Comments.remove({});
-    Scores.remove({});
+    //Scores.remove({});
+    var testConcept = Meteor.call("createConcept", {
+        name: "Bonobo",
+        description: "Horny monkey"
+    });
+    var testContent = Meteor.call("createContent", {
+        name: "Bonobo",
+        description: "Horny monkey"
+    });
+
     var a1 = Nodes.insert({
         type: "concept",
         name: "a1",
@@ -194,6 +204,7 @@ Meteor.startup(function() {
         to: lesson,
         value: 1
     })
+
 });
 
 Meteor.publish('nodes', function() {
