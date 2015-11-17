@@ -13,7 +13,6 @@ yasinuslu:blaze-meta
 materialize:materialize@=0.97.0
 useraccounts:materialize
 http
-matteodem:easy-search
 meteorhacks:kadira
 email
 accounts-base
@@ -53,3 +52,5 @@ kadira:flow-router
 kadira:blaze-layout
 useraccounts:flow-routing
 arillo:flow-router-helpers
+matteodem:easy-search
+easysearch:autosuggest

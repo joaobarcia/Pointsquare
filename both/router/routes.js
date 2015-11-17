@@ -10,14 +10,14 @@ FlowRouter.route('/', {
 FlowRouter.route('/search', {
     name: 'search',
     triggersEnter: function() {
-        var instance = EasySearch.getComponentInstance({
+        /*var instance = EasySearch.getComponentInstance({
             index: 'nodes'
         });
         EasySearch.changeProperty('nodes', 'filteredClasses', ['content']);
         EasySearch.changeProperty('nodes', 'onlyNewUnits', true);
         EasySearch.changeProperty('nodes', 'onlyHighProspect', true);
         EasySearch.changeProperty('nodes', 'orderBy', 'state');
-        instance.clear();
+        instance.clear();*/
     },
     action: function(params) {
         BlazeLayout.render("mainLayout", {

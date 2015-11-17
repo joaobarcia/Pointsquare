@@ -11,8 +11,8 @@ Meteor.startup(function() {
         createdAt: Date.now(),
         requirements: [],
         belongsTo: [],
-        grantedBy: []
-    })._id;
+        grantedBy: [],
+    });
     var lesson = Nodes.insert({
         type: "content",
         name: "lesson",
@@ -35,7 +35,7 @@ Meteor.startup(function() {
         }],
         requirements: [],
         grants: []
-    })._id;
+    });
     Nodes.update({
         _id: a1
     }, {
@@ -56,14 +56,14 @@ Meteor.startup(function() {
         createdAt: Date.now(),
         concepts: [],
         neededFor: []
-    })._id;
+    });
     var r2 = Nodes.insert({
         type: "set",
         name: "r2",
         createdAt: Date.now(),
         concepts: [],
         neededFor: []
-    })._id;
+    });
     Nodes.update({
         _id: lesson
     }, {
@@ -95,7 +95,7 @@ Meteor.startup(function() {
         requirements: [],
         belongsTo: [],
         grantedBy: []
-    })._id;
+    });
     var b12 = Nodes.insert({
         type: "concept",
         name: "b12",
@@ -104,7 +104,7 @@ Meteor.startup(function() {
         requirements: [],
         belongsTo: [],
         grantedBy: []
-    })._id;
+    });
     Nodes.update({
         _id: r1
     }, {
@@ -136,7 +136,7 @@ Meteor.startup(function() {
         requirements: [],
         belongsTo: [],
         grantedBy: []
-    })._id;
+    });
     var b22 = Nodes.insert({
         type: "concept",
         name: "b22",
@@ -145,7 +145,7 @@ Meteor.startup(function() {
         requirements: [],
         belongsTo: [],
         grantedBy: []
-    })._id;
+    });
     Nodes.update({
         _id: r2
     }, {
@@ -169,18 +169,67 @@ Meteor.startup(function() {
             belongsTo: r2
         }
     });
-
+    // Just for tests
+    Knowledge.insert({
+        type: 'state',
+        from: 'user1',
+        to: a1,
+        value: 3
+    })
+    Knowledge.insert({
+        type: 'state',
+        from: 'user1',
+        to: b11,
+        value: 4
+    })
+    Knowledge.insert({
+        type: 'state',
+        from: 'user1',
+        to: b12,
+        value: 2
+    })
+    Knowledge.insert({
+        type: 'state',
+        from: 'user1',
+        to: lesson,
+        value: 1
+    })
 });
 
 Meteor.publish('nodes', function() {
     return Nodes.find();
 });
+// Just for tests
+Meteor.publish('Knowledge', function() {
+    return Knowledge.find();
+});
 
-Meteor.publish('singleContent', function(contentId) {
+/*Meteor.publish('singleContent', function(contentId) {
     return Nodes.find({
         type: 'content',
         _id: contentId
     });
+});*/
+
+Meteor.publishComposite('singleContent', function(contentId) {
+    return {
+        find: function() {
+            // Find top ten highest scoring posts
+            return Nodes.find({
+                type: 'content',
+                _id: contentId
+            });
+        },
+        children: [{
+            find: function(content) {
+                return Knowledge.find({
+                    type: 'state',
+                    from: 'user1',
+                    to: content._id
+                });
+            }
+        }],
+    }
 });
 
 Meteor.publish('singleConcept', function(conceptId) {

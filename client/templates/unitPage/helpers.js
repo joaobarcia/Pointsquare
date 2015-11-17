@@ -6,6 +6,9 @@ Template.unitPage.helpers({
         }) || {};
         return content;
     },
+    state: function() {
+        return Knowledge.findOne().value;
+    },
 
 
     grantedConcepts: function() {

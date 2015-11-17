@@ -5,11 +5,5 @@ Template.search.helpers({
     'isUnit': function() {
         return this.type == "content"
     },
-    'nodes': function() {
-        return Nodes.find({}, {
-            sort: {
-                'name': 1
-            }
-        })
-    }
+    nodesSearchIndex: () => NodesSearchIndex // instanceof EasySearch.Index
 });

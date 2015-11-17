@@ -1,32 +1,19 @@
-//Fixed search options
-/*Template.search.rendered = function() {
-    $(document).ready(function() {
-        console.log("entrou!");
-        $('.toc-wrapper .row').pushpin({
-            top: $('.toc-wrapper').offset().top
-        });
-    });
-}*/
+Template.search.rendered = function() {
+    //Fixed search options
+    /*    $(document).ready(function() {
+            console.log("entrou!");
+            $('.toc-wrapper .row').pushpin({
+                top: $('.toc-wrapper').offset().top
+            });
+        });*/
 
-Template.search.onCreated(function() {
-    var self = this;
-    self.autorun(function() {
-        //var postId = FlowRouter.getParam('postId');
-        self.subscribe('nodes');
-    });
-});
+    //NodesSearchIndex.getComponentMethods().addProps('type', 'content');
+    //NodesSearchIndex.getComponentMethods().addProps('sortBy', 'state');
+};
 
 Template.search.events({
     'click #searchBoth': function() {
-        var instance = EasySearch.getComponentInstance({
-            index: 'nodes'
-        });
-
-        // Change the currently filteredCategories like this
-        EasySearch.changeProperty('nodes', 'filteredClasses', []);
-        // Trigger the search again, to reload the new products
-        instance.triggerSearch();
-
+        NodesSearchIndex.getComponentMethods().removeProps('type');
 
         $("#searchBoth").removeClass("grey-text");
         $("#searchBoth").addClass("cyan lighten-2");
@@ -38,15 +25,7 @@ Template.search.events({
         $("#searchConcepts").addClass("grey-text");
     },
     'click #searchUnits': function() {
-
-        var instance = EasySearch.getComponentInstance({
-            index: 'nodes'
-        });
-
-        // Change the currently filteredCategories like this
-        EasySearch.changeProperty('nodes', 'filteredClasses', ['content']);
-        // Trigger the search again, to reload the new products
-        instance.triggerSearch();
+        NodesSearchIndex.getComponentMethods().addProps('type', 'content');
 
         $("#searchBoth").removeClass("cyan lighten-2");
         $("#searchBoth").addClass("grey-text");
@@ -58,14 +37,7 @@ Template.search.events({
         $("#searchConcepts").addClass("grey-text");
     },
     'click #searchConcepts': function() {
-        var instance = EasySearch.getComponentInstance({
-            index: 'nodes'
-        });
-
-        // Change the currently filteredCategories like this
-        EasySearch.changeProperty('nodes', 'filteredClasses', ['concept']);
-        // Trigger the search again, to reload the new products
-        instance.triggerSearch();
+        NodesSearchIndex.getComponentMethods().addProps('type', 'concept');
 
         $("#searchBoth").removeClass("cyan lighten-2");
         $("#searchBoth").addClass("grey-text");
@@ -77,24 +49,10 @@ Template.search.events({
         $("#searchConcepts").addClass("cyan lighten-2");
     },
     'click #sortState': function() {
-        var instance = EasySearch.getComponentInstance({
-            index: 'nodes'
-        });
-
-        // Change the currently filteredCategories like this
-        EasySearch.changeProperty('nodes', 'orderBy', 'state');
-        // Trigger the search again, to reload the new products
-        instance.triggerSearch();
+        NodesSearchIndex.getComponentMethods().addProps('sortBy', 'state');
     },
     'click #sortName': function() {
-        var instance = EasySearch.getComponentInstance({
-            index: 'nodes'
-        });
-
-        // Change the currently filteredCategories like this
-        EasySearch.changeProperty('nodes', 'orderBy', 'name');
-        // Trigger the search again, to reload the new products
-        instance.triggerSearch();
+        NodesSearchIndex.getComponentMethods().addProps('sortBy', 'name');
     },
     'click #sortViews': function() {
         var instance = EasySearch.getComponentInstance({

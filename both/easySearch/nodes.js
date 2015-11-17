@@ -1,4 +1,4 @@
-EasySearch.createSearchIndex('nodes', {
+/*EasySearch.createSearchIndex('nodes', {
     'field': ['name', 'description', 'views', 'state', 'date'],
     'collection': Nodes,
     'props': {
@@ -62,4 +62,42 @@ EasySearch.createSearchIndex('nodes', {
         return query;
 
     }
+});
+*/
+
+NodesSearchIndex = new EasySearch.Index({
+    // index level configuration
+    collection: Nodes,
+    fields: ['name', 'description'],
+    engine: new EasySearch.MongoDB({
+        beforePublish: function(action, doc) {
+            // might be that the field is already published and it's being modified
+            if (!doc.state) {
+                var userEdge = Knowledge.findOne({
+                    to: doc._id
+                });
+                if (!userEdge) {
+                    doc.state = 0;
+                } else doc.state = userEdge.value;
+
+            };
+            console.log(doc.name + ":" + doc.state);
+            return doc;
+        },
+        /*        selector: function(searchObject, options, aggregation) {
+                    var selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
+
+                    // filter for the brand if set
+                    if (options.search.props.type) {
+                        selector.type = options.search.props.type;
+                    };
+                    return selector;
+                },*/
+        //        sort: function(searchObject, options) {
+        sort: function() {
+            return {
+                state: 1
+            }
+        }, // sort by score
+    })
 });
