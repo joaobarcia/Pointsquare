@@ -2,7 +2,8 @@
 Meteor.startup(function() {
     Nodes.remove({});
     Edges.remove({});
-    Knowledge.remove({});
+    Sets.remove({});
+    Personal.remove({});
     //Comments.remove({});
     //Scores.remove({});
     var testConcept = Meteor.call("createConcept", {
@@ -13,7 +14,38 @@ Meteor.startup(function() {
         name: "Bonobo",
         description: "Horny monkey"
     });
-
+    var list = [];
+    list.push(testConcept);
+    var oldSet = Meteor.call("addSet",testContent,list);
+    var david = Meteor.users.findOne({username:"David de Sousa Seixas"})._id;
+    //console.log(Meteor.call("getState",testContent,david));
+    console.log(getState(testContent,david));
+    /*
+    Meteor.call("editNode",testConcept,{name: "Banaba"});*/
+    /*
+    var testConcept1  = Meteor.call("createConcept", {});
+    var testConcept2  = Meteor.call("createConcept", {});
+    var testConcept3  = Meteor.call("createConcept", {});
+    console.log("creating new set "+newSet);
+    var newSet = Meteor.call("addSet",testContent,[testConcept1,testConcept2,testConcept3]);
+    //Meteor.call("editSet",newSet,[testConcept1,testConcept2]);
+    //Meteor.call("removeSet",newSet);
+    console.log("removing node "+testConcept3);
+    console.log("is included in "+Nodes.findOne(testConcept3).to.include);
+    Meteor.call("removeNode",testConcept3);
+    var all = Nodes.find().fetch();
+    for( var i = 0 ; i < all.length ; i++ ){
+        console.log("node "+all[i]._id);
+        console.log("is included in "+all[i].to.include);
+    }
+    console.log("the new set is now composed of "+Object.keys(Sets.findOne(newSet).set));
+    */
+    /*
+    console.log(Sets.find().fetch().length);
+    Meteor.call("removeNode",testContent);
+    console.log(Sets.find().fetch().length);
+    */
+/*
     var a1 = Nodes.insert({
         type: "concept",
         name: "a1",
@@ -204,15 +236,21 @@ Meteor.startup(function() {
         to: lesson,
         value: 1
     })
-
+*/
 });
 
 Meteor.publish('nodes', function() {
     return Nodes.find();
 });
+Meteor.publish('sets', function() {
+    return Sets.find();
+});
+Meteor.publish("edges", function() {
+    return Edges.find();
+});
 // Just for tests
-Meteor.publish('Knowledge', function() {
-    return Knowledge.find();
+Meteor.publish('personal', function() {
+    return Personal.find();
 });
 
 /*Meteor.publish('singleContent', function(contentId) {
@@ -233,7 +271,7 @@ Meteor.publishComposite('singleContent', function(contentId) {
         },
         children: [{
             find: function(content) {
-                return Knowledge.find({
+                return Personal.find({
                     type: 'state',
                     from: 'user1',
                     to: content._id

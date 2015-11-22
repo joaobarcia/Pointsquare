@@ -1,5 +1,6 @@
 Nodes = new Mongo.Collection("nodes");
+Sets = new Mongo.Collection("sets");
 Edges = new Mongo.Collection("edges");
-Knowledge = new Mongo.Collection("knowledge");
+Personal = new Mongo.Collection("personal");
 //comments = new Mongo.Collection("comments");
 //Scores = new Mongo.Collection("scores");
