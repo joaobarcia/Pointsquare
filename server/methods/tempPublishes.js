@@ -1,251 +1,41 @@
 // Dummy content for tests
 Meteor.startup(function() {
+
     Nodes.remove({});
     Edges.remove({});
     Sets.remove({});
     Personal.remove({});
     //Comments.remove({});
     //Scores.remove({});
-    var testConcept = Meteor.call("createConcept", {
-        name: "Bonobo",
-        description: "Horny monkey"
-    });
-    var testContent = Meteor.call("createContent", {
-        name: "Bonobo",
-        description: "Horny monkey"
-    });
-    var list = [];
-    list.push(testConcept);
-    var oldSet = Meteor.call("addSet",testContent,list);
     var david = Meteor.users.findOne({username:"David de Sousa Seixas"})._id;
-    //console.log(Meteor.call("getState",testContent,david));
-    //console.log(getState(testContent,david));
+    var H = Meteor.call("createContent",{name: "H"});
+    Meteor.call("addSet",H,[a1]);
+    var a1 = Meteor.call("createConcept",{name: "a1"});
+    //primeira árvore
+    var b1 = Meteor.call("createConcept",{name: "b1"});
+    var b2 = Meteor.call("createConcept",{name: "b2"});
+    Meteor.call("addSet",a1,[b1,b2]);
+    var M = Meteor.call("createContent",{name: "M"});
+    Meteor.call("addSet",M,[b1,b2]);
     var c1 = Meteor.call("createConcept",{name: "c1"});
     var c2 = Meteor.call("createConcept",{name: "c2"});
     var c3 = Meteor.call("createConcept",{name: "c3"});
-    var c4 = Meteor.call("createConcept",{name: "c4"});
-    var c5 = Meteor.call("createConcept",{name: "c5"});
-    var c6 = Meteor.call("createConcept",{name: "c6"});
-    Meteor.call("addSet",c1,[c5,c6]);
-    Meteor.call("addSet",c1,[c4]);
-    Meteor.call("addSet",c2,[c4,c6]);
-    /*
-    Meteor.call("editNode",testConcept,{name: "Banaba"});*/
-    /*
-    var testConcept1  = Meteor.call("createConcept", {});
-    var testConcept2  = Meteor.call("createConcept", {});
-    var testConcept3  = Meteor.call("createConcept", {});
-    console.log("creating new set "+newSet);
-    var newSet = Meteor.call("addSet",testContent,[testConcept1,testConcept2,testConcept3]);
-    //Meteor.call("editSet",newSet,[testConcept1,testConcept2]);
-    //Meteor.call("removeSet",newSet);
-    console.log("removing node "+testConcept3);
-    console.log("is included in "+Nodes.findOne(testConcept3).to.include);
-    Meteor.call("removeNode",testConcept3);
-    var all = Nodes.find().fetch();
-    for( var i = 0 ; i < all.length ; i++ ){
-        console.log("node "+all[i]._id);
-        console.log("is included in "+all[i].to.include);
-    }
-    console.log("the new set is now composed of "+Object.keys(Sets.findOne(newSet).set));
-    */
-    /*
-    console.log(Sets.find().fetch().length);
-    Meteor.call("removeNode",testContent);
-    console.log(Sets.find().fetch().length);
-    */
-/*
-    var a1 = Nodes.insert({
-        type: "concept",
-        name: "a1",
-        description: "",
-        createdAt: Date.now(),
-        requirements: [],
-        belongsTo: [],
-        grantedBy: [],
-    });
-    var lesson = Nodes.insert({
-        type: "content",
-        name: "lesson",
-        description: "So magics, much nice numbers are good",
-        authors: [],
-        views: 0,
-        likes: 0,
-        dislikes: 0,
-        totalAttempts: 0,
-        createdAt: Date.now(),
-        content: [{
-            "type": "unitSection",
-            "subContent": [{
-                "type": "youtube",
-                "youtubeVidID": "oRKxmXwLvUU"
-            }]
-        }, {
-            "evaluationType": "userConfirmation",
-            "type": "unitEvaluationSection"
-        }],
-        requirements: [],
-        grants: []
-    });
-    Nodes.update({
-        _id: a1
-    }, {
-        $push: {
-            grantedBy: lesson
-        }
-    });
-    Nodes.update({
-        _id: lesson
-    }, {
-        $push: {
-            grants: a1
-        }
-    });
-    var r1 = Nodes.insert({
-        type: "set",
-        name: "r1",
-        createdAt: Date.now(),
-        concepts: [],
-        neededFor: []
-    });
-    var r2 = Nodes.insert({
-        type: "set",
-        name: "r2",
-        createdAt: Date.now(),
-        concepts: [],
-        neededFor: []
-    });
-    Nodes.update({
-        _id: lesson
-    }, {
-        $push: {
-            requirements: {
-                $each: [r1, r2]
-            }
-        }
-    });
-    Nodes.update({
-        _id: r1
-    }, {
-        $push: {
-            neededFor: lesson
-        }
-    });
-    Nodes.update({
-        _id: r2
-    }, {
-        $push: {
-            neededFor: lesson
-        }
-    });
-    var b11 = Nodes.insert({
-        type: "concept",
-        name: "b11",
-        description: "",
-        createdAt: Date.now(),
-        requirements: [],
-        belongsTo: [],
-        grantedBy: []
-    });
-    var b12 = Nodes.insert({
-        type: "concept",
-        name: "b12",
-        description: "",
-        createdAt: Date.now(),
-        requirements: [],
-        belongsTo: [],
-        grantedBy: []
-    });
-    Nodes.update({
-        _id: r1
-    }, {
-        $push: {
-            concepts: {
-                $each: [b11, b12]
-            }
-        }
-    });
-    Nodes.update({
-        _id: b11
-    }, {
-        $push: {
-            belongsTo: r1
-        }
-    });
-    Nodes.update({
-        _id: b12
-    }, {
-        $push: {
-            belongsTo: r1
-        }
-    });
-    var b21 = Nodes.insert({
-        type: "concept",
-        name: "b21",
-        description: "",
-        createdAt: Date.now(),
-        requirements: [],
-        belongsTo: [],
-        grantedBy: []
-    });
-    var b22 = Nodes.insert({
-        type: "concept",
-        name: "b22",
-        description: "",
-        createdAt: Date.now(),
-        requirements: [],
-        belongsTo: [],
-        grantedBy: []
-    });
-    Nodes.update({
-        _id: r2
-    }, {
-        $push: {
-            concepts: {
-                $each: [b21, b22]
-            }
-        }
-    });
-    Nodes.update({
-        _id: b21
-    }, {
-        $push: {
-            belongsTo: r2
-        }
-    });
-    Nodes.update({
-        _id: b22
-    }, {
-        $push: {
-            belongsTo: r2
-        }
-    });
-    // Just for tests
-    Knowledge.insert({
-        type: 'state',
-        from: 'user1',
-        to: a1,
-        value: 3
-    })
-    Knowledge.insert({
-        type: 'state',
-        from: 'user1',
-        to: b11,
-        value: 4
-    })
-    Knowledge.insert({
-        type: 'state',
-        from: 'user1',
-        to: b12,
-        value: 2
-    })
-    Knowledge.insert({
-        type: 'state',
-        from: 'user1',
-        to: lesson,
-        value: 1
-    })
-*/
+    Meteor.call("addSet",b1,[c1,c2]);
+    Meteor.call("addSet",b2,[c2,c3]);
+    var L = Meteor.call("createContent",{name: "L","to.grant":[c1,c2,c3]});
+    //segunda árvore
+    var bb1 = Meteor.call("createConcept",{name: "bb1"});
+    var bb2 = Meteor.call("createConcept",{name: "bb2"});
+    Meteor.call("addSet",a1,[bb1,bb2]);
+    var MM = Meteor.call("createContent",{name: "MM"});
+    Meteor.call("addSet",MM,[b1,b2]);
+    var cc1 = Meteor.call("createConcept",{name: "cc1"});
+    var cc2 = Meteor.call("createConcept",{name: "cc2"});
+    var cc3 = Meteor.call("createConcept",{name: "cc3"});
+    Meteor.call("addSet",bb1,[cc1,cc2]);
+    Meteor.call("addSet",bb2,[cc2,cc3]);
+    var LL = Meteor.call("createContent",{name: "LL","to.grant":[cc1,cc2,cc3]});
+
 });
 
 Meteor.publish('nodes', function() {

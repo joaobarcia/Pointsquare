@@ -77,9 +77,35 @@ computeSetState = function(setID,userID){
     return sigmoid(arg);
 }
 
+//computes the state but does not write into the database
+computeState = function(nodeID,userID){
+    var node = Nodes.findOne(nodeID);
+    var setIDs = node.from.need;
+    //if it's a microconcept, do not update
+    if( setIDs.length == 0 ){
+        if( node.type == "concept" ){
+            return getState(nodeID,userID);
+        }
+        else if( node.type == "content" ){
+            return 1;
+        }
+    }
+    //if not pick the highest state of its requirements
+    var max = 0.;
+    for( var i = 0 ; i < setIDs.length ; i++ ){
+        var setID = setIDs[i];
+        var state = computeSetState(setID,userID);
+        max = state > max ? state : max;
+    }
+    return state;
+}
+
 //computes the state of the node and saves it to the database
 updateState = function(nodeID,userID){
-    var node = Nodes.findOne(nodeID);
+    var state = computeState(nodeID,userID);
+    setState(state,nodeID,userID);
+    return state;
+    /*var node = Nodes.findOne(nodeID);
     var setIDs = node.from.need;
     //if it's a microconcept, do not update
     if( setIDs.length == 0 ){
@@ -99,7 +125,7 @@ updateState = function(nodeID,userID){
         max = state > max ? state : max;
     }
     setState(max,nodeID,userID);
-    return state;
+    return state;*/
 }
 
 //finds all units that do not require anything
@@ -197,9 +223,19 @@ findBackwardTree = function(nodeIDs){
 }
 
 //update forward tree
-updateForwardTree = function(newStates,userID){
-    //
+updateForward = function(newStates,userID){
+    var currentLayer = newStates;
+    while(1){
+        var nextLayer = findForwardLayer(currentLayer);
+        if( nextLayer.length == 0 ){ break; }
+        for( var i in nextLayer ){
+            var nodeID = nextLayer[i];
+            updateState(nodeID,userID);
+        }
+        currentLayer = nextLayer;
+    }
 }
+//FAZER UMA VERSÃO DESTA FUNÇÃO QUE DEVOLVA APENAS OS NOVOS ESTADOS SEM ESCREVER
 
 backOneStep = function(set, states, errors) {
     //
