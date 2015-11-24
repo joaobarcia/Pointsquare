@@ -168,14 +168,32 @@ findBackwardLayer = function(nodes){
     return Object.keys(layer);
 }
 
-//find forward tree
-findForwardTree = function(nodeID){
-    //
+//find forward tree (all nodes that are within reach of outgoing activation links)
+findForwardTree = function(nodeIDs){
+    var tree = [];
+    var currentLayer = nodeIDs;
+    tree.push(currentLayer);
+    while(1){
+        var nextLayer = findForwardLayer(currentLayer);
+        if( nextLayer.length == 0 ){ break; }
+        tree.push(nextLayer);
+        currentLayer = nextLayer;
+    }
+    return tree;
 }
 
-//find backward tree
-findBackwardTree = function(nodeID){
-    //
+//find backward tree (all nodes that are within reach of incoming activation links)
+findBackwardTree = function(nodeIDs){
+    var tree = [];
+    var currentLayer = nodeIDs;
+    tree.push(currentLayer);
+    while(1){
+        var nextLayer = findBackwardLayer(currentLayer);
+        if( nextLayer.length == 0 ){ break; }
+        tree.push(nextLayer);
+        currentLayer = nextLayer;
+    }
+    return tree;
 }
 
 //update forward tree
@@ -422,6 +440,14 @@ Meteor.methods({
 
     findBackwardLayer: function(nodeIDs){
         return findBackwardLayer(nodeIDs);
+    },
+
+    findForwardTree: function(nodeIDs){
+        return findForwardTree(nodeIDs);
+    },
+
+    findBackwardTree: function(nodeIDs){
+        return findBackwardTree(nodeIDs);
     }
 
 });
