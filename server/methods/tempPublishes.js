@@ -19,7 +19,16 @@ Meteor.startup(function() {
     var oldSet = Meteor.call("addSet",testContent,list);
     var david = Meteor.users.findOne({username:"David de Sousa Seixas"})._id;
     //console.log(Meteor.call("getState",testContent,david));
-    console.log(getState(testContent,david));
+    //console.log(getState(testContent,david));
+    var c1 = Meteor.call("createConcept",{name: "c1"});
+    var c2 = Meteor.call("createConcept",{name: "c2"});
+    var c3 = Meteor.call("createConcept",{name: "c3"});
+    var c4 = Meteor.call("createConcept",{name: "c4"});
+    var c5 = Meteor.call("createConcept",{name: "c5"});
+    var c6 = Meteor.call("createConcept",{name: "c6"});
+    Meteor.call("addSet",c1,[c5,c6]);
+    Meteor.call("addSet",c1,[c4]);
+    Meteor.call("addSet",c2,[c4,c6]);
     /*
     Meteor.call("editNode",testConcept,{name: "Banaba"});*/
     /*

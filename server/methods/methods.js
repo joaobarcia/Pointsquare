@@ -82,7 +82,15 @@ updateState = function(nodeID,userID){
     var node = Nodes.findOne(nodeID);
     var setIDs = node.from.need;
     //if it's a microconcept, do not update
-    if( setIDs.length == 0 ){ return getState(nodeID,userID); }
+    if( setIDs.length == 0 ){
+        if( node.type == "concept" ){
+            return getState(nodeID,userID);
+        }
+        else if( node.type == "content" ){
+            setState(1,nodeID,userID);
+            return 1;
+        }
+    }
     //if not pick the highest state of its requirements
     var max = 0.;
     for( var i = 0 ; i < setIDs.length ; i++ ){
@@ -118,9 +126,46 @@ updateZerothLevel = function(userID){
         type: "content",
         "from.need": []
     }).fetch();
-    for( var node in zerothLevel ){
+    for( var i in zerothLevel ){
+        var node = zerothLevel[i];
         updateState(node._id,userID);
     }
+}
+
+findForwardLayer = function(nodes){
+    var layer = {};
+    for( var i in nodes ){
+        var nodeID = nodes[i];
+        var node = Nodes.findOne(nodeID);
+        if( node.type == "content" ){ continue; }
+        var include = node.to.include;
+        for( var j in include ){
+            var setID = include[j];
+            var set = Sets.findOne(setID);
+            var nextNode = set.to.need;
+            layer[nextNode] = true;
+        }
+    }
+    return Object.keys(layer);
+}
+
+findBackwardLayer = function(nodes){
+    var layer = {};
+    for( var i in nodes ){
+        var nodeID = nodes[i];
+        var node = Nodes.findOne(nodeID);
+        var requirements = node.from.need;
+        //return requirements;
+        for( var j in requirements ){
+            var setID = requirements[j];
+            var set = Sets.findOne(setID).set;
+            //return subnodeIDs;
+            for( var subnodeID in set ){
+                if( subnodeID != "bias" ){ layer[subnodeID] = true; }
+            }
+        }
+    }
+    return Object.keys(layer);
 }
 
 //find forward tree
@@ -369,6 +414,14 @@ Meteor.methods({
 
     updateZerothLevel: function(userID){
         return updateZerothLevel(userID);
+    },
+
+    findForwardLayer: function(nodeIDs){
+        return findForwardLayer(nodeIDs);
+    },
+
+    findBackwardLayer: function(nodeIDs){
+        return findBackwardLayer(nodeIDs);
     }
 
 });
