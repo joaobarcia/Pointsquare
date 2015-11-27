@@ -8,12 +8,21 @@ inverseSigmoid = function(x) {
     return -Math.log(x / (1 - x));
 }
 
+box = function(x) {
+    return x>1?1:(x<0?0:x);
+}
+
 //server variables
 
 MINIMUM_EASY = sigmoid(2);
 MINIMUM_MEDIUM = sigmoid(-2);
 MAXIMUM_HARD = sigmoid(-4);
-WIDTH = 4;
+WIDTH = 6;
+
+var RATE = 0.1;
+var MAX_STEPS = 10000;
+var MIN_STEPS = 10;
+var TOLERANCE = 0.005;
 
 //server functions
 
@@ -223,8 +232,8 @@ findBackwardTree = function(nodeIDs){
 }
 
 //update forward tree
-updateForward = function(newStates,userID){
-    var currentLayer = newStates;
+forwardUpdate = function(node_ids,userID){
+    var currentLayer = node_ids;
     while(1){
         var nextLayer = findForwardLayer(currentLayer);
         if( nextLayer.length == 0 ){ break; }
@@ -237,15 +246,191 @@ updateForward = function(newStates,userID){
 }
 //FAZER UMA VERSÃO DESTA FUNÇÃO QUE DEVOLVA APENAS OS NOVOS ESTADOS SEM ESCREVER
 
-backOneStep = function(set, states, errors) {
-    //
+oneLayerLearning = function(target,userID){
+    var outputLayer = Object.keys(target);
+    var inputLayer = findBackwardLayer(outputLayer);
+    //fill in state object
+    var state = {};
+    for( var i in inputLayer ){
+        var nodeID = inputLayer[i];
+        state[nodeID] = getState(nodeID,userID);
+    }
+    for( var i in outputLayer ){
+        var nodeID = outputLayer[i];
+        state[nodeID] = getState(nodeID,userID);
+    }
+    //compute maximum and minimum activations
+    var maxStates = {};
+    var minStates = {};
+    for( var nodeID in target ){
+        var node = Nodes.findOne(nodeID);
+        var requirements = node.from.need;
+        var maxMaxActivation = 0.;
+        var maxMinActivation = 0.;
+        for( var j in requirements ){
+            var setID = requirements[j];
+            var requirement = Sets.findOne(setID);
+            var set = requirement.set;
+            var maxArg = 0.;
+            var arg = 0.;
+            for( var subnodeID in set ){
+                maxArg += set[subnodeID];
+                arg += set[subnodeID]*(subnodeID=="bias"?1:state[subnodeID]);
+            }
+            var maxActivation = sigmoid(maxArg);
+            maxMaxActivation = (maxActivation>maxMaxActivation)? maxActivation : maxMaxActivation;
+            var minActivation = sigmoid(set.bias);
+            maxMinActivation = (minActivation>maxMinActivation)? minActivation : maxMinActivation;
+            state[setID] = sigmoid(arg);
+        }
+        if( requirements.length == 0 ){
+            maxMaxActivation = 1;
+            maxMinActivation = 0;
+        }
+        maxStates[nodeID] = maxMaxActivation;
+        minStates[nodeID] = maxMinActivation;
+    }
+    //update the target to realistic values
+    for( var nodeID in target ){
+        target[nodeID]? maxStates[nodeID] : minStates[nodeID];
+    }
+    //define maxmimum and minimum variations
+    var maxDist = 0;
+    for( var nodeID in target ){
+        var dist = Math.abs( target[nodeID] - state[nodeID] );
+        maxDist = maxDist < dist ? dist : maxDist;
+    }
+    var MAX_VAR = maxDist/MIN_STEPS;
+    var MIN_VAR = maxDist/MAX_STEPS;
+    //define target layer errors, save current output states and compute total error
+    var saved_output = {};
+    var error = {};
+    var max_error = 0;
+    for( var nodeID in target ){
+        saved_output[nodeID] = state[nodeID];
+        error[nodeID] = state[nodeID]*( 1 - state[nodeID] )*( target[nodeID] - state[nodeID] );
+        max_error = Math.abs( target[nodeID] - state[nodeID] ) > max_error? Math.abs( target[nodeID] - state[nodeID] ) : max_error;
+    }
+    //initialize all error entries
+    for( var i in inputLayer){
+        var nodeID = inputLayer[i];
+        error[nodeID] = 0;
+    }
+    //save current input states
+    saved_input = {};
+    for( var i in inputLayer ){
+        nodeID = inputLayer[i];
+        saved_input[nodeID] = state[nodeID];
+    }
+    //begin subnetwork update
+    while(max_error > TOLERANCE){
+        //reset bounds
+        var is_top_set = false;
+        var is_bottom_set = false;
+        var upper_bound = Math.pow(10,10);
+        var lower_bound = 0;
+        //backpropagation
+        for(var nodeID in target){
+            var node = Nodes.findOne(nodeID);
+            var setIDs = node.from.need;
+            var max = 0;
+            var activeSet = setIDs[0];
+            for(var i in setIDs){
+                var setID = setIDs[i];
+                max = state[setID]>max? state[setID] : max;
+                activeSet = state[setID]>max? setID : activeSet;
+            }
+            var set = Sets.findOne(activeSet).set;
+            for(var subnodeID in set){
+                if( subnodeID != "bias" ){
+                    var weight = set[subnodeID];
+                    error[subnodeID] += error[nodeID]*weight;
+                }
+            }
+        }
+        //forward propagation
+        while(true){
+            //increment input states
+            for(var i in inputLayer){
+                var nodeID = inputLayer[i];
+                state[nodeID] = box( state[nodeID] + RATE*error[nodeID] );
+            }
+            //recompute output states
+            for(var nodeID in target){
+                var node = Nodes.findOne(nodeID);
+                var setIDs = node.from.need;
+                var max = 0;
+                for(var i in setIDs){
+                    var setID = setIDs[i];
+                    var arg = 0;
+                    for(subnodeID in set){
+                        arg += set[subnodeID]*(subnodeID=="bias"?1:state[subnodeID]);
+                    }
+                    state[setID] = sigmoid(arg);
+                    max = state[setID]>max? state[setID] : max;
+                }
+                state[nodeID] = max;
+            }
+            //compute maximum variations of output states
+            var max_variation = 0;
+            for(var i in outputLayer){
+                var node_id = outputLayer[i];
+                var variation = Math.abs( state[node_id] - saved_output[node_id] );
+                max_variation = variation > max_variation ? variation : max_variation ;
+            }
+            //compute step quality
+            var high = max_variation > MAX_VAR;
+            var low = max_variation < MIN_VAR;
+            //if it's OK, carry on
+            if(!high&&!low){
+                break;
+            }
+            //if it's not OK, enhance step size and repeat
+            else if(high){
+                var max = RATE;
+                is_top_set = true;
+                RATE = is_bottom_set? (upper_bound + lower_bound)/2 : RATE/2;
+                //reset input
+                for(var i in inputLayer){
+                    var node_id = inputLayer[i];
+                    state[node_id] = saved_input[node_id];
+                }
+                //continue;
+            }
+            else if(low){
+                var min = RATE;
+                is_bottom_set = true;
+                RATE = is_top_set? (upper_bound+lower_bound)/2. : RATE*2;
+                //reset input
+                for(var i in inputLayer){
+                    var node_id = inputLayer[i];
+                    state[node_id] = saved_input[node_id];
+                }
+                //continue;
+            }
+        }
+        //end of forward propagation
+        //define target layer errors, save output states and compute total error
+        max_error = 0;
+        for(var node_id in target){
+            saved_output[node_id] = state[node_id];
+            error[node_id] = state[node_id]*(1-state[node_id])*(target[node_id]-state[node_id]);
+            max_error = Math.abs( target[node_id] - state[node_id] ) > max_error? Math.abs( target[node_id] - state[node_id] ) : max_error;
+        }
+        //save current input
+        for(var i in inputLayer){
+            var node_id = inputLayer[i];
+            saved_input[node_id] = state[node_id];
+        }
+    }
+    //end of subnetwork update
+    for(var node_id in state){
+        setState(state[node_id],node_id,userID);
+    }
+    forwardUpdate(inputLayer,userID);
 }
 
-backpropagate = function() {
-    //
-}
-
-propagate = function() {
+learn(target,user_id){
     //
 }
 
@@ -277,6 +462,11 @@ Meteor.methods({
                 $set: parameters
             });
         }
+        var users = Meteor.users.find().fetch();
+        for( var i in users ){
+            var userID = users[i];
+            setState(1,id,userID);
+        }
         return id;
     },
 
@@ -301,6 +491,11 @@ Meteor.methods({
                 $set: parameters
             });
         }
+        var users = Meteor.users.find().fetch();
+        for( var i in users ){
+            var userID = users[i];
+            setState(0,id,userID);
+        }
         return id;
     },
 
@@ -320,14 +515,14 @@ Meteor.methods({
        			$push: { "from.need": setID }
        		}
        	);
-        /*Nodes.update({
-                _id: { $in: list }
-            },
-            {
-                $push: { "to.include": setID }
-        });*/
         for( var i = 0 ; i < list.length ; i++ ){
             Nodes.update({_id: list[i]},{ $push: {"to.include": setID} });
+        }
+        var users = Meteor.users.find().fetch();
+        for( var i in users ){
+            var userID = users[i];
+            updateState(nodeID,userID);
+            forwardUpdate([nodeID],userID);
         }
         return setID;
     },
@@ -355,6 +550,13 @@ Meteor.methods({
 
 			});
    		}
+        var nodeID = Sets.findOne(setID).to.need[0];
+        var users = Meteor.users.find().fetch();
+        for( var i in users ){
+            var userID = users[i];
+            updateState(nodeID,userID);
+            forwardUpdate([nodeID],userID);
+        }
 	},
 
     removeNode: function(nodeID){
@@ -388,16 +590,18 @@ Meteor.methods({
         	}
         	//remove references in sets that require this concept
         	var include = node.to.include;
-            console.log("include: "+include);
+            //console.log("include: "+include);
         	for( var i = 0 ; i < include.length ; i++ ){
         		var setID = include[i];
+                //var record = Sets.findOne({ _id: setID });
         		var set = Sets.findOne({ _id: setID }).set;
         		delete set[nodeID];
         		var ids = Object.keys(set);
-        		set = buildSet(ids);
+                Meteor.call("editSet",setID,ids);
+        		/*set = buildSet(ids);
         		Sets.update({ _id: setID },{
         			$set: { set: set }  //É giro, não é?
-        		});
+        		});*/
         	}
         }
         //remove all requirement sets from this node
@@ -426,7 +630,11 @@ Meteor.methods({
     removeSet: function(setID){
         //remove all references to this set in nodes that need it
         var nodeID = Sets.findOne({ _id: setID }).to.need[0];
-        //console.log("dentro "+Sets.findOne({ _id: setID }).to.need);
+        var users = Meteor.users.find().fetch();
+        for( var i in users ){
+            var userID = users[i]._id;
+            //ADAPT NETWORK TO MAINTAIN STATE OF nodeID
+        }
         var need = Nodes.findOne({ _id: nodeID }).from.need;
         removeOcurrences(setID,need);
         Nodes.update({
@@ -484,6 +692,14 @@ Meteor.methods({
 
     findBackwardTree: function(nodeIDs){
         return findBackwardTree(nodeIDs);
+    },
+
+    forwardUpdate: function(newStates,userID){
+        return forwardUpdate(newStates,userID);
+    },
+
+    oneLayerLearning: function(target,userID){
+        return oneLayerLearning(target,userID);
     }
 
 });
