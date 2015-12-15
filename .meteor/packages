@@ -10,7 +10,7 @@ mrt:underscore-string-latest
 dburles:factory
 cunneen:mailgun
 yasinuslu:blaze-meta
-materialize:materialize@=0.97.0
+materialize:materialize@0.97.0
 useraccounts:materialize
 http
 meteorhacks:kadira
@@ -21,7 +21,6 @@ gildaspk:autoform-materialize
 cmather:handlebars-server
 zimme:active-route
 erasaur:meteor-lodash
-poetic:materialize-scss
 meteor
 sergeyt:typeahead
 comerc:bs-typeahead
@@ -52,5 +51,5 @@ kadira:flow-router
 kadira:blaze-layout
 useraccounts:flow-routing
 arillo:flow-router-helpers
-matteodem:easy-search
 easysearch:autosuggest
+poetic:materialize-scss

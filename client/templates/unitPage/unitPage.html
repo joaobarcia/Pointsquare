@@ -39,23 +39,25 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-panel">
+                {{!-- <div class="card-panel">
                     <div class="comment-section">
-                        {{> commentsBox id=contentPage._id}}
-                    </div>
-                </div>
+                        {{_id}}
+                {{> commentsBox id=_id}}
             </div>
-        {{/with}}
+    </div> --}}
+    </div>
+    {{/with}}
     </div>
 </template>
 <template name="unitContent">
     <div class="card-content">
         {{#if unitIsOneSectionAndNoExercise}}
-            {{> contentByType}}
+            JUST ONE {{> contentByType}}
         {{else}}
+            NOT JUST ONE. MAKE LE TABS
             <div class="unit-tabs">
                 <div class="row">
-                    <ul class="tabs tab-demo">
+                    <ul class="tabs">
                         {{#each content}}
                             {{#if isType 'unitSection'}}
                                 <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Part {{increaseByOne @index}}</a></li>
@@ -84,43 +86,41 @@
                         {{#if isType 'text'}}
                             <div class="section">
                                 {{#mathjax}}
-                                    {{!-- {{#markdown}}
-                                    --}} <div class="flow-text">
+                                    <div class="flow-text">
                                         {{#markdown}}{{text}}{{/markdown}}
+                                    </div>
+                                {{/mathjax}}
                             </div>
-                            {{!-- {{/markdown}}
-                            --}} {{/mathjax}}
+                        {{/if}}
+                        {{#if isType 'image'}}
+                            <img class="responsive-img" src="../images/units/{{imgURL}}">
+                        {{/if}}
+                        {{#if isType 'remoteImage'}}
+                            <div class="section center-align">
+                                <img class="responsive-img" src="{{remoteImgURL}}">
+                            </div>
+                        {{/if}}
+                        {{#if isType 'youtube'}}
+                            <div class="section">
+                                <div class="video-container no-controls">
+                                    <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/each }}
+                {{/if}}
             </div>
+            {{#if isType 'unitEvaluationSection'}}
+                {{#if evaluationIsType 'exerciseRadioButton'}}
+                    {{> exerciseRadioButton}}
+                {{/if}}
+                {{#if evaluationIsType 'exerciseString'}}
+                    {{> exerciseString}}
+                {{/if}}
+                {{#if evaluationIsType 'userConfirmation'}}
+                    {{> userConfirmation}}
+                {{/if}}
             {{/if}}
-            {{#if isType 'image'}}
-                <img class="responsive-img" src="../images/units/{{imgURL}}">
-            {{/if}}
-            {{#if isType 'remoteImage'}}
-                <div class="section center-align">
-                    <img class="responsive-img" src="{{remoteImgURL}}">
-                </div>
-            {{/if}}
-            {{#if isType 'youtube'}}
-                <div class="section">
-                    <div class="video-container no-controls">
-                        <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                </div>
-            {{/if}}
-            {{/each }}
-            {{/if}}
-        </div>
-        {{#if isType 'unitEvaluationSection'}}
-            {{#if evaluationIsType 'exerciseRadioButton'}}
-                {{> exerciseRadioButton}}
-            {{/if}}
-            {{#if evaluationIsType 'exerciseString'}}
-                {{> exerciseString}}
-            {{/if}}
-            {{#if evaluationIsType 'userConfirmation'}}
-                {{> userConfirmation}}
-            {{/if}}
-        {{/if}}
         </div>
     {{/each }}
 </template>
@@ -206,7 +206,7 @@
         </div>
     </div>
 </template>
-<template name="propagatingKnowledge">
+<!-- <template name="propagatingKnowledge">
     <div class="row center-align">
         <div class="section">
             <div class="preloader-wrapper big active">
@@ -221,7 +221,7 @@
             <h4>We are propagating your knowledge</h4>
         </div>
     </div>
-</template>
+</template> -->
 <template name="learnedResults">
     <div class="row center-align">
         <div class="section">
@@ -281,13 +281,4 @@
             </div>
         </div>
     </div>
-</template>
-<template name="unitComments">
-    <ul>
-        {{#each comment}}
-            ...
-            <li>{{content}}</li>
-            ...
-        {{/each}}
-    </ul>
 </template>

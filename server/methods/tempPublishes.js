@@ -5,14 +5,6 @@ Meteor.startup(function() {
     Knowledge.remove({});
     //Comments.remove({});
     //Scores.remove({});
-    var testConcept = Meteor.call("createConcept", {
-        name: "Bonobo",
-        description: "Horny monkey"
-    });
-    var testContent = Meteor.call("createContent", {
-        name: "Bonobo",
-        description: "Horny monkey"
-    });
 
     var a1 = Nodes.insert({
         type: "concept",
@@ -38,6 +30,12 @@ Meteor.startup(function() {
             "subContent": [{
                 "type": "youtube",
                 "youtubeVidID": "oRKxmXwLvUU"
+            }]
+        }, {
+            "type": "unitSection",
+            "subContent": [{
+                "type": "text",
+                "text": "YOLOYOLO"
             }]
         }, {
             "evaluationType": "userConfirmation",

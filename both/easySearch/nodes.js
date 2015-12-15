@@ -65,7 +65,7 @@
 });
 */
 
-NodesSearchIndex = new EasySearch.Index({
+/*NodesSearchIndex = new EasySearch.Index({
     // index level configuration
     collection: Nodes,
     fields: ['name', 'description'],
@@ -101,3 +101,4 @@ NodesSearchIndex = new EasySearch.Index({
         }, // sort by score
     })
 });
+*/
