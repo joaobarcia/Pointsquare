@@ -5,6 +5,14 @@ Meteor.startup(function() {
     Edges.remove({});
     Sets.remove({});
     var david = Meteor.users.findOne({username:"David de Sousa Seixas"})._id;
+
+    var unit= create_content({name: "test content"});
+    var concept1 = create_concept({name: "test concept 1"});
+    var concept2 = create_concept({name: "test concept 2"});
+    add_set(unit,[concept1]);
+    //edit_set(unit,[concept1,concept2]);
+
+    /*
     var H = Meteor.call("createContent",{name: "H"});
     Meteor.call("addSet",H,[a1]);
     var a1 = Meteor.call("createConcept",{name: "a1"});
@@ -48,7 +56,7 @@ Meteor.startup(function() {
     var LL = Meteor.call("createContent",{name: "LL","to.grant":[dd1,dd2,dd3,dd4]});
 
     Meteor.call("forwardUpdate",[Nodes.findOne({name:"d1"})._id,Nodes.findOne({name:"d2"})._id,Nodes.findOne({name:"d3"})._id,Nodes.findOne({name:"d4"})._id],Meteor.users.findOne()._id)
-
+    */
 });
 
 Meteor.publish('nodes', function() {
