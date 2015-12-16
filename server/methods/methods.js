@@ -45,30 +45,12 @@ build_set = function(concepts) {
     return [set,bias];
 }
 
-removeOcurrences = function(item, list) {
-    for (var i = list.length; i--;) {
-        if (list[i] === item) {
-            list.splice(i, 1);
-        }
-    }
-}
-
 remove_ocurrences = function(item, list) {
     for (var i = list.length; i--;) {
         if (list[i] === item) {
             list.splice(i, 1);
         }
     }
-}
-
-//getState should only be used for content or concepts!
-getState = function(nodeID,userID){
-    var node = Nodes.findOne({ _id: nodeID });
-    var edge = Edges.findOne({
-        from: userID,
-        to: nodeID
-    });
-    return edge? (edge.state? edge.state : 0) : 0;
 }
 
 get_state = function(node_id,user_id){
@@ -80,33 +62,13 @@ get_state = function(node_id,user_id){
     return info? (info.state? info.state : 0) : 0;
 }
 
-//updates the database value of the state
-setState = function(state,nodeID,userID){
-    var edge = Edges.findOne({
-        from: userID,
-        to: nodeID
-    });
-    if( edge ){
-        Edges.update({ _id: edge._id },{
-            $set: { state: state }
-        })
-    }
-    else{
-        Edges.insert({
-            from: userID,
-            to: nodeID,
-            state: state
-        })
-    }
-}
-
 set_state = function(state,node_id,user_id){
     var info = Personal.findOne({
         user: user_id,
         node: node_id
     });
     if( info ){
-        Edges.update({ _id: info._id },{
+        Personal.update({ _id: info._id },{
             $set: { state: state }
         })
     }
@@ -119,18 +81,6 @@ set_state = function(state,node_id,user_id){
     }
 }
 
-//returns the state of a requirement set
-computeSetState = function(setID,userID){
-    var set = Sets.findOne(setID).set;
-    var arg = 0.;
-    for( var concept in set ){
-        var state = (concept == "bias")? 1 : getState(concept,userID);
-        var weight = set[concept];
-        arg += state*weight;
-    }
-    return sigmoid(arg);
-}
-
 compute_set_state = function(set_id,user_id){
     var requirement = Requirements.findOne(set_id);
     var weights = requirement.weights;
@@ -141,29 +91,6 @@ compute_set_state = function(set_id,user_id){
         arg += state*weight;
     }
     return sigmoid(arg);
-}
-
-//computes the state but does not write into the database
-computeState = function(nodeID,userID){
-    var node = Nodes.findOne(nodeID);
-    var setIDs = node.from.need;
-    //if it's a microconcept, do not update
-    if( setIDs.length == 0 ){
-        if( node.type == "concept" ){
-            return getState(nodeID,userID);
-        }
-        else if( node.type == "content" ){
-            return 1;
-        }
-    }
-    //if not pick the highest state of its requirements
-    var max = 0.;
-    for( var i = 0 ; i < setIDs.length ; i++ ){
-        var setID = setIDs[i];
-        var state = computeSetState(setID,userID);
-        max = state > max ? state : max;
-    }
-    return state;
 }
 
 compute_state = function(node_id,user_id){
@@ -188,33 +115,6 @@ compute_state = function(node_id,user_id){
 }
 
 //computes the state of the node and saves it to the database
-updateState = function(nodeID,userID){
-    var state = computeState(nodeID,userID);
-    setState(state,nodeID,userID);
-    return state;
-    /*var node = Nodes.findOne(nodeID);
-    var setIDs = node.from.need;
-    //if it's a microconcept, do not update
-    if( setIDs.length == 0 ){
-        if( node.type == "concept" ){
-            return getState(nodeID,userID);
-        }
-        else if( node.type == "content" ){
-            setState(1,nodeID,userID);
-            return 1;
-        }
-    }
-    //if not pick the highest state of its requirements
-    var max = 0.;
-    for( var i = 0 ; i < setIDs.length ; i++ ){
-        var setID = setIDs[i];
-        var state = computeSetState(setID,userID);
-        max = state > max ? state : max;
-    }
-    setState(max,nodeID,userID);
-    return state;*/
-}
-
 update_state = function(node_id,user_id){
     var state = compute_state(node_id,user_id);
     set_state(state,node_id,user_id);
@@ -222,17 +122,6 @@ update_state = function(node_id,user_id){
 }
 
 //finds all units that do not require anything
-setZerothLevel = function(){
-    return Nodes.update({
-        type: "content",
-        "from.need": []
-    },{
-        $set: { level: 0 }
-    },{
-        multi: true
-    });
-}
-
 set_zeroth_level = function(){
     return Nodes.update({
         type: "content",
@@ -244,29 +133,11 @@ set_zeroth_level = function(){
     });
 }
 
-findZerothLevel = function(){
-    return Nodes.find({
-        type: "content",
-        "from.need": []
-    }).fetch();
-}
-
 find_zeroth_level = function(){
     return Nodes.find({
         type: "content",
         "needs": {}
     }).fetch();
-}
-
-updateZerothLevel = function(userID){
-    var zerothLevel = Nodes.find({
-        type: "content",
-        "from.need": []
-    }).fetch();
-    for( var i in zerothLevel ){
-        var node = zerothLevel[i];
-        updateState(node._id,userID);
-    }
 }
 
 update_zeroth_level = function(user_id){
@@ -278,23 +149,6 @@ update_zeroth_level = function(user_id){
         var node = zeroth_level[i];
         update_state(node._id,user_id);
     }
-}
-
-findForwardLayer = function(nodes){
-    var layer = {};
-    for( var i in nodes ){
-        var nodeID = nodes[i];
-        var node = Nodes.findOne(nodeID);
-        if( node.type == "content" ){ continue; }
-        var include = node.to.include;
-        for( var j in include ){
-            var setID = include[j];
-            var set = Sets.findOne(setID);
-            var nextNode = set.to.need;
-            layer[nextNode] = true;
-        }
-    }
-    return Object.keys(layer);
 }
 
 find_forward_layer = function(nodes){
@@ -310,25 +164,6 @@ find_forward_layer = function(nodes){
         }
     }
     return layer;
-}
-
-findBackwardLayer = function(nodes){
-    var layer = {};
-    for( var i in nodes ){
-        var nodeID = nodes[i];
-        var node = Nodes.findOne(nodeID);
-        var requirements = node.from.need;
-        //return requirements;
-        for( var j in requirements ){
-            var setID = requirements[j];
-            var set = Sets.findOne(setID).set;
-            //return subnodeIDs;
-            for( var subnodeID in set ){
-                if( subnodeID != "bias" ){ layer[subnodeID] = true; }
-            }
-        }
-    }
-    return Object.keys(layer);
 }
 
 find_backward_layer = function(nodes){
@@ -348,19 +183,6 @@ find_backward_layer = function(nodes){
 }
 
 //find forward tree (all nodes that are within reach of outgoing activation links)
-findForwardTree = function(nodeIDs){
-    var tree = [];
-    var currentLayer = nodeIDs;
-    tree.push(currentLayer);
-    while(1){
-        var nextLayer = findForwardLayer(currentLayer);
-        if( nextLayer.length == 0 ){ break; }
-        tree.push(nextLayer);
-        currentLayer = nextLayer;
-    }
-    return tree;
-}
-
 find_forward_tree = function(node_ids){
     var tree = [];
     var current_layer = node_ids;
@@ -375,19 +197,6 @@ find_forward_tree = function(node_ids){
 }
 
 //find backward tree (all nodes that are within reach of incoming activation links)
-findBackwardTree = function(nodeIDs){
-    var tree = [];
-    var currentLayer = nodeIDs;
-    tree.push(currentLayer);
-    while(1){
-        var nextLayer = findBackwardLayer(currentLayer);
-        if( nextLayer.length == 0 ){ break; }
-        tree.push(nextLayer);
-        currentLayer = nextLayer;
-    }
-    return tree;
-}
-
 find_backward_tree = function(node_ids){
     var tree = [];
     var current_layer = node_ids;
@@ -402,19 +211,6 @@ find_backward_tree = function(node_ids){
 }
 
 //update forward tree
-forwardUpdate = function(node_ids,userID){
-    var currentLayer = node_ids;
-    while(1){
-        var nextLayer = findForwardLayer(currentLayer);
-        if( nextLayer.length == 0 ){ break; }
-        for( var i in nextLayer ){
-            var nodeID = nextLayer[i];
-            updateState(nodeID,userID);
-        }
-        currentLayer = nextLayer;
-    }
-}
-
 forward_update = function(node_ids,user_id){
     var current_layer = node_ids;
     while(1){
@@ -426,8 +222,7 @@ forward_update = function(node_ids,user_id){
         current_layer = next_layer;
     }
 }
-//FAZER UMA VERSÃO DESTA FUNÇÃO QUE DEVOLVA APENAS OS NOVOS ESTADOS SEM ESCREVER
-
+/*
 oneLayerLearning = function(target,userID){
     var outputLayer = Object.keys(target);
     var inputLayer = findBackwardLayer(outputLayer);
@@ -613,7 +408,7 @@ oneLayerLearning = function(target,userID){
     }
     forwardUpdate(inputLayer,userID);
 }
-
+*/
 one_layer_learning = function(target,user_id){
     var output_layer = target;
     var input_layer = find_backward_layer(output_layer);
@@ -785,7 +580,7 @@ one_layer_learning = function(target,user_id){
     }
     //end of subnetwork update
     for(var node_id in state){
-        setState(state[node_id],node_id,user_id);
+        set_state(state[node_id],node_id,user_id);
     }
     forward_update(input_layer,user_id);
 }
@@ -819,7 +614,7 @@ create_content =  function(parameters) {
     var users = Meteor.users.find().fetch();
     for( var i in users ){
         var user_id = users[i];
-        setState(1,id,user_id);
+        set_state(1,id,user_id);
     }
     return id;
 }
@@ -843,13 +638,13 @@ create_concept = function(parameters) {
     var users = Meteor.users.find().fetch();
     for( var i in users ){
         var user_id = users[i];
-        setState(0,id,user_id);
+        set_state(0,id,user_id);
     }
     return id;
 }
 
 add_set = function(node_id,list){
-    var set = build_set(list);
+    var set = buildSet(list);
     var weights = set[0];
     var bias = set[1];
     var set_id = Sets.insert({
@@ -893,8 +688,7 @@ edit_node = function(node_id,parameters){
         $set: parameters
     });
 }
-//NESTA FUNÇÃO HÁ O PROBLEMA DO SET FICAR REFERIDO EM NODOS QUE FOREM RETIRADOS DO CONJUNTO!!!
-//SUBSTITUIR A FUNÇÃO DE REMOÇÃO DE CONJUNTO POR ESTA COM PARÂMETRO []
+
 edit_set = function(set_id,concepts){
     var old_weights = Sets.findOne(set_id).weights;
     var set = build_set(concepts);
@@ -940,7 +734,7 @@ edit_set = function(set_id,concepts){
 }
 
 remove_set = function(set_id){
-    edit_set(set_id,[]);
+    edit_set(set_id,{});
 }
 
 remove_node = function(node_id){
@@ -952,8 +746,8 @@ remove_node = function(node_id){
         remove_set(set_id);
     }
     //remove all edges to this node
-    Edges.remove({
-            $or: [{ from: node_id },{ to: node_id }]
+    Personal.remove({
+            $or: [{ user: node_id },{ node: node_id }]
         });
     if( node.type == "content" ){
         //remove references in concepts that are granted by this content
@@ -1000,268 +794,75 @@ remove_node = function(node_id){
 Meteor.methods({
 
     createContent: function(parameters) {
-        var id = Nodes.insert({
-            type: "content",
-            createdOn: Date.now(),
-            name: "Untitled content",
-            description: "no description",
-            content: {},
-            from: {
-                need: []
-            },
-            to: {
-                grant: []
-            },
-            likes: 0,
-            dislikes: 0,
-            successes: 0,
-            attempts: 0
-        });
-        if( !_.isEmpty(parameters) ){
-            Nodes.update({
-                _id: id
-            }, {
-                $set: parameters
-            });
-        }
-        var users = Meteor.users.find().fetch();
-        for( var i in users ){
-            var userID = users[i];
-            setState(1,id,userID);
-        }
-        return id;
+        return create_content(parameters);
     },
 
     createConcept: function(parameters) {
-        var id = Nodes.insert({
-            type: "concept",
-            createdOn: Date.now(),
-            name: "Untitled concept",
-            description: "no description",
-            from: {
-                need: [],
-                grant: []
-            },
-            to: {
-                include: []
-            }
-        });
-        if( !_.isEmpty(parameters) ){
-            Nodes.update({
-                _id: id
-            }, {
-                $set: parameters
-            });
-        }
-        var users = Meteor.users.find().fetch();
-        for( var i in users ){
-            var userID = users[i];
-            setState(0,id,userID);
-        }
-        return id;
+        return create_concept(parameters);
     },
 
     addSet: function(nodeID,list){
-    	var set = buildSet(list);
-    	var setID = Sets.insert({
-    		type: "set",
-    		from: { include: [] },
-    		to: { need: [nodeID] },
-    		set: set
-       	});
-       	Nodes.update(
-       		{
-       			_id: nodeID
-       		},
-       		{
-       			$push: { "from.need": setID }
-       		}
-       	);
-        for( var i = 0 ; i < list.length ; i++ ){
-            Nodes.update({_id: list[i]},{ $push: {"to.include": setID} });
-        }
-        var users = Meteor.users.find().fetch();
-        for( var i in users ){
-            var userID = users[i];
-            updateState(nodeID,userID);
-            forwardUpdate([nodeID],userID);
-        }
-        return setID;
+        return add_set(nodeID,list);
     },
 
     editNode: function(nodeID,parameters){
-        Nodes.update({
-        	_id: nodeID
-        },{
-        	$set: parameters
-        });
+        return edit_node(nodeID,parameters);
     },
 
-    editSet: function(setID,list){
-        var set = buildSet(list);
-        Sets.update({
-        	_id: setID
-        },{
-        	$set: { set: set }
-        });
-        for( var id in set ){
-        	Nodes.update({
-        		_id: id
-        	},{
-        		$push: { "to.include": setID },
-
-			});
-   		}
-        var nodeID = Sets.findOne(setID).to.need[0];
-        var users = Meteor.users.find().fetch();
-        for( var i in users ){
-            var userID = users[i];
-            updateState(nodeID,userID);
-            forwardUpdate([nodeID],userID);
-        }
+    editSet: function(setID,concepts){
+        return edit_set(setID,concepts);
 	},
 
     removeNode: function(nodeID){
-        var node = Nodes.findOne({ _id: nodeID });
-        //remove all external references to this node
-        Edges.remove({
-        		$or: [{ from: nodeID },{ to: nodeID }]
-        	});
-        if( node.type == "content" ){
-        	//remove references in concepts that are granted by this content
-        	var grant = node.to.grant;
-        	for( var i = 0 ; i < grant.length ; i++ ){
-        		var id = grant[i];
-        		var grantedBy = Nodes.findOne({ _id: id }).from.grant;
-        		removeOcurrences(nodeID,grantedBy);
-        		Nodes.update({ _id: id },{
-        			$set: { "from.grant": grantedBy }
-        		});
-        	}
-        }
-        else if( node.type == "concept" ){
-        	//remove references in content that grant by this concept
-        	var grant = node.from.grant;
-        	for( var i = 0 ; i < grant.length ; i++ ){
-        		var id = grant[i];
-        		var grants = Nodes.findOne({ _id: id }).to.grant;
-        		removeOcurrences(nodeID,grants);
-        		Nodes.update({ _id: id },{
-        			$set: { "to.grant": grants }
-        		});
-        	}
-        	//remove references in sets that require this concept
-        	var include = node.to.include;
-            //console.log("include: "+include);
-        	for( var i = 0 ; i < include.length ; i++ ){
-        		var setID = include[i];
-                //var record = Sets.findOne({ _id: setID });
-        		var set = Sets.findOne({ _id: setID }).set;
-        		delete set[nodeID];
-        		var ids = Object.keys(set);
-                Meteor.call("editSet",setID,ids);
-        		/*set = buildSet(ids);
-        		Sets.update({ _id: setID },{
-        			$set: { set: set }  //É giro, não é?
-        		});*/
-        	}
-        }
-        //remove all requirement sets from this node
-        var setIDs = node.from.need;
-        for( var i = 0 ; i < setIDs.length ; i++ ){
-        	var setID = setIDs[i];
-            Meteor.call("removeSet",setID);/*
-        	var set = Sets.findOne({ _id: setID }).set;
-        	//before removing the set remove all references to this set in subconcepts
-        	for( var id in set ){
-        		var include = Nodes.findOne(id).to.include;
-        		removeOcurrences(setID,include);
-        		Nodes.update({
-                    _id: id 
-                },{ 
-                    $push: { "to.include": include }
-                });
-        	}
-        	//then remove the set
-        	Sets.remove({ _id: setID });*/
-        }
-        //and finally dump the node
-        Nodes.remove({ _id: nodeID });
+        return remove_node(nodeID);
     },
 
     removeSet: function(setID){
-        //remove all references to this set in nodes that need it
-        var nodeID = Sets.findOne({ _id: setID }).to.need[0];
-        var users = Meteor.users.find().fetch();
-        for( var i in users ){
-            var userID = users[i]._id;
-            //ADAPT NETWORK TO MAINTAIN STATE OF nodeID
-        }
-        var need = Nodes.findOne({ _id: nodeID }).from.need;
-        removeOcurrences(setID,need);
-        Nodes.update({
-        	_id: nodeID
-        },{
-        	$set: { "from.need": need }
-        });
-        //remove all references to this set in nodes that were included in it
-        var nodeIDs = Sets.findOne({ _id: setID }).set;
-        for( var id in nodeIDs ){
-            if( id == "bias" ){ continue; }
-        	var include = Nodes.findOne({ _id: id }).to.include;
-        	removeOcurrences(setID,include);
-        	Nodes.update({
-        		_id: id
-        	},{
-        		$set: { "to.include": include }
-        	});
-        }
-        //at last, remove the set
-        Sets.remove({ _id: setID });
+        return remove_set(setID);
     },
 
     getState: function(nodeID,userID){
-        return getState(nodeID,userID);
+        return get_state(nodeID,userID);
     },
 
     setState: function(state,nodeID,userID){
-        setState(state,nodeID,userID);
+        set_state(state,nodeID,userID);
     },
 
     updateState: function(nodeID,userID){
-    	return updateState(nodeID,userID);
+    	return update_state(nodeID,userID);
     },
 
     setZerothLevel: function(){
-        return setZerothLevel();
+        return set_zeroth_level();
     },
 
     updateZerothLevel: function(userID){
-        return updateZerothLevel(userID);
+        return update_zeroth_level(userID);
     },
 
     findForwardLayer: function(nodeIDs){
-        return findForwardLayer(nodeIDs);
+        return find_forward_layer(nodeIDs);
     },
 
     findBackwardLayer: function(nodeIDs){
-        return findBackwardLayer(nodeIDs);
+        return find_backward_layer(nodeIDs);
     },
 
     findForwardTree: function(nodeIDs){
-        return findForwardTree(nodeIDs);
+        return find_forward_tree(nodeIDs);
     },
 
     findBackwardTree: function(nodeIDs){
-        return findBackwardTree(nodeIDs);
+        return find_backward_tree(nodeIDs);
     },
 
     forwardUpdate: function(newStates,userID){
-        return forwardUpdate(newStates,userID);
+        return forward_update(newStates,userID);
     },
 
     oneLayerLearning: function(target,userID){
-        return oneLayerLearning(target,userID);
+        return one_layer_learning(target,userID);
     }
 
 });
