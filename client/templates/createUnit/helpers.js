@@ -2,6 +2,10 @@ Template.createUnit.helpers({
     createUnitSchema: function() {
         return Schema.Unit;
     },
+    // Test
+    concepts: function() {
+        return Nodes.find({}).fetch();
+    },
     /*
         submitting: function() {
             console.log(Session.get("callStatus"));
@@ -16,5 +20,6 @@ Template.createUnit.helpers({
 Template.createUnitContent.helpers({
     tempContent: function() {
         return Session.get('tempContent');
+
     },
 });

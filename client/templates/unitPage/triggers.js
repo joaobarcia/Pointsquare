@@ -7,21 +7,28 @@ Template.unitPage.onCreated(function() {
 });
 
 Template.unitPage.rendered = function() {
-    $(document).ready(function() {
-        $('.tooltipped').tooltip({
-            delay: 20
-        });
+    $('.tooltipped').tooltip({
+        delay: 20
     });
+    console.log("rendered unitPage");
+    $('unit-content').ready(function() {
+        console.log("test")
+    });
+    $('ul.tabs').tabs();
 };
 
-Template.unitContent.rendered = function() {
-    $(document).ready(function() {
-        $('ul.tabs').tabs();
-    });
-};
+Template.unitContent.onRendered(function() {
+    console.log("rendered unitContent");
+    $('ul.tabs').tabs();
+});
+
+Template.contentByType.onRendered(function() {
+    console.log("rendered contentByType");
+    $('ul.tabs').tabs();
+});
 
 Template.unitPage.events({
-    'click #understood': function(event) {
+    /*'click #understood': function(event) {
         event.preventDefault();
         if (Meteor.userId()) {
             Session.set('callStatus', 'learning');
@@ -188,6 +195,6 @@ Template.unitPage.events({
         event.preventDefault();
         Session.set('callStatus', 'doingExercise');
         console.log(Session.get('callStatus'));
-    },
+    },*/
 
 });

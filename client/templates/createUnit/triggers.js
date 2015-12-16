@@ -1,8 +1,16 @@
+Template.createUnit.onCreated(function() {
+    var self = this;
+    self.autorun(function() {
+        self.subscribe('allConcepts');
+    });
+});
+
+
 /*Array.prototype.move = function(from, to) { // Array move prototype until ECMA 2015 Array.prototype.copyWithin() is implemented
     this.splice(to, 0, this.splice(from, 1)[0]);
 };*/
 
-function applySort() { // must apply sort and dropdown properties everytime the content is changed
+/*function applySort() { // must apply sort and dropdown properties everytime the content is changed
     Sortable.create(document.getElementById('content-sections'), {
         animation: 150, // ms, animation speed moving items when sorting, `0` — without animation
         draggable: '.section-card', // Restricts sort start click/touch to the specified element
@@ -28,7 +36,7 @@ function applySort() { // must apply sort and dropdown properties everytime the 
             disabled: true,
         });
     });
-};
+};*/
 
 function applyDropdown() { // jquery was being called before the changes were propagated to the DOM
     var sectionsInJSON = Session.get('tempContent').length;
@@ -49,16 +57,17 @@ function applyDropdown() { // jquery was being called before the changes were pr
 };
 
 Template.createUnitContent.rendered = function() {
+    console.log("rendered!")
     if (Session.get('tempContent') == undefined) { // if session variable 'tempContent' does not exist, create one
         Session.set('tempContent', []);
     };
 
-    applySort(); // apply once the template is loaded
+    //applySort(); // apply once the template is loaded
     applyDropdown();
     Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
         var tempContent = Session.get('tempContent'); // must call Session (even if not used) to make function reactive
         $(document).ready(function() {
-            applySort();
+            //applySort();
             applyDropdown();
         });
     });
@@ -140,12 +149,12 @@ Template.createUnitContent.events({
 AutoForm.hooks({
     createUnit: {
         onSubmit: function(doc) {
-            var properties = {};
+            /*var properties = {};
             properties.name = doc.name; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
             properties.description = "";
             if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
                 properties.description = doc.description;
-            };
+            };*/
 
             var content = Session.get('tempContent'); // fetch content
             var evaluation = { // create evaluation object
@@ -161,13 +170,11 @@ AutoForm.hooks({
             };
 
             content.push(evaluation); // push evaluation object into content array
-            content = JSON.stringify(content);
-            properties.content = content; // insert content object into properties object
+            console.log(content);
+            doc.content = content;
+            delete doc.evaluationType;
 
-            console.log("Properties", properties);
-
-
-            var requiredConceptsArray = [];
+            /*var requiredConceptsArray = [];
             if (typeof doc.requiredConcepts != "undefined") {
                 var requiredConceptsElement = {};
                 _.forEach(doc.requiredConcepts, function(n) {
@@ -179,16 +186,14 @@ AutoForm.hooks({
             var grantedConcepts = [];
             if (typeof doc.grantedConcepts != "undefined") {
                 var grantedConcepts = doc.grantedConcepts;
-            };
+            };*/
 
-            console.log("requiredConcepts", requiredConceptsArray);
-            console.log("grantedConcepts", grantedConcepts);
-            Session.set("callStatus", "submitting unit");
-            Meteor.call('createUnit', properties, requiredConceptsArray, grantedConcepts, function(error, result) {
+            console.log(doc);
+            Meteor.call('createContent', doc, function(error, result) {
+                //Router.go('/unit/' + encodeURIComponent(result));
                 console.log(result);
-                Session.set("callStatus", "submitted");
-                Router.go('/unit/' + encodeURIComponent(result));
             });
+
             this.done();
             return false;
         }

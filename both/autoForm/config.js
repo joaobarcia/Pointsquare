@@ -29,11 +29,11 @@ Schema.Concept = new SimpleSchema({
                 function nameAndRID(n) {
                     var newObject = {};
                     newObject.label = n.name
-                    newObject.value = n.rid
+                    newObject.value = n._id
                     return newObject
                 }
-                return lodash.map(knowledge.find({
-                    class: 'Concept'
+                return lodash.map(Nodes.find({
+                    type: 'concept'
                 }).fetch(), nameAndRID);
             }
         }
@@ -60,43 +60,63 @@ Schema.Unit = new SimpleSchema({
     },
     requiredConcepts: {
         type: [String],
-        label: " ",
+        label: " blergh",
         optional: true,
         autoform: {
             type: "selectize",
             multiple: true,
             options: function() {
                 // return names and rids of concepts in the format [{label: 'name', value:'rid'}]
-                function nameAndRID(n) {
+                /*function nameAndRID(n) {
                     var newObject = {};
                     newObject.label = n.name
-                    newObject.value = n.rid
+                    newObject.value = n._id
                     return newObject
                 }
-                return lodash.map(knowledge.find({
-                    class: 'Concept'
-                }).fetch(), nameAndRID);
+                return lodash.map(Nodes.find({
+                    type: 'concept'
+                }).fetch(), nameAndRID);*/
+                return [{
+                    label: "2013",
+                    value: 2013
+                }, {
+                    label: "2014",
+                    value: 2014
+                }, {
+                    label: "2015",
+                    value: 2015
+                }];
             }
         }
     },
     grantedConcepts: {
         type: [String],
-        label: " ",
+        label: " blargh",
         optional: true,
         autoform: {
-            type: "selectize",
+            type: "typeahead",
             multiple: true,
             options: function() {
                 // return names and rids of concepts in the format [{label: 'name', value:'rid'}]
-                function nameAndRID(n) {
-                    var newObject = {};
-                    newObject.label = n.name
-                    newObject.value = n.rid
-                    return newObject
-                }
-                return lodash.map(knowledge.find({
-                    class: 'Concept'
-                }).fetch(), nameAndRID);
+                /*                function nameAndRID(n) {
+                                    var newObject = {};
+                                    newObject.label = n.name
+                                    newObject.value = n._id
+                                    return newObject
+                                }
+                                return lodash.map(Nodes.find({
+                                    type: 'concept'
+                                }).fetch(), nameAndRID);*/
+                return [{
+                    label: "2013",
+                    value: 2013
+                }, {
+                    label: "2014",
+                    value: 2014
+                }, {
+                    label: "2015",
+                    value: 2015
+                }];
             }
         }
     },

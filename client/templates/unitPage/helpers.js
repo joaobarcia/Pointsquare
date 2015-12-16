@@ -26,19 +26,23 @@ Template.unitPage.helpers({
     },
 
     'doingExercise': function() {
-        return Session.get('callStatus') == 'doingExercise';
+        return 1;
+        //return Session.get('callStatus') == 'doingExercise';
     },
 
     'learning': function() {
-        return Session.get('callStatus') == 'learning' || Session.get('callStatus') == 'unlearning';
+        return 0;
+        //return Session.get('callStatus') == 'learning' || Session.get('callStatus') == 'unlearning';
     },
 
     'learned': function() {
-        return Session.get('callStatus') == 'learned';
+        return 0;
+        //return Session.get('callStatus') == 'learned';
     },
 
     'unlearned': function() {
-        return Session.get('callStatus') == 'unlearned';
+        return 0;
+        //return Session.get('callStatus') == 'unlearned';
     },
 
     'learnedConcept': function() {
