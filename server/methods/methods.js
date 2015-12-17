@@ -26,7 +26,7 @@ var TOLERANCE = 0.005;
 
 //server functions
 
-buildSet = function(list) {
+/*buildSet = function(list) {
     var set = {};
     for (var i = 0; i < list.length; i++) {
         var key = list[i];
@@ -34,7 +34,7 @@ buildSet = function(list) {
     }
     set["bias"] = -WIDTH * (list.length - 1);
     return set;
-}
+}*/
 
 build_set = function(concepts) {
     var set = {};
@@ -42,7 +42,7 @@ build_set = function(concepts) {
         set[id] = WIDTH;
     }
     var bias = -WIDTH * (Object.keys(concepts).length - 1);
-    return [set,bias];
+    return {weights:set,bias:bias};
 }
 
 remove_ocurrences = function(item, list) {
@@ -175,7 +175,7 @@ find_backward_layer = function(nodes){
             var weights = Sets.findOne(set_id).weights;
             //return subnodeIDs;
             for( var subnode_id in weights ){
-                layer[subnodeID] = true;
+                layer[subnode_id] = true;
             }
         }
     }
@@ -433,13 +433,13 @@ one_layer_learning = function(target,user_id){
             var weights = requirement.weights;
             var max_arg = 0.;
             var arg = requirement.bias;
-            for( var subnode_id in set ){
-                maxArg += set[subnode_id];
-                arg += set[subnode_id]*(subnode_id == "bias"? 1 : state[subnode_id]);
+            for( var subnode_id in weights ){
+                maxArg += weights[subnode_id];
+                arg += weights[subnode_id]*state[subnode_id];
             }
             var maximal_activation = sigmoid(max_arg);
             max_maximal_activation = (maximal_activation>max_maximal_activation)? maximal_activation : max_maximal_activation;
-            var minimal_activation = sigmoid(set.bias);
+            var minimal_activation = sigmoid(requirement.bias);
             max_minimal_activation = (minimal_activation>max_minimal_activation)? minimal_activation : max_minimal_activation;
             state[set_id] = sigmoid(arg);
         }
@@ -644,13 +644,13 @@ create_concept = function(parameters) {
 }
 
 add_set = function(node_id,list){
-    var set = buildSet(list);
-    var weights = set[0];
-    var bias = set[1];
+    var set = build_set(list);
+    var weights = set.weights;
+    var bias = set.bias;
     var set_id = Sets.insert({
         node: node_id,
-        weights: set,
-        bias: 0
+        weights: weights,
+        bias: bias
     });
     var update = {};
     update["needs."+set_id] = true;
@@ -692,8 +692,8 @@ edit_node = function(node_id,parameters){
 edit_set = function(set_id,concepts){
     var old_weights = Sets.findOne(set_id).weights;
     var set = build_set(concepts);
-    var new_weights = set[0];
-    var bias = set[1];
+    var new_weights = set.weights;
+    var bias = set.bias;
     //remove reference to this set in subnodes that are no longer required by it
     for(var node_id in old_weights){
         if( concepts[node_id] == null ){
