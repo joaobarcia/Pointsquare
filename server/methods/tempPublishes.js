@@ -12,7 +12,9 @@ Meteor.startup(function() {
     var unit = create_content({name: "test content"});
     var concept1 = create_concept({name: "test concept 1"});
     var concept2 = create_concept({name: "test concept 2"});
-    add_set(unit,[concept1]);
+    var set1 = {};
+    set1[concept1] = true;
+    add_set(unit,set1);
     //edit_set(unit,[concept1,concept2]);
 
 });
