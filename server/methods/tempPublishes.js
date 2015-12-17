@@ -3,7 +3,7 @@ Meteor.startup(function() {
 
     Nodes.remove({});
     Edges.remove({});
-    Sets.remove({});
+    Requirements.remove({});
     Personal.remove({});
     //Knowledge.remove({});
     //Comments.remove({});
@@ -25,7 +25,7 @@ Meteor.publish('nodes', function() {
     return Nodes.find();
 });
 Meteor.publish('sets', function() {
-    return Sets.find();
+    return Requirements.find();
 });
 Meteor.publish("edges", function() {
     return Edges.find();

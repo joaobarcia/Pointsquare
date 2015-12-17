@@ -81,7 +81,7 @@ set_state = function(state,node_id,user_id){
     }
 }
 
-compute_set_state = function(set_id,user_id){
+compute_requirement_state = function(set_id,user_id){
     var requirement = Requirements.findOne(set_id);
     var weights = requirement.weights;
     var arg = requirement.bias;
@@ -97,7 +97,7 @@ compute_state = function(node_id,user_id){
     var node = Nodes.findOne(node_id);
     var requirements = node.needs;
     //if it's a microconcept, do not update
-    if( requirements.length == 0 ){
+    if( requirements == {} ){
         if( node.type == "concept" ){
             return get_state(node_id,user_id);
         }
@@ -108,7 +108,7 @@ compute_state = function(node_id,user_id){
     //if not pick the highest state of its requirements
     var max = 0.;
     for(var req_id in requirements){
-        var state = compute_set_state(req_id,user_id);
+        var state = compute_requirement_state(req_id,user_id);
         max = state > max ? state : max;
     }
     return state;
@@ -158,7 +158,7 @@ find_forward_layer = function(nodes){
         if( node.type == "content" ){ continue; }
         var in_set = node.in_set;
         for(var set_id in in_set){
-            var set = Sets.findOne(set_id);
+            var set = Requirements.findOne(set_id);
             var next_node = set.node;
             layer[next_node] = true;
         }
@@ -172,7 +172,7 @@ find_backward_layer = function(nodes){
         var node = Nodes.findOne(node_id);
         var requirements = node.needs;
         for( var set_id in requirements ){
-            var weights = Sets.findOne(set_id).weights;
+            var weights = Requirements.findOne(set_id).weights;
             //return subnodeIDs;
             for( var subnode_id in weights ){
                 layer[subnode_id] = true;
@@ -217,7 +217,7 @@ forward_update = function(node_ids,user_id){
         var next_layer = find_forward_layer(current_layer);
         if( next_layer.length == 0 ){ break; }
         for( var node_id in next_layer ){
-            updateState(node_id,user_id);
+            update_state(node_id,user_id);
         }
         current_layer = next_layer;
     }
@@ -246,7 +246,7 @@ oneLayerLearning = function(target,userID){
         var maxMinActivation = 0.;
         for( var j in requirements ){
             var setID = requirements[j];
-            var requirement = Sets.findOne(setID);
+            var requirement = Requirements.findOne(setID);
             var set = requirement.set;
             var maxArg = 0.;
             var arg = 0.;
@@ -319,7 +319,7 @@ oneLayerLearning = function(target,userID){
                 max = state[setID]>max? state[setID] : max;
                 activeSet = state[setID]>max? setID : activeSet;
             }
-            var set = Sets.findOne(activeSet).set;
+            var set = Requirements.findOne(activeSet).set;
             for(var subnodeID in set){
                 if( subnodeID != "bias" ){
                     var weight = set[subnodeID];
@@ -429,7 +429,7 @@ one_layer_learning = function(target,user_id){
         var max_maximal_activation = 0.;
         var max_minimal_activation = 0.;
         for( var set_id in requirements ){
-            var requirement = Sets.findOne(set_id);
+            var requirement = Requirements.findOne(set_id);
             var weights = requirement.weights;
             var max_arg = 0.;
             var arg = requirement.bias;
@@ -499,7 +499,7 @@ one_layer_learning = function(target,user_id){
                 max = state[set_id]>max? state[set_id] : max;
                 active_set = state[set_id]>max? set_id : active_set;
             }
-            var weights = Sets.findOne(active_set).weights;
+            var weights = Requirements.findOne(active_set).weights;
             for(var subnode_id in weights){
                 var weight = set[subnode_id];
                 error[subnode_id] += error[node_id]*weight;
@@ -647,7 +647,7 @@ add_set = function(node_id,concepts){
     var set = build_set(concepts);
     var weights = set.weights;
     var bias = set.bias;
-    var set_id = Sets.insert({
+    var set_id = Requirements.insert({
         node: node_id,
         weights: weights,
         bias: bias
@@ -690,7 +690,7 @@ edit_node = function(node_id,parameters){
 }
 
 edit_set = function(set_id,concepts){
-    var old_weights = Sets.findOne(set_id).weights;
+    var old_weights = Requirements.findOne(set_id).weights;
     var set = build_set(concepts);
     var new_weights = set.weights;
     var bias = set.bias;
@@ -704,7 +704,7 @@ edit_set = function(set_id,concepts){
             });
         }
     }
-    Sets.update({
+    Requirements.update({
         _id: set_id
     },{
         $set: {
@@ -722,9 +722,9 @@ edit_set = function(set_id,concepts){
         });
     }
     if(concepts == {}){
-        Sets.remove({_id:set_id});
+        Requirements.remove({_id:set_id});
     }
-    var node_id = Sets.findOne(set_id).node;
+    var node_id = Requirements.findOne(set_id).node;
     var users = Meteor.users.find().fetch();
     for( var i in users ){
         var user_id = users[i];
@@ -773,7 +773,7 @@ remove_node = function(node_id){
         //remove references in sets that require this concept
         var sets = node.in_set;
         for(var set_id in sets){
-            var old_weights = Sets.findOne({ _id: set_id }).weights;
+            var old_weights = Requirements.findOne({ _id: set_id }).weights;
             delete weights[node_id];
             var ids = Object.keys(weights);
             edit_set(set_id,weights);
@@ -831,6 +831,14 @@ Meteor.methods({
 
     updateState: function(nodeID,userID){
     	return update_state(nodeID,userID);
+    },
+
+    computeState: function(nodeID,userID){
+        return compute_state(nodeID,userID);
+    },
+
+    compute_requirement_state: function(setID,userID){
+        return compute_requirement_state(setID,userID);
     },
 
     setZerothLevel: function(){
