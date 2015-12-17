@@ -62,15 +62,15 @@
         return query;
 
     }
-});
-*/
+});*/
 
-/*NodesSearchIndex = new EasySearch.Index({
+
+NodesSearchIndex = new EasySearch.Index({
     // index level configuration
     collection: Nodes,
     fields: ['name', 'description'],
     engine: new EasySearch.MongoDB({
-        beforePublish: function(action, doc) {
+        /*beforePublish: function(action, doc) {
             // might be that the field is already published and it's being modified
             if (!doc.state) {
                 var userEdge = Knowledge.findOne({
@@ -83,7 +83,7 @@
             };
             console.log(doc.name + ":" + doc.state);
             return doc;
-        },
+        },*/
         selector: function(searchObject, options, aggregation) {
             var selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
 
@@ -94,11 +94,10 @@
             return selector;
         },
         //        sort: function(searchObject, options) {
-        sort: function() {
+        /*sort: function() {
             return {
                 state: 1
             }
-        }, // sort by score
+        }, */
     })
 });
-*/
