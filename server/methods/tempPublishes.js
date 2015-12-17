@@ -3,6 +3,8 @@ Meteor.startup(function() {
 
     Nodes.remove({});
     Edges.remove({});
+    Sets.remove({});
+    Personal.remove({});
     //Knowledge.remove({});
     //Comments.remove({});
     //Scores.remove({});

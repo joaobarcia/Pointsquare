@@ -159,7 +159,7 @@ find_forward_layer = function(nodes){
         var in_set = node.in_set;
         for(var set_id in in_set){
             var set = Sets.findOne(set_id);
-            var next_node = set.needed_by;
+            var next_node = set.node;
             layer[next_node] = true;
         }
     }
@@ -643,8 +643,8 @@ create_concept = function(parameters) {
     return id;
 }
 
-add_set = function(node_id,list){
-    var set = build_set(list);
+add_set = function(node_id,concepts){
+    var set = build_set(concepts);
     var weights = set.weights;
     var bias = set.bias;
     var set_id = Sets.insert({
@@ -662,11 +662,11 @@ add_set = function(node_id,list){
             $set: update
         }
     );
-    for( var i in list ){
+    for( var id in concepts ){
         var update = {};
         update["in_set."+set_id] = true;
         Nodes.update({
-            _id: list[i]
+            _id: id
         },{
             $set: update
         });
