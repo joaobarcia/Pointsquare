@@ -17,6 +17,8 @@ Meteor.startup(function() {
     var set = {};
     set[concept] = true;
     add_set(unit,set);
+    ids = {}; ids[Nodes.findOne({name: "test content"})._id] = true;
+    //console.log(find_micronodes(ids));
     //edit_set(unit,[concept1,concept2]);
 
 

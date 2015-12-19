@@ -206,11 +206,28 @@ find_backward_tree = function(node_ids){
     tree.push(current_layer);
     while(1){
         var next_layer = find_backward_layer(current_layer);
-        if( Object.keys(next_layer) == 0 ){ break; }
+        if( Object.keys(next_layer).length == 0 ){ break; }
         tree.push(next_layer);
         current_layer = next_layer;
     }
     return tree;
+}
+
+find_micronodes = function(node_ids){
+    var micronodes = {};
+    var current_layer = node_ids;
+    while(1){
+        for(var node_id in current_layer){
+            var node = Nodes.findOne(node_id);
+            if(Object.keys(node.needs).length == 0 && node.type == "concept"){
+                micronodes[node_id] = true;
+            }
+        }
+        var next_layer = find_backward_layer(current_layer);
+        if( Object.keys(next_layer).length == 0 ){ break; }
+        current_layer = next_layer;
+    }
+    return micronodes;
 }
 
 //update forward tree
@@ -415,6 +432,8 @@ oneLayerLearning = function(target,userID){
 one_layer_learning = function(target,user_id){
     var output_layer = target;
     var input_layer = find_backward_layer(output_layer);
+    //make sure everything is up to date
+    forward_update(find_micronodes(target),user_id);
     //fill in state object
     var state = {};
     for( var node_id in input_layer ){
@@ -485,7 +504,6 @@ one_layer_learning = function(target,user_id){
     for( var node_id in input_layer ){
         saved_input[node_id] = state[node_id];
     }
-    //return {state: state, error: error};
     //begin subnetwork update
     while(max_error > TOLERANCE){
         //reset bounds
@@ -628,7 +646,8 @@ create_concept = function(parameters) {
         name: "Untitled concept",
         description: "no description",
         granted_by: {},
-        in_set: {}
+        in_set: {},
+        needs: {}
     });
     if( !_.isEmpty(parameters) ){
         Nodes.update({
@@ -869,6 +888,10 @@ Meteor.methods({
 
     findBackwardTree: function(nodeIDs){
         return find_backward_tree(nodeIDs);
+    },
+
+    findMicronodes: function(nodeIDs){
+        return find_micronodes(nodeIDs);
     },
 
     forwardUpdate: function(newStates,userID){
