@@ -3,6 +3,8 @@ Meteor.startup(function() {
 
     Nodes.remove({});
     Edges.remove({});
+    Requirements.remove({});
+    Personal.remove({});
     //Knowledge.remove({});
     //Comments.remove({});
     //Scores.remove({});
@@ -10,12 +12,15 @@ Meteor.startup(function() {
     var david = Meteor.users.findOne({username:"David de Sousa Seixas"})._id;
 
     var unit = create_content({name: "test content"});
-    var concept1 = create_concept({name: "test concept 1"});
-    var concept2 = create_concept({name: "test concept 2"});
-    var set1 = {};
-    set1[concept1] = true;
-    add_set(unit,set1);
+    var concept = create_concept({name: "test concept"});
+    //var concept2 = create_concept({name: "test concept 2"});
+    var set = {};
+    set[concept] = true;
+    add_set(unit,set);
+    ids = {}; ids[Nodes.findOne({name: "test content"})._id] = true;
+    //console.log(find_micronodes(ids));
     //edit_set(unit,[concept1,concept2]);
+
 
 });
 
@@ -23,7 +28,7 @@ Meteor.publish('nodes', function() {
     return Nodes.find();
 });
 Meteor.publish('sets', function() {
-    return Sets.find();
+    return Requirements.find();
 });
 Meteor.publish("edges", function() {
     return Edges.find();
