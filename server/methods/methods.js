@@ -544,6 +544,7 @@ full_create = function(p){
         var requirement = p.needs[i];
         add_set(id,requirement);
     }
+    return id;
 }
 
 //editing functions
@@ -674,16 +675,8 @@ remove_node = function(node_id){
 
 Meteor.methods({
 
-    createContent: function(parameters) {
-        return create_content(parameters);
-    },
-
-    createConcept: function(parameters) {
-        return create_concept(parameters);
-    },
-
-    addSet: function(nodeID,list){
-        return add_set(nodeID,list);
+    create: function(p) {
+        return full_create(p);
     },
 
     editNode: function(nodeID,parameters){
