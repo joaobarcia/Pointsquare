@@ -428,8 +428,8 @@ create_content =  function(parameters) {
     var id = Nodes.insert({
         type: "content",
         created_on: Date.now(),
-        name: "Untitled content",
-        description: "no description",
+        name: "",
+        description: "",
         content: {},
         needs: {},
         grants: {},
@@ -457,8 +457,8 @@ create_concept = function(parameters) {
     var id = Nodes.insert({
         type: "concept",
         created_on: Date.now(),
-        name: "Untitled concept",
-        description: "no description",
+        name: "",
+        description: "",
         granted_by: {},
         in_set: {},
         needs: {}
