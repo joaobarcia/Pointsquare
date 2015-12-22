@@ -3,9 +3,9 @@ Template.createUnit.helpers({
         return Schema.Unit;
     },
     // Test
-    concepts: function() {
+    /*concepts: function() {
         return Nodes.find({}).fetch();
-    },
+    },*/
     /*conceptsMappedToSelectize: function() {
         function nameAndRID(n) {
             var newObject = {};

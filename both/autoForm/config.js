@@ -17,24 +17,32 @@ Schema.Concept = new SimpleSchema({
             }
         }
     },
-    childConcepts: {
+    needs: {
+        type: Array,
+        optional: true,
+    },
+    "needs.$": {
         type: [String],
-        label: " ",
+        label: " blergh",
         optional: true,
         autoform: {
             type: "selectize",
             multiple: true,
+            isReactiveOptions: true,
             options: function() {
                 // return names and rids of concepts in the format [{label: 'name', value:'rid'}]
                 function nameAndRID(n) {
                     var newObject = {};
-                    newObject.label = n.name
-                    newObject.value = n._id
-                    return newObject
-                }
-                return lodash.map(Nodes.find({
+                    newObject.label = n.name;
+                    newObject.value = n._id;
+                    return newObject;
+                };
+
+                var conceptsMappedToSelectize = _.map(Nodes.find({
                     type: 'concept'
                 }).fetch(), nameAndRID);
+
+                return conceptsMappedToSelectize;
             }
         }
     },
@@ -59,6 +67,10 @@ Schema.Unit = new SimpleSchema({
         }
     },
     needs: {
+        type: Array,
+        optional: true,
+    },
+    "needs.$": {
         type: [String],
         label: " blergh",
         optional: true,

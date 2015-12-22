@@ -149,12 +149,6 @@ Template.createUnitContent.events({
 AutoForm.hooks({
     createUnit: {
         onSubmit: function(doc) {
-            /*var properties = {};
-            properties.name = doc.name; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
-            properties.description = "";
-            if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
-                properties.description = doc.description;
-            };*/
 
             var content = Session.get('tempContent'); // fetch content
             var evaluation = { // create evaluation object
@@ -170,40 +164,37 @@ AutoForm.hooks({
             };
 
             content.push(evaluation); // push evaluation object into content array
-            console.log(content);
             doc.content = content;
             delete doc.evaluationType;
 
 
-            var needsObject = {};
-            _.forEach(doc.needs, function(n) {
-                console.log(typeof(n));
-                console.log(n);
-                //console.log(toString(n));
-                //needsObject[n] = true;
-            });
-
-            console.log = needsObject;
-            //doc.needs = needsObject;
-
-
-            //doc.needs = for ()
-
-            /*var requiredConceptsArray = [];
-            if (typeof doc.requiredConcepts != "undefined") {
-                var requiredConceptsElement = {};
-                _.forEach(doc.requiredConcepts, function(n) {
-                    requiredConceptsElement[n] = 1
-                });
-                requiredConceptsArray.push(requiredConceptsElement);
+            var needsMappedAsArrayofObjects = [];
+            if (doc.needs != null) {
+                for (var i = 0; i < doc.needs.length; i += 1) {
+                    needsMappedAsArrayofObjects[i] = {};
+                    for (var n = 0; n < doc.needs[i].length; n += 1) {
+                        needsMappedAsArrayofObjects[i][doc.needs[i][n]] = true;
+                    }
+                }
             };
+            delete doc.needs
 
-            var grantedConcepts = [];
-            if (typeof doc.grantedConcepts != "undefined") {
-                var grantedConcepts = doc.grantedConcepts;
-            };*/
+            var grantsMappedAsObject = {};
+            if (doc.grants != null) {
+                for (var i = 0; i < doc.grants.length; i += 1) {
+                    grantsMappedAsObject[doc.grants[i]] = true;
+                }
+                doc.grants = grantsMappedAsObject;
+            };
+            delete doc.grants;
 
-            console.log(doc);
+            var unitDefinitions = {};
+            unitDefinitions.type = 'content';
+            unitDefinitions.parameters = doc;
+            unitDefinitions.needs = needsMappedAsArrayofObjects;
+            unitDefinitions.grants = grantsMappedAsObject;
+
+            console.log(unitDefinitions);
             Meteor.call('createContent', doc, function(error, result) {
                 //Router.go('/unit/' + encodeURIComponent(result));
                 console.log(result);
