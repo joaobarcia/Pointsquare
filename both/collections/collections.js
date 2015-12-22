@@ -1,6 +1,7 @@
 Nodes = new Mongo.Collection("nodes");
 //Sets = new Mongo.Collection("sets");
 Requirements = new Mongo.Collection("requirements");
+Grantements = new Mongo.Collections("grantements");
 Edges = new Mongo.Collection("edges");
 Personal = new Mongo.Collection("personal");
 //comments = new Mongo.Collection("comments");
