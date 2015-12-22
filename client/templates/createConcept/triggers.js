@@ -26,7 +26,7 @@ AutoForm.hooks({
 
             console.log(conceptDefinitions);
 
-            Meteor.call('createConcept', conceptDefinitions);
+            Meteor.call('create', conceptDefinitions);
 
             this.done();
             return false;

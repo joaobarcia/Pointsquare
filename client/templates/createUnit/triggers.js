@@ -195,7 +195,7 @@ AutoForm.hooks({
             unitDefinitions.grants = grantsMappedAsObject;
 
             console.log(unitDefinitions);
-            Meteor.call('createContent', doc, function(error, result) {
+            Meteor.call('create', doc, function(error, result) {
                 //Router.go('/unit/' + encodeURIComponent(result));
                 console.log(result);
             });
