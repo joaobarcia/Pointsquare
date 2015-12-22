@@ -26,7 +26,10 @@ AutoForm.hooks({
 
             console.log(conceptDefinitions);
 
-            Meteor.call('create', conceptDefinitions);
+            Meteor.call('create', conceptDefinitions, function(error, result) {
+                //Router.go('/unit/' + encodeURIComponent(result));
+                console.log(result);
+            });
 
             this.done();
             return false;
