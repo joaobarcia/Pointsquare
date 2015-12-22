@@ -242,193 +242,7 @@ forward_update = function(node_ids,user_id){
         current_layer = next_layer;
     }
 }
-/*
-oneLayerLearning = function(target,userID){
-    var outputLayer = Object.keys(target);
-    var inputLayer = findBackwardLayer(outputLayer);
-    //fill in state object
-    var state = {};
-    for( var i in inputLayer ){
-        var nodeID = inputLayer[i];
-        state[nodeID] = getState(nodeID,userID);
-    }
-    for( var i in outputLayer ){
-        var nodeID = outputLayer[i];
-        state[nodeID] = getState(nodeID,userID);
-    }
-    //compute maximum and minimum activations
-    var maxStates = {};
-    var minStates = {};
-    for( var nodeID in target ){
-        var node = Nodes.findOne(nodeID);
-        var requirements = node.from.need;
-        var maxMaxActivation = 0.;
-        var maxMinActivation = 0.;
-        for( var j in requirements ){
-            var setID = requirements[j];
-            var requirement = Requirements.findOne(setID);
-            var set = requirement.set;
-            var maxArg = 0.;
-            var arg = 0.;
-            for( var subnodeID in set ){
-                maxArg += set[subnodeID];
-                arg += set[subnodeID]*(subnodeID=="bias"?1:state[subnodeID]);
-            }
-            var maxActivation = sigmoid(maxArg);
-            maxMaxActivation = (maxActivation>maxMaxActivation)? maxActivation : maxMaxActivation;
-            var minActivation = sigmoid(set.bias);
-            maxMinActivation = (minActivation>maxMinActivation)? minActivation : maxMinActivation;
-            state[setID] = sigmoid(arg);
-        }
-        if( requirements.length == 0 ){
-            maxMaxActivation = 1;
-            maxMinActivation = 0;
-            //if it's a microconcept, update it straight away
-            state[nodeID] = target[nodeID];
-        }
-        maxStates[nodeID] = maxMaxActivation;
-        minStates[nodeID] = maxMinActivation;
-    }
-    //update the target to realistic values
-    for( var nodeID in target ){
-        target[nodeID]? maxStates[nodeID] : minStates[nodeID];
-    }
-    //define maxmimum and minimum variations
-    var maxDist = 0;
-    for( var nodeID in target ){
-        var dist = Math.abs( target[nodeID] - state[nodeID] );
-        maxDist = maxDist < dist ? dist : maxDist;
-    }
-    var MAX_VAR = maxDist/MIN_STEPS;
-    var MIN_VAR = maxDist/MAX_STEPS;
-    //define target layer errors, save current output states and compute total error
-    var saved_output = {};
-    var error = {};
-    var max_error = 0;
-    for( var nodeID in target ){
-        saved_output[nodeID] = state[nodeID];
-        error[nodeID] = state[nodeID]*( 1 - state[nodeID] )*( target[nodeID] - state[nodeID] );
-        max_error = Math.abs( target[nodeID] - state[nodeID] ) > max_error? Math.abs( target[nodeID] - state[nodeID] ) : max_error;
-    }
-    //initialize all error entries
-    for( var i in inputLayer){
-        var nodeID = inputLayer[i];
-        error[nodeID] = 0;
-    }
-    //save current input states
-    saved_input = {};
-    for( var i in inputLayer ){
-        nodeID = inputLayer[i];
-        saved_input[nodeID] = state[nodeID];
-    }
-    //begin subnetwork update
-    while(max_error > TOLERANCE){
-        //reset bounds
-        var is_top_set = false;
-        var is_bottom_set = false;
-        var upper_bound = Math.pow(10,10);
-        var lower_bound = 0;
-        //backpropagation
-        for(var nodeID in target){
-            var node = Nodes.findOne(nodeID);
-            var setIDs = node.from.need;
-            var max = 0;
-            var activeSet = setIDs[0];
-            for(var i in setIDs){
-                var setID = setIDs[i];
-                max = state[setID]>max? state[setID] : max;
-                activeSet = state[setID]>max? setID : activeSet;
-            }
-            var set = Requirements.findOne(activeSet).set;
-            for(var subnodeID in set){
-                if( subnodeID != "bias" ){
-                    var weight = set[subnodeID];
-                    error[subnodeID] += error[nodeID]*weight;
-                }
-            }
-        }
-        //forward propagation
-        while(true){
-            //increment input states
-            for(var i in inputLayer){
-                var nodeID = inputLayer[i];
-                state[nodeID] = box( state[nodeID] + RATE*error[nodeID] );
-            }
-            //recompute output states
-            for(var nodeID in target){
-                var node = Nodes.findOne(nodeID);
-                var setIDs = node.from.need;
-                var max = 0;
-                for(var i in setIDs){
-                    var setID = setIDs[i];
-                    var arg = 0;
-                    for(subnodeID in set){
-                        arg += set[subnodeID]*(subnodeID=="bias"?1:state[subnodeID]);
-                    }
-                    state[setID] = sigmoid(arg);
-                    max = state[setID]>max? state[setID] : max;
-                }
-                state[nodeID] = max;
-            }
-            //compute maximum variations of output states
-            var max_variation = 0;
-            for(var i in outputLayer){
-                var node_id = outputLayer[i];
-                var variation = Math.abs( state[node_id] - saved_output[node_id] );
-                max_variation = variation > max_variation ? variation : max_variation ;
-            }
-            //compute step quality
-            var high = max_variation > MAX_VAR;
-            var low = max_variation < MIN_VAR;
-            //if it's OK, carry on
-            if(!high&&!low){
-                break;
-            }
-            //if it's not OK, enhance step size and repeat
-            else if(high){
-                var max = RATE;
-                is_top_set = true;
-                RATE = is_bottom_set? (upper_bound + lower_bound)/2 : RATE/2;
-                //reset input
-                for(var i in inputLayer){
-                    var node_id = inputLayer[i];
-                    state[node_id] = saved_input[node_id];
-                }
-                //continue;
-            }
-            else if(low){
-                var min = RATE;
-                is_bottom_set = true;
-                RATE = is_top_set? (upper_bound+lower_bound)/2. : RATE*2;
-                //reset input
-                for(var i in inputLayer){
-                    var node_id = inputLayer[i];
-                    state[node_id] = saved_input[node_id];
-                }
-                //continue;
-            }
-        }
-        //end of forward propagation
-        //define target layer errors, save output states and compute total error
-        max_error = 0;
-        for(var node_id in target){
-            saved_output[node_id] = state[node_id];
-            error[node_id] = state[node_id]*(1-state[node_id])*(target[node_id]-state[node_id]);
-            max_error = Math.abs( target[node_id] - state[node_id] ) > max_error? Math.abs( target[node_id] - state[node_id] ) : max_error;
-        }
-        //save current input
-        for(var i in inputLayer){
-            var node_id = inputLayer[i];
-            saved_input[node_id] = state[node_id];
-        }
-    }
-    //end of subnetwork update
-    for(var node_id in state){
-        setState(state[node_id],node_id,userID);
-    }
-    forwardUpdate(inputLayer,userID);
-}
-*/
+
 one_layer_learning = function(target,user_id){
     var output_layer = target;
     var input_layer = find_backward_layer(output_layer);
@@ -664,6 +478,21 @@ create_concept = function(parameters) {
     return id;
 }
 
+add_grants = function(node_id,concepts){
+    var update = {grants: concepts};
+    Nodes.update({_id: node_id},{
+        $set: update
+    });
+    for(var id in concepts){
+        var granted_by = Nodes.findOne(id).granted_by;
+        granted_by[node_id] = true;
+        update = {granted_by: granted_by};
+        Nodes.update({_id: id},{
+            $set:update
+        });
+    }
+}
+
 add_set = function(node_id,concepts){
     var set = build_set(concepts);
     var weights = set.weights;
@@ -701,6 +530,22 @@ add_set = function(node_id,concepts){
     return set_id;
 }
 
+full_create = function(p){
+    if(p.type == "concept"){
+        var id = create_concept(p.parameters);
+    }
+    else if(p.type == "content"){
+        var id = create_content(p.parameters);
+        var grants = p.grants;
+        Nodes.update({_id: id},{$set: {grants: grants}});
+    }
+    //add requirement sets
+    for(var i in p.needs){
+        var requirement = p.needs[i];
+        add_set(id,requirement);
+    }
+}
+
 //editing functions
 edit_node = function(node_id,parameters){
     Nodes.update({
@@ -708,6 +553,21 @@ edit_node = function(node_id,parameters){
     },{
         $set: parameters
     });
+}
+
+edit_grants = function(node_id,concepts){
+    var old_skills = Nodes.findOne(node_id).grants;
+    //delete link with nodes that are no longer granted
+    for(var id in old_skills){
+        if(concepts[id] == null){
+            var granted_by = Nodes.findOne(id).granted_by;
+            del granted_by[id];
+            var update = {granted_by: granted_by};
+            Nodes.update({_id: id},{$set: update});
+        }
+    }
+    //add the rest
+    add_grants(node_id,concepts);
 }
 
 edit_set = function(set_id,concepts){
