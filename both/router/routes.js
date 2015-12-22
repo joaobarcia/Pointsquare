@@ -1,10 +1,10 @@
 FlowRouter.route('/', {
     name: 'home',
     subscriptions: function(params) {
-        this.register("nodes",Meteor.subscribe("nodes"));
-        this.register("edges",Meteor.subscribe("edges"));
-        this.register("sets",Meteor.subscribe("sets"));
-        this.register("personal",Meteor.subscribe("personal"));
+        this.register("nodes", Meteor.subscribe("nodes"));
+        this.register("edges", Meteor.subscribe("edges"));
+        this.register("sets", Meteor.subscribe("sets"));
+        this.register("personal", Meteor.subscribe("personal"));
     },
     action: function(params) {
         BlazeLayout.render("mainLayout", {
