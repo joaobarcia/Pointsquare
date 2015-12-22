@@ -536,8 +536,8 @@ full_create = function(p){
     }
     else if(p.type == "content"){
         var id = create_content(p.parameters);
-        var grants = p.grants;
-        Nodes.update({_id: id},{$set: {grants: grants}});
+        var grantement = p.grants;
+        add_grants(id,grantement);
     }
     //add requirement sets
     for(var i in p.needs){
@@ -683,7 +683,7 @@ Meteor.methods({
         return edit_node(nodeID,parameters);
     },
 
-    editSet: function(setID,concepts){
+    editNeed: function(setID,concepts){
         return edit_set(setID,concepts);
 	},
 
@@ -691,7 +691,7 @@ Meteor.methods({
         return remove_node(nodeID);
     },
 
-    removeSet: function(setID){
+    removeNeed: function(setID){
         return remove_set(setID);
     },
 
