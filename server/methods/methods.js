@@ -562,7 +562,7 @@ edit_grants = function(node_id,concepts){
     for(var id in old_skills){
         if(concepts[id] == null){
             var granted_by = Nodes.findOne(id).granted_by;
-            del granted_by[id];
+            delete granted_by[id];
             var update = {granted_by: granted_by};
             Nodes.update({_id: id},{$set: update});
         }
