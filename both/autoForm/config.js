@@ -58,65 +58,53 @@ Schema.Unit = new SimpleSchema({
             }
         }
     },
-    requiredConcepts: {
+    needs: {
         type: [String],
         label: " blergh",
         optional: true,
         autoform: {
             type: "selectize",
             multiple: true,
+            isReactiveOptions: true,
             options: function() {
                 // return names and rids of concepts in the format [{label: 'name', value:'rid'}]
-                /*function nameAndRID(n) {
+                function nameAndRID(n) {
                     var newObject = {};
-                    newObject.label = n.name
-                    newObject.value = n._id
-                    return newObject
-                }
-                return lodash.map(Nodes.find({
+                    newObject.label = n.name;
+                    newObject.value = n._id;
+                    return newObject;
+                };
+
+                var conceptsMappedToSelectize = _.map(Nodes.find({
                     type: 'concept'
-                }).fetch(), nameAndRID);*/
-                return [{
-                    label: "2013",
-                    value: 2013
-                }, {
-                    label: "2014",
-                    value: 2014
-                }, {
-                    label: "2015",
-                    value: 2015
-                }];
+                }).fetch(), nameAndRID);
+
+                return conceptsMappedToSelectize;
             }
         }
     },
-    grantedConcepts: {
+    grants: {
         type: [String],
         label: " blargh",
         optional: true,
         autoform: {
-            type: "typeahead",
+            type: "selectize",
             multiple: true,
+            isReactiveOptions: true,
             options: function() {
                 // return names and rids of concepts in the format [{label: 'name', value:'rid'}]
-                /*                function nameAndRID(n) {
-                                    var newObject = {};
-                                    newObject.label = n.name
-                                    newObject.value = n._id
-                                    return newObject
-                                }
-                                return lodash.map(Nodes.find({
-                                    type: 'concept'
-                                }).fetch(), nameAndRID);*/
-                return [{
-                    label: "2013",
-                    value: 2013
-                }, {
-                    label: "2014",
-                    value: 2014
-                }, {
-                    label: "2015",
-                    value: 2015
-                }];
+                function nameAndRID(n) {
+                    var newObject = {};
+                    newObject.label = n.name;
+                    newObject.value = n._id;
+                    return newObject;
+                };
+
+                var conceptsMappedToSelectize = _.map(Nodes.find({
+                    type: 'concept'
+                }).fetch(), nameAndRID);
+
+                return conceptsMappedToSelectize;
             }
         }
     },

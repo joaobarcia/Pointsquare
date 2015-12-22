@@ -174,6 +174,21 @@ AutoForm.hooks({
             doc.content = content;
             delete doc.evaluationType;
 
+
+            var needsObject = {};
+            _.forEach(doc.needs, function(n) {
+                console.log(typeof(n));
+                console.log(n);
+                //console.log(toString(n));
+                //needsObject[n] = true;
+            });
+
+            console.log = needsObject;
+            //doc.needs = needsObject;
+
+
+            //doc.needs = for ()
+
             /*var requiredConceptsArray = [];
             if (typeof doc.requiredConcepts != "undefined") {
                 var requiredConceptsElement = {};

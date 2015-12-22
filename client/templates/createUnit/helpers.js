@@ -6,6 +6,20 @@ Template.createUnit.helpers({
     concepts: function() {
         return Nodes.find({}).fetch();
     },
+    /*conceptsMappedToSelectize: function() {
+        function nameAndRID(n) {
+            var newObject = {};
+            newObject.label = n.name;
+            newObject.value = n._id;
+            return newObject;
+        };
+
+        var conceptsMappedToSelectize = lodash.map(Nodes.find({
+            type: 'concept'
+        }).fetch(), nameAndRID);
+        console.log(conceptsMappedToSelectize);
+        return conceptsMappedToSelectize;
+    },*/
     /*
         submitting: function() {
             console.log(Session.get("callStatus"));
