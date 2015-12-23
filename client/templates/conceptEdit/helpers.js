@@ -20,8 +20,8 @@ Template.conceptEdit.helpers({
 
         return conceptEditDoc;
     },
-    /*    submitting: function() {
-            console.log(Session.get("callStatus"));
-            return Session.get("callStatus") == "submitting concept";
-        },*/
+    needs: function() {
+        var id = FlowRouter.getParam('conceptId');
+        return Requirements.find({node: id});
+    }
 });
