@@ -30,7 +30,7 @@ Template.conceptEdit.events({
 AutoForm.hooks({
     conceptEdit: {
         onSubmit: function(doc) {
-            console.log("Great Success!");
+            /*console.log("Great Success!");
             console.log("rid", this.formAttributes.conceptRID);
             var conceptRID = this.formAttributes.conceptRID;
             var properties = {};
@@ -49,17 +49,20 @@ AutoForm.hooks({
             });
 
             var childConceptsArray = [];
-            childConceptsArray.push(childConcepts);
+            childConceptsArray.push(childConcepts);*/
 
-            console.log("childConcepts", childConceptsArray);
 
-            Session.set("callStatus", "submitting concept");
-            console.log("rid: " + conceptRID);
-            Meteor.call('editConcept', conceptRID, properties, childConceptsArray, function(error, result) {
-                console.log(result);
-                Session.set("callStatus", "submitted");
-                Router.go('/concept/' + encodeURIComponent(result));
-            });
+            console.log(doc);
+            var parameters = {};
+            parameters.name = doc.name;
+            parameters.description = doc.description;
+            console.log(parameters);
+
+            var conceptId = FlowRouter.getParam('conceptId');
+
+            Meteor.call('editNode', conceptId, parameters);
+
+
             this.done();
             return false;
         }
