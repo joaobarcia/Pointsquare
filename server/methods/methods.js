@@ -81,8 +81,8 @@ set_state = function(state,node_id,user_id){
     }
 }
 
-compute_requirement_state = function(set_id,user_id){
-    var requirement = Requirements.findOne(set_id);
+compute_requirement_state = function(requirement_id,user_id){
+    var requirement = Requirements.findOne(requirement_id);
     var weights = requirement.weights;
     var arg = requirement.bias;
     for(var concept in weights){
@@ -111,7 +111,7 @@ compute_state = function(node_id,user_id){
         var state = compute_requirement_state(req_id,user_id);
         max = state > max ? state : max;
     }
-    return state;
+    return max;
 }
 
 //computes the state of the node and saves it to the database
@@ -161,8 +161,8 @@ find_forward_layer = function(nodes){
         var node = Nodes.findOne(node_id);
         if( node.type == "content" ){ continue; }
         var in_set = node.in_set;
-        for(var set_id in in_set){
-            var set = Requirements.findOne(set_id);
+        for(var requirement_id in in_set){
+            var set = Requirements.findOne(requirement_id);
             var next_node = set.node;
             layer[next_node] = true;
         }
@@ -175,8 +175,8 @@ find_backward_layer = function(nodes){
     for( var node_id in nodes ){
         var node = Nodes.findOne(node_id);
         var requirements = node.needs;
-        for( var set_id in requirements ){
-            var weights = Requirements.findOne(set_id).weights;
+        for( var requirement_id in requirements ){
+            var weights = Requirements.findOne(requirement_id).weights;
             for( var subnode_id in weights ){
                 layer[subnode_id] = true;
             }
@@ -236,25 +236,27 @@ forward_update = function(node_ids,user_id){
     while(1){
         var next_layer = find_forward_layer(current_layer);
         if( Object.keys(next_layer) == 0 ){ break; }
-        for( var node_id in next_layer ){
+        for(var node_id in next_layer){
             update_state(node_id,user_id);
         }
         current_layer = next_layer;
     }
 }
 
-one_layer_learning = function(target,user_id){
+learn = function(target,user_id){
     var output_layer = target;
-    var input_layer = find_backward_layer(output_layer);
+    var input_layer = find_micronodes(output_layer);
     //make sure everything is up to date
     forward_update(find_micronodes(target),user_id);
+    //draw tree
+    var tree = find_backward_tree(target);
     //fill in state object
     var state = {};
-    for( var node_id in input_layer ){
-        state[node_id] = get_state(node_id,user_id);
-    }
-    for( var node_id in output_layer ){
-        state[node_id] = get_state(node_id,user_id);
+    for(var order in tree){
+        var layer = tree[order];
+        for(var node_id in layer){
+            state[node_id] = get_state(node_id,user_id);
+        }
     }
     //compute maximum and minimum activations
     var max_states = {};
@@ -264,8 +266,8 @@ one_layer_learning = function(target,user_id){
         var requirements = node.needs;
         var max_maximal_activation = 0.;
         var max_minimal_activation = 0.;
-        for( var set_id in requirements ){
-            var requirement = Requirements.findOne(set_id);
+        for( var requirement_id in requirements ){
+            var requirement = Requirements.findOne(requirement_id);
             var weights = requirement.weights;
             var max_arg = 0.;
             var arg = requirement.bias;
@@ -277,7 +279,7 @@ one_layer_learning = function(target,user_id){
             max_maximal_activation = (maximal_activation>max_maximal_activation)? maximal_activation : max_maximal_activation;
             var minimal_activation = sigmoid(requirement.bias);
             max_minimal_activation = (minimal_activation>max_minimal_activation)? minimal_activation : max_minimal_activation;
-            state[set_id] = sigmoid(arg);
+            state[requirement_id] = sigmoid(arg);
         }
         if( Object.keys(requirements) == 0 ){
             max_maximal_activation = 1;
@@ -304,20 +306,31 @@ one_layer_learning = function(target,user_id){
     var saved_output = {};
     var error = {};
     var max_error = 0;
-    for( var node_id in target ){
+    /*for( var node_id in target ){
         saved_output[node_id] = state[node_id];
         error[node_id] = state[node_id]*( 1 - state[node_id] )*( target[node_id] - state[node_id] );
         max_error = Math.abs( target[node_id] - state[node_id] ) > max_error? Math.abs( target[node_id] - state[node_id] ) : max_error;
-    }
+    }*/
     //initialize all error entries
-    for(var node_id in input_layer){
-        error[node_id] = 0;
+    for(var i in tree){
+        var layer = tree[i];
+        for(var node_id in layer){
+            if(i==0){
+                saved_output[node_id] = state[node_id];
+                error[node_id] = state[node_id]*( 1 - state[node_id] )*( target[node_id] - state[node_id] );
+                max_error = Math.abs( target[node_id] - state[node_id] ) > max_error? Math.abs( target[node_id] - state[node_id] ) : max_error;
+            }
+            else{
+                error[node_id] = 0;
+            }
+        }
     }
     //save current input states
     saved_input = {};
     for( var node_id in input_layer ){
         saved_input[node_id] = state[node_id];
     }
+    //return {"tree":tree,"error":error,"target":target,"state":state};
     //begin subnetwork update
     while(max_error > TOLERANCE){
         //reset bounds
@@ -326,19 +339,23 @@ one_layer_learning = function(target,user_id){
         var upper_bound = Math.pow(10,10);
         var lower_bound = 0;
         //backpropagation
-        for(var node_id in target){
-            var node = Nodes.findOne(node_id);
-            var requirements = node.needs;
-            var max = 0;
-            var active_set = Object.keys(requirements)[0];
-            for(var set_id in requirements){
-                max = state[set_id]>max? state[set_id] : max;
-                active_set = state[set_id]>max? set_id : active_set;
-            }
-            var weights = Requirements.findOne(active_set).weights;
-            for(var subnode_id in weights){
-                var weight = weights[subnode_id];
-                error[subnode_id] += error[node_id]*weight;
+        for(var order in tree){
+            var layer = tree[order];
+            for(var node_id in layer){
+                var node = Nodes.findOne(node_id);
+                var requirements = node.needs;
+                if(Object.keys(requirements).length == 0){ continue; }
+                var max = 0;
+                var active_requirement = Object.keys(requirements)[0];
+                for(var requirement_id in requirements){
+                    max = state[requirement_id]>max? state[requirement_id] : max;
+                    active_requirement = state[requirement_id]>max? requirement_id : active_requirement;
+                }
+                var weights = Requirements.findOne(active_requirement).weights;
+                for(var subnode_id in weights){
+                    var weight = weights[subnode_id];
+                    error[subnode_id] += error[node_id]*weight;
+                }
             }
         }
         //forward propagation
@@ -347,22 +364,26 @@ one_layer_learning = function(target,user_id){
             for(var node_id in input_layer){
                 state[node_id] = box( state[node_id] + RATE*error[node_id] );
             }
-            //recompute output states
-            for(var node_id in target){
-                var node = Nodes.findOne(node_id);
-                var requirements = node.needs;
-                var max = 0;
-                for(var set_id in requirements){
-                    var requirement = Requirements.findOne(set_id);
-                    var weights = requirement.weights;
-                    var arg = requirement.bias;
-                    for(subnode_id in weights){
-                        arg += weights[subnode_id]*state[subnode_id];
+            //forward propagate
+            for(var order = tree.length-2; order >= 0; order--){
+                var layer = tree[order];
+                for(var node_id in layer){
+                    var node = Nodes.findOne(node_id);
+                    var requirements = node.needs;
+                    if(Object.keys(requirements).length == 0){ continue; }
+                    var max = 0;
+                    for(var requirement_id in requirements){
+                        var requirement = Requirements.findOne(requirement_id);
+                        var weights = requirement.weights;
+                        var arg = requirement.bias;
+                        for(subnode_id in weights){
+                            arg += weights[subnode_id]*state[subnode_id];
+                        }
+                        state[requirement_id] = sigmoid(arg);
+                        max = state[requirement_id]>max? state[requirement_id] : max;
                     }
-                    state[set_id] = sigmoid(arg);
-                    max = state[set_id]>max? state[set_id] : max;
+                    state[node_id] = max;
                 }
-                state[node_id] = max;
             }
             //compute maximum variations of output states
             var max_variation = 0;
@@ -417,10 +438,7 @@ one_layer_learning = function(target,user_id){
         set_state(state[node_id],node_id,user_id);
     }
     forward_update(input_layer,user_id);
-}
 
-learn = function(target,user_id){
-    //
 }
 
 //creation functions
@@ -497,13 +515,13 @@ add_set = function(node_id,concepts){
     var set = build_set(concepts);
     var weights = set.weights;
     var bias = set.bias;
-    var set_id = Requirements.insert({
+    var requirement_id = Requirements.insert({
         node: node_id,
         weights: weights,
         bias: bias
     });
     var update = {};
-    update["needs."+set_id] = true;
+    update["needs."+requirement_id] = true;
     Nodes.update(
         {
             _id: node_id
@@ -514,7 +532,7 @@ add_set = function(node_id,concepts){
     );
     for( var id in concepts ){
         var update = {};
-        update["in_set."+set_id] = true;
+        update["in_set."+requirement_id] = true;
         Nodes.update({
             _id: id
         },{
@@ -527,7 +545,7 @@ add_set = function(node_id,concepts){
         //update_state(node_id,user_id);
         //forward_update([node_id],user_id);
     }
-    return set_id;
+    return requirement_id;
 }
 
 full_create = function(p){
@@ -571,8 +589,8 @@ edit_grants = function(node_id,concepts){
     add_grants(node_id,concepts);
 }
 
-edit_set = function(set_id,concepts){
-    var old_weights = Requirements.findOne(set_id).weights;
+edit_set = function(requirement_id,concepts){
+    var old_weights = Requirements.findOne(requirement_id).weights;
     var set = build_set(concepts);
     var new_weights = set.weights;
     var bias = set.bias;
@@ -580,14 +598,14 @@ edit_set = function(set_id,concepts){
     for(var node_id in old_weights){
         if( concepts[node_id] == null ){
             var unset = {};
-            unset["in_set."+set_id]
+            unset["in_set."+requirement_id]
             Nodes.update({_id: node_id},{
                 $unset: unset
             });
         }
     }
     Requirements.update({
-        _id: set_id
+        _id: requirement_id
     },{
         $set: {
             weights: new_weights,
@@ -604,9 +622,9 @@ edit_set = function(set_id,concepts){
         });
     }
     if(Object.keys(concepts) == 0){
-        Requirements.remove({_id:set_id});
+        Requirements.remove({_id:requirement_id});
     }
-    var node_id = Requirements.findOne(set_id).node;
+    var node_id = Requirements.findOne(requirement_id).node;
     var users = Meteor.users.find().fetch();
     for( var i in users ){
         var user_id = users[i]._id;
@@ -615,8 +633,8 @@ edit_set = function(set_id,concepts){
     }
 }
 
-remove_set = function(set_id){
-    edit_set(set_id,{});
+remove_set = function(requirement_id){
+    edit_set(requirement_id,{});
 }
 
 remove_node = function(node_id){
@@ -624,8 +642,8 @@ remove_node = function(node_id){
     //var must_update = find_forward_layer([node_id]);
     //remove all sets from this node
     var needs = node.needs;
-    for(var set_id in needs){
-        remove_set(set_id);
+    for(var requirement_id in needs){
+        remove_set(requirement_id);
     }
     //remove all edges to this node
     Personal.remove({
@@ -654,11 +672,11 @@ remove_node = function(node_id){
         }
         //remove references in sets that require this concept
         var sets = node.in_set;
-        for(var set_id in sets){
-            var old_weights = Requirements.findOne({ _id: set_id }).weights;
+        for(var requirement_id in sets){
+            var old_weights = Requirements.findOne({ _id: requirement_id }).weights;
             delete weights[node_id];
             var ids = Object.keys(weights);
-            edit_set(set_id,weights);
+            edit_set(requirement_id,weights);
         }
     }
     //and finally dump the node
@@ -751,8 +769,8 @@ Meteor.methods({
         return forward_update(newStates,userID);
     },
 
-    oneLayerLearning: function(target,userID){
-        return one_layer_learning(target,userID);
+    learn: function(target,userID){
+        return learn(target,userID);
     }
 
 });
