@@ -22,7 +22,7 @@ Meteor.startup(function() {
     var c4 = create_concept({name: "c4"});
     var set = {};
     set[concept] = true;
-    add_set(unit,set);
+    //add_set(unit,set);
     set = {};
     set[a] = true;
     add_set(unit,set);

@@ -717,32 +717,8 @@ Meteor.methods({
         return get_state(nodeID,userID);
     },
 
-    setState: function(state,nodeID,userID){
-        set_state(state,nodeID,userID);
-    },
-
-    updateState: function(nodeID,userID){
-    	return update_state(nodeID,userID);
-    },
-
-    computeState: function(nodeID,userID){
-        return compute_state(nodeID,userID);
-    },
-
-    computeRequirementState: function(setID,userID){
-        return compute_requirement_state(setID,userID);
-    },
-
     resetUser: function(userID){
         return reset_user(userID);
-    },
-
-    setZerothLevel: function(){
-        return set_zeroth_level();
-    },
-
-    updateZerothLevel: function(userID){
-        return update_zeroth_level(userID);
     },
 
     findForwardLayer: function(nodeIDs){
@@ -759,14 +735,6 @@ Meteor.methods({
 
     findBackwardTree: function(nodeIDs){
         return find_backward_tree(nodeIDs);
-    },
-
-    findMicronodes: function(nodeIDs){
-        return find_micronodes(nodeIDs);
-    },
-
-    forwardUpdate: function(newStates,userID){
-        return forward_update(newStates,userID);
     },
 
     learn: function(target,userID){
