@@ -1,6 +1,11 @@
 Template.registerHelper('state', function() {
     if (Meteor.userId()) {
-        var node = this.rid;
+        var id = Template.currentData()._id;//FlowRouter.getParam('contentId')?FlowRouter.getParam('contentId'):FlowRouter.getParam('conceptId');
+        Meteor.call("getState",id,Meteor.userId(),function(e,r){
+            Session.set("xftsgd",r);
+        });
+        return Session.get("xftsgd");
+        /*var node = this.rid;
         var user_address = Meteor.users.findOne({
             '_id': Meteor.userId()
         }).emails[0].address;
@@ -8,13 +13,13 @@ Template.registerHelper('state', function() {
             'email': user_address
         }).mind;
         //console.log(items[node].state);
-        return items[node].state;
+        return items[node].state;*/
         /*        for (var i = 0; i < items.length; i++) {
                     if (items[i].rid == node) {
                         return items[i].state;
                     }
                 }*/
-        return 0;
+        //return 0;
     } else return 0;
 
 });
