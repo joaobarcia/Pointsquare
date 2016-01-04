@@ -28,10 +28,10 @@ Template.contentByType.onRendered(function() {
 });
 
 Template.unitPage.events({
-    /*'click #understood': function(event) {
+    'click #understood': function(event) {
         event.preventDefault();
         if (Meteor.userId()) {
-            Session.set('callStatus', 'learning');
+            /*Session.set('callStatus', 'learning');
             if (Session.get("temp") == "ready") {
                 Meteor.call("succeed", Blaze.getData()["rid"], function(error, result) {
                     console.log(result.statusCode);
@@ -44,15 +44,15 @@ Template.unitPage.events({
                 });
             } else if (Session.get("temp") == "precomputing") {
                 console.log("nothing");
-            }
-            Meteor.call("incrementViews", Blaze.getData()["rid"]);
+            }*/
+            Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
         }
     },
 
     'click #notUnderstood': function(event) {
         event.preventDefault();
         if (Meteor.userId()) {
-            Session.set('callStatus', 'unlearning');
+            /*Session.set('callStatus', 'unlearning');
             if (Session.get("temp") == "ready") {
                 Meteor.call("fail", Blaze.getData()["rid"], function(error, result) {
                     console.log(result.statusCode);
@@ -66,18 +66,14 @@ Template.unitPage.events({
             } else if (Session.get("temp") == "precomputing") {
                 console.log("nothing");
             }
-            Meteor.call("incrementViews", Blaze.getData()["rid"]);
+            Meteor.call("incrementViews", Blaze.getData()["rid"]);*/
+            Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
         }
     },
 
     'submit #exerciseStringForm': function(event) {
         event.preventDefault();
         var answerIsCorrect = null;
-        console.log(this);
-        console.log(Blaze.getData()["rid"]);
-        console.log(event.target.exerciseString.value);
-        console.log(this.answers);
-        console.log(this.answers.indexOf(event.target.exerciseString.value) > -1);
         if (this.answers.indexOf(event.target.exerciseString.value) > -1) {
             answerIsCorrect = true
         } else answerIsCorrect = false;
@@ -85,7 +81,7 @@ Template.unitPage.events({
             $("#exerciseButton").removeClass("orange red").addClass("green");
             $("#exerciseInputText").removeClass("red-text").addClass("green-text");
             if (Meteor.userId()) {
-                Session.set("unit_rid", Blaze.getData()["rid"]);
+                /*Session.set("unit_rid", Blaze.getData()["rid"]);
                 setTimeout(function() {
                     Session.set('callStatus', 'learning');
                     if (Session.get("temp") == "ready") {
@@ -102,7 +98,8 @@ Template.unitPage.events({
                         console.log("nothing");
                     }
                     Meteor.call("incrementViews", unit_rid);
-                }, 2000);
+                }, 2000);*/
+                Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
             }
         } else if (!answerIsCorrect) {
             $("#exerciseButton").removeClass("orange");
@@ -113,7 +110,7 @@ Template.unitPage.events({
             $("#exerciseInputText").addClass("red-text");
 
             if (Meteor.userId()) {
-                Session.set("unit_rid", Blaze.getData()["rid"]);
+                /*Session.set("unit_rid", Blaze.getData()["rid"]);
                 setTimeout(function() {
                     Session.set('callStatus', 'unlearning');
                     if (Session.get("temp") == "ready") {
@@ -131,7 +128,8 @@ Template.unitPage.events({
                         console.log("nothing");
                     }
                     Meteor.call("incrementViews", unit_rid);
-                }, 2000);
+                }, 2000);*/
+                Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
             }
         }
     },
@@ -141,7 +139,7 @@ Template.unitPage.events({
         $(".trueRadioButtonLabel").addClass("green-text");
         $(".falseRadioButtonLabel").addClass("red-text");
         if (Meteor.userId()) {
-            Session.set("unit_rid", Blaze.getData()["rid"]);
+            /*Session.set("unit_rid", Blaze.getData()["rid"]);
             setTimeout(function() {
                 Session.set('callStatus', 'learning');
                 if (Session.get("temp") == "ready") {
@@ -160,7 +158,8 @@ Template.unitPage.events({
                     console.log("nothing");
                 }
                 Meteor.call("incrementViews", unit_rid);
-            }, 2000);
+            }, 2000);*/
+            Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
         }
     },
 
@@ -170,7 +169,7 @@ Template.unitPage.events({
         $(".trueRadioButtonLabel").addClass("green-text");
         $(".falseRadioButtonLabel").addClass("red-text");
         if (Meteor.userId()) {
-            Session.set("unit_rid", Blaze.getData()["rid"]);
+            /*Session.set("unit_rid", Blaze.getData()["rid"]);
             setTimeout(function() {
                 Session.set('callStatus', 'unlearning');
                 if (Session.get("temp") == "ready") {
@@ -188,13 +187,14 @@ Template.unitPage.events({
                     console.log("nothing");
                 }
                 Meteor.call("incrementViews", unit_rid);
-            }, 2000);
+            }, 2000);*/
+            Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
         }
     },
     'click #backToUnit': function(event) {
         event.preventDefault();
         Session.set('callStatus', 'doingExercise');
         console.log(Session.get('callStatus'));
-    },*/
+    }
 
 });

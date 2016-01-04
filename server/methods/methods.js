@@ -243,7 +243,7 @@ forward_update = function(node_ids,user_id){
     }
 }
 
-learn = function(target,user_id){
+readapt = function(target,user_id){
     var output_layer = target;
     var input_layer = find_micronodes(output_layer);
     //make sure everything is up to date
@@ -737,8 +737,20 @@ Meteor.methods({
         return find_backward_tree(nodeIDs);
     },
 
-    learn: function(target,userID){
-        return learn(target,userID);
+    readapt: function(target,userID){
+        return readapt(target,userID);
+    },
+
+    succeed: function(nodeID,userID){
+        var target = Nodes.findOne(nodeID).grants;
+        target[nodeID] = 1;
+        return readapt(target,userID);
+    },
+
+    fail: function(nodeID,userID){
+        var target = {};
+        target[nodeID] = 0;
+        return readapt(target,userID);
     }
 
 });
