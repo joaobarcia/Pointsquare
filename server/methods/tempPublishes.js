@@ -9,35 +9,54 @@ Meteor.startup(function() {
     //Comments.remove({});
     //Scores.remove({});
 
-    var david = Meteor.users.findOne({
-        username: "David de Sousa Seixas"
-    })._id;
+
+    var david = Meteor.users.findOne()._id;
 
     var unit = create_content({
-        name: "test content"
+        name: "unit"
     });
     var concept = create_concept({
-        name: "test concept"
+        name: "concept"
     });
-    //var concept2 = create_concept({name: "test concept 2"});
+    var a = create_concept({
+        name: "a"
+    });
+    var b1 = create_concept({
+        name: "b1"
+    });
+    var b2 = create_concept({
+        name: "b2"
+    });
+    var c1 = create_concept({
+        name: "c1"
+    });
+    var c2 = create_concept({
+        name: "c2"
+    });
+    var c3 = create_concept({
+        name: "c3"
+    });
+    var c4 = create_concept({
+        name: "c4"
+    });
     var set = {};
     set[concept] = true;
+    //add_set(unit,set);
+    set = {};
+    set[a] = true;
     add_set(unit, set);
-    ids = {};
-    ids[Nodes.findOne({
-        name: "test concept"
-    })._id] = true;
-    //console.log(find_micronodes(ids));
-    //edit_set(unit,[concept1,concept2]);
-    var p = {};
-    p["type"] = "content";
-    p["parameters"] = {
-        name: "content"
-    };
-    p["needs"] = ids;
-    p["grants"] = ids;
-    full_create(p);
-
+    set = {};
+    set[b1] = true;
+    set[b2] = true;
+    add_set(a, set);
+    set = {};
+    set[c1] = true;
+    set[c2] = true;
+    add_set(b1, set);
+    set = {};
+    set[c3] = true;
+    set[c4] = true;
+    add_set(b2, set);
 });
 
 Meteor.publish('nodes', function() {
