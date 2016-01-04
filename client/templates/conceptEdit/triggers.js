@@ -1,17 +1,54 @@
 Template.conceptEdit.onCreated(function() {
     var self = this;
     self.autorun(function() {
-        var conceptId = FlowRouter.getParam('conceptId');
-        self.subscribe('singleConcept', conceptId);
+        /*var conceptId = FlowRouter.getParam('conceptId');
+        self.subscribe('singleConcept', conceptId);*/
+        self.subscribe('allConcepts');
     });
 });
 
 Template.conceptEdit.rendered = function() {
-    $(document).ready(function() {
-        $('.tooltipped').tooltip({
-            delay: 20
-        });
+    this.autorun(() => {
+        if (this.subscriptionsReady()) {
+            console.log('subs ready');
+            $(document).ready(function() {
+                $('.tooltipped').tooltip({
+                    delay: 20
+                });
+            });
+            var conceptsMappedForSelectize = Nodes.find({
+                type: 'concept'
+            }, {
+                fields: {
+                    _id: 1,
+                    name: 1,
+                    description: 1
+                }
+            }).fetch();
+            console.log(conceptsMappedForSelectize);
+            $('#select-links').selectize({
+                theme: 'links',
+                maxItems: null,
+                valueField: '_id',
+                searchField: ['name', 'description'],
+                options: conceptsMappedForSelectize,
+
+                render: {
+                    option: function(data, escape) {
+                        return '<div class="option">' +
+                            '<h5><span class="title"><strong>' + escape(data.name) + '</strong></span><h5>' +
+                            '<span class="url">' + escape(data.description) + '</span>' +
+                            '</div>';
+                    },
+                    item: function(data, escape) {
+                        return '<div class="item">' + escape(data.name) + '</div>';
+                    }
+                }
+            });
+            // to access values:  $('#select-links').selectize()[0].selectize.getValue()
+        }
     });
+
 };
 
 

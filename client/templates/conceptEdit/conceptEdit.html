@@ -15,20 +15,23 @@
                                         --}} <h3 class="center-align">Info</h3> {{> afQuickField name="name" value=name}} {{> afQuickField name="description" value= description}}
                                     </div>
                                     <div class="section">
+                                        <div class="control-group">
+                                            <label for="select-links">Needs:</label>
+                                            <select id="select-links" placeholder="Select some concepts..."></select>
+                                        </div>
+                                    </div>
+                                    <div class="section">
                                         <div class="divider"></div>
-                                        <h3 class="center-align">Child Concepts</h3> {{> afQuickField name="needs"}}
+                                        {{needs}}
+                                        <h3 class="center-align">Child Concepts</h3> {{> afQuickField name="needs" value= needs}}
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div>
-                            {{#if submitting}}
-                                {{> smallLoading}}
-                            {{else}}
-                                <button type="submit" class="btn btn-primary btn-large">Submit</button>
-                                <button id="deleteConcept" class="btn btn-primary btn-large red">Delete</button>
-                                {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
-                            {{/if}}
+                            <button type="submit" class="btn btn-primary btn-large">Submit</button>
+                            <button id="deleteConcept" class="btn btn-primary btn-large red">Delete</button>
+                            {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
                             {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
                         </div>
                     </fieldset>

@@ -9,20 +9,31 @@ Meteor.startup(function() {
     //Comments.remove({});
     //Scores.remove({});
 
-    var david = Meteor.users.findOne({username:"David de Sousa Seixas"})._id;
+    var david = Meteor.users.findOne({
+        username: "David de Sousa Seixas"
+    })._id;
 
-    var unit = create_content({name: "test content"});
-    var concept = create_concept({name: "test concept"});
+    var unit = create_content({
+        name: "test content"
+    });
+    var concept = create_concept({
+        name: "test concept"
+    });
     //var concept2 = create_concept({name: "test concept 2"});
     var set = {};
     set[concept] = true;
-    add_set(unit,set);
-    ids = {}; ids[Nodes.findOne({name: "test concept"})._id] = true;
+    add_set(unit, set);
+    ids = {};
+    ids[Nodes.findOne({
+        name: "test concept"
+    })._id] = true;
     //console.log(find_micronodes(ids));
     //edit_set(unit,[concept1,concept2]);
     var p = {};
     p["type"] = "content";
-    p["parameters"] = {name: "content"};
+    p["parameters"] = {
+        name: "content"
+    };
     p["needs"] = ids;
     p["grants"] = ids;
     full_create(p);
@@ -72,10 +83,15 @@ Meteor.publishComposite('singleContent', function(contentId) {
 });
 
 Meteor.publish('singleConcept', function(conceptId) {
-    return Nodes.find({
-        type: 'concept',
-        _id: conceptId
-    });
+    return [
+        Nodes.find({
+            type: 'concept',
+            _id: conceptId
+        }),
+        Requirements.find({
+            node: conceptId
+        })
+    ];
 });
 
 Meteor.publish('allConcepts', function(conceptId) {

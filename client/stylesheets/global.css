@@ -445,3 +445,26 @@ nav .brand-logo {
     }
 }
 */
+
+
+/*SELECTIZE CSS FOR NAME+DESCRIPTION*/
+
+
+/*.selectize-control.links .option .title {
+    display: block;
+}
+
+.selectize-control.links .option .url {
+    font-size: 12px;
+    display: block;
+    color: #a0a0a0;
+}
+
+.selectize-control.links .item a {
+    color: #006ef5;
+}
+
+.selectize-control.links .item.active a {
+    color: #303030;
+}
+*/
