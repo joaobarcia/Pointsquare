@@ -22,7 +22,7 @@ Template.conceptEdit.helpers({
     },
     needs: function() {
         var id = FlowRouter.getParam('conceptId');
-        var requirements = Requirements.find({node: id});
+        var requirements = Requirements.find({node: id}).fetch();
         var json = [];
         for(var i = 0; i < requirements.length; i++){
             var requirement = requirements[i];

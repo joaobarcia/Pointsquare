@@ -3,6 +3,10 @@ Template.conceptEdit.onCreated(function() {
     self.autorun(function() {
         var conceptId = FlowRouter.getParam('conceptId');
         self.subscribe('singleConcept', conceptId);
+        self.subscribe("nodes");
+        self.subscribe("sets");
+        self.subscribe("edges");
+        self.subscribe("personal");
     });
 });
 
