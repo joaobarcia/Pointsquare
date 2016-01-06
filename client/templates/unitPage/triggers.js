@@ -6,25 +6,47 @@ Template.unitPage.onCreated(function() {
     });
 });
 
-Template.unitPage.rendered = function() {
-    $('.tooltipped').tooltip({
-        delay: 20
-    });
-    console.log("rendered unitPage");
-    $('unit-content').ready(function() {
-        console.log("test")
-    });
-    $('ul.tabs').tabs();
-};
+Template.unitPage.onRendered(function() {
 
-Template.unitContent.onRendered(function() {
-    console.log("rendered unitContent");
-    $('ul.tabs').tabs();
+
+    /*this.autorun(() => {
+            if (this.subsReady()) {
+                $('.tooltipped').tooltip({
+                    delay: 20
+                });
+                $('ul.tabs').tabs();
+            });
+    }*/
+
 });
 
+/*
+Template.unitContent.onRendered(function() {
+    this.autorun(() => {
+            if (this.subscriptionsReady()) {
+                console.log("rendered unitContent");
+                $('ul.tabs').tabs();
+            });
+    }
+});
+*/
+
 Template.contentByType.onRendered(function() {
-    console.log("rendered contentByType");
-    $('ul.tabs').tabs();
+    console.log("hum?");
+    this.autorun(() => {
+        if (this.subscriptionsReady()) {
+            console.log('subs ready');
+            console.log($ == jQuery)
+                //$(document).ready(function() {
+                //console.log("jQuery document ready")
+                //$('ul.tabs').tabs();
+            $('ul.tabs').addClass("red");
+            $('ul.tabs').tooltip({
+                delay: 20
+            });
+            //});
+        }
+    });
 });
 
 Template.unitPage.events({
@@ -45,7 +67,7 @@ Template.unitPage.events({
             } else if (Session.get("temp") == "precomputing") {
                 console.log("nothing");
             }*/
-            Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
+            Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
 
@@ -67,7 +89,7 @@ Template.unitPage.events({
                 console.log("nothing");
             }
             Meteor.call("incrementViews", Blaze.getData()["rid"]);*/
-            Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
+            Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
 
@@ -99,7 +121,7 @@ Template.unitPage.events({
                     }
                     Meteor.call("incrementViews", unit_rid);
                 }, 2000);*/
-                Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
+                Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
             }
         } else if (!answerIsCorrect) {
             $("#exerciseButton").removeClass("orange");
@@ -129,7 +151,7 @@ Template.unitPage.events({
                     }
                     Meteor.call("incrementViews", unit_rid);
                 }, 2000);*/
-                Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
+                Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
             }
         }
     },
@@ -159,7 +181,7 @@ Template.unitPage.events({
                 }
                 Meteor.call("incrementViews", unit_rid);
             }, 2000);*/
-            Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
+            Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
 
@@ -188,7 +210,7 @@ Template.unitPage.events({
                 }
                 Meteor.call("incrementViews", unit_rid);
             }, 2000);*/
-            Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
+            Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
     'click #backToUnit': function(event) {
