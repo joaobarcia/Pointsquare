@@ -1,10 +1,15 @@
 Template.registerHelper('state', function() {
     if (Meteor.userId()) {
-        var id = Template.currentData()._id;//FlowRouter.getParam('contentId')?FlowRouter.getParam('contentId'):FlowRouter.getParam('conceptId');
+        var info = Personal.findOne({
+            user: Meteor.userId(),
+            node: Template.currentData()._id
+        });
+        return info? (info.state? info.state : 0) : 0;
+        /*var id = Template.currentData()._id;//FlowRouter.getParam('contentId')?FlowRouter.getParam('contentId'):FlowRouter.getParam('conceptId');
         Meteor.call("getState",id,Meteor.userId(),function(e,r){
             Session.set("xftsgd",r);
         });
-        return Session.get("xftsgd");
+        return Session.get("xftsgd");*/
         /*var node = this.rid;
         var user_address = Meteor.users.findOne({
             '_id': Meteor.userId()
