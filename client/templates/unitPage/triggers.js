@@ -39,13 +39,13 @@ Template.contentByType.onRendered(function() {
             console.log($ == jQuery)
                 //$(document).ready(function() {
                 //console.log("jQuery document ready")
-                //$('ul.tabs').tabs();
+            $('ul.tabs').tabs();
             $('ul.tabs').addClass("red");
             $('ul.tabs').tooltip({
                 delay: 20
             });
             //});
-        }
+        } else console.log("subs not ready")
     });
 });
 
