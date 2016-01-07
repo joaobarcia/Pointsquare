@@ -1,6 +1,7 @@
 // Dummy content for tests
 Meteor.startup(function() {
 
+    //
     Nodes.remove({});
     Edges.remove({});
     Requirements.remove({});
@@ -80,7 +81,28 @@ Meteor.publish('personal', function() {
     });
 });*/
 
-Meteor.publishComposite('singleContent', function(contentId) {
+Meteor.publishComposite("singleNode", function(args) {
+    var nodeId = args.nodeId;
+    var userId = args.userId;
+    var x = 1;
+    console.log("args");
+    console.log(args);
+    return {
+        find: function() {
+            return Nodes.findOne(nodeId);
+        }/*,
+        children: [{
+            find: function(node) {
+                return Personal.find({
+                    node: node._id,
+                    user: userId
+                });
+            }
+        }]*/
+    }
+});
+
+Meteor.publishComposite('singleContent', function(contentId,userId) {
     return {
         find: function() {
             // Find top ten highest scoring posts

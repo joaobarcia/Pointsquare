@@ -66,7 +66,14 @@ FlowRouter.route('/content/:contentId/edit', {
 });
 
 FlowRouter.route('/concept/:conceptId', {
-    name: 'conceptPage',
+    name: 'conceptPage',/*
+    subscriptions: function(params) {
+        this.register("singleNode", Meteor.subscribe("singleNode",conceptId,Meteor.userId()));
+        //this.register("nodes", Meteor.subscribe("nodes"));
+        //this.register("edges", Meteor.subscribe("edges"));
+        //this.register("sets", Meteor.subscribe("sets"));
+        //this.register("personal", Meteor.subscribe("personal"));
+    },*/
     action: function(params) {
         BlazeLayout.render("mainLayout", {
             main: "conceptPage"

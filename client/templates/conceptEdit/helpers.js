@@ -22,17 +22,38 @@ Template.conceptEdit.helpers({
     },
     needs: function() {
         var id = FlowRouter.getParam('conceptId');
-        console.log(Requirements.find({
+        var requirements = Requirements.find({
             node: id
-        }).fetch());
-        return Requirements.find({
-            node: id
-        });
-
-    },
-    needsForAutoform: function() {
-        // Tem de ficar formatado em [[Set de conceitos 1],[Set de conceitos 2],[Set de conceitos 3]]
-        // Em que Set de conceitos é formatado [{conceito 1.a},{conceito 1.b},{conceito 1.3}]
-        // Em que conceito é formatado {label:"nome de conceito", value: "id de conceito"}
+        }).fetch();
+        var json = [];
+        for (var i = 0; i < requirements.length; i++) {
+            var requirement = requirements[i];
+            var requirementId = requirement._id;
+            var info = Personal.findOne({
+                node: requirementId
+            });
+            var state = info ? info.state : 0;
+            var contains = [];
+            var subconcepts = requirement.weights;
+            for (var subconceptId in subconcepts) {
+                var subObj = {};
+                var subconcept = Nodes.findOne(subconceptId);
+                subObj["_id"] = subconceptId;
+                subObj["name"] = subconcept.name;
+                subObj["description"] = subconcept.description;
+                var subinfo = Personal.findOne({
+                    node: subconceptId,
+                    user: Meteor.userId()
+                });
+                var substate = subinfo ? subinfo.state : 0;
+                contains.push(subObj);
+            }
+            var obj = {};
+            obj["_id"] = requirementId;
+            obj["state"] = state;
+            obj["contains"] = contains;
+            json.push(obj);
+        }
+        return json;
     }
 });
