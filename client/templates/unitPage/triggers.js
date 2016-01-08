@@ -1,56 +1,31 @@
 Template.unitPage.onCreated(function() {
+    console.log('unitPage.onCreated');
     var self = this;
     self.autorun(function() {
         var contentId = FlowRouter.getParam('contentId');
-        //self.subscribe('singleContent', contentId);
-        var args = {};
+        self.subscribe('singleContent', contentId);
+        /*var args = {};
         args["nodeId"] = contentId;
         args["userId"] = Meteor.userId();
-        self.subscribe("singleNode",args);
+        self.subscribe("singleNode", args);*/
     });
 });
 
 Template.unitPage.onRendered(function() {
+    console.log('unitPage.onRendered');
 
-
-    /*this.autorun(() => {
-            if (this.subsReady()) {
-                $('.tooltipped').tooltip({
-                    delay: 20
-                });
-                $('ul.tabs').tabs();
-            });
-    }*/
-
-});
-
-/*
-Template.unitContent.onRendered(function() {
-    this.autorun(() => {
-            if (this.subscriptionsReady()) {
-                console.log("rendered unitContent");
-                $('ul.tabs').tabs();
-            });
-    }
-});
-*/
-
-Template.contentByType.onRendered(function() {
-    console.log("hum?");
     this.autorun(() => {
         if (this.subscriptionsReady()) {
-            console.log('subs ready');
-            console.log($ == jQuery)
-                //$(document).ready(function() {
-                //console.log("jQuery document ready")
-            $('ul.tabs').tabs();
-            $('ul.tabs').addClass("red");
-            $('ul.tabs').tooltip({
-                delay: 20
-            });
-            //});
-        } else console.log("subs not ready")
-    });
+            console.log('unitPage.onRendered > SUBS READY');
+            //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
+            setTimeout(function() {
+                console.log("TimeOUT!");
+                $('ul.tabs').tabs();
+            }, 20);
+
+        };
+    })
+
 });
 
 Template.unitPage.events({

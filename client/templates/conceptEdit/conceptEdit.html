@@ -15,15 +15,11 @@
                                         --}} <h3 class="center-align">Info</h3> {{> afQuickField name="name" value=name}} {{> afQuickField name="description" value= description}}
                                     </div>
                                     <div class="section">
-                                        <div class="control-group">
-                                            <label for="select-links">Needs:</label>
-                                            <select id="select-links" placeholder="Select some concepts..."></select>
-                                        </div>
-                                    </div>
-                                    <div class="section">
-                                        <div class="divider"></div>
-                                        {{needs}}
-                                        <!-- <h3 class="center-align">Child Concepts</h3> {{> afQuickField name="needs" value= needs}} -->
+                                        <h3 class="center-align">Necessary Concepts</h3>
+                                        {{#each needs}}
+                                            {{>conceptEditSelectBox}}
+                                        {{/each}}
+                                        <a class='dropdown-button cyan-text right-align add-set' href='#!'><i class="material-icons tiny">add_circle_outline</i> set of concepts</a>
                                     </div>
                                 </div>
                             </div>
@@ -39,4 +35,12 @@
             </div>
         </div>
     {{/with}}
+</template>
+<template name="conceptEditSelectBox">
+    <div class="control-group">
+        <label for="select-links">Set : {{_id}}</label>
+        <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-set" id="remove-{{_id}}">clear</a></i>
+        <select id= {{_id}} placeholder="Select some concepts...">
+        </select>
+    </div>
 </template>

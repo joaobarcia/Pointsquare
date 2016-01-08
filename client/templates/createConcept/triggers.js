@@ -26,11 +26,11 @@ AutoForm.hooks({
 
             console.log(conceptDefinitions);
 
+            var nodeId;
             Meteor.call('create', conceptDefinitions, function(error, result) {
-                //Router.go('/unit/' + encodeURIComponent(result));
-                console.log(result);
+                nodeId = result;
+                FlowRouter.go('/concept/' + nodeId);
             });
-
             this.done();
             return false;
         }
