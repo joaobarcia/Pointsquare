@@ -1,7 +1,7 @@
 FlowRouter.route('/', {
     name: 'home',
     subscriptions: function(params) {
-        //this.register("nodes", Meteor.subscribe("nodes"));
+        this.register("nodes", Meteor.subscribe("nodes"));
         //this.register("edges", Meteor.subscribe("edges"));
         //this.register("sets", Meteor.subscribe("sets"));
         //this.register("personal", Meteor.subscribe("personal"));
@@ -15,6 +15,13 @@ FlowRouter.route('/', {
 
 FlowRouter.route('/search', {
     name: 'search',
+    subscriptions: function(params) {
+        this.register("onlyReady",Meteor.subscribe("onlyReady",Meteor.userId()));
+        //this.register("nodes", Meteor.subscribe("nodes"));
+        //this.register("edges", Meteor.subscribe("edges"));
+        //this.register("sets", Meteor.subscribe("sets"));
+        //this.register("personal", Meteor.subscribe("personal"));
+    },
     triggersEnter: function() {
         /*var instance = EasySearch.getComponentInstance({
             index: 'nodes'

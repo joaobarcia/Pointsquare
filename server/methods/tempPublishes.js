@@ -40,6 +40,9 @@ Meteor.startup(function() {
     set[c4] = true;
     add_set(b2,set);
 
+    var remove_test = create_content({});
+    //remove_node(remove_test);
+
 });
 
 Meteor.publish('nodes', function() {
@@ -99,6 +102,26 @@ Meteor.publishComposite('singleContent', function(contentId,userId) {
                     type: 'state',
                     from: 'user1',
                     to: content._id
+                });
+            }
+        }],
+    }
+});
+
+Meteor.publishComposite('onlyReady', function(userId) {
+    return {
+        find: function() {
+            // Find top ten highest scoring posts
+            var user_id = Meteor.users.findOne(userId)._id;
+            return Personal.find({
+                user: user_id,
+                state: {$gt: 0.9}
+            });
+        },
+        children: [{
+            find: function(personal) {
+                return Nodes.find({
+                    _id: personal.node
                 });
             }
         }],

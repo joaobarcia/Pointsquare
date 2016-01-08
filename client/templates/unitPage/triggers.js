@@ -6,7 +6,7 @@ Template.unitPage.onCreated(function() {
         var args = {};
         args["nodeId"] = contentId;
         args["userId"] = Meteor.userId();
-        self.subscribe("singleNode",args);
+        //self.subscribe("singleNode",args);
     });
 });
 
