@@ -69,7 +69,7 @@ NodesSearchIndex = new EasySearch.Index({
     // index level configuration
     collection: Nodes,
     fields: ['name', 'description'],
-    engine: new EasySearch.MongoDB({
+    engine: new EasySearch.Minimongo({
         /*beforePublish: function(action, doc) {
             // might be that the field is already published and it's being modified
             if (!doc.state) {

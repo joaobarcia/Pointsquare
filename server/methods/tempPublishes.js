@@ -58,6 +58,7 @@ Meteor.startup(function() {
     set[c3] = true;
     set[c4] = true;
     add_set(b2, set);
+
 });
 
 Meteor.publish('nodes', function() {
@@ -89,20 +90,21 @@ Meteor.publishComposite("singleNode", function(args) {
     console.log(args);
     return {
         find: function() {
-            return Nodes.findOne(nodeId);
-        }/*,
-        children: [{
-            find: function(node) {
-                return Personal.find({
-                    node: node._id,
-                    user: userId
-                });
+                return Nodes.findOne(nodeId);
             }
-        }]*/
+            /*,
+                    children: [{
+                        find: function(node) {
+                            return Personal.find({
+                                node: node._id,
+                                user: userId
+                            });
+                        }
+                    }]*/
     }
 });
 
-Meteor.publishComposite('singleContent', function(contentId,userId) {
+Meteor.publishComposite('singleContent', function(contentId, userId) {
     return {
         find: function() {
             // Find top ten highest scoring posts
@@ -117,6 +119,28 @@ Meteor.publishComposite('singleContent', function(contentId,userId) {
                     type: 'state',
                     from: 'user1',
                     to: content._id
+                });
+            }
+        }],
+    }
+});
+
+Meteor.publishComposite('onlyReady', function(userId) {
+    return {
+        find: function() {
+            // Find top ten highest scoring posts
+            var user_id = Meteor.users.findOne(userId)._id;
+            return Personal.find({
+                user: user_id,
+                state: {
+                    $gt: 0.9
+                }
+            });
+        },
+        children: [{
+            find: function(personal) {
+                return Nodes.find({
+                    _id: personal.node
                 });
             }
         }],

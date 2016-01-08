@@ -590,7 +590,8 @@ edit_grants = function(node_id,concepts){
 }
 
 edit_set = function(requirement_id,concepts){
-    var old_weights = Requirements.findOne(requirement_id).weights;
+    var requirement = Requirements.findOne(requirement_id);
+    var old_weights = requirement.weights;
     var set = build_set(concepts);
     var new_weights = set.weights;
     var bias = set.bias;
@@ -598,7 +599,7 @@ edit_set = function(requirement_id,concepts){
     for(var node_id in old_weights){
         if( concepts[node_id] == null ){
             var unset = {};
-            unset["in_set."+requirement_id]
+            unset["in_set."+requirement_id] = true;
             Nodes.update({_id: node_id},{
                 $unset: unset
             });
@@ -614,7 +615,7 @@ edit_set = function(requirement_id,concepts){
     });
     for( var id in new_weights ){
         var update = {};
-        update["in_set."+id]
+        update["in_set."+id] = true;
         Nodes.update({
             _id: id
         },{
@@ -624,7 +625,7 @@ edit_set = function(requirement_id,concepts){
     if(Object.keys(concepts) == 0){
         Requirements.remove({_id:requirement_id});
     }
-    var node_id = Requirements.findOne(requirement_id).node;
+    var node_id = requirement.node;
     var users = Meteor.users.find().fetch();
     for( var i in users ){
         var user_id = users[i]._id;
@@ -638,7 +639,7 @@ remove_set = function(requirement_id){
 }
 
 remove_node = function(node_id){
-    var node = Nodes.findOne({ _id: node_id });
+    var node = Nodes.findOne(node_id);
     //var must_update = find_forward_layer([node_id]);
     //remove all sets from this node
     var needs = node.needs;
@@ -673,7 +674,7 @@ remove_node = function(node_id){
         //remove references in sets that require this concept
         var sets = node.in_set;
         for(var requirement_id in sets){
-            var old_weights = Requirements.findOne({ _id: requirement_id }).weights;
+            var weights = Requirements.findOne({ _id: requirement_id }).weights;
             delete weights[node_id];
             var ids = Object.keys(weights);
             edit_set(requirement_id,weights);
