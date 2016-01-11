@@ -1,8 +1,8 @@
 Template.unitEdit.helpers({
     contentEditPage: function() {
-        var contentId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('contentId');
         var content = Nodes.findOne({
-            _id: contentId
+            _id: nodeId
         }) || {};
         return content;
     },
@@ -36,10 +36,10 @@ Template.unitEdit.helpers({
 
         return unitEditDoc;
     },
-    submitting: function() {
-        console.log(Session.get("callStatus"));
-        return Session.get("callStatus") == "submitting unit";
-    },
+    /*    submitting: function() {
+            console.log(Session.get("callStatus"));
+            return Session.get("callStatus") == "submitting unit";
+        },*/
 });
 Template.unitEditContent.helpers({
     tempContent: function() {

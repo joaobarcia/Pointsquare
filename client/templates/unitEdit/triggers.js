@@ -1,8 +1,8 @@
 Template.unitEdit.onCreated(function() {
     var self = this;
     self.autorun(function() {
-        var contentId = FlowRouter.getParam('contentId');
-        self.subscribe('singleContent', contentId);
+        var nodeId = FlowRouter.getParam('contentId');
+        self.subscribe('singleContent', nodeId);
     });
 });
 
@@ -74,23 +74,27 @@ function applyDropdown() { // jquery was being called before the changes were pr
 
 Template.unitEditContent.rendered = function() {
     var tempContent = Template.currentData().content;
-    console.log(Template.currentData());
-    console.log(tempContent);
+    //console.log(Template.currentData());
+    //console.log(tempContent);
     _.remove(tempContent, {
         type: 'unitEvaluationSection'
     });
-    console.log(tempContent);
+    //console.log(tempContent);
     Session.set('tempContent', tempContent);
 
-    applySort(); // apply once the template is loaded
-    applyDropdown();
-    Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
-        var tempContent = Session.get('tempContent'); // must call Session (even if not used) to make function reactive
-        $(document).ready(function() {
-            applySort();
+    this.autorun(() => {
+        if (Template.instance().parent(1).subscriptionsReady()) {
+            applySort(); // apply once the template is loaded
             applyDropdown();
-        });
-    });
+            Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
+                var tempContent = Session.get('tempContent'); // must call Session (even if not used) to make function reactive
+                setTimeout(function() {
+                    applySort();
+                    applyDropdown();;
+                }, 20);
+            });
+        };
+    })
 };
 
 Template.unitEditContent.events({
@@ -174,56 +178,32 @@ Template.unitEditContent.events({
 AutoForm.hooks({
     unitEdit: {
         onSubmit: function(doc) {
-            var unitRID = this.formAttributes.unitRID;
-            var properties = {};
-            console.log(doc.name);
-            properties.name = doc.name; // fetch autoform input as necessary by createUnit method(properties, necessary, granted)
-            console.log(properties.name);
-            properties.description = "";
-            if (typeof doc.description != "undefined") { // in case description has not been filled, leave blank
-                properties.description = doc.description;
-            };
+            var parameters = doc;
 
-            console.log(String(properties.description));
-            var content = Session.get('tempContent'); // fetch content
-            var evaluation = { // create evaluation object
-                "type": "unitEvaluationSection"
-            };
-            evaluation.evaluationType = doc.evaluationType; // define evaluation type from autoform
-            if (doc.evaluationType == "exerciseRadioButton") { // add options or answers to evaluation
-                evaluation.question = doc.exerciseRadioButton.question;
-                evaluation.options = doc.exerciseRadioButton.options;
-            } else if (doc.evaluationType == "exerciseString") {
-                evaluation.question = doc.exerciseString.question;
-                evaluation.answers = doc.exerciseString.answers;
-            };
+            var nodeId = FlowRouter.getParam('conceptId');
 
-            content.push(evaluation); // push evaluation object into content array
-            content = JSON.stringify(content);
-            properties.content = content; // insert content object into properties object
-
-
-            var requiredConceptsArray = [];
-            if (typeof doc.requiredConcepts != "undefined") {
-                var requiredConceptsElement = {};
-                _.forEach(doc.requiredConcepts, function(n) {
-                    requiredConceptsElement[n] = 1
-                });
-                requiredConceptsArray.push(requiredConceptsElement);
-            };
-
-            console.log(properties);
-            var grantedConcepts = [];
-            if (typeof doc.grantedConcepts != "undefined") {
-                var grantedConcepts = doc.grantedConcepts;
-            };
-            Session.set("callStatus", "submitting unit");
-            Meteor.call('editUnit', unitRID, properties, requiredConceptsArray, grantedConcepts, function(error, result) {
-                console.log(result);
-                Session.set("callStatus", "submitted");
-                Router.go('/unit/' + encodeURIComponent(result));
+            Meteor.call('editNode', nodeId, parameters);
+            var needsObject = Session.get('needsObject');
+            //console.log(needsObject);
+            _.forEach(needsObject, function(n) {
+                var setId = n['_id'];
+                var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
+                //console.log(needsAsArrayOfId);
+                var needsMappedAsArrayofObjects = {};
+                for (var n = 0; n < needsAsArrayOfId.length; n += 1) {
+                    needsMappedAsArrayofObjects[needsAsArrayOfId[n]] = true;
+                };
+                //console.log(needsMappedAsArrayofObjects);
+                if (_(setId).startsWith('newSet')) {
+                    //console.log(needsMappedAsArrayofObjects);
+                    Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+                    /*console.log('addNeed for ' + nodeId + ' with' + needsMappedAsArrayofObjects);
+                    console.log(needsMappedAsArrayofObjects);*/
+                } else {
+                    Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
+                };
             });
-
+            FlowRouter.go('/content/' + nodeId);
             this.done();
             return false;
         }

@@ -81,7 +81,16 @@ function applySelectizeCode() {
         _.forEach(subConcepts, function(nSubConcept) {
             subConceptId = nSubConcept['_id'];
             $('#' + setId).selectize()[0].selectize.addItem(subConceptId);
-        })
+        });
+        /*        // UNDER CONSTRUCTION. PROBABLY NOT NECESSARY
+                //Add concepts to needsObject session, everytime a new concept is added
+                $('#' + setId).selectize()[0].selectize.on('change', function() {
+                    var needsObject = Session.get('needsObject');
+                    console.log(setId + ' : ' + $('#' + setId).selectize()[0].selectize.getValue());
+                    //needsObject[setId].contains = $('#' + setId).selectize()[0].selectize.getValue();
+                    Session.set('needsObject', needsObject);
+                    console.log(needsObject);
+                });*/
     });
 };
 
@@ -132,8 +141,8 @@ Template.conceptEditSelectBox.rendered = function() {
 Template.conceptEdit.events({
     'click #deleteConcept': function(event) {
         event.preventDefault();
-        var id = FlowRouter.getParam('conceptId');
-        Meteor.call('removeNode', id);
+        var nodeId = FlowRouter.getParam('conceptId');
+        Meteor.call('removeNode', nodeId);
         FlowRouter.go('dashboard');
 
     },
@@ -169,17 +178,32 @@ Template.conceptEdit.events({
 AutoForm.hooks({
     conceptEdit: {
         onSubmit: function(doc) {
-            console.log(doc);
-            /*var parameters = {};
-            parameters.name = doc.name;
-            parameters.description = doc.description;
-            console.log(parameters);
+            var parameters = doc;
 
-            var conceptId = FlowRouter.getParam('conceptId');*/
+            var nodeId = FlowRouter.getParam('conceptId');
 
-            Meteor.call('editNode', conceptId, parameters);
-
-
+            Meteor.call('editNode', nodeId, parameters);
+            var needsObject = Session.get('needsObject');
+            //console.log(needsObject);
+            _.forEach(needsObject, function(n) {
+                var setId = n['_id'];
+                var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
+                //console.log(needsAsArrayOfId);
+                var needsMappedAsArrayofObjects = {};
+                for (var n = 0; n < needsAsArrayOfId.length; n += 1) {
+                    needsMappedAsArrayofObjects[needsAsArrayOfId[n]] = true;
+                };
+                //console.log(needsMappedAsArrayofObjects);
+                if (_(setId).startsWith('newSet')) {
+                    //console.log(needsMappedAsArrayofObjects);
+                    Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+                    /*console.log('addNeed for ' + nodeId + ' with' + needsMappedAsArrayofObjects);
+                    console.log(needsMappedAsArrayofObjects);*/
+                } else {
+                    Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
+                };
+            });
+            FlowRouter.go('/concept/' + nodeId);
             this.done();
             return false;
         }
