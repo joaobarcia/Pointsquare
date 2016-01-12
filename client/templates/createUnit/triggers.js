@@ -196,8 +196,8 @@ AutoForm.hooks({
 
             console.log(unitDefinitions);
             Meteor.call('create', unitDefinitions, function(error, result) {
-                //Router.go('/unit/' + encodeURIComponent(result));
-                console.log(result);
+                nodeId = result;
+                FlowRouter.go('/content/' + nodeId);
             });
 
             this.done();

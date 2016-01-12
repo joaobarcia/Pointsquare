@@ -1,34 +1,31 @@
 Template.unitPage.onCreated(function() {
+    console.log('unitPage.onCreated');
     var self = this;
     self.autorun(function() {
         var contentId = FlowRouter.getParam('contentId');
-        //self.subscribe('singleContent', contentId);
-        var args = {};
+        self.subscribe('singleContent', contentId);
+        /*var args = {};
         args["nodeId"] = contentId;
         args["userId"] = Meteor.userId();
-        //self.subscribe("singleNode",args);
+        self.subscribe("singleNode", args);*/
     });
 });
 
-Template.unitPage.rendered = function() {
-    $('.tooltipped').tooltip({
-        delay: 20
-    });
-    console.log("rendered unitPage");
-    $('unit-content').ready(function() {
-        console.log("test")
-    });
-    $('ul.tabs').tabs();
-};
+Template.unitPage.onRendered(function() {
+    console.log('unitPage.onRendered');
 
-Template.unitContent.onRendered(function() {
-    console.log("rendered unitContent");
-    $('ul.tabs').tabs();
-});
+    this.autorun(() => {
+        if (this.subscriptionsReady()) {
+            console.log('unitPage.onRendered > SUBS READY');
+            //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
+            setTimeout(function() {
+                console.log("TimeOUT!");
+                $('ul.tabs').tabs();
+            }, 20);
 
-Template.contentByType.onRendered(function() {
-    console.log("rendered contentByType");
-    $('ul.tabs').tabs();
+        };
+    })
+
 });
 
 Template.unitPage.events({
@@ -49,7 +46,7 @@ Template.unitPage.events({
             } else if (Session.get("temp") == "precomputing") {
                 console.log("nothing");
             }*/
-            Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
+            Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
 
@@ -71,7 +68,7 @@ Template.unitPage.events({
                 console.log("nothing");
             }
             Meteor.call("incrementViews", Blaze.getData()["rid"]);*/
-            Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
+            Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
 
@@ -103,7 +100,7 @@ Template.unitPage.events({
                     }
                     Meteor.call("incrementViews", unit_rid);
                 }, 2000);*/
-                Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
+                Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
             }
         } else if (!answerIsCorrect) {
             $("#exerciseButton").removeClass("orange");
@@ -133,7 +130,7 @@ Template.unitPage.events({
                     }
                     Meteor.call("incrementViews", unit_rid);
                 }, 2000);*/
-                Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
+                Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
             }
         }
     },
@@ -163,7 +160,7 @@ Template.unitPage.events({
                 }
                 Meteor.call("incrementViews", unit_rid);
             }, 2000);*/
-            Meteor.call("succeed",FlowRouter.getParam('contentId'),Meteor.userId());
+            Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
 
@@ -192,7 +189,7 @@ Template.unitPage.events({
                 }
                 Meteor.call("incrementViews", unit_rid);
             }, 2000);*/
-            Meteor.call("fail",FlowRouter.getParam('contentId'),Meteor.userId());
+            Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
     'click #backToUnit': function(event) {

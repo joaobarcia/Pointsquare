@@ -6,7 +6,7 @@
                     {{#if doingExercise}}
                         {{> unitContent}}
                     {{/if}}
-                    {{#if learning}}
+                    <!--{{#if learning}}
                         {{> propagatingKnowledge}}
                     {{/if}}
                     {{#if learned}}
@@ -14,7 +14,7 @@
                     {{/if}}
                     {{#if unlearned}}
                         {{>unlearnedResults unlearnedConcept=unlearnedConcept}}
-                    {{/if}}
+                    {{/if}}-->
                     <!-- {{> relatedConcepts grantedConcepts=grantedConcepts requiredConcepts=requiredConcepts }}
                 -->
                 </div>
@@ -51,30 +51,30 @@
 </template>
 <template name="unitContent">
     <div class="card-content">
-        {{#if unitIsOneSectionAndNoExercise}}
+        <!--{{#if unitIsOneSectionAndNoExercise}}
             Debug: just one tab {{> contentByType}}
         {{else}}
-            Debug: more than one tab
-            <div class="unit-tabs">
-                <div class="row">
-                    <ul class="tabs">
-                        {{#each content}}
-                            {{#if isType 'unitSection'}}
-                                <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Part {{increaseByOne @index}}</a></li>
-                            {{/if}}
-                            {{#if isType 'unitEvaluationSection'}}
-                                <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Evaluation</a></li>
-                            {{/if}}
-                        {{/each }}
-                    </ul>
-                </div>
+        Debug: more than one tab-->
+        <div class="unit-tabs">
+            <div class="row">
+                <ul class="tabs">
+                    {{#each content}}
+                        {{#if isType 'unitSection'}}
+                            <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Part {{increaseByOne @index}}</a></li>
+                        {{/if}}
+                        {{#if isType 'unitEvaluationSection'}}
+                            <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Evaluation</a></li>
+                        {{/if}}
+                    {{/each }}
+                </ul>
             </div>
-            <div class="unit-content">
-                <div class="section">
-                    {{> contentByType}}
-                </div>
+        </div>
+        <div class="unit-content">
+            <div class="section">
+                {{> contentByType}}
             </div>
-        {{/if}}
+        </div>
+        <!--{{/if}}-->
     </div>
 </template>
 <template name="contentByType">

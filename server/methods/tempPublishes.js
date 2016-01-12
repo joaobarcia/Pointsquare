@@ -10,38 +10,54 @@ Meteor.startup(function() {
     //Comments.remove({});
     //Scores.remove({});
 
+
     var david = Meteor.users.findOne()._id;
 
-    var unit = create_content({name: "unit"});
-    var concept = create_concept({name: "concept"});
-    var a = create_concept({name: "a"});
-    var b1 = create_concept({name: "b1"});
-    var b2 = create_concept({name: "b2"});
-    var c1 = create_concept({name: "c1"});
-    var c2 = create_concept({name: "c2"});
-    var c3 = create_concept({name: "c3"});
-    var c4 = create_concept({name: "c4"});
+    var unit = create_content({
+        name: "unit"
+    });
+    var concept = create_concept({
+        name: "concept"
+    });
+    var a = create_concept({
+        name: "a"
+    });
+    var b1 = create_concept({
+        name: "b1"
+    });
+    var b2 = create_concept({
+        name: "b2"
+    });
+    var c1 = create_concept({
+        name: "c1"
+    });
+    var c2 = create_concept({
+        name: "c2"
+    });
+    var c3 = create_concept({
+        name: "c3"
+    });
+    var c4 = create_concept({
+        name: "c4"
+    });
     var set = {};
     set[concept] = true;
     //add_set(unit,set);
     set = {};
     set[a] = true;
-    add_set(unit,set);
+    add_set(unit, set);
     set = {};
     set[b1] = true;
     set[b2] = true;
-    add_set(a,set);
+    add_set(a, set);
     set = {};
     set[c1] = true;
     set[c2] = true;
-    add_set(b1,set);
+    add_set(b1, set);
     set = {};
     set[c3] = true;
     set[c4] = true;
-    add_set(b2,set);
-
-    var remove_test = create_content({});
-    //remove_node(remove_test);
+    add_set(b2, set);
 
 });
 
@@ -74,20 +90,21 @@ Meteor.publishComposite("singleNode", function(args) {
     console.log(args);
     return {
         find: function() {
-            return Nodes.findOne(nodeId);
-        }/*,
-        children: [{
-            find: function(node) {
-                return Personal.find({
-                    node: node._id,
-                    user: userId
-                });
+                return Nodes.findOne(nodeId);
             }
-        }]*/
+            /*,
+                    children: [{
+                        find: function(node) {
+                            return Personal.find({
+                                node: node._id,
+                                user: userId
+                            });
+                        }
+                    }]*/
     }
 });
 
-Meteor.publishComposite('singleContent', function(contentId,userId) {
+Meteor.publishComposite('singleContent', function(contentId, userId) {
     return {
         find: function() {
             // Find top ten highest scoring posts
@@ -115,7 +132,9 @@ Meteor.publishComposite('onlyReady', function(userId) {
             var user_id = Meteor.users.findOne(userId)._id;
             return Personal.find({
                 user: user_id,
-                state: {$gt: 0.9}
+                state: {
+                    $gt: 0.9
+                }
             });
         },
         children: [{
@@ -129,10 +148,15 @@ Meteor.publishComposite('onlyReady', function(userId) {
 });
 
 Meteor.publish('singleConcept', function(conceptId) {
-    return Nodes.find({
-        type: 'concept',
-        _id: conceptId
-    });
+    return [
+        Nodes.find({
+            type: 'concept',
+            _id: conceptId
+        }),
+        Requirements.find({
+            node: conceptId
+        })
+    ];
 });
 
 Meteor.publish('allConcepts', function(conceptId) {

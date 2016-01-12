@@ -3,6 +3,7 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
+
 accounts-password
 reywood:publish-composite
 momentjs:moment
@@ -10,22 +11,14 @@ mrt:underscore-string-latest
 dburles:factory
 cunneen:mailgun
 yasinuslu:blaze-meta
-materialize:materialize@0.97.0
-useraccounts:materialize
 http
-meteorhacks:kadira
 email
 accounts-base
 meteorhacks:fast-render
-gildaspk:autoform-materialize
 cmather:handlebars-server
 zimme:active-route
 erasaur:meteor-lodash
 meteor
-sergeyt:typeahead
-comerc:bs-typeahead
-comerc:autoform-typeahead
-comerc:autoform-selectize
 jeremy:selectize
 standard-minifiers
 meteor-base
@@ -33,7 +26,6 @@ mobile-experience
 mongo
 blaze-html-templates
 session
-jquery
 tracker
 logging
 reload
@@ -52,5 +44,15 @@ kadira:blaze-layout
 useraccounts:flow-routing
 arillo:flow-router-helpers
 easysearch:autosuggest
-poetic:materialize-scss
 matteodem:easy-search
+fourseven:scss
+sergeyt:typeahead
+comerc:bs-typeahead
+comerc:autoform-typeahead
+comerc:autoform-selectize
+useraccounts:materialize
+gildaspk:autoform-materialize
+poetic:materialize-scss
+aldeed:template-extension
+reactive-var
+jquery

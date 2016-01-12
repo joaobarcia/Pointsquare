@@ -4,7 +4,7 @@
             <div class="section">
                 <h4>Editing <a href="../{{_id}}">{{name}}</a></h4>
                 <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
-                {{#autoForm schema=unitEditSchema id="unitEdit" doc=unitEditDoc resetOnSuccess=false unitRID=rid}}
+                {{#autoForm schema=unitEditSchema id="unitEdit" resetOnSuccess=false}}
                     <fieldset>
                         {{!-- <legend>Contact Us</legend> --}}
                         <div class="card">
@@ -40,7 +40,10 @@
                                     <div class="section">
                                         <div class="divider"></div>
                                         <h3 class="center-align">Concepts</h3>
-                                        <h5>Necessary to understand this unit</h5>{{> afQuickField name="requiredConcepts"}}
+                                        <h5>Necessary to understand this unit</h5>
+                                        {{#each needs}}
+                                            {{>conceptEditSelectBox}}
+                                        {{/each}}
                                         <h5>Will be taught by this unit</h5>{{> afQuickField name="grantedConcepts"}}
                                         <div class="center-align">
                                         </div>

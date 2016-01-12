@@ -1,12 +1,12 @@
 Template.unitPage.helpers({
     contentPage: function() {
-        var contentId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('contentId');
         var content = Nodes.findOne({
-            _id: contentId
+            _id: nodeId
         }) || {};
         return content;
     },
-    state: function() {
+    /*state: function() {
         return Knowledge.findOne().value;
     },
 
@@ -23,7 +23,7 @@ Template.unitPage.helpers({
             'class': 'Concept',
             'required_for.rid': this.rid
         });
-    },
+    },*/
 
     'doingExercise': function() {
         return 1;
@@ -45,58 +45,58 @@ Template.unitPage.helpers({
         //return Session.get('callStatus') == 'unlearned';
     },
 
-    'learnedConcept': function() {
-        var newConcepts = Session.get('newConcepts');
-        console.log(knowledge.find({
-            'rid': {
-                $in: newConcepts
-            }
-        }).fetch());
-        return knowledge.find({
-            'rid': {
-                $in: newConcepts
-            }
-        }, {
-            limit: 3
-        });
-        //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-    },
+    /*    'learnedConcept': function() {
+            var newConcepts = Session.get('newConcepts');
+            console.log(knowledge.find({
+                'rid': {
+                    $in: newConcepts
+                }
+            }).fetch());
+            return knowledge.find({
+                'rid': {
+                    $in: newConcepts
+                }
+            }, {
+                limit: 3
+            });
+            //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
+        },*/
 
-    'activatedUnit': function() {
-        var newConcepts = Session.get('newUnits');
-        return knowledge.find({
-            'rid': {
-                $in: newUnits
-            }
-        }, {
-            limit: 3
-        });
-        //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-    },
+    /*    'activatedUnit': function() {
+            var newConcepts = Session.get('newUnits');
+            return knowledge.find({
+                'rid': {
+                    $in: newUnits
+                }
+            }, {
+                limit: 3
+            });
+            //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
+        },
 
-    'unlearnedConcept': function() {
-        var lostConcepts = Session.get('lostConcepts');
-        return knowledge.find({
-            'rid': {
-                $in: lostConcepts
-            }
-        }, {
-            limit: 3
-        });
-        //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-    },
+        'unlearnedConcept': function() {
+            var lostConcepts = Session.get('lostConcepts');
+            return knowledge.find({
+                'rid': {
+                    $in: lostConcepts
+                }
+            }, {
+                limit: 3
+            });
+            //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
+        },
 
-    'deactivatedUnit': function() {
-        var newConcepts = Session.get('newConcepts');
-        return knowledge.find({
-            'rid': {
-                $in: newConcepts
-            }
-        }, {
-            limit: 3
-        });
-        //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-    },
+        'deactivatedUnit': function() {
+            var newConcepts = Session.get('newConcepts');
+            return knowledge.find({
+                'rid': {
+                    $in: newConcepts
+                }
+            }, {
+                limit: 3
+            });
+            //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
+        },*/
 
 
 

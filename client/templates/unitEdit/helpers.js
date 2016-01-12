@@ -1,15 +1,18 @@
 Template.unitEdit.helpers({
     contentEditPage: function() {
-        var contentId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('contentId');
         var content = Nodes.findOne({
-            _id: contentId
+            _id: nodeId
         }) || {};
         return content;
     },
     unitEditSchema: function() {
         return Schema.Unit;
     },
-    unitEditDoc: function() {
+    needs: function() {
+        return Session.get('needsObject');
+    },
+    /*unitEditDoc: function() {
         // load stored unit values and pass them with necessary modif to autoform doc 'unitEditDoc'
         var unitEditDoc = {};
         unitEditDoc.name = Template.currentData().name;
@@ -35,11 +38,11 @@ Template.unitEdit.helpers({
         unitEditDoc.exerciseString.answers = evaluation.answers;
 
         return unitEditDoc;
-    },
-    submitting: function() {
-        console.log(Session.get("callStatus"));
-        return Session.get("callStatus") == "submitting unit";
-    },
+    },*/
+    /*    submitting: function() {
+            console.log(Session.get("callStatus"));
+            return Session.get("callStatus") == "submitting unit";
+        },*/
 });
 Template.unitEditContent.helpers({
     tempContent: function() {
