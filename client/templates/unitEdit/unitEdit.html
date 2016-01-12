@@ -40,7 +40,10 @@
                                     <div class="section">
                                         <div class="divider"></div>
                                         <h3 class="center-align">Concepts</h3>
-                                        <h5>Necessary to understand this unit</h5>{{> afQuickField name="requiredConcepts"}}
+                                        <h5>Necessary to understand this unit</h5>
+                                        {{#each needs}}
+                                            {{>conceptEditSelectBox}}
+                                        {{/each}}
                                         <h5>Will be taught by this unit</h5>{{> afQuickField name="grantedConcepts"}}
                                         <div class="center-align">
                                         </div>

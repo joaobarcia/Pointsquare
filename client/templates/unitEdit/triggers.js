@@ -1,3 +1,41 @@
+function needsAsJSONSession() {
+    //console.log('needsAsJSONSession');
+    var id = FlowRouter.getParam('conceptId');
+    var requirements = Requirements.find({
+        node: id
+    }).fetch();
+    var json = [];
+    for (var i = 0; i < requirements.length; i++) {
+        var requirement = requirements[i];
+        var requirementId = requirement._id;
+        var info = Personal.findOne({
+            node: requirementId
+        });
+        var state = info ? info.state : 0;
+        var contains = [];
+        var subconcepts = requirement.weights;
+        for (var subconceptId in subconcepts) {
+            var subObj = {};
+            var subconcept = Nodes.findOne(subconceptId);
+            subObj["_id"] = subconceptId;
+            subObj["name"] = subconcept.name;
+            subObj["description"] = subconcept.description;
+            var subinfo = Personal.findOne({
+                node: subconceptId,
+                user: Meteor.userId()
+            });
+            var substate = subinfo ? subinfo.state : 0;
+            contains.push(subObj);
+        }
+        var obj = {};
+        obj["_id"] = requirementId;
+        obj["state"] = state;
+        obj["contains"] = contains;
+        json.push(obj);
+    }
+    Session.set("needsObject", json)
+};
+
 Template.unitEdit.onCreated(function() {
     var self = this;
     self.autorun(function() {
@@ -7,22 +45,25 @@ Template.unitEdit.onCreated(function() {
 });
 
 Template.unitEdit.rendered = function() {
-    $(document).ready(function() {
-        $('.tooltipped').tooltip({
-            delay: 20
-        });
-    });
+    this.autorun(() => {
+        if (this.subscriptionsReady()) {
+            $('.tooltipped').tooltip({
+                delay: 20
+            });
+            //console.log('conceptEdit rendered > subs ready');
+            needsAsJSONSession();
+            var deletedNeedsSets = [];
+            Session.set('deletedNeedsSets', deletedNeedsSets);
+        }
+    })
 };
 
 Template.unitEdit.events({
     'click #deleteUnit': function(event) {
         event.preventDefault();
-        var rid = Template.currentData().rid;
-        Session.set("callStatus", "submitting unit");
-        Meteor.call('removeNode', rid, function(error, result) {
-            Router.go('/dashboard');
-            Session.set("callStatus", "submitted");
-        });
+        var nodeId = FlowRouter.getParam('contentId');
+        Meteor.call('removeNode', nodeId);
+        FlowRouter.go('dashboard');
     },
 });
 
@@ -82,19 +123,28 @@ Template.unitEditContent.rendered = function() {
     //console.log(tempContent);
     Session.set('tempContent', tempContent);
 
-    this.autorun(() => {
-        if (Template.instance().parent(1).subscriptionsReady()) {
-            applySort(); // apply once the template is loaded
+    /*    this.autorun(() => {
+            if (Template.instance().parent(1).subscriptionsReady()) {
+                applySort(); // apply once the template is loaded
+                applyDropdown();
+                Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
+                    var tempContent = Session.get('tempContent'); // must call Session (even if not used) to make function reactive
+                    setTimeout(function() {
+                        applySort();
+                        applyDropdown();;
+                    }, 20);
+                });
+            };
+        })*/
+    //applySort(); // apply once the template is loaded
+    applyDropdown();
+    Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
+        var tempContent = Session.get('tempContent'); // must call Session (even if not used) to make function reactive
+        $(document).ready(function() {
+            //applySort();
             applyDropdown();
-            Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
-                var tempContent = Session.get('tempContent'); // must call Session (even if not used) to make function reactive
-                setTimeout(function() {
-                    applySort();
-                    applyDropdown();;
-                }, 20);
-            });
-        };
-    })
+        });
+    });
 };
 
 Template.unitEditContent.events({

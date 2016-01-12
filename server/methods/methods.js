@@ -471,7 +471,7 @@ create_content = function(parameters) {
         created_on: Date.now(),
         name: "",
         description: "",
-        content: {},
+        content: [],
         needs: {},
         grants: {},
         likes: 0,

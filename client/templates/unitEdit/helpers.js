@@ -9,7 +9,10 @@ Template.unitEdit.helpers({
     unitEditSchema: function() {
         return Schema.Unit;
     },
-    unitEditDoc: function() {
+    needs: function() {
+        return Session.get('needsObject');
+    },
+    /*unitEditDoc: function() {
         // load stored unit values and pass them with necessary modif to autoform doc 'unitEditDoc'
         var unitEditDoc = {};
         unitEditDoc.name = Template.currentData().name;
@@ -35,7 +38,7 @@ Template.unitEdit.helpers({
         unitEditDoc.exerciseString.answers = evaluation.answers;
 
         return unitEditDoc;
-    },
+    },*/
     /*    submitting: function() {
             console.log(Session.get("callStatus"));
             return Session.get("callStatus") == "submitting unit";

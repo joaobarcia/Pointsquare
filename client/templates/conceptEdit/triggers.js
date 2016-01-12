@@ -113,9 +113,12 @@ Template.conceptEdit.rendered = function() {
         if (this.subscriptionsReady()) {
             //console.log('conceptEdit rendered > subs ready');
             needsAsJSONSession();
+            var deletedNeedsSets = [];
+            Session.set('deletedNeedsSets', deletedNeedsSets);
+
         }
     })
-}
+};
 
 
 Template.conceptEditSelectBox.rendered = function() {
@@ -150,13 +153,18 @@ Template.conceptEdit.events({
         event.preventDefault();
         var setId = event.target.id;
         setId = setId.replace('remove-', '');
-        console.log(setId);
+        //console.log(setId);
 
         var needsObject = Session.get('needsObject');
         needsObject = _.reject(needsObject, {
             '_id': setId
         });
         Session.set('needsObject', needsObject);
+
+        var deletedNeedsSets = Session.get('deletedNeedsSets');
+        deletedNeedsSets.push(setId);
+        Session.set('deletedNeedsSets', deletedNeedsSets);
+
 
         //tempContent.splice(section, 1);
     },
@@ -184,6 +192,7 @@ AutoForm.hooks({
 
             Meteor.call('editNode', nodeId, parameters);
             var needsObject = Session.get('needsObject');
+            var deletedNeedsSets = Session.get('deletedNeedsSets');
             //console.log(needsObject);
             _.forEach(needsObject, function(n) {
                 var setId = n['_id'];
@@ -202,6 +211,10 @@ AutoForm.hooks({
                 } else {
                     Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
                 };
+            });
+            console.log(deletedNeedsSets);
+            _.forEach(deletedNeedsSets, function(setId) {
+                Meteor.call('removeNeed', setId);
             });
             FlowRouter.go('/concept/' + nodeId);
             this.done();
