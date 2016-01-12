@@ -521,7 +521,6 @@ create_concept = function(parameters) {
     return id;
 }
 
-<<<<<<< HEAD
 add_author = function(node_id,author_id){
     var authors = Nodes.findOne(node_id).authors;
     authors[author_id] = true;
@@ -534,15 +533,6 @@ add_author = function(node_id,author_id){
 add_grants = function(node_id,concepts){
     var update = {grants: concepts};
     Nodes.update({_id: node_id},{
-=======
-add_grants = function(node_id, concepts) {
-    var update = {
-        grants: concepts
-    };
-    Nodes.update({
-        _id: node_id
-    }, {
->>>>>>> feec61210b215df89858bfc36aed24a09ca2a679
         $set: update
     });
     for (var id in concepts) {
@@ -692,7 +682,6 @@ remove_set = function(requirement_id) {
     edit_set(requirement_id, {});
 }
 
-<<<<<<< HEAD
 remove_author = function(node_id,author_id){
     var authors = Nodes.findOne(node_id).authors;
     delete authors[author_id];
@@ -703,9 +692,6 @@ remove_author = function(node_id,author_id){
 }
 
 remove_node = function(node_id){
-=======
-remove_node = function(node_id) {
->>>>>>> feec61210b215df89858bfc36aed24a09ca2a679
     var node = Nodes.findOne(node_id);
     //var must_update = find_forward_layer([node_id]);
     //remove all sets from this node
@@ -776,17 +762,12 @@ Meteor.methods({
         return full_create(p);
     },
 
-<<<<<<< HEAD
     addAuthor: function(nodeID,authorID) {
         return add_author(nodeID,authorID);
     },
 
     editNode: function(nodeID,parameters){
         return edit_node(nodeID,parameters);
-=======
-    editNode: function(nodeID, parameters) {
-        return edit_node(nodeID, parameters);
->>>>>>> feec61210b215df89858bfc36aed24a09ca2a679
     },
 
     editNeed: function(setID, concepts) {
@@ -805,17 +786,12 @@ Meteor.methods({
         return remove_set(setID);
     },
 
-<<<<<<< HEAD
     removeAuthor: function(nodeID,authorID) {
         return remove_author(nodeID,authorID);
     },
 
     getState: function(nodeID,userID){
         return get_state(nodeID,userID);
-=======
-    getState: function(nodeID, userID) {
-        return get_state(nodeID, userID);
->>>>>>> feec61210b215df89858bfc36aed24a09ca2a679
     },
 
     resetUser: function(userID) {
