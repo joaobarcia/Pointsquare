@@ -6,6 +6,15 @@ Template.unitPage.helpers({
         }) || {};
         return content;
     },
+
+    authors: function() {
+        var authors = Template.currentData().authors;
+        var names = "";
+        for(var id in authors){
+            names += Meteor.users.findOne(id).username+", ";
+        }
+        return names.slice(0,-2);
+    },
     /*state: function() {
         return Knowledge.findOne().value;
     },
