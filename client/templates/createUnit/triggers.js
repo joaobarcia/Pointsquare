@@ -2,6 +2,7 @@ Template.createUnit.onCreated(function() {
     var self = this;
     self.autorun(function() {
         self.subscribe('allConcepts');
+        Session.set('tempContent', []);
     });
 });
 

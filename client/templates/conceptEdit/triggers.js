@@ -149,6 +149,18 @@ Template.conceptEdit.events({
         FlowRouter.go('dashboard');
 
     },
+    'click .add-set': function(event) {
+        event.preventDefault();
+        var needsObject = Session.get('needsObject');
+        needsObject.push({
+            '_id': 'newSet-' + Math.random().toString(36).substr(2, 9),
+            'contains': {}
+        });
+        //console.log(uniqueId());
+        Session.set('needsObject', needsObject);
+
+        //tempContent.splice(section, 1);
+    },
     'click .remove-set': function(event) {
         event.preventDefault();
         var setId = event.target.id;
@@ -168,18 +180,7 @@ Template.conceptEdit.events({
 
         //tempContent.splice(section, 1);
     },
-    'click .add-set': function(event) {
-        event.preventDefault();
-        var needsObject = Session.get('needsObject');
-        needsObject.push({
-            '_id': 'newSet-' + Math.random().toString(36).substr(2, 9),
-            'contains': {}
-        });
-        //console.log(uniqueId());
-        Session.set('needsObject', needsObject);
 
-        //tempContent.splice(section, 1);
-    },
 
 });
 
