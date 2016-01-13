@@ -474,6 +474,7 @@ create_content = function(parameters) {
         content: [],
         needs: {},
         grants: {},
+        authors: {},
         likes: 0,
         dislikes: 0,
         successes: 0,
@@ -502,7 +503,8 @@ create_concept = function(parameters) {
         description: "",
         granted_by: {},
         in_set: {},
-        needs: {}
+        needs: {},
+        authors: {}
     });
     if (!_.isEmpty(parameters)) {
         Nodes.update({
@@ -519,13 +521,18 @@ create_concept = function(parameters) {
     return id;
 }
 
-add_grants = function(node_id, concepts) {
-    var update = {
-        grants: concepts
-    };
-    Nodes.update({
-        _id: node_id
-    }, {
+add_author = function(node_id,author_id){
+    var authors = Nodes.findOne(node_id).authors;
+    authors[author_id] = true;
+    Nodes.update({_id: node_id},{$set: {authors: authors}});
+    var works = Meteor.users.findOne(author_id).works;
+    works[node_id] = true;
+    Meteor.users.update({_id: author_id},{$set: {works: works}});
+}
+
+add_grants = function(node_id,concepts){
+    var update = {grants: concepts};
+    Nodes.update({_id: node_id},{
         $set: update
     });
     for (var id in concepts) {
@@ -675,7 +682,16 @@ remove_set = function(requirement_id) {
     edit_set(requirement_id, {});
 }
 
-remove_node = function(node_id) {
+remove_author = function(node_id,author_id){
+    var authors = Nodes.findOne(node_id).authors;
+    delete authors[author_id];
+    Nodes.update({_id: node_id},{$set: {authors: authors}});
+    var works = Meteor.users.findOne(author_id).works;
+    delete works[node_id];
+    Meteor.users.update({_id: author_id},{$set: {works: works}});
+}
+
+remove_node = function(node_id){
     var node = Nodes.findOne(node_id);
     //var must_update = find_forward_layer([node_id]);
     //remove all sets from this node
@@ -746,8 +762,12 @@ Meteor.methods({
         return full_create(p);
     },
 
-    editNode: function(nodeID, parameters) {
-        return edit_node(nodeID, parameters);
+    addAuthor: function(nodeID,authorID) {
+        return add_author(nodeID,authorID);
+    },
+
+    editNode: function(nodeID,parameters){
+        return edit_node(nodeID,parameters);
     },
 
     editNeed: function(setID, concepts) {
@@ -766,8 +786,12 @@ Meteor.methods({
         return remove_set(setID);
     },
 
-    getState: function(nodeID, userID) {
-        return get_state(nodeID, userID);
+    removeAuthor: function(nodeID,authorID) {
+        return remove_author(nodeID,authorID);
+    },
+
+    getState: function(nodeID,userID){
+        return get_state(nodeID,userID);
     },
 
     resetUser: function(userID) {

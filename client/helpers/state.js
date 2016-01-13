@@ -4,10 +4,10 @@ Template.registerHelper('state', function() {
             user: Meteor.userId(),
             node: Template.currentData()._id
         });
-        console.log("logging");
+        /*console.log("logging");
         console.log(info);
-        console.log(Template.currentData());
-        return info? (info.state? info.state : 0) : 2;
+        console.log(Template.currentData());*/
+        return info? (info.state? info.state : 0) : 0;
         /*var id = Template.currentData()._id;//FlowRouter.getParam('contentId')?FlowRouter.getParam('contentId'):FlowRouter.getParam('conceptId');
         Meteor.call("getState",id,Meteor.userId(),function(e,r){
             Session.set("xftsgd",r);
