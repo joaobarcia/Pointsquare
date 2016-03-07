@@ -89,6 +89,48 @@ set_state = function(state, node_id, user_id) {
     }
 }
 
+set_personal_property = function(property, value, node_id, user_id) {
+    var info = Personal.findOne({
+        user: user_id,
+        node: node_id
+    });
+    if (info) {
+        var update = {};
+        update[property] = value;
+        Personal.update({
+          _id: info._id
+        },{
+          $set: update
+        });
+    } else {
+        var insert = {
+          user: user_id,
+          node: node_id
+        };
+        insert[property] = value;
+        Personal.insert(insert);
+    }
+}
+
+set_completion = function(value,node_id,user_id) {
+    return set_personal_property("completion",value,node_id,user_id);
+}
+
+get_personal_property = function(property, default_value, node_id, user_id) {
+  var node = Nodes.findOne({
+      _id: node_id
+  });
+  var info = Personal.findOne({
+      user: user_id,
+      node: node_id
+  });
+  return info ? (info[property] ? info[property] : default_value) : default_value;
+}
+
+get_completion = function(node_id,user_id) {
+    return get_personal_property("completion",0,node_id,user_id);
+}
+
 compute_requirement_state = function(requirement_id, user_id) {
     var requirement = Requirements.findOne(requirement_id);
     var weights = requirement.weights;
@@ -99,6 +141,20 @@ compute_requirement_state = function(requirement_id, user_id) {
         arg += state * weight;
     }
     return sigmoid(arg);
+}
+
+compute_requirement_completion = function(requirement_id, user_id) {
+    var requirement = Requirements.findOne(requirement_id);
+    var weights = requirement.weights;
+    var total_completion = 0;
+    var normalization = 0;
+    for (var concept in weights) {
+        var completion = get_completion(concept, user_id);
+        var weight = weights[concept];
+        total_completion += completion * weight;
+        normalization += weight;
+    }
+    return total_completion/normalization;
 }
 
 compute_state = function(node_id, user_id) {
@@ -117,6 +173,30 @@ compute_state = function(node_id, user_id) {
     for (var req_id in requirements) {
         var state = compute_requirement_state(req_id, user_id);
         max = state > max ? state : max;
+    }
+    return max;
+}
+
+compute_completion = function(node_id, user_id) {
+    var max = 0;
+    var node = Nodes.findOne(node_id);
+    var requirements = node.needs;
+    //if it's a microconcept, set max to its current state
+    if (Object.keys(requirements) == 0) {
+        max = get_state(node_id, user_id);
+    }
+    //then compare that to the maximum completion rate of the units that grant it
+    var granted_by = node.granted_by;
+    if(granted_by){
+        for(id in node.granted_by){
+            var completion = get_completion(id,user_id);
+            max = max>completion? max : completion;
+        }
+    }
+    //then compare that to the maximum completion of its requirements
+    for (var req_id in requirements) {
+        var completion = compute_requirement_completion(req_id, user_id);
+        max = completion > max ? completion : max;
     }
     return max;
 }
@@ -520,7 +600,7 @@ update_condition = function(node_id,user_id) {
     else if( -3 < s && s < 3 && s != 0 ){ condition = "in transition"; }
     else if( s == 0 ){ condition = "unknown"; }
     Personal.update({
-        node: node_id, 
+        node: node_id,
         user: user_id
     },{
         $set: { condition: condition, confidence: s, lastUpdate: Date.now() }
