@@ -1,4 +1,4 @@
-Template.unitPage.helpers({
+/*Template.unitPage.helpers({
 
     authors: function() {
         var authors = Template.currentData().authors;
@@ -11,4 +11,4 @@ Template.unitPage.helpers({
         return names.slice(0,-2);
     }
 
-});
+});*/

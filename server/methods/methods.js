@@ -464,6 +464,181 @@ readapt = function(target, user_id) {
 
 }
 
+most_active_requirement = function(node_id,user_id){
+    var node = Nodes.findOne(node_id);
+    requirements = node.needs;
+    var max = 0;
+    var max_id = "";
+    for(requirement_id in requirements){
+        var state = compute_requirement_state(requirement_id,user_id);
+        max = max > state ? max : state;
+        if(state >= max){
+            max = state;
+            max_id = requirement_id;
+        }
+    }
+    return max_id;
+}
+
+
+
+/*
+get_condition = function(node_id,user_id) {
+    var info = Personal.findOne({
+        node: node_id,
+        user: user_id
+    });
+    if(info){
+        return info.condition? info.condition : "unknown";
+    }
+    else { return "unknown"; }
+}
+
+get_solidity = function(node_id,user_id) {
+    var info = Personal.findOne({
+        node: node_id,
+        user: user_id
+    });
+    if(info){
+        return info.solidity? info.solidity : 0;
+    }
+    else { return 0; }
+}
+
+update_condition = function(node_id,user_id) {
+    var marks = get_marks(node_id,user_id);
+    var s = 0;
+    for(var n = marks.length; n >= 0; n--) {
+        if( s*marks[n] >= 0 ) {
+            s += marks[n];
+        }
+        else { break; }
+    }
+    var condition = 0;
+    if( s >= 3 ){ condition = "knows"; }
+    else if( s < -3 ){ condition = "does not know"; }
+    else if( -3 < s && s < 3 && s != 0 ){ condition = "in transition"; }
+    else if( s == 0 ){ condition = "unknown"; }
+    Personal.update({
+        node: node_id, 
+        user: user_id
+    },{
+        $set: { condition: condition, confidence: s, lastUpdate: Date.now() }
+    });
+}
+
+get_marks = function(node_id,user_id) {
+    var info = Personal.findOne({node: node_id,user: user_id});
+    if(info){
+        return info.marks? info.marks : [];
+    }
+    else { return []; }
+}
+
+set_attention = function(bool,node_id,user_id) {
+    var node = Nodes.findOne(node_id);
+    Personal.update({
+        node: node_id,
+        user:user_id
+    },{
+        $set: { requiresAttention: bool }
+    });
+}
+
+add_mark = function(mark, node_id, user_id) {
+    var info = Personal.findOne({
+        user: user_id,
+        node: node_id
+    });
+    if (info) {
+        Personal.update({
+            _id: info._id
+        }, {
+            $push: {
+                marks: mark
+            }
+        });
+    } else {
+        Personal.insert({
+            user: user_id,
+            node: node_id,
+            marks: [mark]
+        })
+    }
+    var condition = update_condition(node_id,user_id);
+    if(condition == "knows") {
+        set_attention(false,node_id,user_id);
+    }
+    else if(condition == "does not know") {
+        set_attention(false,node_id,user_id);
+    }
+    else if(condition == "in transition") {
+        set_attention(true,node_id,user_id);
+    }
+    else {
+        set_attention(false,node_id,user_id);
+    }
+}
+
+cascade = function(mark,node_id,user_id) {
+    var node = Nodes.findOne(node_id);
+    var requirements = node.needs;
+    //if it's a microconcept tick the mark
+    if( Object.keys(requirements).length == 0 ){
+        if( mark == 0 ){
+            set_attention(true,node_id,user_id);
+        }
+        else {
+            add_mark(mark,node_id,user_id);
+        }
+    }
+    //if not, cascade down
+    else {
+        for(var requirement_id in requirements){
+            var requirement = Requirements.findOne(requirement_id);
+            var weights = requirement.weights;
+            var N = Object.keys(weights);
+            var relay_mark = 0;
+            var requirement_condition = get_condition(requirement_id,user_id);
+            if( mark > 0 ){
+                if( requirement_condition == "knows" ){
+                   relay_mark = 1/N;
+                }
+                else if( requirement_condition == "in transition" ){
+                    relay_mark = 1/N;
+                }
+                else if( requirement_condition == "does not know" ){
+                    relay_mark = 0;
+                }
+                else if( requirement_condition == "unknown" ){
+                    relay_mark = 0;
+                }
+            }
+            else if( mark < 0 ){
+                if( requirement_condition == "knows" ){
+                   relay_mark = -1/N;
+                }
+                else if( requirement_condition == "in transition" ){
+                    relay_mark = -1/N;
+                }
+                else if( requirement_condition == "does not know" ){
+                    continue;
+                }
+                else if( requirement_condition == "unknown" ){
+                    relay_mark = -1/N;
+                }
+            }
+            else if( mark == 0 ){
+                relay_mark = 0;
+            }
+            for(var concept_id in weights) {
+                cascade(relay_mark,concept_id,user_id);
+            }
+        }
+    }
+}
+*/
+
 //creation functions
 create_content = function(parameters) {
     var id = Nodes.insert({

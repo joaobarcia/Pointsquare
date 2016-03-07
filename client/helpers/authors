@@ -1,0 +1,8 @@
+Template.registerHelper('authors', function() {
+    
+    var data = Template.currentData();
+    console.log("logandi");
+    console.log(data);
+    return Object.keys(data.authors);
+
+});
