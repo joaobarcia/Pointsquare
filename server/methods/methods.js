@@ -374,12 +374,12 @@ find_missing_subtree = function(node_ids,user_id) {
         for(var node_id in current_layer){
             var state = get_state(node_id,user_id);
             var type = Nodes.findOne(node_id).type;
-            if( type == "content" ){
+            if( type == "content" && !(node_id in bag) ){
                 tree[tree.length-1][node_id] = true;
                 bag[node_id] = true;
                 if( state < 0.9 ){ to_keep[node_id] = true; }
             }
-            else if( type == "concept" && state < 0.9 ){
+            else if( type == "concept" && state < 0.9 && !(node_id in bag) ){
                 tree[tree.length-1][node_id] = true;
                 bag[node_id] = true;
                 to_keep[node_id] = true;
