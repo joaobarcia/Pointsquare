@@ -116,6 +116,10 @@ set_completion = function(value,node_id,user_id) {
     return set_personal_property("completion",value,node_id,user_id);
 }
 
+set_depth = function(value,value,node_id,user_id) {
+    return set_personal_property("depth",value,node_id,user_id);
+}
+
 get_personal_property = function(property, default_value, node_id, user_id) {
   var node = Nodes.findOne({
       _id: node_id
@@ -129,6 +133,10 @@ get_personal_property = function(property, default_value, node_id, user_id) {
 
 get_completion = function(node_id,user_id) {
     return get_personal_property("completion",0,node_id,user_id);
+}
+
+get_depth = function(node_id,user_id) {
+    return get_personal_property("depth",0,node_id,user_id);
 }
 
 compute_requirement_state = function(requirement_id, user_id) {
@@ -208,6 +216,13 @@ update_state = function(node_id, user_id) {
     return state;
 }
 
+//computes the completion of the node and saves it to the database
+update_completion = function(node_id, user_id) {
+    var completion = compute_completion(node_id, user_id);
+    set_completion(completion, node_id, user_id);
+    return completion;
+}
+
 reset_user = function(user_id) {
     Personal.remove({
         user: user_id
@@ -263,6 +278,26 @@ find_forward_layer = function(nodes) {
     return layer;
 }
 
+find_full_forward_layer = function(nodes) {
+    var layer = {};
+    for (var node_id in nodes) {
+        var node = Nodes.findOne(node_id);
+        if (node.grants) {
+            for(var granted_id in node.grants) {
+                layer[granted_id] = true;
+            }
+        }
+        var in_set = node.in_set;
+        for (var requirement_id in in_set) {
+            var requirement = Requirements.findOne(requirement_id);
+            var next_node = requirement.node;
+            layer[next_node] = true;
+        }
+    }
+    console.log(layer);
+    return layer;
+}
+
 find_backward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
@@ -273,6 +308,25 @@ find_backward_layer = function(nodes) {
             for (var subnode_id in weights) {
                 layer[subnode_id] = true;
             }
+        }
+    }
+    return layer;
+}
+
+find_full_backward_layer = function(nodes) {
+    var layer = {};
+    for (var node_id in nodes) {
+        var node = Nodes.findOne(node_id);
+        var requirements = node.needs;
+        for (var requirement_id in requirements) {
+            var weights = Requirements.findOne(requirement_id).weights;
+            for (var subnode_id in weights) {
+                layer[subnode_id] = true;
+            }
+        }
+        var granted_by = node.granted_by;
+        for (var unit_id in granted_by) {
+            layer[unit_id] = true;
         }
     }
     return layer;
@@ -310,6 +364,46 @@ find_backward_tree = function(node_ids) {
     return tree;
 }
 
+find_missing_subtree = function(node_ids,user_id) {
+    var tree = [];
+    var bag = {};
+    var current_layer = node_ids;
+    while(1){
+        tree.push({});
+        var to_keep = {};
+        for(var node_id in current_layer){
+            var state = get_state(node_id,user_id);
+            var type = Nodes.findOne(node_id).type;
+            if( type == "content" ){
+                tree[tree.length-1][node_id] = true;
+                bag[node_id] = true;
+                if( state < 0.9 ){ to_keep[node_id] = true; }
+            }
+            else if( type == "concept" && state < 0.9 ){
+                tree[tree.length-1][node_id] = true;
+                bag[node_id] = true;
+                to_keep[node_id] = true;
+            }
+        }
+        current_layer = find_full_backward_layer(to_keep);
+        if( Object.keys(current_layer) == 0 ){ break; }
+    }
+    return tree;
+}
+
+advise = function(goals,user_id){
+    var advice = [];
+    var subtree = find_missing_subtree(goals,user_id);
+    for(var layer in subtree){
+        for(var node_id in subtree[layer]){
+            var state = get_state(node_id,user_id);
+            var type = Nodes.findOne(node_id).type;
+            if( state > 0.9 && type == "content" ){ advice.push(node_id); }
+        }
+    }
+    return advice;
+}
+
 find_micronodes = function(node_ids) {
     var micronodes = {};
     var current_layer = node_ids;
@@ -339,6 +433,24 @@ forward_update = function(node_ids, user_id) {
         }
         for (var node_id in next_layer) {
             update_state(node_id, user_id);
+            update_completion(node_id, user_id);
+        }
+        current_layer = next_layer;
+    }
+}
+
+//update of full forward tree
+full_forward_update = function(node_ids, user_id) {
+    var current_layer = node_ids;
+    while (1) {
+        var next_layer = find_full_forward_layer(current_layer);
+        if (Object.keys(next_layer) == 0) {
+            break;
+        }
+        for (var node_id in next_layer) {
+            console.log(node_id);
+            update_state(node_id, user_id);
+            update_completion(node_id, user_id);
         }
         current_layer = next_layer;
     }
@@ -746,6 +858,7 @@ create_content = function(parameters) {
     for (var i in users) {
         var user_id = users[i]._id;
         set_state(1, id, user_id);
+        set_completion(1, id, user_id);
     }
     return id;
 }
@@ -772,6 +885,7 @@ create_concept = function(parameters) {
     for (var i in users) {
         var user_id = users[i]._id;
         set_state(0, id, user_id);
+        set_completion(0, id, user_id);
     }
     return id;
 }
@@ -919,12 +1033,24 @@ edit_set = function(requirement_id, concepts) {
             $set: update
         });
     }
+    var node_id = requirement.node;
+    //se o conjunto for vazio apagar o requesito
     if (Object.keys(concepts) == 0) {
+        //apagar a referência no nodo que tinha este requesito
+        var node = Nodes.findOne(node_id);
+        var needs = node.needs;
+        delete needs[requirement_id];
+        Nodes.update({
+            _id: node_id
+        },{
+            $set: {needs: needs}}
+        );
+        //apagar o requesito
         Requirements.remove({
             _id: requirement_id
         });
     }
-    var node_id = requirement.node;
+    //actualizar a rede para todos os utilizadores
     var users = Meteor.users.find().fetch();
     for (var i in users) {
         var user_id = users[i]._id;
@@ -943,7 +1069,11 @@ remove_author = function(node_id,author_id){
     Nodes.update({_id: node_id},{$set: {authors: authors}});
     var works = Meteor.users.findOne(author_id).works;
     delete works[node_id];
-    Meteor.users.update({_id: author_id},{$set: {works: works}});
+    Meteor.users.update({
+        _id: author_id
+    },{
+        $set: {works: works}}
+    );
 }
 
 remove_node = function(node_id){
