@@ -68,7 +68,7 @@
 NodesSearchIndex = new EasySearch.Index({
     // index level configuration
     collection: Nodes,
-    fields: ['name', 'description'],
+    fields: ['name', 'description', 'authors', 'created_on'],
     engine: new EasySearch.MongoDB({
         /*beforePublish: function(action, doc) {
             // might be that the field is already published and it's being modified

@@ -4,4 +4,4 @@ Template.unitCard.rendered = function() {
             delay: 1
         });
     });
-}
+};

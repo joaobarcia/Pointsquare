@@ -1,0 +1,116 @@
+<template name="home_backup">
+    <div class="container">
+        {{#if currentUser}}
+            {{> currentUserHome}}
+        {{else}}
+            <div class="card">
+                {{> introToUnitsAndConcepts}}
+                <div class="row center-align">
+                    <div class="section">
+                        <a class="waves-effect waves-light btn-large green" href="{{ pathFor 'atSignUp' }}"><i class="material-icons left">person_add</i>Register to begin growing your knowledge!</a>
+                    </div>
+                </div>
+            </div>
+        {{/if}}
+    </div>
+</template>
+<template name="currentUserHome">
+    <div class="section">
+        <ul class="collapsible popout" data-collapsible="accordion">
+            <li>
+                <div class="collapsible-header active">
+                    <i class="material-icons">new_releases</i>Welcome to Pointsquare, {{currentUser.username}}</div>
+                <div class="collapsible-body">
+                    <div class="container center-align">
+                        <div class="row">
+                            <div class="section">
+                                <h3>This is a pre-release version</h3>
+                                <h5>You have been invited to join us in making the best possible tool to grow knowledge.</h5>
+                                <h5>Please do not share this website without our consent.</h5>
+                            </div>
+                            <div class="section">
+                                <h3>The Big Picture</h3>
+                                <h5>Check out our <a href="http://pointsquare.org/assets/presentations/pointsquare.pdf">pdf</a> to better understand the project.</h5>
+                            </div>
+                            <div class="section">
+                                <h3>How can you help?</h3>
+                                <h5>Check out existing units and concepts.</h5>
+                                <h5>Try adding 5+ units (as simple as you want, this is a teaching playground).</h5>
+                                <h5>Create the concepts related to your unit and connect them.</h5>
+                                <h5>Read the guides below if you need more info.</h5>
+                            </div>
+                            <div class="section">
+                                <h5>Send us your feedback <a class="modal-trigger btn-floating btn-large cyan btn tooltipped" data-position="right" data-delay="20" data-tooltip="Send us your feedback!" data-target="feedbackModal">
+                                        <i class="material-icons">feedback </i></a></h5>
+                            </div>
+                            <div class="section">
+                                <h4>THANK YOU :)</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">create</i>Learning with Pointsquare</div>
+                <div class="collapsible-body">
+                    {{> introToUnitsAndConcepts}}
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">school</i>Teaching with Pointsquare</div>
+                <div class="collapsible-body">
+                    <div class="container center-align">
+                        <div class="row">
+                            <div class="section">
+                                <h3>Creating <span class="ti-book"></span> units and <span class="ti-light-bulb"></span>concepts.</h3>
+                                <div class="section">
+                                    <h4><strong>Be specific in relationships between units and concepts</strong></h4>
+                                    <h5>Think about what concepts your lesson relates to. Do not just pick <i>arithmetic</i> if your content only makes use of <i>integer sums</i></h5>
+                                    <h5>Organize your content in units that teach or test something specific, don't break it in several parts that all teach the same.</h5>
+                                </div>
+                                <div class="section">
+                                    <h4><strong>Be specific in concept definition</strong></h4>
+                                    <h5>If a concept doesn't exist or isn't exactly what you need, create it, and later add it to your content.</h5>
+                                    <h5>If your content only describes what a bicycle is but teaches no practical techniques, pick (or create) a concept which is <i>descriptive knowledge of bicycles</i>. You can later link that concept to more practical ones.</h5>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="section">
+                                <h3>Linking <span class="ti-light-bulb"></span>concepts</h3>
+                                <div class="section">
+                                    <h4><strong>If you know the child concepts, you understand the parent concept</strong></h4>
+                                    <h5>Sometimes it is enough to know two concepts to understand a third, without having to be taught. Consider verb conjugation, for instance: if you know <i>to make (verb)</i> and you know <i>present tense -s ending</i> then you know how to use the word <i>makes</i>, and vice-versa. Which is why you can add the verb <i>to make</i> and the <i>present tense -s ending</i> as child concepts of <i>makes</i>.</h5>
+                                </div>
+                                <div class="section">
+                                    <h4><strong>Grouping concepts as child concepts</strong></h4>
+                                    <h5>This technique also works for grouping concepts together, such as <i>sums</i>, <i>subtractions</i>, <i>multiplications</i> and <i>divisions</i> under <i>basic arithmetic</i>. We can't stress this enough: you're entirely free to create as specific a concept as you like!</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">info</i>"Disclaimer"</div>
+                <div class="collapsible-body">
+                    <div class="container center-align">
+                        <div class="row">
+                            <div class="section">
+                                <h3>This is a testing playground</h3>
+                                <h5>There will be bugs. Please let us know if you find one.</h5>
+                                <h5>We are doing our best to build a reliable platform, but there is always a risk that during this development phase information might get lost or erased. If any of it is important to you, please make a backup.</h5>
+                            </div>
+                            <div class="section">
+                                <h3>Do not post sensitive data!</h3>
+                                <h5>There are a few security holes which we haven't got around to fixing yet. Do not trust us with critical private information!</h5>
+                            </div>
+                            <div class="section">
+                                <h4>Have fun!</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</template>

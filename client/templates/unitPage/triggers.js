@@ -4,6 +4,7 @@ Template.unitPage.onCreated(function() {
     self.autorun(function() {
         var contentId = FlowRouter.getParam('contentId');
         self.subscribe('singleContent', contentId);
+        self.subscribe('allConcepts');
         /*var args = {};
         args["nodeId"] = contentId;
         args["userId"] = Meteor.userId();
@@ -46,6 +47,7 @@ Template.unitPage.events({
             } else if (Session.get("temp") == "precomputing") {
                 console.log("nothing");
             }*/
+            console.log("calling succeed method with" + FlowRouter.getParam('contentId') + " " + Meteor.userId())
             Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },

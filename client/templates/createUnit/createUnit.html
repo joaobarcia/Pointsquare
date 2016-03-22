@@ -16,7 +16,6 @@
                                 <div class="section">
                                     <div class="divider"></div>
                                     <h3 class="center-align">Content</h3>{{!-- <h5 class="center-align">Re-order sections by dragging the title and content by dragging the icon</h5> --}}
-                                    <h5 class="center-align"><a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a> and <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a> are supported in text boxes</h5>
                                     <div class="card-panel">
                                         {{>createUnitContent}}
                                     </div>
@@ -74,7 +73,7 @@
             <div class="section section-card">
                 <div class="row valign-wrapper no-margin">
                     <div class="col s6">
-                        <h4 class="section-handle no-margin">Section {{increaseByOne @index}} 
+                        <h4 class="section-handle no-margin">Section {{increaseByOne @index}}
                         <i class="material-icons tiny"><a  href='#!' class="cyan-text left-align remove-section" id="{{@index}}">clear</a></i>
                         </h4>
                     </div>
@@ -122,7 +121,7 @@
         <form class="col s10">
             <div class="input-field">
                 <textarea value= {{text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
-                <label for="{{sectionIndex}} {{contentIndex}} text">{{text}}</label>
+                <label for="{{sectionIndex}} {{contentIndex}} text">Text box (<a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a> and <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a> supported)</label>
             </div>
         </form>
         <div class="col s1">
