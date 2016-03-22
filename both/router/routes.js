@@ -16,7 +16,7 @@ FlowRouter.route('/', {
 FlowRouter.route('/search', {
     name: 'search',
     subscriptions: function(params) {
-        this.register("onlyReady",Meteor.subscribe("onlyReady",Meteor.userId()));
+        //this.register("onlyReady",Meteor.subscribe("onlyReady",Meteor.userId()));
         //this.register("nodes", Meteor.subscribe("nodes"));
         //this.register("edges", Meteor.subscribe("edges"));
         //this.register("sets", Meteor.subscribe("sets"));
@@ -133,7 +133,7 @@ FlowRouter.route('/create/content', {
 Router.route('/search', {
     name: 'search',
     waitOn: function() {
-        
+
                 if (Meteor.user()) {
                     return [Meteor.subscribe('user_names'), Meteor.subscribe('user_info'), Meteor.subscribe('knowledge_network')];
                 } else {

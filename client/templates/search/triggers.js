@@ -1,3 +1,10 @@
+Template.search.onCreated(function() {
+    var self = this;
+    self.autorun(function() {
+        self.subscribe('userNames');
+    });
+});
+
 Template.search.rendered = function() {
     //Fixed search options
     /*    $(document).ready(function() {
