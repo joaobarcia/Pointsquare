@@ -227,6 +227,7 @@ reset_user = function(user_id) {
     Personal.remove({
         user: user_id
     });
+    update_zeroth_level(user_id);
 }
 
 //finds all units that do not require anything
