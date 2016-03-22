@@ -1,11 +1,9 @@
 Template.unitsFromAuthor.helpers({
-    unitFromAuthor: function() {
-        var currentUserRID = Session.get('currentUserRID');
 
-        return knowledge.find({
-            "class": "Unit",
-            "authors.rid": currentUserRID
-        }).fetch();
+    unitFromAuthor: function() {
+        var query = { type: "content" };
+        query["authors."+Meteor.userId()] = true;
+        return Nodes.find(query);
     }
 
 });
