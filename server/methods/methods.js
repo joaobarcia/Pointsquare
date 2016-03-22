@@ -404,6 +404,31 @@ advise = function(goals,user_id){
     return advice;
 }
 
+count_concepts_to_goal = function(goals,user_id){
+    var subtree = find_missing_subtree(goals,user_id);
+    n=0;
+    for(var layer in subtree){
+        for(var node_id in subtree[layer]){
+            var type = Nodes.findOne(node_id).type;
+            if( type == "concept" ){ n++; }
+        }
+    }
+    return n;
+}
+
+starting_concepts = function(goals,user_id){
+    var concepts = {};
+    var advice = advise(goals,user_id);
+    for(var i in advice){
+        var unit = Nodes.findOne(advice[i]);
+        var grants = unit.grants;
+        for(var id in grants){
+            concepts[id] = true;
+        }
+    }
+    return concepts;
+}
+
 find_micronodes = function(node_ids) {
     var micronodes = {};
     var current_layer = node_ids;
@@ -1223,6 +1248,9 @@ Meteor.methods({
         var goal = {};
         goal[nodeID] = true;
         var units = advise(goal,userID);
+        var concepts = starting_concepts(goal,userID);
+        var tree = find_missing_subtree(goal,userID);
+        var conceptCount = count_concepts_to_goal(goal,userID);
         var existing = Goals.findOne({
           node: nodeID,
           user: userID
@@ -1231,12 +1259,20 @@ Meteor.methods({
           Goals.insert({
             node: nodeID,
             user: userID,
-            units: units
+            units: units,
+            concepts: concepts,
+            tree: tree,
+            conceptCount: conceptCount
           });
         }
         else{
-          Goals.update({_id:existing},{
-            $set: {units: units}
+          Goals.update({_id: existing._id},{
+            $set: {
+              units: units,
+              concepts: concepts,
+              tree: tree,
+              conceptCount: conceptCount
+            }
           });
         }
     },
