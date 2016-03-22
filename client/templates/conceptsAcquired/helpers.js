@@ -1,15 +1,15 @@
 Template.conceptsAcquired.helpers({
     concept: function() {
-        var user_rid = Session.get('currentUserRID');
         var query = {
-            "class": "Concept"
+            state: { $gte: 0.9 },
+            user: Meteor.userId()
         };
-        query['user_dependent_info.' + user_rid + '.state'] = {
-            $gt: 0.8
-        };
-        var sort = {
-            name: 1
-        };
-        return knowledge.find(query, sort);
+        var res = Personal.find(query).fetch();
+        var ids = [];
+        for(var i in res){
+            var node = Nodes.findOne(res[i].node);
+            if(node.type == "concept"){ ids.push(node._id); }
+        }
+        return Nodes.find({"_id":{$in:ids}});
     }
 });

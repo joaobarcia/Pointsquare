@@ -1204,7 +1204,11 @@ Meteor.methods({
     },
 
     succeed: function(nodeID, userID) {
-        var target = Nodes.findOne(nodeID).grants;
+        var target = {};
+        var grants = Nodes.findOne(nodeID).grants;
+        for(var id in grants){
+            target[id] = 1;
+        }
         target[nodeID] = 1;
         return readapt(target, userID);
     },
