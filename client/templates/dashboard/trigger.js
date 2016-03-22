@@ -3,5 +3,6 @@ Template.dashboard.onCreated(function() {
     self.autorun(function() {
         self.subscribe('nodes');
         self.subscribe('personal');
+        self.subscribe('goals');
     });
 });

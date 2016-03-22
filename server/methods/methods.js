@@ -1217,6 +1217,35 @@ Meteor.methods({
         var target = {};
         target[nodeID] = 0;
         return readapt(target, userID);
+    },
+
+    setGoal: function(nodeID,userID) {
+        var goal = {};
+        goal[nodeID] = true;
+        var units = advise(goal,userID);
+        var existing = Goals.findOne({
+          node: nodeID,
+          user: userID
+        });
+        if(!existing){
+          Goals.insert({
+            node: nodeID,
+            user: userID,
+            units: units
+          });
+        }
+        else{
+          Goals.update({_id:existing},{
+            $set: {units: units}
+          });
+        }
+    },
+
+    removeGoal: function(nodeID,userID) {
+      Goals.remove({
+        node: nodeID,
+        user: userID
+      });
     }
 
 });
