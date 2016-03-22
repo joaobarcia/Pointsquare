@@ -23,7 +23,7 @@ Schema.Concept = new SimpleSchema({
     },
     "needs.$": {
         type: [String],
-        label: " blergh",
+        label: " _",
         optional: true,
         autoform: {
             type: "selectize",
@@ -72,7 +72,7 @@ Schema.Unit = new SimpleSchema({
     },
     "needs.$": {
         type: [String],
-        label: " blergh",
+        label: " _",
         optional: true,
         autoform: {
             type: "selectize",
@@ -97,7 +97,7 @@ Schema.Unit = new SimpleSchema({
     },
     grants: {
         type: [String],
-        label: " blargh",
+        label: " _",
         optional: true,
         autoform: {
             type: "selectize",

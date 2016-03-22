@@ -1,182 +1,210 @@
 <template name="createUnit">
-    <div class="container">
-        <div class="section">
-            <h4>Create Unit</h4>
-            <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
-            {{#autoForm schema=createUnitSchema id="createUnit" resetOnSuccess=false}}
-                <fieldset>
-                    {{!-- <legend>Contact Us</legend> --}}
-                    <div class="card">
-                        <div class="section">
-                            <div class="container">
-                                <div class="section">
-                                    {{!-- {{> afArrayField name="items" template='customArrayField'}}
-                                    --}} <h3 class="center-align">Info</h3> {{> afQuickField name="name" }} {{> afQuickField name="description"}}
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Content</h3>{{!-- <h5 class="center-align">Re-order sections by dragging the title and content by dragging the icon</h5> --}}
-                                    <div class="card-panel">
-                                        {{>createUnitContent}}
-                                    </div>
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Evaluation</h3>{{> afQuickField name="evaluationType" value="userConfirmation"}}
-                                    {{#if afFieldValueIs name="evaluationType" value="exerciseRadioButton" }}
-                                        {{> afQuickField name="exerciseRadioButton"}}
-                                    {{/if}}
-                                    {{#if afFieldValueIs name="evaluationType" value="exerciseString" }}
-                                        {{> afQuickField name="exerciseString"}}
-                                    {{/if}}
-                                    {{#if afFieldValueIs name="evaluationType" value="userConfirmation" }}
-                                    {{/if}}
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Concepts</h3>{{!--                                     <input class="form-control typeahead" name="XXX" type="text" placeholder="open source projects by Twitter" autocomplete="off" spellcheck="off" data-source="requiredConcepts" data-template="requiredConcept" />
-                                    {{#each requiredConcepts}}
-                                    {{> requiredConcept}}
-                                        {{/each}} --}}
-                                        <h5>Necessary to understand this unit</h5>{{> afQuickField name="needs" }}
-                                        <h5>Will be taught by this unit</h5>{{> afQuickField name="grants"}}
-                                        <div class="center-align">
-                                            {{!-- <p class="center-align">If you you don't find the concept you need, you can</p>
-<button class="btn blue-text disabled">Add Concept</button>
- --}}
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        {{#if submitting}}
-                            {{> smallLoading}}
-                        {{else}}
-                            <button type="submit" class="btn btn-primary btn-large">Submit</button>
-                            {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
-                        {{/if}}
-                    </div>
-                </fieldset>
-            {{/autoForm}}
-        </div>
+  <div class="container">
+    <div class="section">
+      <h4>Create Unit</h4>
+      <p>If you have doubts, check out the Teaching with Pointsquare guide in the
+        <a href="{{ pathFor 'home' }}" target="_blank">home</a>
+        page</p>
+      {{#autoForm schema=createUnitSchema id="createUnit" resetOnSuccess=false}}
+        <fieldset>
+          {{!-- <legend>Contact Us</legend> --}}
+          <div class="card">
+            <div class="section">
+              <div class="container">
+                <div class="section">
+                  {{!-- {{> afArrayField name="items" template='customArrayField'}}
+                  --}}
+                  <h3 class="center-align">Info</h3>
+                  {{> afQuickField name="name" }}
+                  {{> afQuickField name="description"}}
+                </div>
+                <div class="section">
+                  <div class="divider"></div>
+                  <h3 class="center-align">Content</h3>{{!-- <h5 class="center-align">Re-order sections by dragging the title and content by dragging the icon</h5> --}}
+                  <div class="card-panel">
+                    {{>createUnitContent}}
+                  </div>
+                </div>
+                <div class="section">
+                  <div class="divider"></div>
+                  <h3 class="center-align">Evaluation</h3>{{> afQuickField name="evaluationType" value="userConfirmation"}}
+                  {{#if afFieldValueIs name="evaluationType" value="exerciseRadioButton" }}
+                    {{> afQuickField name="exerciseRadioButton"}}
+                  {{/if}}
+                  {{#if afFieldValueIs name="evaluationType" value="exerciseString" }}
+                    {{> afQuickField name="exerciseString"}}
+                  {{/if}}
+                  {{#if afFieldValueIs name="evaluationType" value="userConfirmation" }}{{/if}}
+                </div>
+                <div class="section">
+                  <div class="divider"></div>
+                  <h3 class="center-align">Concepts</h3>
+                  <div class="center-align"></div>
+                  <p class="center-align">If you don't find the concept you need, you can <a href="{{ pathFor 'conceptCreate' }}" target="_blank">Add Concept</a></p>
+
+                  <div class="section">
+                    <h4>Necessary to understand this unit</h4>{{> afQuickField name="needs" }}
+                  </div>
+                  <div class="section">
+                    <h4>Will be taught by this unit</h4>{{> afQuickField name="grants"}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            {{#if submitting}}
+              {{> smallLoading}}
+            {{else}}
+              <button type="submit" class="btn btn-primary btn-large">Submit</button>
+              {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
+            {{/if}}
+          </div>
+        </fieldset>
+      {{/autoForm}}
     </div>
+  </div>
 </template>
 <template name="requiredConcept">
-    {{!--     <p>{{name}}</p>
-    <p>{{rid}}</p>
-    <p>{{description}}</p> --}}
+  {{!--     <p>{{name}}</p>
+<p>{{rid}}</p>
+<p>{{description}}</p>
+--}}
 </template>
 <template name="createUnitContent">
-    <div id="content-sections">
-        {{#each tempContent}}
-            <div class="section section-card">
-                <div class="row valign-wrapper no-margin">
-                    <div class="col s6">
-                        <h4 class="section-handle no-margin">Section {{increaseByOne @index}}
-                        <i class="material-icons tiny"><a  href='#!' class="cyan-text left-align remove-section" id="{{@index}}">clear</a></i>
-                        </h4>
-                    </div>
-                    <div class="col s6 right-align">
-                        <a class='dropdown-button cyan-text right-align add-content' href='#!' data-activates='dropdown{{@index}}'><i class="material-icons tiny">add_circle_outline</i> content</a>
-                    </div>
-                </div>
-                <ul id='dropdown{{@index}}' class='dropdown-content'>
-                    <li><a href="#!" class="cyan-text add-text" id="{{@index}}">text</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#!" class="cyan-text add-video" id="{{@index}}">video</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#!" class="cyan-text add-image" id="{{@index}}">image</a></li>
-                </ul>
-                <ul class="collection content-fields no-margin">
-                    {{#let sectionIndex=@index}}
-                        {{#each subContent}}
-                            <li class="collection-item">
-                                {{#if isType 'text'}}
-                                    {{>createUnitText sectionIndex=sectionIndex contentIndex=@index text=text}}
-                                {{/if}}
-                                {{#if isType 'youtube'}}
-                                    {{>createUnitYoutube sectionIndex=sectionIndex contentIndex=@index youtubeVidID=youtubeVidID}}
-                                {{/if}}
-                                {{#if isType 'remoteImage'}}
-                                    {{>createUnitRemoteImage remoteImgURL=remoteImgURL sectionIndex=sectionIndex contentIndex=@index}}
-                                {{/if}}
-                                {{#if isType 'image'}}
-                                    {{>createUnitImage sectionIndex=sectionIndex contentIndex=@index}}
-                                {{/if}}
-                            </li>
-                        {{/each}}
-                    {{/let}}
-                </ul>
-            </div>
-        {{/each}}
+<div id="content-sections">
+  {{#each tempContent}}
+    <div class="section section-card">
+      <div class="row valign-wrapper no-margin">
+        <div class="col s6">
+          <h4 class="section-handle no-margin">Section
+            {{increaseByOne @index}}
+            <i class="material-icons tiny">
+              <a href='#!' class="cyan-text left-align remove-section" id="{{@index}}">clear</a>
+            </i>
+          </h4>
+        </div>
+        <div class="col s6 right-align">
+          <a class='dropdown-button cyan-text right-align add-content' href='#!' data-activates='dropdown{{@index}}'>
+            <i class="material-icons tiny">add_circle_outline</i>
+            content</a>
+        </div>
+      </div>
+      <ul id='dropdown{{@index}}' class='dropdown-content'>
+        <li>
+          <a href="#!" class="cyan-text add-text" id="{{@index}}">text</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="#!" class="cyan-text add-video" id="{{@index}}">video</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="#!" class="cyan-text add-image" id="{{@index}}">image</a>
+        </li>
+      </ul>
+      <ul class="collection content-fields no-margin">
+        {{#let sectionIndex=@index}}
+          {{#each subContent}}
+            <li class="collection-item">
+              {{#if isType 'text'}}
+                {{>createUnitText sectionIndex=sectionIndex contentIndex=@index text=text}}
+              {{/if}}
+              {{#if isType 'youtube'}}
+                {{>createUnitYoutube sectionIndex=sectionIndex contentIndex=@index youtubeVidID=youtubeVidID}}
+              {{/if}}
+              {{#if isType 'remoteImage'}}
+                {{>createUnitRemoteImage remoteImgURL=remoteImgURL sectionIndex=sectionIndex contentIndex=@index}}
+              {{/if}}
+              {{#if isType 'image'}}
+                {{>createUnitImage sectionIndex=sectionIndex contentIndex=@index}}
+              {{/if}}
+            </li>
+          {{/each}}
+        {{/let}}
+      </ul>
     </div>
-    <a class='cyan-text right-align add-section' href='#!'><i class="material-icons tiny">add_circle_outline</i> section</a>
+  {{/each}}
+</div>
+<a class='cyan-text right-align add-section' href='#!'>
+  <i class="material-icons tiny">add_circle_outline</i>
+  section</a>
 </template>
 <template name="createUnitText">
-    <div class="row valign-wrapper no-margin">
-        <div class="col s1 content-handle">
-            <i class="material-icons small cyan-text valign">library_books</i>
-        </div>
-        <form class="col s10">
-            <div class="input-field">
-                <textarea value= {{text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
-                <label for="{{sectionIndex}} {{contentIndex}} text">Text box (<a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a> and <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a> supported)</label>
-            </div>
-        </form>
-        <div class="col s1">
-            <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a></i>
-        </div>
+<div class="row valign-wrapper no-margin">
+  <div class="col s1 content-handle">
+    <i class="material-icons small cyan-text valign">library_books</i>
+  </div>
+  <form class="col s10">
+    <div class="input-field">
+      <textarea value={{text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
+      <label for="{{sectionIndex}} {{contentIndex}} text">Text box (<a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a>
+        and
+        <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a>
+        supported)</label>
     </div>
+  </form>
+  <div class="col s1">
+    <i class="material-icons tiny valign right-align">
+      <a href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a>
+    </i>
+  </div>
+</div>
 </template>
 <template name="createUnitYoutube">
-    <div class="row valign-wrapper no-margin">
-        <div class="col s1 content-handle">
-            <i class="material-icons small cyan-text valign">video_library</i>
-        </div>
-        <div class="input-field col s8">
-            <input value= {{youtubeVidID}} id="{{sectionIndex}} {{contentIndex}} youtubeVidID" type="text" class="content-input">
-            <label for="{{sectionIndex}} {{contentIndex}} youtubeVidID">Youtube video id</label>
-        </div>
-        <div class="col s2 right-align">
-            <a href="http://www.youtube.com/watch?v={{youtubeVidID}}" target="_blank">
-                <img class="responsive-img" src="http://img.youtube.com/vi/{{youtubeVidID}}/default.jpg">
-            </a>
-        </div>
-        <div class="col s1">
-            <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a></i>
-        </div>
-    </div>
+<div class="row valign-wrapper no-margin">
+  <div class="col s1 content-handle">
+    <i class="material-icons small cyan-text valign">video_library</i>
+  </div>
+  <div class="input-field col s8">
+    <input value={{youtubeVidID}} id="{{sectionIndex}} {{contentIndex}} youtubeVidID" type="text" class="content-input">
+    <label for="{{sectionIndex}} {{contentIndex}} youtubeVidID">Youtube video id</label>
+  </div>
+  <div class="col s2 right-align">
+    <a href="http://www.youtube.com/watch?v={{youtubeVidID}}" target="_blank">
+      <img class="responsive-img" src="http://img.youtube.com/vi/{{youtubeVidID}}/default.jpg">
+    </a>
+  </div>
+  <div class="col s1">
+    <i class="material-icons tiny valign right-align">
+      <a href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a>
+    </i>
+  </div>
+</div>
 </template>
 <template name="createUnitRemoteImage">
-    <div class="row valign-wrapper no-margin">
-        <div class="col s1 content-handle">
-            <i class="material-icons small cyan-text valign">collections</i>
-        </div>
-        <div class="input-field col s8">
-            <input value= {{remoteImgURL}} id="{{sectionIndex}} {{contentIndex}} remoteImgURL" type="text" class="content-input">
-            <label for="{{sectionIndex}} {{contentIndex}} remoteImgURL">Link to picture</label>
-        </div>
-        <div class="col s2 right-align">
-            <a href="{{remoteImgURL}}" target="_blank">
-                <img class="responsive-img" src="{{remoteImgURL}}">
-            </a>
-        </div>
-        <div class="col s1">
-            <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a></i>
-        </div>
-    </div>
+<div class="row valign-wrapper no-margin">
+  <div class="col s1 content-handle">
+    <i class="material-icons small cyan-text valign">collections</i>
+  </div>
+  <div class="input-field col s8">
+    <input value={{remoteImgURL}} id="{{sectionIndex}} {{contentIndex}} remoteImgURL" type="text" class="content-input">
+    <label for="{{sectionIndex}} {{contentIndex}} remoteImgURL">Link to picture</label>
+  </div>
+  <div class="col s2 right-align">
+    <a href="{{remoteImgURL}}" target="_blank">
+      <img class="responsive-img" src="{{remoteImgURL}}">
+    </a>
+  </div>
+  <div class="col s1">
+    <i class="material-icons tiny valign right-align">
+      <a href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a>
+    </i>
+  </div>
+</div>
 </template>
 <template name="createUnitImage">
-    <div class="row valign-wrapper no-margin">
-        <div class="col s1 content-handle">
-            <i class="material-icons small cyan-text valign">broken_image</i>
-        </div>
-        <div class="input-field col s10">
-            <p>Image Upload not supported yet</p>
-        </div>
-        <div class="col s1">
-            <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a></i>
-        </div>
-    </div>
+<div class="row valign-wrapper no-margin">
+  <div class="col s1 content-handle">
+    <i class="material-icons small cyan-text valign">broken_image</i>
+  </div>
+  <div class="input-field col s10">
+    <p>Image Upload not supported yet</p>
+  </div>
+  <div class="col s1">
+    <i class="material-icons tiny valign right-align">
+      <a href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a>
+    </i>
+  </div>
+</div>
 </template>

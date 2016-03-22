@@ -1,0 +1,32 @@
+<template name="goalPage">
+  <div class="container">
+    <div class="card">
+      <div class="row center-align">
+        <div class="section">
+          <h3>Goal:
+            <a>Advanced Banana peeling</a>
+          </h3>
+          <h4>Approximately
+            <a>25 Concepts</a>
+            to go</h4>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row center-align">
+        <div class="section">
+          <h4>Choose from one of these recommended lessons to get to your goal</h4>
+        </div>
+        <div class="row">
+          <div class="col s6 offset-s3">
+            <div class="collection">
+              {{> unitCard name="Jo JO"}}
+              {{> unitCard name="mo mO"}}
+              {{> unitCard name="Bo bO"}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

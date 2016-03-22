@@ -145,9 +145,6 @@ Template.unitEdit.events({
         var deletedNeedsSets = Session.get('deletedNeedsSets');
         deletedNeedsSets.push(setId);
         Session.set('deletedNeedsSets', deletedNeedsSets);
-
-
-        //tempContent.splice(section, 1);
     },
 });
 
@@ -333,7 +330,7 @@ function applySelectizeCode() {
             }
         });
 
-        // For each set of concepts, set the default values 
+        // For each set of concepts, set the default values
         subConcepts = nSet.contains;
         _.forEach(subConcepts, function(nSubConcept) {
             subConceptId = nSubConcept['_id'];
