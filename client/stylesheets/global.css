@@ -242,6 +242,9 @@ nav .brand-logo {
 .pre {
   white-space: pre;
 }
+.collection{
+overflow: visible;;
+}
 
 /*FORCING FLOW TEXT DEFINITIONS TO OVERRIDE <p>*/
 

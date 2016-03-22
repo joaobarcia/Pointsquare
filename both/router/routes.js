@@ -116,6 +116,15 @@ FlowRouter.route('/create/content', {
     }
 });
 
+FlowRouter.route('/goal', {
+    name: 'goalPage',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "goalPage"
+        });
+    }
+});
+
 /*Router.route('/', {
     name: 'home',
     onRun: function() {

@@ -52,7 +52,7 @@ comerc:autoform-typeahead
 comerc:autoform-selectize
 useraccounts:materialize
 gildaspk:autoform-materialize
-poetic:materialize-scss
 aldeed:template-extension
 reactive-var
 jquery
+materialize:materialize
