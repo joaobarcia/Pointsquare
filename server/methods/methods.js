@@ -1245,6 +1245,9 @@ Meteor.methods({
     },
 
     setGoal: function(nodeID,userID) {
+        Goals.remove({
+          user: userID
+        });
         var goal = {};
         goal[nodeID] = true;
         var units = advise(goal,userID);

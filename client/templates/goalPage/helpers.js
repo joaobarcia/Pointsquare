@@ -15,5 +15,4 @@ Template.goalPage.helpers({
     var unitIds = goal.units;
     return Nodes.find({ _id: {$in:unitIds} });
   }
-
 });
