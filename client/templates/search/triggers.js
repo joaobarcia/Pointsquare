@@ -3,6 +3,9 @@ Template.search.onCreated(function() {
     self.autorun(function() {
         self.subscribe('userNames');
     });
+    self.subscribe('nodes');
+    self.subscribe('personal');
+    self.subscribe('goals');
 });
 
 Template.search.rendered = function() {
