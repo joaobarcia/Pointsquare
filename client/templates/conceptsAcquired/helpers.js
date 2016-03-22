@@ -9,7 +9,7 @@ Template.conceptsAcquired.helpers({
         for(var i in res){
             var node = Nodes.findOne(res[i].node);
             if(node.type == "concept"){ ids.push(node._id); }
-        }
+        };
         return Nodes.find({"_id":{$in:ids}});
     }
 });
