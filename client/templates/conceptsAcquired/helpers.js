@@ -8,7 +8,9 @@ Template.conceptsAcquired.helpers({
         var ids = [];
         for(var i in res){
             var node = Nodes.findOne(res[i].node);
-            if(node.type == "concept"){ ids.push(node._id); }
+            if(node){
+              if(node.type == "concept"){ ids.push(node._id); }
+            }
         };
         return Nodes.find({"_id":{$in:ids}});
     }
