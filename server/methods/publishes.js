@@ -46,7 +46,7 @@ Meteor.publishComposite("singleNode", function(args) {
                       });
                   }
               }]*/
-  }
+  };
 });
 
 Meteor.publishComposite('singleContent', function(contentId, userId) {
@@ -67,7 +67,7 @@ Meteor.publishComposite('singleContent', function(contentId, userId) {
         });
       }
     }],
-  }
+  };
 });
 
 // Meteor.publishComposite('onlyReady', function(userId) {
@@ -107,7 +107,7 @@ Meteor.publish('singleConcept', function(conceptId) {
 Meteor.publish('allConcepts', function(conceptId) {
   return [Nodes.find({
     type: 'concept'
-  }), Requirements.find()]
+  }), Requirements.find()];
 });
 
 Meteor.publish('people', function() {

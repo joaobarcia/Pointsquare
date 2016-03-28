@@ -14,7 +14,7 @@ Template.unitSuggestions.helpers({
         var defs = {};
         defs['limit'] = 3;
         defs['sort'] = sort;
-        return knowledge.find(query, defs);;
+        return knowledge.find(query, defs);
     }
 
 });

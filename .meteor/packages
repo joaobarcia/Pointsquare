@@ -57,3 +57,5 @@ reactive-var
 jquery
 materialize:materialize
 meteorhacks:aggregate
+ecmascript
+babrahams:constellation

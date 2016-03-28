@@ -90,7 +90,7 @@ NodesSearchIndex = new EasySearch.Index({
             // filter for the brand if set
             if (options.search.props.type) {
                 selector.type = options.search.props.type;
-            };
+            }
             return selector;
         },
         //        sort: function(searchObject, options) {

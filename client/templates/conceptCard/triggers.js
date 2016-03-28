@@ -6,4 +6,4 @@ Template.conceptCard.events({
     Meteor.call("setGoal", nodeId, Meteor.userId());
     FlowRouter.go('goalPage');
   }
-})
+});

@@ -145,7 +145,7 @@ Template.unitContent.helpers({
       'type': 'unitEvaluationSection'
     }), 'userConfirmation');
     if (numberOfSections == 1 && noExercise) {
-      return 1
+      return 1;
     } else return 0;
   }
 });

@@ -24,8 +24,8 @@ Template.unitPage.onRendered(function() {
                 $('ul.tabs').tabs();
             }, 20);
 
-        };
-    })
+        }
+    });
 
 });
 
@@ -47,7 +47,7 @@ Template.unitPage.events({
             } else if (Session.get("temp") == "precomputing") {
                 console.log("nothing");
             }*/
-            console.log("calling succeed method with" + FlowRouter.getParam('contentId') + " " + Meteor.userId())
+            console.log("calling succeed method with" + FlowRouter.getParam('contentId') + " " + Meteor.userId());
             Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
         }
     },
@@ -78,7 +78,7 @@ Template.unitPage.events({
         event.preventDefault();
         var answerIsCorrect = null;
         if (this.answers.indexOf(event.target.exerciseString.value) > -1) {
-            answerIsCorrect = true
+            answerIsCorrect = true;
         } else answerIsCorrect = false;
         if (answerIsCorrect) {
             $("#exerciseButton").removeClass("orange red").addClass("green");

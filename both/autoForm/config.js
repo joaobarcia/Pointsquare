@@ -36,7 +36,7 @@ Schema.Concept = new SimpleSchema({
                     newObject.label = n.name;
                     newObject.value = n._id;
                     return newObject;
-                };
+                }
 
                 var conceptsMappedToSelectize = _.map(Nodes.find({
                     type: 'concept'
@@ -85,7 +85,7 @@ Schema.Unit = new SimpleSchema({
                     newObject.label = n.name;
                     newObject.value = n._id;
                     return newObject;
-                };
+                }
 
                 var conceptsMappedToSelectize = _.map(Nodes.find({
                     type: 'concept'
@@ -110,7 +110,7 @@ Schema.Unit = new SimpleSchema({
                     newObject.label = n.name;
                     newObject.value = n._id;
                     return newObject;
-                };
+                }
 
                 var conceptsMappedToSelectize = _.map(Nodes.find({
                     type: 'concept'
