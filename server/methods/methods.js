@@ -163,13 +163,13 @@ compute_requirement_completion = function(requirement_id, user_id) {
         normalization += weight;
     }
     return total_completion/normalization;
-}
+};
 
 compute_state = function(node_id, user_id) {
     var node = Nodes.findOne(node_id);
     var requirements = node.needs;
     //if it's a microconcept, do not update
-    if (Object.keys(requirements) == 0) {
+    if (Object.keys(requirements) === 0) {
         if (node.type == "concept") {
             return get_state(node_id, user_id);
         } else if (node.type == "content") {
@@ -177,7 +177,7 @@ compute_state = function(node_id, user_id) {
         }
     }
     //if not pick the highest state of its requirements
-    var max = 0.;
+    var max = 0.0;
     for (var req_id in requirements) {
         var state = compute_requirement_state(req_id, user_id);
         max = state > max ? state : max;
@@ -990,6 +990,14 @@ full_create = function(p) {
     for (var i in p.needs) {
         var requirement = p.needs[i];
         add_set(id, requirement);
+    }
+    var users = Meteor.users.find().fetch();
+    for (var i in users){
+        var user_id = users[i]._id;
+        update_state(id,user_id);
+        var fwd = {};
+        fwd[id] = true;
+        forward_update(fwd,user_id);
     }
     return id;
 }
