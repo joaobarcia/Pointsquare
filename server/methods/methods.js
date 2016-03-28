@@ -1,16 +1,16 @@
 //math functions
 
 sigmoid = function(x) {
-    return 1. / (1 + Math.exp(-x));
-}
+    return 1.0 / (1 + Math.exp(-x));
+};
 
 inverseSigmoid = function(x) {
     return -Math.log(x / (1 - x));
-}
+};
 
 box = function(x) {
     return x > 1 ? 1 : (x < 0 ? 0 : x);
-}
+};
 
 //server variables
 
@@ -46,7 +46,7 @@ build_set = function(concepts) {
         weights: set,
         bias: bias
     };
-}
+};
 
 remove_ocurrences = function(item, list) {
     for (var i = list.length; i--;) {
@@ -54,7 +54,7 @@ remove_ocurrences = function(item, list) {
             list.splice(i, 1);
         }
     }
-}
+};
 
 get_state = function(node_id, user_id) {
     var node = Nodes.findOne({
@@ -65,7 +65,7 @@ get_state = function(node_id, user_id) {
         node: node_id
     });
     return info ? (info.state ? info.state : 0) : 0;
-}
+};
 
 set_state = function(state, node_id, user_id) {
     var info = Personal.findOne({
@@ -79,15 +79,15 @@ set_state = function(state, node_id, user_id) {
             $set: {
                 state: state
             }
-        })
+        });
     } else {
         Personal.insert({
             user: user_id,
             node: node_id,
             state: state
-        })
+        });
     }
-}
+};
 
 set_personal_property = function(property, value, node_id, user_id) {
     var info = Personal.findOne({
@@ -110,15 +110,15 @@ set_personal_property = function(property, value, node_id, user_id) {
         insert[property] = value;
         Personal.insert(insert);
     }
-}
+};
 
 set_completion = function(value,node_id,user_id) {
     return set_personal_property("completion",value,node_id,user_id);
-}
+};
 
-set_depth = function(value,value,node_id,user_id) {
+set_depth = function(value,node_id,user_id) {
     return set_personal_property("depth",value,node_id,user_id);
-}
+};
 
 get_personal_property = function(property, default_value, node_id, user_id) {
   var node = Nodes.findOne({
@@ -129,15 +129,15 @@ get_personal_property = function(property, default_value, node_id, user_id) {
       node: node_id
   });
   return info ? (info[property] ? info[property] : default_value) : default_value;
-}
+};
 
 get_completion = function(node_id,user_id) {
     return get_personal_property("completion",0,node_id,user_id);
-}
+};
 
 get_depth = function(node_id,user_id) {
     return get_personal_property("depth",0,node_id,user_id);
-}
+};
 
 compute_requirement_state = function(requirement_id, user_id) {
     var requirement = Requirements.findOne(requirement_id);
@@ -149,7 +149,7 @@ compute_requirement_state = function(requirement_id, user_id) {
         arg += state * weight;
     }
     return sigmoid(arg);
-}
+};
 
 compute_requirement_completion = function(requirement_id, user_id) {
     var requirement = Requirements.findOne(requirement_id);
@@ -163,13 +163,13 @@ compute_requirement_completion = function(requirement_id, user_id) {
         normalization += weight;
     }
     return total_completion/normalization;
-}
+};
 
 compute_state = function(node_id, user_id) {
     var node = Nodes.findOne(node_id);
     var requirements = node.needs;
     //if it's a microconcept, do not update
-    if (Object.keys(requirements) == 0) {
+    if (Object.keys(requirements) === 0) {
         if (node.type == "concept") {
             return get_state(node_id, user_id);
         } else if (node.type == "content") {
@@ -177,58 +177,59 @@ compute_state = function(node_id, user_id) {
         }
     }
     //if not pick the highest state of its requirements
-    var max = 0.;
+    var max = 0.0;
     for (var req_id in requirements) {
         var state = compute_requirement_state(req_id, user_id);
         max = state > max ? state : max;
     }
     return max;
-}
+};
 
 compute_completion = function(node_id, user_id) {
     var max = 0;
     var node = Nodes.findOne(node_id);
     var requirements = node.needs;
     //if it's a microconcept, set max to its current state
-    if (Object.keys(requirements) == 0) {
+    if (Object.keys(requirements) === 0) {
         max = get_state(node_id, user_id);
     }
+    var completion = 0;
     //then compare that to the maximum completion rate of the units that grant it
     var granted_by = node.granted_by;
     if(granted_by){
-        for(id in node.granted_by){
-            var completion = get_completion(id,user_id);
+        for(var id in node.granted_by){
+            completion = get_completion(id,user_id);
             max = max>completion? max : completion;
         }
     }
     //then compare that to the maximum completion of its requirements
     for (var req_id in requirements) {
-        var completion = compute_requirement_completion(req_id, user_id);
+        completion = compute_requirement_completion(req_id, user_id);
         max = completion > max ? completion : max;
     }
     return max;
-}
+};
 
 //computes the state of the node and saves it to the database
 update_state = function(node_id, user_id) {
     var state = compute_state(node_id, user_id);
     set_state(state, node_id, user_id);
     return state;
-}
+};
 
 //computes the completion of the node and saves it to the database
 update_completion = function(node_id, user_id) {
     var completion = compute_completion(node_id, user_id);
     set_completion(completion, node_id, user_id);
     return completion;
-}
+};
 
 reset_user = function(user_id) {
     Personal.remove({
         user: user_id
     });
     update_zeroth_level(user_id);
-}
+};
 
 //finds all units that do not require anything
 set_zeroth_level = function() {
@@ -242,14 +243,14 @@ set_zeroth_level = function() {
     }, {
         multi: true
     });
-}
+};
 
 find_zeroth_level = function() {
     return Nodes.find({
         type: "content",
         "needs": {}
     }).fetch();
-}
+};
 
 update_zeroth_level = function(user_id) {
     var zeroth_level = Nodes.find({
@@ -260,7 +261,7 @@ update_zeroth_level = function(user_id) {
         var node = zeroth_level[i];
         update_state(node._id, user_id);
     }
-}
+};
 
 find_forward_layer = function(nodes) {
     var layer = {};
@@ -277,7 +278,7 @@ find_forward_layer = function(nodes) {
         }
     }
     return layer;
-}
+};
 
 find_full_forward_layer = function(nodes) {
     var layer = {};
@@ -297,7 +298,7 @@ find_full_forward_layer = function(nodes) {
     }
     console.log(layer);
     return layer;
-}
+};
 
 find_backward_layer = function(nodes) {
     var layer = {};
@@ -312,7 +313,7 @@ find_backward_layer = function(nodes) {
         }
     }
     return layer;
-}
+};
 
 find_full_backward_layer = function(nodes) {
     var layer = {};
@@ -331,7 +332,7 @@ find_full_backward_layer = function(nodes) {
         }
     }
     return layer;
-}
+};
 
 //find forward tree (all nodes that are within reach of outgoing activation links)
 find_forward_tree = function(node_ids) {
@@ -340,14 +341,14 @@ find_forward_tree = function(node_ids) {
     tree.push(current_layer);
     while (1) {
         var next_layer = find_forward_layer(current_layer);
-        if (Object.keys(next_layer).length == 0) {
+        if (Object.keys(next_layer).length === 0) {
             break;
         }
         tree.push(next_layer);
         current_layer = next_layer;
     }
     return tree;
-}
+};
 
 //find backward tree (all nodes that are within reach of incoming activation links)
 find_backward_tree = function(node_ids) {
@@ -356,14 +357,14 @@ find_backward_tree = function(node_ids) {
     tree.push(current_layer);
     while (1) {
         var next_layer = find_backward_layer(current_layer);
-        if (Object.keys(next_layer).length == 0) {
+        if (Object.keys(next_layer).length === 0) {
             break;
         }
         tree.push(next_layer);
         current_layer = next_layer;
     }
     return tree;
-}
+};
 
 find_missing_subtree = function(node_ids,user_id) {
     var tree = [];
@@ -387,10 +388,10 @@ find_missing_subtree = function(node_ids,user_id) {
             }
         }
         current_layer = find_full_backward_layer(to_keep);
-        if( Object.keys(current_layer) == 0 ){ break; }
+        if( Object.keys(current_layer) === 0 ){ break; }
     }
     return tree;
-}
+};
 
 advise = function(goals,user_id){
     var advice = [];
@@ -403,7 +404,7 @@ advise = function(goals,user_id){
         }
     }
     return advice;
-}
+};
 
 count_concepts_to_goal = function(goals,user_id){
     var subtree = find_missing_subtree(goals,user_id);
@@ -415,7 +416,7 @@ count_concepts_to_goal = function(goals,user_id){
         }
     }
     return n;
-}
+};
 
 starting_concepts = function(goals,user_id){
     var concepts = {};
@@ -428,7 +429,7 @@ starting_concepts = function(goals,user_id){
         }
     }
     return concepts;
-}
+};
 
 find_micronodes = function(node_ids) {
     var micronodes = {};
@@ -436,25 +437,25 @@ find_micronodes = function(node_ids) {
     while (1) {
         for (var node_id in current_layer) {
             var node = Nodes.findOne(node_id);
-            if (Object.keys(node.needs).length == 0 && node.type == "concept") {
+            if (Object.keys(node.needs).length === 0 && node.type == "concept") {
                 micronodes[node_id] = true;
             }
         }
         var next_layer = find_backward_layer(current_layer);
-        if (Object.keys(next_layer).length == 0) {
+        if (Object.keys(next_layer).length === 0) {
             break;
         }
         current_layer = next_layer;
     }
     return micronodes;
-}
+};
 
 //update forward tree
 forward_update = function(node_ids, user_id) {
     var current_layer = node_ids;
     while (1) {
         var next_layer = find_forward_layer(current_layer);
-        if (Object.keys(next_layer) == 0) {
+        if (Object.keys(next_layer) === 0) {
             break;
         }
         for (var node_id in next_layer) {
@@ -463,14 +464,14 @@ forward_update = function(node_ids, user_id) {
         }
         current_layer = next_layer;
     }
-}
+};
 
 //update of full forward tree
 full_forward_update = function(node_ids, user_id) {
     var current_layer = node_ids;
     while (1) {
         var next_layer = find_full_forward_layer(current_layer);
-        if (Object.keys(next_layer) == 0) {
+        if (Object.keys(next_layer) === 0) {
             break;
         }
         for (var node_id in next_layer) {
@@ -480,7 +481,7 @@ full_forward_update = function(node_ids, user_id) {
         }
         current_layer = next_layer;
     }
-}
+};
 
 readapt = function(target, user_id) {
     var output_layer = target;
@@ -491,24 +492,25 @@ readapt = function(target, user_id) {
     var tree = find_backward_tree(target);
     //fill in state object
     var state = {};
+    var node_id = "";
     for (var order in tree) {
         var layer = tree[order];
-        for (var node_id in layer) {
+        for (node_id in layer) {
             state[node_id] = get_state(node_id, user_id);
         }
     }
     //compute maximum and minimum activations
     var max_states = {};
     var min_states = {};
-    for (var node_id in target) {
+    for (node_id in target) {
         var node = Nodes.findOne(node_id);
         var requirements = node.needs;
-        var max_maximal_activation = 0.;
-        var max_minimal_activation = 0.;
+        var max_maximal_activation = 0.0;
+        var max_minimal_activation = 0.0;
         for (var requirement_id in requirements) {
             var requirement = Requirements.findOne(requirement_id);
             var weights = requirement.weights;
-            var max_arg = 0.;
+            var max_arg = 0.0;
             var arg = requirement.bias;
             for (var subnode_id in weights) {
                 max_arg += weights[subnode_id];
@@ -520,7 +522,7 @@ readapt = function(target, user_id) {
             max_minimal_activation = (minimal_activation > max_minimal_activation) ? minimal_activation : max_minimal_activation;
             state[requirement_id] = sigmoid(arg);
         }
-        if (Object.keys(requirements) == 0) {
+        if (Object.keys(requirements) === 0) {
             max_maximal_activation = 1;
             max_minimal_activation = 0;
             //if it's a microconcept, update it straight away
@@ -554,7 +556,7 @@ readapt = function(target, user_id) {
     for (var i in tree) {
         var layer = tree[i];
         for (var node_id in layer) {
-            if (i == 0) {
+            if (i === 0) {
                 saved_output[node_id] = state[node_id];
                 error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
                 max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
@@ -884,7 +886,10 @@ create_content = function(parameters) {
     for (var i in users) {
         var user_id = users[i]._id;
         set_state(1, id, user_id);
-        set_completion(1, id, user_id);
+        //set_completion(1, id, user_id);
+        var unit = {};
+        unit[id] = true;
+        forward_update(unit,user_id);
     }
     return id;
 }
@@ -979,10 +984,11 @@ add_set = function(node_id, concepts) {
 }
 
 full_create = function(p) {
+    var id;
     if (p.type == "concept") {
-        var id = create_concept(p.parameters);
+        id = create_concept(p.parameters);
     } else if (p.type == "content") {
-        var id = create_content(p.parameters);
+        id = create_content(p.parameters);
         var grantement = p.grants;
         add_grants(id, grantement);
     }
@@ -991,8 +997,14 @@ full_create = function(p) {
         var requirement = p.needs[i];
         add_set(id, requirement);
     }
+    var users = Meteor.users.find().fetch();
+    for (var user_id in users){
+        var node = {};
+        node[id] = true;
+        forward_update(node,user_id);
+    }
     return id;
-}
+};
 
 //editing functions
 edit_node = function(node_id, parameters) {
