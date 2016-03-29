@@ -1,16 +1,16 @@
 //math functions
 
 sigmoid = function(x) {
-    return 1. / (1 + Math.exp(-x));
-}
+    return 1.0 / (1 + Math.exp(-x));
+};
 
 inverseSigmoid = function(x) {
     return -Math.log(x / (1 - x));
-}
+};
 
 box = function(x) {
     return x > 1 ? 1 : (x < 0 ? 0 : x);
-}
+};
 
 //server variables
 
@@ -46,7 +46,7 @@ build_set = function(concepts) {
         weights: set,
         bias: bias
     };
-}
+};
 
 remove_ocurrences = function(item, list) {
     for (var i = list.length; i--;) {
@@ -54,7 +54,7 @@ remove_ocurrences = function(item, list) {
             list.splice(i, 1);
         }
     }
-}
+};
 
 get_state = function(node_id, user_id) {
     var node = Nodes.findOne({
@@ -65,7 +65,7 @@ get_state = function(node_id, user_id) {
         node: node_id
     });
     return info ? (info.state ? info.state : 0) : 0;
-}
+};
 
 set_state = function(state, node_id, user_id) {
     var info = Personal.findOne({
@@ -79,15 +79,15 @@ set_state = function(state, node_id, user_id) {
             $set: {
                 state: state
             }
-        })
+        });
     } else {
         Personal.insert({
             user: user_id,
             node: node_id,
             state: state
-        })
+        });
     }
-}
+};
 
 set_personal_property = function(property, value, node_id, user_id) {
     var info = Personal.findOne({
@@ -110,15 +110,15 @@ set_personal_property = function(property, value, node_id, user_id) {
         insert[property] = value;
         Personal.insert(insert);
     }
-}
+};
 
 set_completion = function(value,node_id,user_id) {
     return set_personal_property("completion",value,node_id,user_id);
-}
+};
 
-set_depth = function(value,value,node_id,user_id) {
+set_depth = function(value,node_id,user_id) {
     return set_personal_property("depth",value,node_id,user_id);
-}
+};
 
 get_personal_property = function(property, default_value, node_id, user_id) {
   var node = Nodes.findOne({
@@ -129,15 +129,15 @@ get_personal_property = function(property, default_value, node_id, user_id) {
       node: node_id
   });
   return info ? (info[property] ? info[property] : default_value) : default_value;
-}
+};
 
 get_completion = function(node_id,user_id) {
     return get_personal_property("completion",0,node_id,user_id);
-}
+};
 
 get_depth = function(node_id,user_id) {
     return get_personal_property("depth",0,node_id,user_id);
-}
+};
 
 compute_requirement_state = function(requirement_id, user_id) {
     var requirement = Requirements.findOne(requirement_id);
@@ -149,7 +149,7 @@ compute_requirement_state = function(requirement_id, user_id) {
         arg += state * weight;
     }
     return sigmoid(arg);
-}
+};
 
 compute_requirement_completion = function(requirement_id, user_id) {
     var requirement = Requirements.findOne(requirement_id);
@@ -194,16 +194,17 @@ compute_completion = function(node_id, user_id) {
         max = get_state(node_id, user_id);
     }
     //then compare that to the maximum completion rate of the units that grant it
+    var completion;
     var granted_by = node.granted_by;
     if(granted_by){
         for(var id in node.granted_by){
-            var completion = get_completion(id,user_id);
+            completion = get_completion(id,user_id);
             max = max>completion? max : completion;
         }
     }
     //then compare that to the maximum completion of its requirements
     for (var req_id in requirements) {
-        var completion = compute_requirement_completion(req_id, user_id);
+        completion = compute_requirement_completion(req_id, user_id);
         max = completion > max ? completion : max;
     }
     return max;
@@ -500,15 +501,15 @@ readapt = function(target, user_id) {
     //compute maximum and minimum activations
     var max_states = {};
     var min_states = {};
-    for (var node_id in target) {
+    for (node_id in target) {
         var node = Nodes.findOne(node_id);
         var requirements = node.needs;
-        var max_maximal_activation = 0.;
-        var max_minimal_activation = 0.;
+        var max_maximal_activation = 0.0;
+        var max_minimal_activation = 0.0;
         for (var requirement_id in requirements) {
             var requirement = Requirements.findOne(requirement_id);
             var weights = requirement.weights;
-            var max_arg = 0.;
+            var max_arg = 0.0;
             var arg = requirement.bias;
             for (var subnode_id in weights) {
                 max_arg += weights[subnode_id];
@@ -530,12 +531,12 @@ readapt = function(target, user_id) {
         min_states[node_id] = max_minimal_activation;
     }
     //update the target to realistic values
-    for (var node_id in target) {
+    for (node_id in target) {
         target[node_id] = target[node_id] ? max_states[node_id] : min_states[node_id];
     }
     //define maxmimum and minimum variations
     var max_dist = 0;
-    for (var node_id in target) {
+    for (node_id in target) {
         var dist = Math.abs(target[node_id] - state[node_id]);
         max_dist = max_dist < dist ? dist : max_dist;
     }
@@ -553,8 +554,8 @@ readapt = function(target, user_id) {
     //initialize all error entries
     for (var i in tree) {
         var layer = tree[i];
-        for (var node_id in layer) {
-            if (i == 0) {
+        for (node_id in layer) {
+            if (i === 0) {
                 saved_output[node_id] = state[node_id];
                 error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
                 max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
@@ -565,7 +566,7 @@ readapt = function(target, user_id) {
     }
     //save current input states
     saved_input = {};
-    for (var node_id in input_layer) {
+    for (node_id in input_layer) {
         saved_input[node_id] = state[node_id];
     }
     //return {"tree":tree,"error":error,"target":target,"state":state};
@@ -577,21 +578,21 @@ readapt = function(target, user_id) {
         var upper_bound = Math.pow(10, 10);
         var lower_bound = 0;
         //backpropagation
-        for (var order in tree) {
-            var layer = tree[order];
-            for (var node_id in layer) {
-                var node = Nodes.findOne(node_id);
-                var requirements = node.needs;
-                if (Object.keys(requirements).length == 0) {
+        for (order in tree) {
+            layer = tree[order];
+            for (node_id in layer) {
+                node = Nodes.findOne(node_id);
+                requirements = node.needs;
+                if (Object.keys(requirements).length === 0) {
                     continue;
                 }
                 var max = 0;
                 var active_requirement = Object.keys(requirements)[0];
-                for (var requirement_id in requirements) {
+                for (requirement_id in requirements) {
                     max = state[requirement_id] > max ? state[requirement_id] : max;
                     active_requirement = state[requirement_id] > max ? requirement_id : active_requirement;
                 }
-                var weights = Requirements.findOne(active_requirement).weights;
+                weights = Requirements.findOne(active_requirement).weights;
                 for (var subnode_id in weights) {
                     var weight = weights[subnode_id];
                     error[subnode_id] += error[node_id] * weight;
