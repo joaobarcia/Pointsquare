@@ -1,4 +1,5 @@
 function succeedUnit() {
+  soundSuccess.play();
   Materialize.toast('Good job! You did this unit!', 4000); // 4000 is the duration of the toast
   console.log("calling succeed method with node " + FlowRouter.getParam('contentId') + " and user " + Meteor.userId());
   Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
@@ -6,6 +7,7 @@ function succeedUnit() {
 }
 
 function failUnit() {
+  soundFail.play();
   Materialize.toast("Try another unit", 4000); // 4000 is the duration of the toast
   console.log("calling fail method with node " + FlowRouter.getParam('contentId') + " and user " + Meteor.userId());
   Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
