@@ -3,7 +3,7 @@
     <div class="row no-bottom-margin left-align">
       <div class="col s5">
         <h5>
-          <i class="square {{mapUnitStateToColor state}}">
+          <i class="square {{mapUnitStateToColor state}} tooltipped" data-position="top" data-delay="0" data-tooltip={{mapUnitStateToTooltipMsg state}}>
             <span class="ti-book"></span>
             {{#if false}}
               <i class="small material-icons data-icons icon-overlap">done</i>

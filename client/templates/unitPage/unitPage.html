@@ -215,7 +215,8 @@
     <br>
     {{#each setOfConcepts in neededConcepts}}
       {{#each concept in subConcepts (setOfConcepts.weights)}}
-        <a href="../concept/{{concept._id}}">{{concept.name}}</a>
+        <!-- <a href="../concept/{{concept._id}}">{{concept.name}}</a> -->
+        <a>{{concept.name}}</a>
       {{/each}}
       <br>
       or
@@ -228,7 +229,8 @@
     <span class="grey-text text-darken-2">This unit helps you master:</span>
     <br>
     {{#each concept in grantedConcepts}}
-      <a href="../concept/{{concept._id}}">{{concept.name}}</a>
+      <!-- <a href="../concept/{{concept._id}}">{{concept.name}}</a> -->
+      <a>{{concept.name}}</a>
     {{/each}}
   </div>
 </div>
@@ -250,7 +252,7 @@
         </div>
     </div>
 </template> -->
-<template name="learnedResults">
+<!-- <template name="learnedResults">
 <div class="row center-align">
 <div class="section">
   <h5>Congratulations! You have learnt</h5>
@@ -310,4 +312,4 @@
 </div>
 </div>
 </div>
-</template>
+</template> -->
