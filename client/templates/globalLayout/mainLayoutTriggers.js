@@ -4,6 +4,7 @@ Template.mainLayout.onCreated(function() {
     self.subscribe('nodes');
     self.subscribe('personal');
     self.subscribe('goals');
+    self.subscribe('userNames');
   });
   soundSuccess = new Howl({
     src: ['../audio/success.mp3'],
