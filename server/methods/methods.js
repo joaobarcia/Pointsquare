@@ -169,7 +169,7 @@ compute_state = function(node_id, user_id) {
     var node = Nodes.findOne(node_id);
     var requirements = node.needs;
     //if it's a microconcept, do not update
-    if (Object.keys(requirements) === 0) {
+    if (Object.keys(requirements).length === 0) {
         if (node.type == "concept") {
             return get_state(node_id, user_id);
         } else if (node.type == "content") {
