@@ -183,20 +183,20 @@ compute_state = function(node_id, user_id) {
         max = state > max ? state : max;
     }
     return max;
-}
+};
 
 compute_completion = function(node_id, user_id) {
     var max = 0;
     var node = Nodes.findOne(node_id);
     var requirements = node.needs;
     //if it's a microconcept, set max to its current state
-    if (Object.keys(requirements) == 0) {
+    if (Object.keys(requirements).length === 0) {
         max = get_state(node_id, user_id);
     }
     //then compare that to the maximum completion rate of the units that grant it
     var granted_by = node.granted_by;
     if(granted_by){
-        for(id in node.granted_by){
+        for(var id in node.granted_by){
             var completion = get_completion(id,user_id);
             max = max>completion? max : completion;
         }
@@ -207,7 +207,7 @@ compute_completion = function(node_id, user_id) {
         max = completion > max ? completion : max;
     }
     return max;
-}
+};
 
 //computes the state of the node and saves it to the database
 update_state = function(node_id, user_id) {
@@ -387,7 +387,7 @@ find_missing_subtree = function(node_ids,user_id) {
             }
         }
         current_layer = find_full_backward_layer(to_keep);
-        if( Object.keys(current_layer) === 0 ){ break; }
+        if( Object.keys(current_layer).length === 0 ){ break; }
     }
     return tree;
 };
@@ -454,7 +454,7 @@ forward_update = function(node_ids, user_id) {
     var current_layer = node_ids;
     while (1) {
         var next_layer = find_forward_layer(current_layer);
-        if (Object.keys(next_layer) === 0) {
+        if (Object.keys(next_layer).length === 0) {
             break;
         }
         for (var node_id in next_layer) {
@@ -470,7 +470,7 @@ full_forward_update = function(node_ids, user_id) {
     var current_layer = node_ids;
     while (1) {
         var next_layer = find_full_forward_layer(current_layer);
-        if (Object.keys(next_layer) == 0) {
+        if (Object.keys(next_layer).length === 0) {
             break;
         }
         for (var node_id in next_layer) {
@@ -520,7 +520,7 @@ readapt = function(target, user_id) {
             max_minimal_activation = (minimal_activation > max_minimal_activation) ? minimal_activation : max_minimal_activation;
             state[requirement_id] = sigmoid(arg);
         }
-        if (Object.keys(requirements) == 0) {
+        if (Object.keys(requirements).length === 0) {
             max_maximal_activation = 1;
             max_minimal_activation = 0;
             //if it's a microconcept, update it straight away
@@ -1069,7 +1069,7 @@ edit_set = function(requirement_id, concepts) {
     }
     var node_id = requirement.node;
     //se o conjunto for vazio apagar o requesito
-    if (Object.keys(concepts) == 0) {
+    if (Object.keys(concepts).length === 0) {
         //apagar a referência no nodo que tinha este requesito
         var node = Nodes.findOne(node_id);
         var needs = node.needs;
