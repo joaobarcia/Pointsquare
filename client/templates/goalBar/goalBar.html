@@ -1,0 +1,24 @@
+<template name="goalBar">
+  <div class="navbar-fixed bottom-goalbar grey lighten-2">
+    <a href={{pathFor "goalPage"}}>
+      <nav class="grey lighten-2">
+        <div class="nav-wrapper grey lighten-2">
+          <div class="container">
+            <!-- <a href="#!" class="brand-logo">Logo</a>
+            <ul class="right hide-on-med-and-down">
+              <li>
+                <a href="sass.html">Sass</a>
+              </li>
+              <li>
+                <a href="badges.html">Components</a>
+              </li>
+            </ul>-->
+            <h4 class="center-align black-text">
+              Your goal is <span class="blue-text"><strong>{{goalName}}</strong></span>  |  <span class="blue-text"><strong>{{goalConceptCount}}</strong></span> concepts to go
+            </h4>
+          </div>
+        </div>
+      </nav>
+    </a>
+  </div>
+</template>

@@ -1,13 +1,14 @@
 <template name="goalPage">
   <div class="container">
+    {{#if goalExists}}
     <div class="card">
       <div class="row center-align">
         <div class="section">
           <h3>Goal:
-            <a>{{name}}</a>
+            <a>{{goalName}}</a>
           </h3>
           <h4>Approximately
-            <a>{{conceptCount}} Concepts</a>
+            <a>{{goalConceptCount}} Concepts</a>
             to go</h4>
         </div>
       </div>
@@ -20,7 +21,7 @@
         <div class="row">
           <div class="col s6 offset-s3">
             <div class="collection">
-              {{#each units}}
+              {{#each goalUnits}}
                 {{> unitCard}}
               {{/each}}
 
@@ -29,5 +30,14 @@
         </div>
       </div>
     </div>
+    {{else}}
+    <div class="card">
+      <div class="row center-align">
+        <div class="section">
+          <h4>You have not set any goal</h4>
+        </div>
+      </div>
+    </div>
+    {{/if}}
   </div>
 </template>

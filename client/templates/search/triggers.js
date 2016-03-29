@@ -17,7 +17,7 @@ Template.search.rendered = function() {
             });
         });*/
 
-    NodesSearchIndex.getComponentMethods().addProps('type', 'content');
+    NodesSearchIndex.getComponentMethods().addProps('type', 'concept');
     //NodesSearchIndex.getComponentMethods().addProps('sortBy', 'state');
 };
 

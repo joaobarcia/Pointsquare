@@ -1,5 +1,4 @@
 Template.unitPage.onCreated(function() {
-    console.log('unitPage.onCreated');
     var self = this;
     self.autorun(function() {
         var contentId = FlowRouter.getParam('contentId');
@@ -13,11 +12,8 @@ Template.unitPage.onCreated(function() {
 });
 
 Template.unitPage.onRendered(function() {
-    console.log('unitPage.onRendered');
-
     this.autorun(() => {
         if (this.subscriptionsReady()) {
-            console.log('unitPage.onRendered > SUBS READY');
             //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
             setTimeout(function() {
                 console.log("TimeOUT!");
