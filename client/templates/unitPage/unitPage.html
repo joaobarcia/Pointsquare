@@ -71,35 +71,35 @@
 </template>
 <template name="unitContent">
 <div class="card-content">
-<!--{{#if unitIsOneSectionAndNoExercise}}
-            Debug: just one tab {{> contentByType}}
-        {{else}}
-        Debug: more than one tab-->
-<div class="unit-tabs">
-  <div class="row">
-    <ul class="tabs">
-      {{#each content}}
-        {{#if isType 'unitSection'}}
-          <li class="tab col s2">
-            <a href="#unitTab{{increaseByOne @index}}">Part
-              {{increaseByOne @index}}</a>
-          </li>
-        {{/if}}
-        {{#if isType 'unitEvaluationSection'}}
-          <li class="tab col s2">
-            <a href="#unitTab{{increaseByOne @index}}">Evaluation</a>
-          </li>
-        {{/if}}
-      {{/each }}
-    </ul>
+<!-- {{unitIsOneSectionAndNoExercise}} -->
+{{#if unitIsOneSectionAndNoExercise}}
+  {{> contentByType}}
+{{else}}
+  <div class="unit-tabs">
+    <div class="row">
+      <ul class="tabs">
+        {{#each content}}
+          {{#if isType 'unitSection'}}
+            <li class="tab col s2">
+              <a href="#unitTab{{increaseByOne @index}}">Part
+                {{increaseByOne @index}}</a>
+            </li>
+          {{/if}}
+          {{#if isType 'unitEvaluationSection'}}
+            <li class="tab col s2">
+              <a href="#unitTab{{increaseByOne @index}}">Evaluation</a>
+            </li>
+          {{/if}}
+        {{/each }}
+      </ul>
+    </div>
   </div>
-</div>
-<div class="unit-content">
-  <div class="section">
-    {{> contentByType}}
+  <div class="unit-content">
+    <div class="section">
+      {{> contentByType}}
+    </div>
   </div>
-</div>
-<!--{{/if}}-->
+{{/if}}
 </div>
 </template>
 <template name="contentByType">
@@ -122,7 +122,7 @@
         {{/if}}
         {{#if isType 'remoteImage'}}
           <div class="section center-align">
-            <img class="responsive-img" src="{{remoteImgURL}}">
+            <img class="responsive-img" style="max-height: 300px;" src="{{remoteImgURL}}">
           </div>
         {{/if}}
         {{#if isType 'youtube'}}
@@ -215,7 +215,8 @@
     <br>
     {{#each setOfConcepts in neededConcepts}}
       {{#each concept in subConcepts (setOfConcepts.weights)}}
-        <a href="../concept/{{concept._id}}">{{concept.name}}</a>
+        <!-- <a href="../concept/{{concept._id}}">{{concept.name}}</a> -->
+        <a>{{concept.name}}</a>
       {{/each}}
       <br>
       or
@@ -228,7 +229,8 @@
     <span class="grey-text text-darken-2">This unit helps you master:</span>
     <br>
     {{#each concept in grantedConcepts}}
-      <a href="../concept/{{concept._id}}">{{concept.name}}</a>
+      <!-- <a href="../concept/{{concept._id}}">{{concept.name}}</a> -->
+      <a>{{concept.name}}</a>
     {{/each}}
   </div>
 </div>
@@ -250,7 +252,7 @@
         </div>
     </div>
 </template> -->
-<template name="learnedResults">
+<!-- <template name="learnedResults">
 <div class="row center-align">
 <div class="section">
   <h5>Congratulations! You have learnt</h5>
@@ -310,4 +312,4 @@
 </div>
 </div>
 </div>
-</template>
+</template> -->

@@ -4,7 +4,7 @@
     {
       "host": "128.199.37.239",
       "username": "root",
-      "password": "***",
+      "password": "4f0g4.o.server",
       // or pem file (ssh based authentication)
       // WARNING: Keys protected by a passphrase are not supported
       //"pem": "~/.ssh/id_rsa"

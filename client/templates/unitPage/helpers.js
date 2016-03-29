@@ -137,7 +137,7 @@ Template.unitPage.helpers({
 });
 Template.unitContent.helpers({
   'unitIsOneSectionAndNoExercise': function() {
-    var unitContent = this.content;
+    var unitContent = Template.currentData().content;
     var numberOfSections = _.filter(unitContent, {
       'type': 'unitSection'
     }).length;

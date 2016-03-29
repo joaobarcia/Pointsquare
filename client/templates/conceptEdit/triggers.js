@@ -33,7 +33,7 @@ function needsAsJSONSession() {
     obj["contains"] = contains;
     json.push(obj);
   }
-  Session.set("needsObject", json)
+  Session.set("needsObject", json);
 }
 
 function applySelectizeCode() {
@@ -117,7 +117,7 @@ Template.conceptEdit.rendered = function() {
       Session.set('deletedNeedsSets', deletedNeedsSets);
 
     }
-  })
+  });
 };
 
 
@@ -192,31 +192,31 @@ AutoForm.hooks({
       var nodeId = FlowRouter.getParam('conceptId');
 
       Meteor.call('editNode', nodeId, parameters);
-      var needsObject = Session.get('needsObject');
-      var deletedNeedsSets = Session.get('deletedNeedsSets');
-      //console.log(needsObject);
-      _.forEach(needsObject, function(n) {
-        var setId = n['_id'];
-        var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
-        //console.log(needsAsArrayOfId);
-        var needsMappedAsArrayofObjects = {};
-        for (var n = 0; n < needsAsArrayOfId.length; n += 1) {
-          needsMappedAsArrayofObjects[needsAsArrayOfId[n]] = true;
-        };
-        //console.log(needsMappedAsArrayofObjects);
-        if (_(setId).startsWith('newSet')) {
-          //console.log(needsMappedAsArrayofObjects);
-          Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
-          /*console.log('addNeed for ' + nodeId + ' with' + needsMappedAsArrayofObjects);
-          console.log(needsMappedAsArrayofObjects);*/
-        } else {
-          Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
-        };
-      });
-      console.log(deletedNeedsSets);
-      _.forEach(deletedNeedsSets, function(setId) {
-        Meteor.call('removeNeed', setId);
-      });
+      // var needsObject = Session.get('needsObject');
+      // var deletedNeedsSets = Session.get('deletedNeedsSets');
+      // //console.log(needsObject);
+      // _.forEach(needsObject, function(n) {
+      //   var setId = n['_id'];
+      //   var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
+      //   //console.log(needsAsArrayOfId);
+      //   var needsMappedAsArrayofObjects = {};
+      //   for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
+      //     needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
+      //   }
+      //   //console.log(needsMappedAsArrayofObjects);
+      //   if (_(setId).startsWith('newSet')) {
+      //     //console.log(needsMappedAsArrayofObjects);
+      //     Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+      //     /*console.log('addNeed for ' + nodeId + ' with' + needsMappedAsArrayofObjects);
+      //     console.log(needsMappedAsArrayofObjects);*/
+      //   } else {
+      //     Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
+      //   }
+      // });
+      // console.log(deletedNeedsSets);
+      // _.forEach(deletedNeedsSets, function(setId) {
+      //   Meteor.call('removeNeed', setId);
+      // });
       FlowRouter.go('/concept/' + nodeId);
       this.done();
       return false;

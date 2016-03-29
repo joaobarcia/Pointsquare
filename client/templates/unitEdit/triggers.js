@@ -34,8 +34,8 @@ function needsAsJSONSession() {
         json.push(obj);
     }
     console.log(json);
-    Session.set("needsObject", json)
-};
+    Session.set("needsObject", json);
+}
 
 // FAZER GRANTS AS JSON SESSION
 function grantsAsJSONSession() {
@@ -74,7 +74,7 @@ function grantsAsJSONSession() {
         json.push(obj);
     }
     Session.set("grantsObject", json)*/
-};
+}
 
 
 
@@ -108,7 +108,7 @@ Template.unitEdit.rendered = function() {
             var deletedNeedsSets = [];
             Session.set('deletedNeedsSets', deletedNeedsSets);
         }
-    })
+    });
 };
 
 Template.unitEdit.events({
@@ -177,7 +177,7 @@ Template.unitEdit.events({
 };*/
 
 function applyDropdown() { // jquery was being called before the changes were propagated to the DOM
-    if (Session.get('tempContent') != undefined) {
+    if (Session.get('tempContent') !== undefined) {
         var sectionsInJSON = Session.get('tempContent').length;
         var sectionsInHTML = $('.dropdown-button.add-content').length;
         if (sectionsInJSON == sectionsInHTML) { // if the changes have been propagated, call jquery
@@ -189,14 +189,14 @@ function applyDropdown() { // jquery was being called before the changes were pr
                 //gutter: 0, // Spacing from edge
                 //belowOrigin: false, // Displays dropdown below the button
                 //alignment: 'left' // Displays dropdown with edge aligned to the left of button
-            })
+            });
         } else {
             setTimeout(applyDropdown, 50); // re-run function asynchronously until conditions are met
-        };
+        }
     } else {
         setTimeout(applyDropdown, 50); // re-run function asynchronously until conditions are met
-    };
-};
+    }
+}
 
 
 
@@ -209,7 +209,7 @@ Template.unitEditContent.rendered = function() {
         //applySort();
         applyDropdown();
 
-    })
+    });
 };
 
 Template.unitEditContent.events({
@@ -222,7 +222,7 @@ Template.unitEditContent.events({
     },
     'click .add-section': function(event) {
         event.preventDefault();
-        tempContent = Session.get('tempContent')
+        tempContent = Session.get('tempContent');
         tempContent.push({
             "type": "unitSection",
             "subContent": []
@@ -278,7 +278,7 @@ Template.unitEditContent.events({
         var arrayOfIds = _.words(event.target.id, /[^, ]+/g); // extract array indexes from @index ids
         var section = arrayOfIds[0];
         var content = arrayOfIds[1];
-        var keyToChange = arrayOfIds[2]
+        var keyToChange = arrayOfIds[2];
         var tempContent = Session.get('tempContent');
         /*if (keyToChange == 'text') { // text strings need to be escaped
             console.log("IT IS TEXT!!!");
@@ -337,7 +337,7 @@ function applySelectizeCode() {
             $('#' + setId).selectize()[0].selectize.addItem(subConceptId);
         });
     });
-};
+}
 
 Template.conceptEditSelectBox.rendered = function() {
     this.autorun(() => {
@@ -373,7 +373,7 @@ AutoForm.hooks({
             } else if (doc.evaluationType == "exerciseString") {
                 evaluation.question = doc.exerciseString.question;
                 evaluation.answers = doc.exerciseString.answers;
-            };
+            }
 
             content.push(evaluation); // push evaluation object into content array
             doc.content = content;
@@ -381,14 +381,14 @@ AutoForm.hooks({
 
             // ORGANIZE NEEDED CONCEPTS
             var needsMappedAsArrayofObjects = [];
-            if (doc.needs != null) {
+            if (doc.needs !== null) {
                 for (var i = 0; i < doc.needs.length; i += 1) {
                     needsMappedAsArrayofObjects[i] = {};
                     for (var n = 0; n < doc.needs[i].length; n += 1) {
                         needsMappedAsArrayofObjects[i][doc.needs[i][n]] = true;
                     }
                 }
-            };
+            }
             doc.needs = needsMappedAsArrayofObjects;
 
             var parameters = doc;
@@ -403,9 +403,9 @@ AutoForm.hooks({
                 var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
                 //console.log(needsAsArrayOfId);
                 var needsMappedAsArrayofObjects = {};
-                for (var n = 0; n < needsAsArrayOfId.length; n += 1) {
-                    needsMappedAsArrayofObjects[needsAsArrayOfId[n]] = true;
-                };
+                for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
+                    needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
+                }
                 console.log(needsMappedAsArrayofObjects);
                 if (_(setId).startsWith('newSet')) {
                     //console.log(needsMappedAsArrayofObjects);
@@ -414,7 +414,7 @@ AutoForm.hooks({
                     console.log(needsMappedAsArrayofObjects);*/
                 } else {
                     Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
-                };
+                }
             });
 
             /*            // ORGANIZE GRANTED CONCEPTS

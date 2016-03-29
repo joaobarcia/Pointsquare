@@ -1,5 +1,6 @@
 body {
   background-color: #f1f1f1;
+  padding-bottom: 60px;
 }
 .loading {
   padding-top: 100px;
@@ -242,8 +243,14 @@ nav .brand-logo {
 .pre {
   white-space: pre;
 }
-.collection{
-overflow: visible;;
+.collection {
+  overflow: visible;
+}
+.bottom-goalbar {
+  position: fixed;
+  border-width: 1px 0 0;
+  bottom: -10px;
+  margin-bottom: 0;
 }
 
 /*FORCING FLOW TEXT DEFINITIONS TO OVERRIDE <p>*/
