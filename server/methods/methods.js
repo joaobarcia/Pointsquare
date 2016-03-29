@@ -214,21 +214,21 @@ update_state = function(node_id, user_id) {
     var state = compute_state(node_id, user_id);
     set_state(state, node_id, user_id);
     return state;
-}
+};
 
 //computes the completion of the node and saves it to the database
 update_completion = function(node_id, user_id) {
     var completion = compute_completion(node_id, user_id);
     set_completion(completion, node_id, user_id);
     return completion;
-}
+};
 
 reset_user = function(user_id) {
     Personal.remove({
         user: user_id
     });
     update_zeroth_level(user_id);
-}
+};
 
 //finds all units that do not require anything
 set_zeroth_level = function() {
@@ -242,14 +242,14 @@ set_zeroth_level = function() {
     }, {
         multi: true
     });
-}
+};
 
 find_zeroth_level = function() {
     return Nodes.find({
         type: "content",
         "needs": {}
     }).fetch();
-}
+};
 
 update_zeroth_level = function(user_id) {
     var zeroth_level = Nodes.find({
@@ -260,7 +260,7 @@ update_zeroth_level = function(user_id) {
         var node = zeroth_level[i];
         update_state(node._id, user_id);
     }
-}
+};
 
 find_forward_layer = function(nodes) {
     var layer = {};
@@ -277,7 +277,7 @@ find_forward_layer = function(nodes) {
         }
     }
     return layer;
-}
+};
 
 find_full_forward_layer = function(nodes) {
     var layer = {};
@@ -297,7 +297,7 @@ find_full_forward_layer = function(nodes) {
     }
     console.log(layer);
     return layer;
-}
+};
 
 find_backward_layer = function(nodes) {
     var layer = {};
@@ -312,7 +312,7 @@ find_backward_layer = function(nodes) {
         }
     }
     return layer;
-}
+};
 
 find_full_backward_layer = function(nodes) {
     var layer = {};
@@ -331,7 +331,7 @@ find_full_backward_layer = function(nodes) {
         }
     }
     return layer;
-}
+};
 
 //find forward tree (all nodes that are within reach of outgoing activation links)
 find_forward_tree = function(node_ids) {
@@ -340,14 +340,14 @@ find_forward_tree = function(node_ids) {
     tree.push(current_layer);
     while (1) {
         var next_layer = find_forward_layer(current_layer);
-        if (Object.keys(next_layer).length == 0) {
+        if (Object.keys(next_layer).length === 0) {
             break;
         }
         tree.push(next_layer);
         current_layer = next_layer;
     }
     return tree;
-}
+};
 
 //find backward tree (all nodes that are within reach of incoming activation links)
 find_backward_tree = function(node_ids) {
@@ -356,14 +356,14 @@ find_backward_tree = function(node_ids) {
     tree.push(current_layer);
     while (1) {
         var next_layer = find_backward_layer(current_layer);
-        if (Object.keys(next_layer).length == 0) {
+        if (Object.keys(next_layer).length === 0) {
             break;
         }
         tree.push(next_layer);
         current_layer = next_layer;
     }
     return tree;
-}
+};
 
 find_missing_subtree = function(node_ids,user_id) {
     var tree = [];
@@ -387,10 +387,10 @@ find_missing_subtree = function(node_ids,user_id) {
             }
         }
         current_layer = find_full_backward_layer(to_keep);
-        if( Object.keys(current_layer) == 0 ){ break; }
+        if( Object.keys(current_layer) === 0 ){ break; }
     }
     return tree;
-}
+};
 
 advise = function(goals,user_id){
     var advice = [];
@@ -403,7 +403,7 @@ advise = function(goals,user_id){
         }
     }
     return advice;
-}
+};
 
 count_concepts_to_goal = function(goals,user_id){
     var subtree = find_missing_subtree(goals,user_id);
@@ -415,7 +415,7 @@ count_concepts_to_goal = function(goals,user_id){
         }
     }
     return n;
-}
+};
 
 starting_concepts = function(goals,user_id){
     var concepts = {};
@@ -428,7 +428,7 @@ starting_concepts = function(goals,user_id){
         }
     }
     return concepts;
-}
+};
 
 find_micronodes = function(node_ids) {
     var micronodes = {};
@@ -436,25 +436,25 @@ find_micronodes = function(node_ids) {
     while (1) {
         for (var node_id in current_layer) {
             var node = Nodes.findOne(node_id);
-            if (Object.keys(node.needs).length == 0 && node.type == "concept") {
+            if (Object.keys(node.needs).length === 0 && node.type == "concept") {
                 micronodes[node_id] = true;
             }
         }
         var next_layer = find_backward_layer(current_layer);
-        if (Object.keys(next_layer).length == 0) {
+        if (Object.keys(next_layer).length === 0) {
             break;
         }
         current_layer = next_layer;
     }
     return micronodes;
-}
+};
 
 //update forward tree
 forward_update = function(node_ids, user_id) {
     var current_layer = node_ids;
     while (1) {
         var next_layer = find_forward_layer(current_layer);
-        if (Object.keys(next_layer) == 0) {
+        if (Object.keys(next_layer) === 0) {
             break;
         }
         for (var node_id in next_layer) {
@@ -463,7 +463,7 @@ forward_update = function(node_ids, user_id) {
         }
         current_layer = next_layer;
     }
-}
+};
 
 //update of full forward tree
 full_forward_update = function(node_ids, user_id) {
@@ -1294,6 +1294,10 @@ Meteor.methods({
         node: nodeID,
         user: userID
       });
+    },
+
+    computeState(nodeId,userId){
+      return compute_state(nodeId,userId);
     }
 
 });
