@@ -3,24 +3,8 @@ function succeedUnit() {
   var $toastSuccess = $('<span class="green-text">Good job!</span>');
   Materialize.toast($toastSuccess, 2000);
   console.log("calling succeed method with node " + FlowRouter.getParam('contentId') + " and user " + Meteor.userId());
-  Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId(),function(e,r){
-    var goal = Goals.findOne({user: Meteor.userId()});
-    if(goal){
-      var goalInfo = Personal.findOne({node: goal.node, user: Meteor.userId()});
-      var goalState = goalInfo? goalInfo.state : 0;
-      var goalCompleted = goalState > 0.9;
-      if(goalCompleted){
-        Session.set("goalCompleted",true);
-      }
-      else{
-        Session.set("goalCompleted",false);
-      }
-      FlowRouter.go('goalPage');
-    }
-    else{
-      FlowRouter.go('dashboard');
-    }
-  });
+  Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
+  FlowRouter.go('goalPage');
 }
 
 function failUnit() {
@@ -28,24 +12,8 @@ function failUnit() {
   var $toastFail = $('<span class="red-text">Try another unit</span>');
   Materialize.toast($toastFail, 2000);
   console.log("calling fail method with node " + FlowRouter.getParam('contentId') + " and user " + Meteor.userId());
-  Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId(),function(e,r){
-    var goal = Goals.findOne({user: Meteor.userId()});
-    if(goal){
-      var goalInfo = Personal.findOne({node: goal.node, user: Meteor.userId()});
-      var goalState = goalInfo? goalInfo.state : 0;
-      var goalCompleted = goalState > 0.9;
-      if(goalCompleted){
-        Session.set("goalCompleted",true);
-      }
-      else{
-        Session.set("goalCompleted",false);
-      }
-      FlowRouter.go('goalPage');
-    }
-    else{
-      FlowRouter.go('dashboard');
-    }
-  });
+  Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
+  FlowRouter.go('goalPage');
 }
 
 Template.unitPage.onCreated(function() {

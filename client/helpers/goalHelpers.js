@@ -32,3 +32,29 @@ Template.registerHelper('goalUnits', function() {
     }
   });
 });
+
+Template.registerHelper('goalIsCompleted', function() {
+  // if user has a goal
+  if (typeof Goals.findOne({
+      user: Meteor.userId()
+    }) !== 'undefined') {
+    var goal = Goals.findOne({
+      user: Meteor.userId()
+    });
+    // if that goal has a defined state
+    if (typeof Personal.findOne({
+        node: goal.node,
+        user: Meteor.userId()
+      }) !== 'undefined') {
+      var goalInfo = Personal.findOne({
+        node: goal.node,
+        user: Meteor.userId()
+      });
+      var goalState = goalInfo.state;
+      //if the goal is higher than 0.9
+      var goalCompleted = goalState > 0.9;
+      if (goalCompleted) return true;
+      else return false;
+    } else return false;
+  } else return false;
+});

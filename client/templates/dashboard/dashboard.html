@@ -8,20 +8,20 @@
     </div>
     <div class="row">
       <div class="col s8 offset-s2">
-        <div class="section">
-          <h3 class="center-align">Lessons you created</h3>
-          {{> unitsFromAuthor}}
+        <div class="section center-align">
+          <h3>Concepts you know</h3>
+          <a class="waves-effect waves-light btn-flat red-text" id="resetUserKnowledge">
+            <i class="material-icons left">delete</i>reset your knowledge</a>
+          {{> conceptsAcquired}}
         </div>
       </div>
     </div>
     <div class="divider"></div>
     <div class="row">
       <div class="col s8 offset-s2">
-        <div class="section center-align">
-          <h3>Concepts you know</h3>
-          <a class="waves-effect waves-light btn-flat red-text" id="resetUserKnowledge"><i class="material-icons left">delete</i>reset your knowledge</a>
-          {{> conceptsAcquired}}
-
+        <div class="section">
+          <h3 class="center-align">Lessons you created</h3>
+          {{> unitsFromAuthor}}
         </div>
       </div>
     </div>
