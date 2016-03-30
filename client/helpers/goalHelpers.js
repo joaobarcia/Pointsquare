@@ -53,8 +53,10 @@ Template.registerHelper('goalIsCompleted', function() {
       var goalState = goalInfo.state;
       //if the goal is higher than 0.9
       var goalCompleted = goalState > 0.9;
-      if (goalCompleted) return true;
-      else return false;
+      if (goalCompleted) {
+        Session.set('removeGoalOnDestroyGoalPage', true);
+        return true;
+      } else return false;
     } else return false;
   } else return false;
 });

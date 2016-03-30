@@ -17,3 +17,15 @@ Template.goalPage.events({
     Meteor.call('removeGoal', goalId, userId);
   }
 });
+
+Template.goalPage.onDestroyed(function() {
+  if (Session.equals('removeGoalOnDestroyGoalPage', true)) {
+    Session.set('removeGoalOnDestroyGoalPage', false);
+    var userId = Meteor.userId();
+    var goalId = Goals.findOne({
+      user: Meteor.userId()
+    }).node;
+    console.log('removed goal!');
+    Meteor.call('removeGoal', goalId, userId);
+  }
+});
