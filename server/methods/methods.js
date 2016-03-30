@@ -546,16 +546,18 @@ readapt = function(target, user_id) {
     var saved_output = {};
     var error = {};
     var max_error = 0;
+    //COMEÇA AQUI O PROBLEMA
     /*for( var node_id in target ){
         saved_output[node_id] = state[node_id];
         error[node_id] = state[node_id]*( 1 - state[node_id] )*( target[node_id] - state[node_id] );
         max_error = Math.abs( target[node_id] - state[node_id] ) > max_error? Math.abs( target[node_id] - state[node_id] ) : max_error;
     }*/
+    //ACABA AQUI O PROBLEMA
     //initialize all error entries
     for (var i in tree) {
         var layer = tree[i];
         for (node_id in layer) {
-            if (i === 0) {
+            if (i == 0) {
                 saved_output[node_id] = state[node_id];
                 error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
                 max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
@@ -570,6 +572,7 @@ readapt = function(target, user_id) {
         saved_input[node_id] = state[node_id];
     }
     //return {"tree":tree,"error":error,"target":target,"state":state};
+    //console.log("start of subnetwork update");
     //begin subnetwork update
     while (max_error > TOLERANCE) {
         //reset bounds
@@ -577,6 +580,7 @@ readapt = function(target, user_id) {
         var is_bottom_set = false;
         var upper_bound = Math.pow(10, 10);
         var lower_bound = 0;
+        //console.log("begin backpropagation");
         //backpropagation
         for (order in tree) {
             layer = tree[order];
@@ -675,6 +679,7 @@ readapt = function(target, user_id) {
             saved_input[node_id] = state[node_id];
         }
     }
+    //console.log("end of subnetwork update");
     //end of subnetwork update
     for (var node_id in state) {
         set_state(state[node_id], node_id, user_id);
@@ -1176,6 +1181,42 @@ remove_node = function(node_id){
     }*/
 }
 
+set_goal = function(nodeID,userID){
+  Goals.remove({
+    user: userID
+  });
+  var goal = {};
+  goal[nodeID] = true;
+  var units = advise(goal,userID);
+  var concepts = starting_concepts(goal,userID);
+  var tree = find_missing_subtree(goal,userID);
+  var conceptCount = count_concepts_to_goal(goal,userID);
+  var existing = Goals.findOne({
+    node: nodeID,
+    user: userID
+  });
+  if(!existing){
+    Goals.insert({
+      node: nodeID,
+      user: userID,
+      units: units,
+      concepts: concepts,
+      tree: tree,
+      conceptCount: conceptCount
+    });
+  }
+  else{
+    Goals.update({_id: existing._id},{
+      $set: {
+        units: units,
+        concepts: concepts,
+        tree: tree,
+        conceptCount: conceptCount
+      }
+    });
+  }
+}
+
 Meteor.methods({
 
     create: function(p) {
@@ -1241,53 +1282,27 @@ Meteor.methods({
     succeed: function(nodeID, userID) {
         var target = {};
         var grants = Nodes.findOne(nodeID).grants;
-        for(var id in grants){
-            target[id] = 1;
+        if(grants){
+          for(var id in grants){
+              target[id] = 1;
+          }
         }
         target[nodeID] = 1;
+        var goal = Goals.findOne({user:userID});
+        if(goal){set_goal(goal.node,userID);}
         return readapt(target, userID);
     },
 
     fail: function(nodeID, userID) {
         var target = {};
         target[nodeID] = 0;
+        var goal = Goals.findOne({user:userID});
+        if(goal){set_goal(goal.node,userID);}
         return readapt(target, userID);
     },
 
     setGoal: function(nodeID,userID) {
-        Goals.remove({
-          user: userID
-        });
-        var goal = {};
-        goal[nodeID] = true;
-        var units = advise(goal,userID);
-        var concepts = starting_concepts(goal,userID);
-        var tree = find_missing_subtree(goal,userID);
-        var conceptCount = count_concepts_to_goal(goal,userID);
-        var existing = Goals.findOne({
-          node: nodeID,
-          user: userID
-        });
-        if(!existing){
-          Goals.insert({
-            node: nodeID,
-            user: userID,
-            units: units,
-            concepts: concepts,
-            tree: tree,
-            conceptCount: conceptCount
-          });
-        }
-        else{
-          Goals.update({_id: existing._id},{
-            $set: {
-              units: units,
-              concepts: concepts,
-              tree: tree,
-              conceptCount: conceptCount
-            }
-          });
-        }
+        return set_goal(nodeID,userID);
     },
 
     removeGoal: function(nodeID,userID) {
