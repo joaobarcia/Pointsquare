@@ -481,7 +481,7 @@ full_forward_update = function(node_ids, user_id) {
         }
         current_layer = next_layer;
     }
-}
+};
 
 readapt = function(target, user_id) {
     var output_layer = target;
@@ -1275,6 +1275,14 @@ Meteor.methods({
         return find_backward_tree(nodeIDs);
     },
 
+    findMissingSubtree: function(nodeIds,userId) {
+        return find_missing_subtree(nodeIds,userId);
+    },
+
+    advise: function(goals,userId) {
+        return advise(goals,userId);
+    },
+
     readapt: function(target, userID) {
         return readapt(target, userID);
     },
@@ -1312,7 +1320,7 @@ Meteor.methods({
       });
     },
 
-    computeState(nodeId,userId){
+    computeState: function(nodeId,userId){
       return compute_state(nodeId,userId);
     }
 
