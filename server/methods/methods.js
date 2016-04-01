@@ -397,8 +397,24 @@ advise = function(goals,user_id){
     var advice = [];
     var subtree = find_missing_subtree(goals,user_id);
     for(var layer in subtree){
+        //ordenar os nodos desta camada por estado
+        var ordered = [];
         for(var node_id in subtree[layer]){
             var state = get_state(node_id,user_id);
+            var info = {id:node_id,state:state};
+            for(var i in ordered){
+                var existing_state = ordered[i].state;
+                if(state>existing_state){
+                    ordered.splice(i,0,info);
+                    break;
+                }
+            }
+        }
+        //pegar na camada ordenada e
+        for(var i in ordered){
+            var info = ordered[i];
+            var node_id = info.id;
+            var state = info.state;
             var type = Nodes.findOne(node_id).type;
             if( state > 0.9 && type == "content" ){ advice.push(node_id); }
         }
