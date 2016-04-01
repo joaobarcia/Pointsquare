@@ -29,7 +29,8 @@ AutoForm.hooks({
             var nodeId;
             Meteor.call('create', conceptDefinitions, function(error, result) {
                 nodeId = result;
-                FlowRouter.go('/concept/' + nodeId);
+                //FlowRouter.go('/concept/' + nodeId);
+                FlowRouter.go('search');
             });
             this.done();
             return false;

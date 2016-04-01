@@ -34,8 +34,10 @@ Template.unitPage.onRendered(function() {
     if (this.subscriptionsReady()) {
       //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
       setTimeout(function() {
-        console.log("TimeOUT!");
         $('ul.tabs').tabs();
+        $('.tooltipped').tooltip({
+          delay: 50
+        });
       }, 20);
 
     }

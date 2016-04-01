@@ -37,11 +37,12 @@
             </div>
             <div class="col s2 right-align">
               {{#if userIsAuthor}}
-                <a href="{{_id}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit">
+                <!-- <a href="{{_id}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"> -->
+                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="Edit is temporarily disabled">
                   <i class="material-icons">create</i>
                 </a>
               {{else}}
-                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="You can only edit lessons you have created">
+                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="Edit is temporarily disabled">
                   <i class="material-icons">create</i>
                 </a>
               {{/if}}
