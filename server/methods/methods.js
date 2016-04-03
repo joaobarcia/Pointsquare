@@ -402,9 +402,10 @@ advise = function(goals,user_id){
         for(var node_id in subtree[layer]){
             var state = get_state(node_id,user_id);
             var info = {id:node_id,state:state};
+            if(ordered.length==0){ordered.push(info);}
             for(var i in ordered){
                 var existing_state = ordered[i].state;
-                if(state>existing_state){
+                if(state>=existing_state){
                     ordered.splice(i,0,info);
                     break;
                 }
@@ -420,6 +421,28 @@ advise = function(goals,user_id){
         }
     }
     return advice;
+};
+
+//CAMINHOS!
+
+find_local_options = function(node_id) {
+  var node = Nodes.findOne(node_id);
+  var options = [];
+  var requirements = node.needs;
+  for (var requirement_id in requirements) {
+    var requirement = Requirements.findOne(requirement_id);
+    options.push(requirement.weights);
+  }
+  var granted_by = node.granted_by;
+  for (var unit_id in granted_by) {
+    options.push(unit_id);
+  }
+  var in_set = node.in_set;
+  for (var requirement_id in in_set) {
+    var requirement = Requirements.findOne(requirement_id);
+    options.push(requirement.node);
+  }
+  return options;
 };
 
 count_concepts_to_goal = function(goals,user_id){
