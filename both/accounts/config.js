@@ -1,18 +1,9 @@
-AccountsTemplates.configureRoute('signIn', {
-    layoutTemplate: 'appLayout',
-    redirect: '/dashboard',
-});
-AccountsTemplates.configureRoute('signUp', {
-    layoutTemplate: 'appLayout',
-    redirect: function() {
-        Session.set('callStatus', 'creatingUser');
-        Router.go('dashboard');
-    }
+AccountsTemplates.configure({
+    defaultLayout: 'mainLayout',
+    defaultLayoutRegions: {},
+    defaultContentRegion: 'main'
 });
 
-AccountsTemplates.configureRoute('ensureSignedIn', {
-    layoutTemplate: 'appLayout'
-});
 AccountsTemplates.addField({
     _id: 'username',
     type: 'text',
@@ -20,3 +11,12 @@ AccountsTemplates.addField({
     required: true,
     minLength: 5,
 });
+
+AccountsTemplates.configureRoute('signIn');
+AccountsTemplates.configureRoute('signUp');
+
+/*
+AccountsTemplates.configureRoute('ensureSignedIn', {
+    layoutTemplate: 'mainLayout'
+});
+*/

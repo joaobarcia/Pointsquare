@@ -1,177 +1,212 @@
 <template name="unitEdit">
+  {{#with contentEditPage}}
     <div class="container">
-        <div class="section">
-            <h4>Editing <a href="../{{escrid}}">{{name}}</a></h4>
-            <p>If you have doubts, check out the Teaching with Pointsquare guide in the <a href="{{ pathFor 'home' }}" target="_blank">home</a> page</p>
-            {{#autoForm schema=unitEditSchema id="unitEdit" doc=unitEditDoc resetOnSuccess=false unitRID=rid}}
-                <fieldset>
-                    {{!-- <legend>Contact Us</legend> --}}
-                    <div class="card">
-                        <div class="section">
-                            <div class="container">
-                                <div class="section">
-                                    <h3 class="center-align">Info</h3>
-                                    <div class="section">
-                                        <h5 class="center-align grey-text">Created by <span class="black-text">{{nameOf authors}}</span> on <span class="black-text">{{date_of_creation}}</span></h5>
-                                    </div>
-                                    {{> afQuickField name="name" value=name}} {{> afQuickField name="description" value= description}}
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Concepts</h3>
-                                    <h5>Necessary to understand this unit</h5>{{> afQuickField name="requiredConcepts"}}
-                                    <h5>Will be taught by this unit</h5>{{> afQuickField name="grantedConcepts"}}
-                                    <div class="center-align">
-                                    </div>
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Content</h3>{{!-- <h5 class="center-align">Re-order sections by dragging the title and content by dragging the icon</h5> --}}
-                                    <h5 class="center-align"><a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a> and <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a> are supported in text boxes</h5>
-                                    <div class="card-panel">
-                                        {{>unitEditContent}}
-                                    </div>
-                                </div>
-                                <div class="section">
-                                    <div class="divider"></div>
-                                    <h3 class="center-align">Evaluation</h3>{{> afQuickField name="evaluationType"}}
-                                    {{#if afFieldValueIs name="evaluationType" value="exerciseRadioButton" }}
-                                        {{> afQuickField name="exerciseRadioButton"}}
-                                    {{/if}}
-                                    {{#if afFieldValueIs name="evaluationType" value="exerciseString" }}
-                                        {{> afQuickField name="exerciseString"}}
-                                    {{/if}}
-                                    {{#if afFieldValueIs name="evaluationType" value="userConfirmation" }}
-                                    {{/if}}
-                                </div>
-                            </div>
-                        </div>
+      <div class="section">
+        <h4>Editing
+          <a href="../{{_id}}">{{name}}</a>
+        </h4>
+        <!-- <p>If you have doubts, check out the Teaching with Pointsquare guide in the
+          <a href="{{ pathFor 'home' }}" target="_blank">home</a>
+          page</p> -->
+        {{#autoForm schema=unitEditSchema id="unitEdit" doc=unitEditDoc resetOnSuccess=false}}
+          <fieldset>
+            {{!-- <legend>Contact Us</legend> --}}
+            <div class="card">
+              <div class="section">
+                <div class="container">
+                  <div class="section">
+                    <h3 class="center-align">Info</h3>
+                    <div class="section">
+                      <h5 class="center-align grey-text">Created by
+                        <span class="black-text">{{nameOf authors}}</span>
+                        on
+                        <span class="black-text">{{date_of_creation}}</span>
+                      </h5>
                     </div>
-                    <div>
-                        {{#if submitting}}
-                            {{> smallLoading}}
-                        {{else}}
-                            <button type="submit" class="btn btn-primary btn-large">Submit</button>
-                            <button id="deleteUnit" class="btn btn-primary btn-large red">Delete</button>
-                            {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
-                        {{/if}}
-                        {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
+                    {{> afQuickField name="name"}}
+                    {{> afQuickField name="description"}}
+                  </div>
+                  <div class="section">
+                    <div class="divider"></div>
+                    <h3 class="center-align">Content</h3>{{!-- <h5 class="center-align">Re-order sections by dragging the title and content by dragging the icon</h5> --}}
+                    <h5 class="center-align">
+                      <a href="https://en.wikipedia.org/wiki/Markdown#Example" target="_blank">markdown</a>
+                      and
+                      <a href="http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference" target="_blank">mathjax</a>
+                      are supported in text boxes</h5>
+                    <div class="card-panel">
+                      {{>unitEditContent content=content}}
                     </div>
-                </fieldset>
-            {{/autoForm}}
-        </div>
+                  </div>
+                  <div class="section">
+                    <div class="divider"></div>
+                    <h3 class="center-align">Evaluation</h3>{{> afQuickField name="evaluationType"}}
+                    {{#if afFieldValueIs name="evaluationType" value="exerciseRadioButton" }}
+                      {{> afQuickField name="exerciseRadioButton"}}
+                    {{/if}}
+                    {{#if afFieldValueIs name="evaluationType" value="exerciseString" }}
+                      {{> afQuickField name="exerciseString"}}
+                    {{/if}}
+                    {{#if afFieldValueIs name="evaluationType" value="userConfirmation" }}{{/if}}
+                  </div>
+                  <div class="section">
+                    <div class="divider"></div>
+                    <h3 class="center-align">Concepts</h3>
+                    <h5>Necessary to understand this unit</h5>
+                    {{#each needs}}
+                      YO
+                      {{>conceptEditSelectBox}}
+                    {{/each}}
+                    <a class='dropdown-button cyan-text right-align add-set' href='#!'>
+                      <i class="material-icons tiny">add_circle_outline</i>
+                      set of concepts</a>
+                    <h5>Will be taught by this unit</h5>{{> afQuickField name="grants" value=grants}}
+                    <div class="center-align"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary btn-large">Submit</button>
+              <button id="deleteUnit" class="btn btn-primary btn-large red">Delete</button>
+            </div>
+          </fieldset>
+        {{/autoForm}}
+      </div>
     </div>
+  {{/with}}
 </template>
 <template name="unitEditContent">
-    <div id="content-sections">
-        {{#each tempContent}}
-            <div class="section section-card">
-                <div class="row valign-wrapper no-margin">
-                    <div class="col s6">
-                        <h4 class="section-handle no-margin">Section {{increaseByOne @index}} 
-                        <i class="material-icons tiny"><a  href='#!' class="cyan-text left-align remove-section" id="{{@index}}">clear</a></i>
-                        </h4>
-                    </div>
-                    <div class="col s6 right-align">
-                        <a class='dropdown-button cyan-text right-align add-content' href='#!' data-activates='dropdown{{@index}}'><i class="material-icons tiny">add_circle_outline</i> content</a>
-                    </div>
-                </div>
-                <ul id='dropdown{{@index}}' class='dropdown-content'>
-                    <li><a href="#!" class="cyan-text add-text" id="{{@index}}">text</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#!" class="cyan-text add-video" id="{{@index}}">video</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#!" class="cyan-text add-image" id="{{@index}}">image</a></li>
-                </ul>
-                <ul class="collection content-fields no-margin">
-                    {{#let sectionIndex=@index}}
-                        {{#each subContent}}
-                            <li class="collection-item">
-                                {{#if isType 'text'}}
-                                    {{>unitEditText sectionIndex=sectionIndex contentIndex=@index text=text}}
-                                {{/if}}
-                                {{#if isType 'youtube'}}
-                                    {{>unitEditYoutube sectionIndex=sectionIndex contentIndex=@index youtubeVidID=youtubeVidID}}
-                                {{/if}}
-                                {{#if isType 'remoteImage'}}
-                                    {{>unitEditRemoteImage remoteImgURL=remoteImgURL sectionIndex=sectionIndex contentIndex=@index}}
-                                {{/if}}
-                                {{#if isType 'image'}}
-                                    {{>unitEditImage sectionIndex=sectionIndex contentIndex=@index}}
-                                {{/if}}
-                            </li>
-                        {{/each}}
-                    {{/let}}
-                </ul>
-            </div>
-        {{/each}}
-    </div>
-    <a class='cyan-text right-align add-section' href='#!'><i class="material-icons tiny">add_circle_outline</i> section</a>
+  <div id="content-sections">
+    {{#each tempContent}}
+      <div class="section section-card">
+        <div class="row valign-wrapper no-margin">
+          <div class="col s6">
+            <h4 class="section-handle no-margin">Section
+              {{increaseByOne @index}}
+              <i class="material-icons tiny">
+                <a href='#!' class="cyan-text left-align remove-section" id="{{@index}}">clear</a>
+              </i>
+            </h4>
+          </div>
+          <div class="col s6 right-align">
+            <a class='dropdown-button cyan-text right-align add-content' href='#!' data-activates='dropdown{{@index}}'>
+              <i class="material-icons tiny">add_circle_outline</i>
+              content</a>
+          </div>
+        </div>
+        <ul id='dropdown{{@index}}' class='dropdown-content'>
+          <li>
+            <a href="#!" class="cyan-text add-text" id="{{@index}}">text</a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#!" class="cyan-text add-video" id="{{@index}}">video</a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="#!" class="cyan-text add-image" id="{{@index}}">image</a>
+          </li>
+        </ul>
+        <ul class="collection content-fields no-margin">
+          {{#let sectionIndex=@index}}
+            {{#each subContent}}
+              <li class="collection-item">
+                {{#if isType 'text'}}
+                  {{>unitEditText sectionIndex=sectionIndex contentIndex=@index text=text}}
+                {{/if}}
+                {{#if isType 'youtube'}}
+                  {{>unitEditYoutube sectionIndex=sectionIndex contentIndex=@index youtubeVidID=youtubeVidID}}
+                {{/if}}
+                {{#if isType 'remoteImage'}}
+                  {{>unitEditRemoteImage remoteImgURL=remoteImgURL sectionIndex=sectionIndex contentIndex=@index}}
+                {{/if}}
+                {{#if isType 'image'}}
+                  {{>unitEditImage sectionIndex=sectionIndex contentIndex=@index}}
+                {{/if}}
+              </li>
+            {{/each}}
+          {{/let}}
+        </ul>
+      </div>
+    {{/each}}
+  </div>
+  <a class='cyan-text right-align add-section' href='#!'>
+    <i class="material-icons tiny">add_circle_outline</i>
+    section</a>
 </template>
 <template name="unitEditText">
-    <div class="row valign-wrapper no-margin">
-        <div class="col s1 content-handle">
-            <i class="material-icons small cyan-text valign">library_books</i>
-        </div>
-        <form class="col s10">
-            <div class="input-field">
-                <textarea value= {{text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
-                <label for="{{sectionIndex}} {{contentIndex}} text" class="active">text</label>
-            </div>
-        </form>
-        <div class="col s1">
-            <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a></i>
-        </div>
+  <div class="row valign-wrapper no-margin">
+    <div class="col s1 content-handle">
+      <i class="material-icons small cyan-text valign">library_books</i>
     </div>
+    <form class="col s10">
+      <div class="input-field">
+        <textarea value={{text}} id="{{sectionIndex}} {{contentIndex}} text" class="materialize-textarea content-input"></textarea>
+        <label for="{{sectionIndex}} {{contentIndex}} text" class="active">text</label>
+      </div>
+    </form>
+    <div class="col s1">
+      <i class="material-icons tiny valign right-align">
+        <a href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a>
+      </i>
+    </div>
+  </div>
 </template>
 <template name="unitEditYoutube">
-    <div class="row valign-wrapper no-margin">
-        <div class="col s1 content-handle">
-            <i class="material-icons small cyan-text valign">video_library</i>
-        </div>
-        <div class="input-field col s8">
-            <input value= {{youtubeVidID}} id="{{sectionIndex}} {{contentIndex}} youtubeVidID" type="text" class="content-input">
-            <label for="{{sectionIndex}} {{contentIndex}} youtubeVidID" class="active">Youtube video id</label>
-        </div>
-        <div class="col s2 right-align">
-            <a href="http://www.youtube.com/watch?v={{youtubeVidID}}" target="_blank">
-                <img class="responsive-img" src="http://img.youtube.com/vi/{{youtubeVidID}}/default.jpg">
-            </a>
-        </div>
-        <div class="col s1">
-            <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a></i>
-        </div>
+  <div class="row valign-wrapper no-margin">
+    <div class="col s1 content-handle">
+      <i class="material-icons small cyan-text valign">video_library</i>
     </div>
+    <div class="input-field col s8">
+      <input value={{youtubeVidID}} id="{{sectionIndex}} {{contentIndex}} youtubeVidID" type="text" class="content-input">
+      <label for="{{sectionIndex}} {{contentIndex}} youtubeVidID" class="active">Youtube video id</label>
+    </div>
+    <div class="col s2 right-align">
+      <a href="http://www.youtube.com/watch?v={{youtubeVidID}}" target="_blank">
+        <img class="responsive-img" src="http://img.youtube.com/vi/{{youtubeVidID}}/default.jpg">
+      </a>
+    </div>
+    <div class="col s1">
+      <i class="material-icons tiny valign right-align">
+        <a href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a>
+      </i>
+    </div>
+  </div>
 </template>
 <template name="unitEditRemoteImage">
-    <div class="row valign-wrapper no-margin">
-        <div class="col s1 content-handle">
-            <i class="material-icons small cyan-text valign">collections</i>
-        </div>
-        <div class="input-field col s8">
-            <input value= {{remoteImgURL}} id="{{sectionIndex}} {{contentIndex}} remoteImgURL" type="text" class="content-input">
-            <label for="{{sectionIndex}} {{contentIndex}} remoteImgURL" class="active">Link to picture</label>
-        </div>
-        <div class="col s2 right-align">
-            <a href="{{remoteImgURL}}" target="_blank">
-                <img class="responsive-img" src="{{remoteImgURL}}">
-            </a>
-        </div>
-        <div class="col s1">
-            <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a></i>
-        </div>
+  <div class="row valign-wrapper no-margin">
+    <div class="col s1 content-handle">
+      <i class="material-icons small cyan-text valign">collections</i>
     </div>
+    <div class="input-field col s8">
+      <input value={{remoteImgURL}} id="{{sectionIndex}} {{contentIndex}} remoteImgURL" type="text" class="content-input">
+      <label for="{{sectionIndex}} {{contentIndex}} remoteImgURL" class="active">Link to picture</label>
+    </div>
+    <div class="col s2 right-align">
+      <a href="{{remoteImgURL}}" target="_blank">
+        <img class="responsive-img" src="{{remoteImgURL}}">
+      </a>
+    </div>
+    <div class="col s1">
+      <i class="material-icons tiny valign right-align">
+        <a href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a>
+      </i>
+    </div>
+  </div>
 </template>
 <template name="unitEditImage">
-    <div class="row valign-wrapper no-margin">
-        <div class="col s1 content-handle">
-            <i class="material-icons small cyan-text valign">broken_image</i>
-        </div>
-        <div class="input-field col s10">
-            <p>Image Upload not supported yet</p>
-        </div>
-        <div class="col s1">
-            <i class="material-icons tiny valign right-align"><a  href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a></i>
-        </div>
+  <div class="row valign-wrapper no-margin">
+    <div class="col s1 content-handle">
+      <i class="material-icons small cyan-text valign">broken_image</i>
     </div>
+    <div class="input-field col s10">
+      <p>Image Upload not supported yet</p>
+    </div>
+    <div class="col s1">
+      <i class="material-icons tiny valign right-align">
+        <a href='#!' class="cyan-text remove-content" id="{{sectionIndex}} {{contentIndex}}">clear</a>
+      </i>
+    </div>
+  </div>
 </template>

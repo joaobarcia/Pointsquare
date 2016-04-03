@@ -1,210 +1,243 @@
 <template name="unitPage">
-    <div class="template-unitPage">
-        <div class="container">
-            <div class="card">
-                {{#if doingExercise}}
-                    {{> unitContent}}
-                {{/if}}
-                {{#if learning}}
-                    {{> propagatingKnowledge}}
-                {{/if}}
-                {{#if learned}}
-                    {{>learnedResults learnedConcept=learnedConcept}}
-                {{/if}}
-                {{#if unlearned}}
-                    {{>unlearnedResults unlearnedConcept=unlearnedConcept}}
-                {{/if}}
-                {{> relatedConcepts grantedConcepts=grantedConcepts requiredConcepts=requiredConcepts }}
-            </div>
-            <div class="card-panel">
-                <div class="row no-margin">
-                    <div class="col s10">
-                        <h3>{{name}}</h3>
-                        <p>{{!-- <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> --}}<span class="grey-text"> by {{nameOf authors}}</span></p>
-                    </div>
-                    <div class="col s2 right-align">
-                        {{#if userIsAuthor}}
-                            <a href="{{escrid}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"><i class="material-icons">create</i></a>
-                        {{else}}
-                            <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="You can only edit lessons you have created"><i class="material-icons">create</i></a>
-                        {{/if}}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col s12">
-                        <h6 class="grey-text"><span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson"><i class="tiny material-icons data-icons ">done</i> {{views}}</span></h6>
-                        <p class="pre">{{description}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="card-panel">
-                <div class="comment-section">
-                    {{> commentsBox id=escrid}}
-                </div>
-            </div>
+  <div class="template-unitPage">
+    {{#with contentPage}}
+      <div class="container">
+        <div class="card">
+          {{#if doingExercise}}
+            {{> unitContent}}
+          {{/if}}
+          <!--{{#if learning}}
+                        {{> propagatingKnowledge}}
+                    {{/if}}
+                    {{#if learned}}
+                        {{>learnedResults learnedConcept=learnedConcept}}
+                    {{/if}}
+                    {{#if unlearned}}
+                        {{>unlearnedResults unlearnedConcept=unlearnedConcept}}
+                    {{/if}}-->
+          {{> relatedConcepts grantedConcepts=grantedConcepts neededConcepts=neededConcepts }}
+
         </div>
+        <div class="card-panel">
+          <div class="row no-margin">
+            <div class="col s10">
+              <h3>{{name}}</h3>
+              <p>{{!-- <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> --}}
+                <span class="grey-text">
+                  <p>by
+                    {{#each author in authorsInfo (authors)}}
+                      {{author.username}}
+                    {{/each}}
+                  </p>
+                  <p>
+                    {{readableDate created_on}}
+                  </p>
+                </span>
+              </p>
+            </div>
+            <div class="col s2 right-align">
+              {{#if userIsAuthor}}
+                <!-- <a href="{{_id}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"> -->
+                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="Edit is temporarily disabled">
+                  <i class="material-icons">create</i>
+                </a>
+              {{else}}
+                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="Edit is temporarily disabled">
+                  <i class="material-icons">create</i>
+                </a>
+              {{/if}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col s12">
+              <h6 class="grey-text">
+                <span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson">
+                  <i class="tiny material-icons data-icons ">done</i>
+                  {{views}}</span>
+              </h6>
+              <p class="pre">{{description}}</p>
+            </div>
+          </div>
+        </div>
+        {{!-- <div class="card-panel">
+                    <div class="comment-section">
+                        {{_id}}
+        {{> commentsBox id=_id}}
+      </div>
     </div>
+    --}}
+  </div>
+{{/with}}
+</div>
 </template>
 <template name="unitContent">
-    <div class="card-content">
-        {{#if unitIsOneSectionAndNoExercise}}
-            {{> contentByType}}
-        {{else}}
-            <div class="unit-tabs">
-                <div class="row">
-                    <ul class="tabs tab-demo">
-                        {{#each content}}
-                            {{#if isType 'unitSection'}}
-                                <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Part {{increaseByOne @index}}</a></li>
-                            {{/if}}
-                            {{#if isType 'unitEvaluationSection'}}
-                                <li class="tab col s2"><a href="#unitTab{{increaseByOne @index}}">Evaluation</a></li>
-                            {{/if}}
-                        {{/each }}
-                    </ul>
-                </div>
-            </div>
-            <div class="unit-content">
-                <div class="section">
-                    {{> contentByType}}
-                </div>
-            </div>
-        {{/if}}
+<div class="card-content">
+<!-- {{unitIsOneSectionAndNoExercise}} -->
+{{#if unitIsOneSectionAndNoExercise}}
+  {{> contentByType}}
+{{else}}
+  <div class="unit-tabs">
+    <div class="row">
+      <ul class="tabs">
+        {{#each content}}
+          {{#if isType 'unitSection'}}
+            <li class="tab col s2">
+              <a href="#unitTab{{increaseByOne @index}}">Part
+                {{increaseByOne @index}}</a>
+            </li>
+          {{/if}}
+          {{#if isType 'unitEvaluationSection'}}
+            <li class="tab col s2">
+              <a href="#unitTab{{increaseByOne @index}}">Evaluation</a>
+            </li>
+          {{/if}}
+        {{/each }}
+      </ul>
     </div>
+  </div>
+  <div class="unit-content">
+    <div class="section">
+      {{> contentByType}}
+    </div>
+  </div>
+{{/if}}
+</div>
 </template>
 <template name="contentByType">
-    {{#each content }}
-        <div id="unitTab{{increaseByOne @index}}" class="col s12">
-            <div class="container">
-                {{#if isType 'unitSection'}}
-                    {{#each subContent}}
-                        {{#if isType 'text'}}
-                            <div class="section">
-                                {{#mathjax}}
-                                    {{!-- {{#markdown}}
-                                    --}} <div class="flow-text">
-                                        {{#markdown}}{{text}}{{/markdown}}
-                            </div>
-                            {{!-- {{/markdown}}
-                            --}} {{/mathjax}}
-            </div>
-            {{/if}}
-            {{#if isType 'image'}}
-                <img class="responsive-img" src="../images/units/{{imgURL}}">
-            {{/if}}
-            {{#if isType 'remoteImage'}}
-                <div class="section center-align">
-                    <img class="responsive-img" src="{{remoteImgURL}}">
-                </div>
-            {{/if}}
-            {{#if isType 'youtube'}}
-                <div class="section">
-                    <div class="video-container no-controls">
-                        <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
-                    </div>
-                </div>
-            {{/if}}
-            {{/each }}
-            {{/if}}
-        </div>
-        {{#if isType 'unitEvaluationSection'}}
-            {{#if evaluationIsType 'exerciseRadioButton'}}
-                {{> exerciseRadioButton}}
-            {{/if}}
-            {{#if evaluationIsType 'exerciseString'}}
-                {{> exerciseString}}
-            {{/if}}
-            {{#if evaluationIsType 'userConfirmation'}}
-                {{> userConfirmation}}
-            {{/if}}
+{{#each content }}
+<div id="unitTab{{increaseByOne @index}}" class="col s12">
+  <div class="container">
+    {{#if isType 'unitSection'}}
+      {{#each subContent}}
+        {{#if isType 'text'}}
+          <div class="section">
+            {{#mathjax}}
+              <div class="flow-text">
+                {{#markdown}}{{text}}{{/markdown}}
+              </div>
+            {{/mathjax}}
+          </div>
         {{/if}}
-        </div>
-    {{/each }}
+        {{#if isType 'image'}}
+          <img class="responsive-img" src="../images/units/{{imgURL}}">
+        {{/if}}
+        {{#if isType 'remoteImage'}}
+          <div class="section center-align">
+            <img class="responsive-img" style="max-height: 300px;" src="{{remoteImgURL}}">
+          </div>
+        {{/if}}
+        {{#if isType 'youtube'}}
+          <div class="section">
+            <div class="video-container no-controls">
+              <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
+            </div>
+          </div>
+        {{/if}}
+      {{/each }}
+    {{/if}}
+  </div>
+  {{#if isType 'unitEvaluationSection'}}
+    {{#if evaluationIsType 'exerciseRadioButton'}}
+      {{> exerciseRadioButton}}
+    {{/if}}
+    {{#if evaluationIsType 'exerciseString'}}
+      {{> exerciseString}}
+    {{/if}}
+    {{#if evaluationIsType 'userConfirmation'}}
+      {{> userConfirmation}}
+    {{/if}}
+  {{/if}}
+</div>
+{{/each }}
 </template>
 <template name="exerciseString">
-    <div class="section center-align">
-        <div class="container">
-            {{#if currentUser}}
-                <h4>{{{question}}}</h4>
-                <form id="exerciseStringForm">
-                    <input type="text" name="exerciseString" id="exerciseInputText">
-                    <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
-                    </button>
-                </form>
-            {{else}}
-                <h4>{{{question}}}</h4>
-                <form id="exerciseStringForm">
-                    <input disabled value="Login so we can follow your progress " type="text" name="exerciseString" id="exerciseInputText">
-                    <button class="btn waves-effect waves-light {{answerFeedback}} disabled disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!" type="submit" name="action" id="exerciseButton">Submit</button>
-                </form>
-            {{/if}}
-        </div>
-    </div>
+<div class="section center-align">
+<div class="container">
+  {{#if currentUser}}
+    <h4>{{{question}}}</h4>
+    <form id="exerciseStringForm">
+      <input type="text" name="exerciseString" id="exerciseInputText">
+      <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
+      </button>
+    </form>
+  {{else}}
+    <h4>{{{question}}}</h4>
+    <form id="exerciseStringForm">
+      <input disabled value="Login so we can follow your progress " type="text" name="exerciseString" id="exerciseInputText">
+      <button class="btn waves-effect waves-light {{answerFeedback}} disabled disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!" type="submit" name="action" id="exerciseButton">Submit</button>
+    </form>
+  {{/if}}
+</div>
+</div>
 </template>
 <template name="exerciseRadioButton">
-    <h3 class="center-align">{{question}}</h3>
-    <form id="exerciseRadioButtonForm" action="#">
-        {{#if currentUser}}
-            {{#each options}}
-                <h3 class="center-align">
-                <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}"/>
-                <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel" >{{label}}</label>
-            </h3>
-            {{/each}}
-        {{else}}
-            {{#each options}}
-                <h3 class="center-align tooltipped" data-position="bottom" data-delay="20" data-tooltip="Login so we can follow your progress!">
-                <input name="group1" class="{{isCorrectOption}}RadioButton" disabled="disabled" type="radio" id="radioButton{{@index}}"/>
-                <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel" >{{label}}</label>
-            </h3>
-            {{/each}}
-        {{/if}}
-    </form>
+<h3 class="center-align">{{question}}</h3>
+<form id="exerciseRadioButtonForm" action="#">
+{{#if currentUser}}
+  {{#each options}}
+    <h3 class="center-align">
+      <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}"/>
+      <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{label}}</label>
+    </h3>
+  {{/each}}
+{{else}}
+  {{#each options}}
+    <h3 class="center-align tooltipped" data-position="bottom" data-delay="20" data-tooltip="Login so we can follow your progress!">
+      <input name="group1" class="{{isCorrectOption}}RadioButton" disabled="disabled" type="radio" id="radioButton{{@index}}"/>
+      <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{label}}</label>
+    </h3>
+  {{/each}}
+{{/if}}
+</form>
 </template>
 <template name="userConfirmation">
-    <div class="section">
-        {{#if currentUser}}
-            <div class="row center-align understood-buttons">
-                <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
-                <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">I didn't understand</a>
-            </div>
-        {{else}}
-            <div class="row center-align understood-buttons">
-                <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Gots it!</a>
-                <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Nots it!</a>
-            </div>
-        {{/if}}
-    </div>
+<div class="section">
+{{#if currentUser}}
+  <div class="row center-align understood-buttons">
+    <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
+    <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">I didn't understand</a>
+  </div>
+{{else}}
+  <div class="row center-align understood-buttons">
+    <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Gots it!</a>
+    <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Nots it!</a>
+  </div>
+{{/if}}
+</div>
 </template>
 <template name="relatedConcepts">
-    <div class="card-action">
-        <div class="row ">
-            <div class="col s1">
-                <i class="right small mdi-action-exit-to-app"></i>
-            </div>
-            <div class="col s5">
-                <span class="grey-text text-darken-2">You should be familiar with:</span>
-                <br>
-                {{#each requiredConcepts}}
-                    <a href="../concept/{{escrid}}">{{name}}</a>
-                    <br>
-                {{/each}}
-            </div>
-            <div class="col s1">
-                <i class="right small mdi-action-exit-to-app"></i>
-            </div>
-            <div class="col s5">
-                <span class="grey-text text-darken-2">This unit helps you master:</span>
-                <br>
-                {{#each grantedConcepts}}
-                    <a href="../concept/{{escrid}}">{{name}}</a>
-                    <br>
-                {{/each}}
-            </div>
-        </div>
-    </div>
+<div class="card-action">
+<div class="row ">
+  <div class="col s1">
+    <i class="right small mdi-action-exit-to-app"></i>
+  </div>
+  <div class="col s5">
+    <span class="grey-text text-darken-2">You should be familiar with:</span>
+    <br>
+    {{#each setOfConcepts in neededConcepts}}
+      {{#each concept in subConcepts (setOfConcepts.weights)}}
+        <!-- <a href="../concept/{{concept._id}}">{{concept.name}}</a> -->
+        <a>{{concept.name}}</a>
+      {{/each}}
+      <br>
+      or
+    {{/each}}
+  </div>
+  <div class="col s1">
+    <i class="right small mdi-action-exit-to-app"></i>
+  </div>
+  <div class="col s5">
+    <span class="grey-text text-darken-2">This unit helps you master:</span>
+    <br>
+    {{#each concept in grantedConcepts}}
+      <!-- <a href="../concept/{{concept._id}}">{{concept.name}}</a> -->
+      <a>{{concept.name}}</a>
+    {{/each}}
+  </div>
+</div>
+</div>
 </template>
-<template name="propagatingKnowledge">
+<!-- <template name="propagatingKnowledge">
     <div class="row center-align">
         <div class="section">
             <div class="preloader-wrapper big active">
@@ -219,73 +252,65 @@
             <h4>We are propagating your knowledge</h4>
         </div>
     </div>
-</template>
-<template name="learnedResults">
-    <div class="row center-align">
-        <div class="section">
-            <h5>Congratulations! You have learnt</h5>
-            <div class="row">
-                <div class="col s4 offset-s4">
-                    {{#each learnedConcept}}
-                        <a href="../concept/{{escrid}}">{{name}}</a>
-                        <br>
-                    {{/each}}
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <h5>Why don't you try one of these units next</h5>
-            <div class="row">
-                <div class="col s6 offset-s3">
-                    {{> unitSuggestions}}
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="row">
-                <div class="col s6 offset-s3">
-                    <a href="#!" class="waves-effect waves-light white-text cyan btn" id="backToUnit">back to unit</a>
-                </div>
-            </div>
-        </div>
-    </div>
+</template> -->
+<!-- <template name="learnedResults">
+<div class="row center-align">
+<div class="section">
+  <h5>Congratulations! You have learnt</h5>
+  <div class="row">
+    <div class="col s4 offset-s4">
+      {{!-- {{#each learnedConcept}}
+      <a href="../concept/{{escrid}}">{{name}}</a>
+      <br>
+    {{/each}}
+    --}}
+  </div>
+</div>
+</div>
+<div class="section">
+<h5>Why don't you try one of these units next</h5>
+<div class="row">
+  <div class="col s6 offset-s3">
+    {{> unitSuggestions}}
+  </div>
+</div>
+</div>
+<div class="section">
+<div class="row">
+  <div class="col s6 offset-s3">
+    <a href="#!" class="waves-effect waves-light white-text cyan btn" id="backToUnit">back to unit</a>
+  </div>
+</div>
+</div>
+</div>
 </template>
 <template name="unlearnedResults">
-    <div class="row center-align">
-        <div class="section">
-            <h5>These concepts have been deactivated, but don't worry!</h5>
-            <div class="row">
-                <div class="col s4 offset-s4">
-                    {{#each unlearnedConcept}}
-                        <a href="../concept/{{escrid}}">{{name}}</a>
-                        <br>
-                    {{/each}}
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <h5>Why don't you try one of this units next</h5>
-            <div class="row">
-                <div class="col s6 offset-s3">
-                    {{> unitSuggestions}}
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="row">
-                <div class="col s6 offset-s3">
-                    <a href="#!" class="waves-effect waves-light white-text cyan btn" id="backToUnit">back to unit</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-<template name="unitComments">
-    <ul>
-        {{#each comment}}
-            ...
-            <li>{{content}}</li>
-            ...
-        {{/each}}
-    </ul>
-</template>
+<div class="row center-align">
+<div class="section">
+<h5>These concepts have been deactivated, but don't worry!</h5>
+<div class="row">
+  <div class="col s4 offset-s4">
+    {{#each unlearnedConcept}}
+      <a href="../concept/{{escrid}}">{{name}}</a>
+      <br>
+    {{/each}}
+  </div>
+</div>
+</div>
+<div class="section">
+<h5>Why don't you try one of this units next</h5>
+<div class="row">
+  <div class="col s6 offset-s3">
+    {{> unitSuggestions}}
+  </div>
+</div>
+</div>
+<div class="section">
+<div class="row">
+  <div class="col s6 offset-s3">
+    <a href="#!" class="waves-effect waves-light white-text cyan btn" id="backToUnit">back to unit</a>
+  </div>
+</div>
+</div>
+</div>
+</template> -->

@@ -1,78 +1,77 @@
 <template name="conceptPage">
-    <div class="container">
-        <div class="section">
-            <div class="row">
-                <h6 class="grey-text center-align"><span class="ti-light-bulb"></span>Parent Concepts</h6>
-                <div class="col s4 offset-s4">
-                    {{#unless parentConcepts.count}}
-                        <p>no parent concepts</p>
-                    {{/unless}}
-                    <div class="collection">
-                        {{#each parentConcepts}}
-                            {{> conceptCard}}
-                        {{/each}}
-                    </div>
-                </div>
-                <div class="col s4 right-align">
-                    {{#if currentUser}}
-                        <a href="{{escrid}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"><i class="material-icons">create</i></a>
-                    {{else}}
-                        <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="You must be logged in to edit concepts"><i class="material-icons">create</i></a>
-                    {{/if}}
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="row">
-                <div class="col s4">
-                    {{!-- <div class="divider"></div>
- --}}
-                    <div class="section">
-                        <h6 class="grey-text center-align"><span class="ti-book"></span> is taught by</h6>
-                        {{#unless grantedUnit.count}}
-                            <p> No units teach this concept directly. Check child concepts below</p>
+    {{#with conceptPage}}
+        <div class="container">
+            <div class="section">
+                <div class="row">
+                    <h6 class="grey-text center-align"><span class="ti-light-bulb"></span>Parent Concepts</h6>
+                    <div class="col s4 offset-s4">
+                        {{#unless parentConcepts.count}}
+                            <p>no parent concepts</p>
                         {{/unless}}
                         <div class="collection">
-                            {{#each grantedUnit}}
-                                {{> unitCard}}
+                            {{#each parentConcepts}}
+                                {{> conceptCard}}
                             {{/each}}
                         </div>
                     </div>
-                </div>
-                <div class="col s4">
-                    <div class="card">
-                        <h4 class="grey-text center-align"><i class="circle {{mapConceptStateToColor state}}"><span class="ti-light-bulb"></span></i> Concept</h4>
-                        <h2 class="center-align">{{name}}</h2>
-                        <h5 class="grey-text center-align pre">{{description}}</h5>
+                    <div class="col s4 right-align">
+                        {{#if currentUser}}
+                            <a href="{{_id}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"><i class="material-icons">create</i></a>
+                        {{else}}
+                            <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="You must be logged in to edit concepts"><i class="material-icons">create</i></a>
+                        {{/if}}
                     </div>
                 </div>
-                <div class="col s4">
-                    {{!-- <div class="divider"></div> --}}
-                    <div class="section">
-                        <h6 class="grey-text center-align"><span class="ti-book"></span> contributes to</h6>
+            </div>
+            <div class="section">
+                <div class="row">
+                    <div class="col s4">
+                        <div class="section">
+                            <h6 class="grey-text center-align"><span class="ti-book"></span> is taught by</h6>
+                            {{#unless grantedUnit.count}}
+                                <p> No units teach this concept directly. Check child concepts below</p>
+                            {{/unless}}
+                            <div class="collection">
+                                {{#each grantedUnit}}
+                                    {{> unitCard}}
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s4">
+                        <div class="card">
+                            <h4 class="grey-text center-align"><i class="circle {{mapConceptStateToColor state}}"><span class="ti-light-bulb"></span></i> Concept</h4>
+                            <h2 class="center-align">{{name}}</h2>
+                            <h5 class="grey-text center-align pre">{{description}}</h5>
+                        </div>
+                    </div>
+                    <div class="col s4">
+                        <div class="section">
+                            <h6 class="grey-text center-align"><span class="ti-book"></span> contributes to</h6>
+                            <div class="collection">
+                                {{#each requiredUnit}}
+                                    {{> unitCard}}
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="row">
+                    <h6 class="grey-text center-align"><span class="ti-light-bulb"></span>child concepts</h6>
+                    <div class="col s4 offset-s4">
+                        {{#unless childConcepts.count}}
+                            <p>no child concepts</p>
+                        {{/unless}}
                         <div class="collection">
-                            {{#each requiredUnit}}
-                                {{> unitCard}}
+                            {{#each childConcepts}}
+                                {{> conceptCard}}
                             {{/each}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="section">
-            <div class="row">
-                <h6 class="grey-text center-align"><span class="ti-light-bulb"></span>child concepts</h6>
-                <div class="col s4 offset-s4">
-                    {{#unless childConcepts.count}}
-                        <p>no child concepts</p>
-                    {{/unless}}
-                    <div class="collection">
-                        {{#each childConcepts}}
-                            {{> conceptCard}}
-                        {{/each}}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{/with}}
 </template>

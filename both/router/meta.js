@@ -3,7 +3,6 @@ if (Meteor.isClient) {
         options: {
             // Meteor.settings[Meteor.settings.environment].public.meta.title
             title: 'Pointsquare',
-            suffix: 'Suffix'
         }
     });
 }
