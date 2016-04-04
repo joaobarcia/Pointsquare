@@ -1,51 +1,68 @@
 <template name="unitCard">
-  <a href="../content/{{_id}}" class="collection-item avatar black-text">
-    <div class="row no-bottom-margin left-align">
-      <!-- <div class="col s5"> -->
-      <div class="col s7">
-        <h5>
-          <i class="square {{mapUnitStateToColor state}} tooltipped" data-position="top" data-delay="0" data-tooltip={{mapUnitStateToTooltipMsg state}}>
-            <span class="ti-book"></span>
-            {{#if false}}
-              <i class="small material-icons data-icons icon-overlap">done</i>
-            {{/if}}
-          </i>
-        </h5>
-        <!-- <span class="title "><h4>N {{name}} S {{state}} I {{_id}}</h4></span> -->
-        <span class="title ">
-          <h4>{{name}}</h4>
-        </span>
-        <h6 class="grey-text ">
-          by
-          {{#each author in authorsInfo (authors)}}
-            {{author.username}}
-          {{/each}}
-          |
-          {{readableDate created_on}}
-        </h6>
-      </div>
-      <!-- <div class="col s6 "> -->
-      <div class="col s5">
-        <h6 class="grey-text ">{{description}}</h6>
-        <div class="row no-bottom-margin ">
-          <div class="col s12 ">
-            <h6 class="grey-text right-align ">
+    <a href="../content/{{_id}}" class="collection-item avatar black-text">
+        <div class="row no-bottom-margin left-align">
+            <!-- <div class="col s5"> -->
+            <div class="col s6">
+                <h5>
+                    <i class="square {{mapUnitStateToColor state}} tooltipped" data-position="top" data-delay="0" data-tooltip={{mapUnitStateToTooltipMsg state}}>
+                        <span class="ti-book"></span>
+                        {{#if false}}
+                            <i class="small material-icons data-icons icon-overlap">done</i>
+                        {{/if}}
+                    </i>
+                </h5>
+                <!-- <span class="title "><h4>N {{name}} S {{state}} I {{_id}}</h4></span> -->
+                <span class="title ">
+                    <h4>{{name}}</h4>
+                </span>
+                <h6 class="grey-text ">
+                    by
+                    {{#each author in authorsInfo (authors)}}
+                        {{author.username}}
+                    {{/each}}
+                    |
+                    {{readableDate created_on}}
+                </h6>
+            </div>
+            <!-- <div class="col s6 "> -->
+            <div class="col s2">
+                <h6 class="grey-text ">{{description}}</h6>
+                <div class="row no-bottom-margin ">
+                    <div class="col s12 ">
+                        <h6 class="grey-text right-align ">
 
-              {{!-- <span class="unit-info-icons ">{{likes}}
-              <i class="tiny material-icons ">thumbs_up_down</i>
-              {{dislikes}}
-            </span>
-            --}}
-            <!-- <span class="unit-info-icons tooltipped" data-position="top" data-delay="1" data-tooltip="views people have done this lesson">
+                            {{!-- <span class="unit-info-icons ">{{likes}}
+                            <i class="tiny material-icons ">thumbs_up_down</i>
+                            {{dislikes}}
+                        </span>
+                        --}}
+                        <!-- <span class="unit-info-icons tooltipped" data-position="top" data-delay="1" data-tooltip="views people have done this lesson">
               <i class="tiny material-icons data-icons ">done</i>
               views</span> -->
-            <!-- <span class="unit-info-icons tooltipped" data-position="top" data-delay="1" data-tooltip="prospect concepts will be learnt">
+                        <!-- <span class="unit-info-icons tooltipped" data-position="top" data-delay="1" data-tooltip="prospect concepts will be learnt">
               <span class="ti-light-bulb"></span>
               prospect</span> -->
-          </h6>
+                    </h6>
+                </div>
+            </div>
         </div>
-      </div>
+        {{#unless disableSetGoal}}
+            {{#unless goalAlreadyReached state}}
+                <div class="col s4">
+                    <div class="right">
+                        <a class="waves-effect waves-teal btn set-goal">
+                            <i class="material-icons left">explore</i>Set as goal</a>
+                    </div>
+                </div>
+            {{else}}
+                <div class="col s4">
+                    <div class="right">
+                        <a class="waves-effect waves-teal btn disabled">
+                            Unit is learnable</a>
+                    </div>
+                </div>
+            {{/unless}}
+        {{/unless}}
     </div>
-  </div>
 </a>
 </template>
