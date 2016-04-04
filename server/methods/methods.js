@@ -377,12 +377,12 @@ find_missing_subtree = function(node_ids,user_id) {
             var state = get_state(node_id,user_id);
             var type = Nodes.findOne(node_id).type;
             if( type == "content" && !(node_id in bag) ){
-                tree[tree.length-1][node_id] = true;
+                tree[tree.length-1][node_id] = state;
                 bag[node_id] = true;
                 if( state < 0.9 ){ to_keep[node_id] = true; }
             }
             else if( type == "concept" && state < 0.9 && !(node_id in bag) ){
-                tree[tree.length-1][node_id] = true;
+                tree[tree.length-1][node_id] = state;
                 bag[node_id] = true;
                 to_keep[node_id] = true;
             }
@@ -396,10 +396,11 @@ find_missing_subtree = function(node_ids,user_id) {
 advise = function(goals,user_id){
     var advice = [];
     var subtree = find_missing_subtree(goals,user_id);
-    for(var layer in subtree){
+    for(var n in subtree){
+        var layer = subtree[n];
         //ordenar os nodos desta camada por estado
-        var ordered = [];
-        for(var node_id in subtree[layer]){
+        var ordered = Object.keys(layer).sort(function(a,b){return layer[a]-layer[b]});
+        /*for(var node_id in subtree[layer]){
             var state = get_state(node_id,user_id);
             var info = {id:node_id,state:state};
             if(ordered.length==0){ordered.push(info);}
@@ -410,12 +411,13 @@ advise = function(goals,user_id){
                     break;
                 }
             }
-        }
+        }*/
+        //if(n==0){return ordered;}
         //pegar na camada ordenada e
         for(var i in ordered){
-            var info = ordered[i];
-            var node_id = info.id;
-            var state = info.state;
+            //var info = ordered[i];
+            var node_id = ordered[i];//info.id;
+            var state = layer[node_id];//info.state;
             var type = Nodes.findOne(node_id).type;
             if( state > 0.9 && type == "content" ){ advice.push(node_id); }
         }
