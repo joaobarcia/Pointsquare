@@ -27,7 +27,6 @@ Template.registerHelper('TEMP_goalUnitsIds', function() {
     user: Meteor.userId()
   });
   var unitIds = goal.units;
-  console.log('TEMP_goalUnitsIds: ' +unitIds);
   return unitIds;
   // return Nodes.find({
   //   _id: {
