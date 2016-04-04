@@ -25,7 +25,7 @@
                 </h6>
             </div>
             <!-- <div class="col s6 "> -->
-            <div class="col s3">
+            <div class="col s2">
                 <h6 class="grey-text ">{{description}}</h6>
                 <div class="row no-bottom-margin ">
                     <div class="col s12 ">
@@ -47,12 +47,21 @@
             </div>
         </div>
         {{#unless disableSetGoal}}
-        <div class="col s3">
-            <div class="right">
-                <a class="waves-effect waves-teal btn set-goal">
-                    <i class="material-icons left">explore</i>Set as goal</a>
-            </div>
-        </div>
+            {{#unless goalAlreadyReached state}}
+                <div class="col s4">
+                    <div class="right">
+                        <a class="waves-effect waves-teal btn set-goal">
+                            <i class="material-icons left">explore</i>Set as goal</a>
+                    </div>
+                </div>
+            {{else}}
+                <div class="col s4">
+                    <div class="right">
+                        <a class="waves-effect waves-teal btn disabled">
+                            Unit is learnable</a>
+                    </div>
+                </div>
+            {{/unless}}
         {{/unless}}
     </div>
 </a>
