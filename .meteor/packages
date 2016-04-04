@@ -20,7 +20,6 @@ zimme:active-route
 erasaur:meteor-lodash
 meteor
 jeremy:selectize
-standard-minifiers
 meteor-base
 mobile-experience
 mongo
@@ -62,3 +61,5 @@ babrahams:constellation
 bojicas:howler2
 kadira:debug
 meteorhacks:kadira
+standard-minifier-css
+standard-minifier-js

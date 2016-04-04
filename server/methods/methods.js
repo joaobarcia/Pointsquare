@@ -425,22 +425,30 @@ advise = function(goals,user_id){
 
 //CAMINHOS!
 
-find_local_options = function(node_id) {
+find_local_options = function(node_id,user_id) {
   var node = Nodes.findOne(node_id);
   var options = [];
   var requirements = node.needs;
   for (var requirement_id in requirements) {
     var requirement = Requirements.findOne(requirement_id);
-    options.push(requirement.weights);
+    var option = {};
+    for(var subnode_id in requirement.weights){
+        option[subnode_id] = get_state(subnode_id,user_id);
+    }
+    options.push(option);
   }
   var granted_by = node.granted_by;
   for (var unit_id in granted_by) {
-    options.push(unit_id);
+    var option = {};
+    option[unit_id] = get_state(unit_id,user_id);
+    options.push(option);
   }
   var in_set = node.in_set;
   for (var requirement_id in in_set) {
     var requirement = Requirements.findOne(requirement_id);
-    options.push(requirement.node);
+    var option = {};
+    option[requirement.node] = get_state(requirement.node,user_id);
+    options.push(option);
   }
   return options;
 };
@@ -537,6 +545,7 @@ readapt = function(target, user_id) {
             state[node_id] = get_state(node_id, user_id);
         }
     }
+    console.log("state object set");
     //compute maximum and minimum activations
     var max_states = {};
     var min_states = {};
@@ -585,18 +594,19 @@ readapt = function(target, user_id) {
     var saved_output = {};
     var error = {};
     var max_error = 0;
-    //COMEÇA AQUI O PROBLEMA
-    /*for( var node_id in target ){
-        saved_output[node_id] = state[node_id];
-        error[node_id] = state[node_id]*( 1 - state[node_id] )*( target[node_id] - state[node_id] );
-        max_error = Math.abs( target[node_id] - state[node_id] ) > max_error? Math.abs( target[node_id] - state[node_id] ) : max_error;
-    }*/
-    //ACABA AQUI O PROBLEMA
+
+    //update target micronode states
+    for (var node_id in target) {
+        var node = Nodes.findOne(node_id);
+        if(Object.keys(node.needs).length == 0){
+            state[node_id]=target[node_id];
+        }
+    }
     //initialize all error entries
     for (var i in tree) {
         var layer = tree[i];
         for (node_id in layer) {
-            if (i == 0) {
+            if (node_id in target) {
                 saved_output[node_id] = state[node_id];
                 error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
                 max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
@@ -610,23 +620,21 @@ readapt = function(target, user_id) {
     for (node_id in input_layer) {
         saved_input[node_id] = state[node_id];
     }
-    //return {"tree":tree,"error":error,"target":target,"state":state};
-    //console.log("start of subnetwork update");
     //begin subnetwork update
+    
     while (max_error > TOLERANCE) {
         //reset bounds
         var is_top_set = false;
         var is_bottom_set = false;
         var upper_bound = Math.pow(10, 10);
         var lower_bound = 0;
-        //console.log("begin backpropagation");
         //backpropagation
         for (order in tree) {
             layer = tree[order];
             for (node_id in layer) {
                 node = Nodes.findOne(node_id);
                 requirements = node.needs;
-                if (Object.keys(requirements).length === 0) {
+                if (Object.keys(requirements).length == 0) {
                     continue;
                 }
                 var max = 0;
@@ -642,6 +650,7 @@ readapt = function(target, user_id) {
                 }
             }
         }
+
         //forward propagation
         while (true) {
             //increment input states
@@ -718,7 +727,6 @@ readapt = function(target, user_id) {
             saved_input[node_id] = state[node_id];
         }
     }
-    //console.log("end of subnetwork update");
     //end of subnetwork update
     for (var node_id in state) {
         set_state(state[node_id], node_id, user_id);
@@ -1335,9 +1343,10 @@ Meteor.methods({
           }
         }
         target[nodeID] = 1;
+        var result = readapt(target, userID);
         var goal = Goals.findOne({user:userID});
         if(goal){set_goal(goal.node,userID);}
-        return readapt(target, userID);
+        return result;
     },
 
     fail: function(nodeID, userID) {
