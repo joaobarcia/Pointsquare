@@ -18,6 +18,7 @@ MINIMUM_EASY = sigmoid(2);
 MINIMUM_MEDIUM = sigmoid(-2);
 MAXIMUM_HARD = sigmoid(-4);
 WIDTH = 6;
+MINIMUM_BIAS = 1;
 
 var RATE = 0.1;
 var MAX_STEPS = 10000;
@@ -41,7 +42,7 @@ build_set = function(concepts) {
     for (var id in concepts) {
         set[id] = WIDTH;
     }
-    var bias = -WIDTH * (Object.keys(concepts).length - 1);
+    var bias = -WIDTH * (Object.keys(concepts).length - 1)-MINIMUM_BIAS;
     return {
         weights: set,
         bias: bias
