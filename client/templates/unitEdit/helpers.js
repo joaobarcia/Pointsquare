@@ -19,16 +19,16 @@ Template.unitEdit.helpers({
             console.log(evaluation);
             return evaluation.evaluationType
         },*/
-/*    grants: function() {
+    grants: function() {
         var nodeId = FlowRouter.getParam('contentId');
         var content = Nodes.findOne({
             _id: nodeId
         }) || {};
-        if (content.grants != undefined) {
-            return Object.keys(content.grants)
-        } else return []
+        if (typeof content.grants !== 'undefined') {
+            return Object.keys(content.grants);
+        } else return [];
     },
-*/
+
     unitEditDoc: function() {
         // load stored unit values and pass them with necessary modif to autoform doc 'unitEditDoc'
         if (Template.currentData().name != undefined) {
@@ -54,8 +54,8 @@ Template.unitEdit.helpers({
             unitEditDoc.exerciseString.question = evaluation.question;
             unitEditDoc.exerciseString.answers = evaluation.answers;
 
-            return unitEditDoc
-        } else return {}
+            return unitEditDoc;
+        } else return {};
     },
     /*    submitting: function() {
             console.log(Session.get("callStatus"));
