@@ -38,8 +38,9 @@
             <div class="row">
               <div class="col s6 offset-s3">
                 <div class="collection">
-                  {{#each goalUnits}}
-                    {{> unitCard}}
+                  {{#each unitId in TEMP_goalUnitsIds}}
+                  <!-- {{unitId}} -->
+                    {{> TEMP_unitCardWithIDArgument unitId=unitId}}
                   {{/each}}
                 </div>
               </div>

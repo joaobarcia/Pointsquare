@@ -1,7 +1,8 @@
 <template name="unitCard">
   <a href="../content/{{_id}}" class="collection-item avatar black-text">
     <div class="row no-bottom-margin left-align">
-      <div class="col s5">
+      <!-- <div class="col s5"> -->
+      <div class="col s7">
         <h5>
           <i class="square {{mapUnitStateToColor state}} tooltipped" data-position="top" data-delay="0" data-tooltip={{mapUnitStateToTooltipMsg state}}>
             <span class="ti-book"></span>
@@ -15,12 +16,16 @@
           <h4>{{name}}</h4>
         </span>
         <h6 class="grey-text ">
-          by {{#each author in authorsInfo (authors)}}
+          by
+          {{#each author in authorsInfo (authors)}}
             {{author.username}}
-          {{/each}} | {{readableDate created_on}}
+          {{/each}}
+          |
+          {{readableDate created_on}}
         </h6>
       </div>
-      <div class="col s6 ">
+      <!-- <div class="col s6 "> -->
+      <div class="col s5">
         <h6 class="grey-text ">{{description}}</h6>
         <div class="row no-bottom-margin ">
           <div class="col s12 ">

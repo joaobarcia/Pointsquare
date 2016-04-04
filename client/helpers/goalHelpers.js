@@ -21,16 +21,19 @@ Template.registerHelper('goalConceptCount', function() {
   return goal.conceptCount;
 });
 
-Template.registerHelper('goalUnits', function() {
+// workaround because Mongo does not accept sorted find({_id: { $in: unitIds}})
+Template.registerHelper('TEMP_goalUnitsIds', function() {
   var goal = Goals.findOne({
     user: Meteor.userId()
   });
   var unitIds = goal.units;
-  return Nodes.find({
-    _id: {
-      $in: unitIds
-    }
-  });
+  console.log('TEMP_goalUnitsIds: ' +unitIds);
+  return unitIds;
+  // return Nodes.find({
+  //   _id: {
+  //     $in: unitIds
+  //   }
+  // });
 });
 
 Template.registerHelper('goalIsCompleted', function() {

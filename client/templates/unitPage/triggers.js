@@ -3,8 +3,9 @@ function succeedUnit() {
   var $toastSuccess = $('<span class="green-text">Good job!</span>');
   Materialize.toast($toastSuccess, 2000);
   console.log("calling succeed method with node " + FlowRouter.getParam('contentId') + " and user " + Meteor.userId());
-  Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId());
-  FlowRouter.go('goalPage');
+  Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
+    FlowRouter.go('goalPage');
+  });
 }
 
 function failUnit() {
@@ -12,8 +13,9 @@ function failUnit() {
   var $toastFail = $('<span class="red-text">Try another unit</span>');
   Materialize.toast($toastFail, 2000);
   console.log("calling fail method with node " + FlowRouter.getParam('contentId') + " and user " + Meteor.userId());
-  Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId());
-  FlowRouter.go('goalPage');
+  Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
+    FlowRouter.go('goalPage');
+  });
 }
 
 Template.unitPage.onCreated(function() {
