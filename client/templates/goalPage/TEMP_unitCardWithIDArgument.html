@@ -1,6 +1,6 @@
 <template name="TEMP_unitCardWithIDArgument">
   <!-- BLASLDALS -->
   {{#with returnUnit unitId}}
-    {{> unitCard _id=_id name=name authors=authors description=description created_on=created_on}}
+    {{> unitCard _id=_id name=name authors=authors description=description created_on=created_on disableSetGoal=true}}
   {{/with}}
 </template>
