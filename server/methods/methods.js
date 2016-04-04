@@ -272,6 +272,7 @@ find_forward_layer = function(nodes) {
             continue;
         }
         var in_set = node.in_set;
+        return in_set;
         for (var requirement_id in in_set) {
             var set = Requirements.findOne(requirement_id);
             var next_node = set.node;
@@ -505,7 +506,7 @@ forward_update = function(node_ids, user_id) {
     var current_layer = node_ids;
     while (1) {
         var next_layer = find_forward_layer(current_layer);
-        if (Object.keys(next_layer).length === 0) {
+        if (Object.keys(next_layer).length == 0) {
             break;
         }
         for (var node_id in next_layer) {
@@ -548,7 +549,6 @@ readapt = function(target, user_id) {
             state[node_id] = get_state(node_id, user_id);
         }
     }
-    console.log("state object set");
     //compute maximum and minimum activations
     var max_states = {};
     var min_states = {};
@@ -1289,6 +1289,10 @@ Meteor.methods({
         return add_set(nodeID, concepts);
     },
 
+    editGrants: function(nodeID, concepts) {
+        return edit_grants(nodeID, concepts);
+    },
+
     removeNode: function(nodeID) {
         return remove_node(nodeID);
     },
@@ -1346,6 +1350,7 @@ Meteor.methods({
           }
         }
         target[nodeID] = 1;
+        return target;
         var result = readapt(target, userID);
         var goal = Goals.findOne({user:userID});
         if(goal){set_goal(goal.node,userID);}
@@ -1373,6 +1378,25 @@ Meteor.methods({
 
     computeState: function(nodeId,userId){
       return compute_state(nodeId,userId);
+    },
+
+    clearTheAir: function(){
+        //encontrar todos os nodos
+        var nodes = Nodes.find().fetch();
+        //para cada nodo
+        for(var n in nodes){
+            var node = nodes[n];
+            //remover do in_set deste nodo as referencias que nao sao requesitos 
+            var in_set = node.in_set;
+            for(var s in in_set){
+                if(Requirements.findOne(s)==null){ delete in_set[s]; }
+            }
+            Nodes.update({
+                _id: node._id
+            },{
+                $set: {in_set: in_set}
+            });
+        }
     }
 
 });
