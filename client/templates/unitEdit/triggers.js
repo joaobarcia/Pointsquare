@@ -1,5 +1,5 @@
 function needsAsJSONSession() {
-    console.log('needsAsJSONSession');
+    //console.log('needsAsJSONSession');
     var id = FlowRouter.getParam('contentId');
     var requirements = Requirements.find({
         node: id
@@ -33,48 +33,48 @@ function needsAsJSONSession() {
         obj["contains"] = contains;
         json.push(obj);
     }
-    console.log(json);
+    //console.log(json);
     Session.set("needsObject", json);
 }
 
 // FAZER GRANTS AS JSON SESSION
-function grantsAsJSONSession() {
-    //console.log('needsAsJSONSession');
-    /*var id = FlowRouter.getParam('contentId');
-    var requirements = Requirements.find({
-        node: id
-    }).fetch();
-    var json = [];
-    for (var i = 0; i < requirements.length; i++) {
-        var requirement = requirements[i];
-        var requirementId = requirement._id;
-        var info = Personal.findOne({
-            node: requirementId
-        });
-        var state = info ? info.state : 0;
-        var contains = [];
-        var subconcepts = requirement.weights;
-        for (var subconceptId in subconcepts) {
-            var subObj = {};
-            var subconcept = Nodes.findOne(subconceptId);
-            subObj["_id"] = subconceptId;
-            subObj["name"] = subconcept.name;
-            subObj["description"] = subconcept.description;
-            var subinfo = Personal.findOne({
-                node: subconceptId,
-                user: Meteor.userId()
-            });
-            var substate = subinfo ? subinfo.state : 0;
-            contains.push(subObj);
-        }
-        var obj = {};
-        obj["_id"] = requirementId;
-        obj["state"] = state;
-        obj["contains"] = contains;
-        json.push(obj);
-    }
-    Session.set("grantsObject", json)*/
-}
+// function grantsAsJSONSession() {
+//     console.log('grantsAsJSONSession');
+//     var id = FlowRouter.getParam('contentId');
+//     console.log(Template.getData().grants);
+//
+//     console.log(grantments);
+//      var json = [];
+//     // for (var i = 0; i < requirements.length; i++) {
+//     //     var requirement = requirements[i];
+//     //     var requirementId = requirement._id;
+//     //     var info = Personal.findOne({
+//     //         node: requirementId
+//     //     });
+//     //     var state = info ? info.state : 0;
+//     //     var contains = [];
+//     //     var subconcepts = requirement.weights;
+//     //     for (var subconceptId in subconcepts) {
+//     //         var subObj = {};
+//     //         var subconcept = Nodes.findOne(subconceptId);
+//     //         subObj["_id"] = subconceptId;
+//     //         subObj["name"] = subconcept.name;
+//     //         subObj["description"] = subconcept.description;
+//     //         var subinfo = Personal.findOne({
+//     //             node: subconceptId,
+//     //             user: Meteor.userId()
+//     //         });
+//     //         var substate = subinfo ? subinfo.state : 0;
+//     //         contains.push(subObj);
+//     //     }
+//     //     var obj = {};
+//     //     obj["_id"] = requirementId;
+//     //     obj["state"] = state;
+//     //     obj["contains"] = contains;
+//     //     json.push(obj);
+//     // }
+//     // Session.set("grantsObject", json)
+// }
 
 
 
@@ -104,6 +104,7 @@ Template.unitEdit.rendered = function() {
 
             //console.log('conceptEdit rendered > subs ready');
             needsAsJSONSession();
+            //grantsAsJSONSession();
 
             var deletedNeedsSets = [];
             Session.set('deletedNeedsSets', deletedNeedsSets);
@@ -228,7 +229,6 @@ Template.unitEditContent.events({
             "subContent": []
         });
         Session.set('tempContent', tempContent);
-        console.log('session changed');
     },
     'click .add-text': function(event) {
         event.preventDefault();
@@ -361,7 +361,45 @@ Template.conceptEditSelectBox.rendered = function() {
 AutoForm.hooks({
     unitEdit: {
         onSubmit: function(doc) {
-            // ORGANIZE NAME, DESCRIPTION AND CONTENT
+            var nodeId = FlowRouter.getParam('contentId');
+            
+            // Handle new and edited need sets
+            var needsObject = Session.get('needsObject');
+            //console.log(needsObject);
+            _.forEach(needsObject, function(n) {
+                var setId = n['_id'];
+                var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
+                var needsMappedAsArrayofObjects = {};
+                for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
+                    needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
+                }
+                if (_(setId).startsWith('newSet')) {
+                    Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+                } else {
+                    Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
+                }
+            });
+
+            // Handle deleted need sets
+            var deletedNeedsSets = Session.get('deletedNeedsSets');
+            for (setId of deletedNeedsSets) {
+                Meteor.call('removeNeed', setId);
+            }
+
+            // Handle grants
+            var grantsMappedAsObject = {};
+            if (typeof doc.grants !== 'undefined') {
+                for (var i = 0; i < doc.grants.length; i += 1) {
+                    grantsMappedAsObject[doc.grants[i]] = true;
+                }
+            }
+            console.log(nodeId + ' ' + grantsMappedAsObject);
+            Meteor.call('editGrants', nodeId, grantsMappedAsObject);
+            delete doc.grants;
+
+
+
+            // Handle NAME, DESCRIPTION AND CONTENT
             var content = Session.get('tempContent'); // fetch content
             var evaluation = { // create evaluation object
                 "type": "unitEvaluationSection"
@@ -379,57 +417,13 @@ AutoForm.hooks({
             doc.content = content;
             delete doc.evaluationType;
 
-            // ORGANIZE NEEDED CONCEPTS
-            var needsMappedAsArrayofObjects = [];
-            if (doc.needs !== null) {
-                for (var i = 0; i < doc.needs.length; i += 1) {
-                    needsMappedAsArrayofObjects[i] = {};
-                    for (var n = 0; n < doc.needs[i].length; n += 1) {
-                        needsMappedAsArrayofObjects[i][doc.needs[i][n]] = true;
-                    }
-                }
-            }
-            doc.needs = needsMappedAsArrayofObjects;
-
             var parameters = doc;
+            //console.log(parameters);
 
-            var nodeId = FlowRouter.getParam('contentId');
+            // Set name, description, content
             Meteor.call('editNode', nodeId, parameters);
 
-            var needsObject = Session.get('needsObject');
-            //console.log(needsObject);
-            _.forEach(needsObject, function(n) {
-                var setId = n['_id'];
-                var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
-                //console.log(needsAsArrayOfId);
-                var needsMappedAsArrayofObjects = {};
-                for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
-                    needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
-                }
-                console.log(needsMappedAsArrayofObjects);
-                if (_(setId).startsWith('newSet')) {
-                    //console.log(needsMappedAsArrayofObjects);
-                    Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
-                    /*console.log('addNeed for ' + nodeId + ' with' + needsMappedAsArrayofObjects);
-                    console.log(needsMappedAsArrayofObjects);*/
-                } else {
-                    Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
-                }
-            });
-
-            /*            // ORGANIZE GRANTED CONCEPTS
-                        var grantsMappedAsObject = {};
-                        if (doc.grants != null) {
-                            for (var i = 0; i < doc.grants.length; i += 1) {
-                                grantsMappedAsObject[doc.grants[i]] = true;
-                            }
-                            doc.grants = grantsMappedAsObject;
-                        };
-                        delete doc.grants;*/
-
-
-
-            FlowRouter.go('/content/' + nodeId);
+            //FlowRouter.go('/content/' + nodeId);
             this.done();
             return false;
         }

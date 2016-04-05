@@ -192,31 +192,31 @@ AutoForm.hooks({
       var nodeId = FlowRouter.getParam('conceptId');
 
       Meteor.call('editNode', nodeId, parameters);
-      // var needsObject = Session.get('needsObject');
-      // var deletedNeedsSets = Session.get('deletedNeedsSets');
-      // //console.log(needsObject);
-      // _.forEach(needsObject, function(n) {
-      //   var setId = n['_id'];
-      //   var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
-      //   //console.log(needsAsArrayOfId);
-      //   var needsMappedAsArrayofObjects = {};
-      //   for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
-      //     needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
-      //   }
-      //   //console.log(needsMappedAsArrayofObjects);
-      //   if (_(setId).startsWith('newSet')) {
-      //     //console.log(needsMappedAsArrayofObjects);
-      //     Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
-      //     /*console.log('addNeed for ' + nodeId + ' with' + needsMappedAsArrayofObjects);
-      //     console.log(needsMappedAsArrayofObjects);*/
-      //   } else {
-      //     Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
-      //   }
-      // });
-      // console.log(deletedNeedsSets);
-      // _.forEach(deletedNeedsSets, function(setId) {
-      //   Meteor.call('removeNeed', setId);
-      // });
+
+
+      // Handle new and edited need sets
+      var needsObject = Session.get('needsObject');
+      //console.log(needsObject);
+      _.forEach(needsObject, function(n) {
+          var setId = n['_id'];
+          var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
+          var needsMappedAsArrayofObjects = {};
+          for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
+              needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
+          }
+          if (_(setId).startsWith('newSet')) {
+              Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+          } else {
+              Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
+          }
+      });
+
+      // Handle deleted need sets
+      var deletedNeedsSets = Session.get('deletedNeedsSets');
+      for (setId of deletedNeedsSets) {
+          Meteor.call('removeNeed', setId);
+      }
+
       FlowRouter.go('/concept/' + nodeId);
       this.done();
       return false;

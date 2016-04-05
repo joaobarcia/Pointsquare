@@ -177,8 +177,8 @@ AutoForm.hooks({
                         needsMappedAsArrayofObjects[i][doc.needs[i][n]] = true;
                     }
                 }
-            };
-            delete doc.needs
+            }
+            delete doc.needs;
 
             var grantsMappedAsObject = {};
             if (doc.grants != null) {
@@ -194,6 +194,7 @@ AutoForm.hooks({
             unitDefinitions.parameters = doc;
             unitDefinitions.needs = needsMappedAsArrayofObjects;
             unitDefinitions.grants = grantsMappedAsObject;
+            console.log(unitDefinitions);
 
             console.log(unitDefinitions);
             Meteor.call('create', unitDefinitions, function(error, result) {
