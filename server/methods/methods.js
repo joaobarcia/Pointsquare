@@ -23,7 +23,7 @@ MINIMUM_BIAS = 1;
 var RATE = 0.1;
 var MAX_STEPS = 10000;
 var MIN_STEPS = 10;
-var TOLERANCE = 0.005;
+var TOLERANCE = 0.01;
 
 //server functions
 
@@ -272,7 +272,7 @@ find_forward_layer = function(nodes) {
             continue;
         }
         var in_set = node.in_set;
-        return in_set;
+        //return in_set;
         for (var requirement_id in in_set) {
             var set = Requirements.findOne(requirement_id);
             var next_node = set.node;
@@ -510,8 +510,9 @@ forward_update = function(node_ids, user_id) {
             break;
         }
         for (var node_id in next_layer) {
+            //console.log(node_id);
             update_state(node_id, user_id);
-            update_completion(node_id, user_id);
+            //update_completion(node_id, user_id);
         }
         current_layer = next_layer;
     }
@@ -624,7 +625,6 @@ readapt = function(target, user_id) {
         saved_input[node_id] = state[node_id];
     }
     //begin subnetwork update
-    
     while (max_error > TOLERANCE) {
         //reset bounds
         var is_top_set = false;
@@ -656,6 +656,7 @@ readapt = function(target, user_id) {
 
         //forward propagation
         while (true) {
+            //console.log(RATE);
             //increment input states
             for (var node_id in input_layer) {
                 state[node_id] = box(state[node_id] + RATE * error[node_id]);
@@ -1350,7 +1351,6 @@ Meteor.methods({
           }
         }
         target[nodeID] = 1;
-        return target;
         var result = readapt(target, userID);
         var goal = Goals.findOne({user:userID});
         if(goal){set_goal(goal.node,userID);}
