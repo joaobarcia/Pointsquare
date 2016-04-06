@@ -398,6 +398,7 @@ find_missing_subtree = function(node_ids,user_id) {
 advise = function(goals,user_id){
     var advice = [];
     var subtree = find_missing_subtree(goals,user_id);
+    //console.log(subtree);
     for(var n in subtree){
         var layer = subtree[n];
         //ordenar os nodos desta camada por estado
@@ -1237,7 +1238,7 @@ set_goal = function(nodeID,userID){
     user: userID
   });
   var goal = {};
-  goal[nodeID] = true;
+  goal[nodeID] = get_state(nodeID,userID);
   var units = advise(goal,userID);
   var concepts = starting_concepts(goal,userID);
   var tree = find_missing_subtree(goal,userID);
