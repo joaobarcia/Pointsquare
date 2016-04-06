@@ -395,9 +395,125 @@ find_missing_subtree = function(node_ids,user_id) {
     return tree;
 };
 
+/*find_missing_orb = function(node_id,user_id) {
+    var origin = {};
+    origin[node_id] = true;
+    var orb = {};
+    var node = Nodes.findOne(node_id);
+    //var up = find_forward_layer(origin,user_id);
+    var down = find_full_backward_layer(origin,user_id);
+    for(var id in down){
+        orb[id] = true;
+    }
+    var sets = node.in_set;
+    for(var set in sets){
+        var requirement = Requirements.findOne(set);
+        var active = most_active_requirement(requirement.node,user_id);
+        if( set == active && !(requirement.node in orb) ){ orb[requirement.node] = false; }
+    }
+    return orb;
+}*/
+
+find_orb = function(node_ids,user_id) {
+    var orb = {};
+    for(var node_id in node_ids){
+        var node = Nodes.findOne(node_id);
+        //if down is activated add required nodes
+        if(node_ids[node_id]){
+            var needs = node.needs;
+            for(var need in needs){
+                var requirement = Requirements.findOne(need);
+                var subnodes = requirement.weights;
+                for(var id in subnodes){
+                    orb[id] = true;
+                }
+            }
+        }
+        //add these anyway
+        var granted_by = node.granted_by;
+        for(var id in granted_by){
+            orb[id] = true;
+        }
+        var sets = node.in_set;
+        for(var set in sets){
+            var requirement = Requirements.findOne(set);
+            var active = most_active_requirement(requirement.node,user_id);
+            if( set == active && !(requirement.node in orb) ){ orb[requirement.node] = false; }
+        }
+    }
+    return orb;
+}
+
+find_missing_bush = function(node_ids,user_id) {
+    //if( get_state(node_id,user_id) > 0.9 ){ return []; }
+    var bush = [];
+    var origin = {};
+    for(var id in node_ids){
+        origin[id] = get_state(id,user_id);
+    }
+    bush.push(origin);
+    var bag = node_ids;
+    var current_layer = find_orb(node_ids,user_id);
+    while(1){
+        bush.push({});
+        var to_keep = {};
+        for(var id in current_layer){
+            var state = get_state(id,user_id);
+            var type = Nodes.findOne(id).type;
+            if( type == "content" && !(id in bag) ){
+                bush[bush.length-1][id] = state;
+                bag[id] = true;
+                if( state < 0.9 ){ to_keep[id] = true; }
+            }
+            else if( type == "concept" && state < 0.9 && !(id in bag) ){
+                bush[bush.length-1][id] = state;
+                bag[id] = true;
+                to_keep[id] = current_layer[id];
+            }
+        }
+        current_layer = find_orb(to_keep);
+        if( Object.keys(bush[bush.length-1]).length == 0 ){ bush.pop(); }
+        if( Object.keys(current_layer).length == 0 ){ break; }
+    }
+    return bush;
+}
+
 advise = function(goals,user_id){
     var advice = [];
     var subtree = find_missing_subtree(goals,user_id);
+    //console.log(subtree);
+    for(var n in subtree){
+        var layer = subtree[n];
+        //ordenar os nodos desta camada por estado
+        var ordered = Object.keys(layer).sort(function(a,b){return layer[a]-layer[b]});
+        /*for(var node_id in subtree[layer]){
+            var state = get_state(node_id,user_id);
+            var info = {id:node_id,state:state};
+            if(ordered.length==0){ordered.push(info);}
+            for(var i in ordered){
+                var existing_state = ordered[i].state;
+                if(state>=existing_state){
+                    ordered.splice(i,0,info);
+                    break;
+                }
+            }
+        }*/
+        //if(n==0){return ordered;}
+        //pegar na camada ordenada e
+        for(var i in ordered){
+            //var info = ordered[i];
+            var node_id = ordered[i];//info.id;
+            var state = layer[node_id];//info.state;
+            var type = Nodes.findOne(node_id).type;
+            if( state > 0.9 && type == "content" ){ advice.push(node_id); }
+        }
+    }
+    return advice;
+};
+
+advise_better = function(goals,user_id){
+    var advice = [];
+    var subtree = find_missing_bush(goals,user_id);
     //console.log(subtree);
     for(var n in subtree){
         var layer = subtree[n];
@@ -472,7 +588,7 @@ count_concepts_to_goal = function(goals,user_id){
 
 starting_concepts = function(goals,user_id){
     var concepts = {};
-    var advice = advise(goals,user_id);
+    var advice = advise_better(goals,user_id);
     for(var i in advice){
         var unit = Nodes.findOne(advice[i]);
         var grants = unit.grants;
@@ -1239,7 +1355,7 @@ set_goal = function(nodeID,userID){
   });
   var goal = {};
   goal[nodeID] = get_state(nodeID,userID);
-  var units = advise(goal,userID);
+  var units = advise_better(goal,userID);
   var concepts = starting_concepts(goal,userID);
   var tree = find_missing_subtree(goal,userID);
   var conceptCount = count_concepts_to_goal(goal,userID);
