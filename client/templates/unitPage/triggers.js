@@ -1,112 +1,74 @@
 function succeedUnit() {
-  soundSuccess.play();
-  var $toastSuccess = $('<span class="green-text">Good job!</span>');
-  Materialize.toast($toastSuccess, 2000);
-  console.log("calling succeed method with node " + FlowRouter.getParam('contentId') + " and user " + Meteor.userId());
-  Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
-    FlowRouter.go('goalPage');
-  });
+    soundSuccess.play();
+    var $toastSuccess = $('<span class="green-text">Good job!</span>');
+    Materialize.toast($toastSuccess, 2000);
+    Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
+        FlowRouter.go('goalPage');
+    });
 }
 
 function failUnit() {
-  soundFail.play();
-  var $toastFail = $('<span class="red-text">Try another unit</span>');
-  Materialize.toast($toastFail, 2000);
-  console.log("calling fail method with node " + FlowRouter.getParam('contentId') + " and user " + Meteor.userId());
-  Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
-    FlowRouter.go('goalPage');
-  });
+    soundFail.play();
+    var $toastFail = $('<span class="red-text">Try another unit</span>');
+    Materialize.toast($toastFail, 2000);
+    Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
+        // if goal exists
+        if (typeof Goals.findOne({
+                user: Meteor.userId()
+            }) !== "undefined") {
+            // go to goal page
+            FlowRouter.go('goalPage');
+        } else {
+            // otherwise prompt user about setting unit as goal
+            Session.set('failedUnitAndNoGoal', true);
+        }
+    });
 }
 
 Template.unitPage.onCreated(function() {
-  var self = this;
-  self.autorun(function() {
-    var contentId = FlowRouter.getParam('contentId');
-    self.subscribe('singleContent', contentId);
-    self.subscribe('allConcepts');
-    /*var args = {};
-    args["nodeId"] = contentId;
-    args["userId"] = Meteor.userId();
-    self.subscribe("singleNode", args);*/
-  });
+    var self = this;
+    self.autorun(function() {
+        var contentId = FlowRouter.getParam('contentId');
+        self.subscribe('singleContent', contentId);
+        self.subscribe('allConcepts');
+        /*var args = {};
+        args["nodeId"] = contentId;
+        args["userId"] = Meteor.userId();
+        self.subscribe("singleNode", args);*/
+    });
 });
 
 Template.unitPage.onRendered(function() {
-  this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
-      setTimeout(function() {
-        $('ul.tabs').tabs();
-        $('.tooltipped').tooltip({
-          delay: 50
-        });
-      }, 20);
+    this.autorun(() => {
+        if (this.subscriptionsReady()) {
+            //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
+            setTimeout(function() {
+                $('ul.tabs').tabs();
+                $('.tooltipped').tooltip({
+                    delay: 50
+                });
+            }, 20);
 
-    }
-  });
+        }
+    });
+});
 
+Template.unitContent.onCreated(function() {
+    Session.set('failedUnitAndNoGoal', false);
+});
+
+Template.unitContent.onDestroyed(function() {
+    Session.set('failedUnitAndNoGoal', false);
 });
 
 Template.unitPage.events({
-  'click #understood': function(event) {
-    event.preventDefault();
-    if (Meteor.userId()) {
-      /*Session.set('callStatus', 'learning');
-      if (Session.get("temp") == "ready") {
-          Meteor.call("succeed", Blaze.getData()["rid"], function(error, result) {
-              console.log(result.statusCode);
-              if (result.statusCode >= 200 && result.statusCode < 300) {
-                  Session.set('callStatus', 'learned');
-              }
-              var newStuff = result.data.result[0]['value'];
-              Session.set('newConcepts', newStuff[1]);
-              Session.set('newUnits', newStuff[0]);
-          });
-      } else if (Session.get("temp") == "precomputing") {
-          console.log("nothing");
-      }*/
-      succeedUnit();
-    }
-  },
-
-  'click #notUnderstood': function(event) {
-    event.preventDefault();
-    if (Meteor.userId()) {
-      /*Session.set('callStatus', 'unlearning');
-      if (Session.get("temp") == "ready") {
-          Meteor.call("fail", Blaze.getData()["rid"], function(error, result) {
-              console.log(result.statusCode);
-              if (result.statusCode >= 200 && result.statusCode < 300) {
-                  Session.set('callStatus', 'unlearned');
-              }
-              var newStuff = result.data.result[0]['value'];
-              Session.set('lostConcepts', newStuff[3]);
-              Session.set('lostUnits', newStuff[2]);
-          });
-      } else if (Session.get("temp") == "precomputing") {
-          console.log("nothing");
-      }
-      Meteor.call("incrementViews", Blaze.getData()["rid"]);*/
-      failUnit();
-    }
-  },
-
-  'submit #exerciseStringForm': function(event) {
-    event.preventDefault();
-    var answerIsCorrect = null;
-    if (this.answers.indexOf(event.target.exerciseString.value) > -1) {
-      answerIsCorrect = true;
-    } else answerIsCorrect = false;
-    if (answerIsCorrect) {
-      $("#exerciseButton").removeClass("orange red").addClass("green");
-      $("#exerciseInputText").removeClass("red-text").addClass("green-text");
-      if (Meteor.userId()) {
-        /*Session.set("unit_rid", Blaze.getData()["rid"]);
-        setTimeout(function() {
-            Session.set('callStatus', 'learning');
+    'click #understood': function(event) {
+        event.preventDefault();
+        if (Meteor.userId()) {
+            /*Session.set('callStatus', 'learning');
             if (Session.get("temp") == "ready") {
-                var unit_rid = Session.get("unit_rid");
-                Meteor.call("succeed", unit_rid, function(error, result) {
+                Meteor.call("succeed", Blaze.getData()["rid"], function(error, result) {
+                    console.log(result.statusCode);
                     if (result.statusCode >= 200 && result.statusCode < 300) {
                         Session.set('callStatus', 'learned');
                     }
@@ -116,26 +78,17 @@ Template.unitPage.events({
                 });
             } else if (Session.get("temp") == "precomputing") {
                 console.log("nothing");
-            }
-            Meteor.call("incrementViews", unit_rid);
-        }, 2000);*/
-        succeedUnit();
-      }
-    } else if (!answerIsCorrect) {
-      $("#exerciseButton").removeClass("orange");
-      $("#exerciseButton").removeClass("green");
-      $("#exerciseButton").addClass("red");
+            }*/
+            succeedUnit();
+        }
+    },
 
-      $("#exerciseInputText").removeClass("green-text");
-      $("#exerciseInputText").addClass("red-text");
-
-      if (Meteor.userId()) {
-        /*Session.set("unit_rid", Blaze.getData()["rid"]);
-        setTimeout(function() {
-            Session.set('callStatus', 'unlearning');
+    'click #notUnderstood': function(event) {
+        event.preventDefault();
+        if (Meteor.userId()) {
+            /*Session.set('callStatus', 'unlearning');
             if (Session.get("temp") == "ready") {
-                var unit_rid = Session.get("unit_rid");
-                Meteor.call("fail", unit_rid, function(error, result) {
+                Meteor.call("fail", Blaze.getData()["rid"], function(error, result) {
                     console.log(result.statusCode);
                     if (result.statusCode >= 200 && result.statusCode < 300) {
                         Session.set('callStatus', 'unlearned');
@@ -147,74 +100,139 @@ Template.unitPage.events({
             } else if (Session.get("temp") == "precomputing") {
                 console.log("nothing");
             }
-            Meteor.call("incrementViews", unit_rid);
-        }, 2000);*/
-        failUnit();
-      }
-    }
-  },
-  'change .trueRadioButton': function(event) {
-    $(".trueRadioButton").prop('disabled', 'disabled');
-    $(".falseRadioButton").prop('disabled', 'disabled');
-    $(".trueRadioButtonLabel").addClass("green-text");
-    $(".falseRadioButtonLabel").addClass("red-text");
-    if (Meteor.userId()) {
-      /*Session.set("unit_rid", Blaze.getData()["rid"]);
-      setTimeout(function() {
-          Session.set('callStatus', 'learning');
-          if (Session.get("temp") == "ready") {
-              var unit_rid = Session.get("unit_rid");
-              Meteor.call("succeed", unit_rid, function(error, result) {
-                  console.log("martins");
-                  console.log(result.statusCode);
-                  if (result.statusCode >= 200 && result.statusCode < 300) {
-                      Session.set('callStatus', 'learned');
-                  }
-                  var newStuff = result.data.result[0]['value'];
-                  Session.set('newConcepts', newStuff[1]);
-                  Session.set('newUnits', newStuff[0]);
-              });
-          } else if (Session.get("temp") == "precomputing") {
-              console.log("nothing");
-          }
-          Meteor.call("incrementViews", unit_rid);
-      }, 2000);*/
-      succeedUnit();
-    }
-  },
+            Meteor.call("incrementViews", Blaze.getData()["rid"]);*/
+            failUnit();
+        }
+    },
 
-  'change .falseRadioButton': function(event) {
-    $(".trueRadioButton").prop('disabled', 'disabled');
-    $(".falseRadioButton").prop('disabled', 'disabled');
-    $(".trueRadioButtonLabel").addClass("green-text");
-    $(".falseRadioButtonLabel").addClass("red-text");
-    if (Meteor.userId()) {
-      /*Session.set("unit_rid", Blaze.getData()["rid"]);
-      setTimeout(function() {
-          Session.set('callStatus', 'unlearning');
-          if (Session.get("temp") == "ready") {
-              var unit_rid = Session.get("unit_rid");
-              Meteor.call("fail", unit_rid, function(error, result) {
-                  console.log(result.statusCode);
-                  if (result.statusCode >= 200 && result.statusCode < 300) {
-                      Session.set('callStatus', 'unlearned');
-                  }
-                  var newStuff = result.data.result[0]['value'];
-                  Session.set('lostConcepts', newStuff[3]);
-                  Session.set('lostUnits', newStuff[2]);
-              });
-          } else if (Session.get("temp") == "precomputing") {
-              console.log("nothing");
-          }
-          Meteor.call("incrementViews", unit_rid);
-      }, 2000);*/
-      failUnit();
+    'submit #exerciseStringForm': function(event) {
+        event.preventDefault();
+        var answerIsCorrect = null;
+        if (this.answers.indexOf(event.target.exerciseString.value) > -1) {
+            answerIsCorrect = true;
+        } else answerIsCorrect = false;
+        if (answerIsCorrect) {
+            $("#exerciseButton").removeClass("orange red").addClass("green");
+            $("#exerciseInputText").removeClass("red-text").addClass("green-text");
+            if (Meteor.userId()) {
+                /*Session.set("unit_rid", Blaze.getData()["rid"]);
+                setTimeout(function() {
+                    Session.set('callStatus', 'learning');
+                    if (Session.get("temp") == "ready") {
+                        var unit_rid = Session.get("unit_rid");
+                        Meteor.call("succeed", unit_rid, function(error, result) {
+                            if (result.statusCode >= 200 && result.statusCode < 300) {
+                                Session.set('callStatus', 'learned');
+                            }
+                            var newStuff = result.data.result[0]['value'];
+                            Session.set('newConcepts', newStuff[1]);
+                            Session.set('newUnits', newStuff[0]);
+                        });
+                    } else if (Session.get("temp") == "precomputing") {
+                        console.log("nothing");
+                    }
+                    Meteor.call("incrementViews", unit_rid);
+                }, 2000);*/
+                succeedUnit();
+            }
+        } else if (!answerIsCorrect) {
+            $("#exerciseButton").removeClass("orange");
+            $("#exerciseButton").removeClass("green");
+            $("#exerciseButton").addClass("red");
+
+            $("#exerciseInputText").removeClass("green-text");
+            $("#exerciseInputText").addClass("red-text");
+
+            if (Meteor.userId()) {
+                /*Session.set("unit_rid", Blaze.getData()["rid"]);
+                setTimeout(function() {
+                    Session.set('callStatus', 'unlearning');
+                    if (Session.get("temp") == "ready") {
+                        var unit_rid = Session.get("unit_rid");
+                        Meteor.call("fail", unit_rid, function(error, result) {
+                            console.log(result.statusCode);
+                            if (result.statusCode >= 200 && result.statusCode < 300) {
+                                Session.set('callStatus', 'unlearned');
+                            }
+                            var newStuff = result.data.result[0]['value'];
+                            Session.set('lostConcepts', newStuff[3]);
+                            Session.set('lostUnits', newStuff[2]);
+                        });
+                    } else if (Session.get("temp") == "precomputing") {
+                        console.log("nothing");
+                    }
+                    Meteor.call("incrementViews", unit_rid);
+                }, 2000);*/
+                failUnit();
+            }
+        }
+    },
+    'change .trueRadioButton': function(event) {
+        $(".trueRadioButton").prop('disabled', 'disabled');
+        $(".falseRadioButton").prop('disabled', 'disabled');
+        $(".trueRadioButtonLabel").addClass("green-text");
+        $(".falseRadioButtonLabel").addClass("red-text");
+        if (Meteor.userId()) {
+            /*Session.set("unit_rid", Blaze.getData()["rid"]);
+            setTimeout(function() {
+                Session.set('callStatus', 'learning');
+                if (Session.get("temp") == "ready") {
+                    var unit_rid = Session.get("unit_rid");
+                    Meteor.call("succeed", unit_rid, function(error, result) {
+                        console.log("martins");
+                        console.log(result.statusCode);
+                        if (result.statusCode >= 200 && result.statusCode < 300) {
+                            Session.set('callStatus', 'learned');
+                        }
+                        var newStuff = result.data.result[0]['value'];
+                        Session.set('newConcepts', newStuff[1]);
+                        Session.set('newUnits', newStuff[0]);
+                    });
+                } else if (Session.get("temp") == "precomputing") {
+                    console.log("nothing");
+                }
+                Meteor.call("incrementViews", unit_rid);
+            }, 2000);*/
+            succeedUnit();
+        }
+    },
+
+    'change .falseRadioButton': function(event) {
+        $(".trueRadioButton").prop('disabled', 'disabled');
+        $(".falseRadioButton").prop('disabled', 'disabled');
+        $(".trueRadioButtonLabel").addClass("green-text");
+        $(".falseRadioButtonLabel").addClass("red-text");
+        if (Meteor.userId()) {
+            /*Session.set("unit_rid", Blaze.getData()["rid"]);
+            setTimeout(function() {
+                Session.set('callStatus', 'unlearning');
+                if (Session.get("temp") == "ready") {
+                    var unit_rid = Session.get("unit_rid");
+                    Meteor.call("fail", unit_rid, function(error, result) {
+                        console.log(result.statusCode);
+                        if (result.statusCode >= 200 && result.statusCode < 300) {
+                            Session.set('callStatus', 'unlearned');
+                        }
+                        var newStuff = result.data.result[0]['value'];
+                        Session.set('lostConcepts', newStuff[3]);
+                        Session.set('lostUnits', newStuff[2]);
+                    });
+                } else if (Session.get("temp") == "precomputing") {
+                    console.log("nothing");
+                }
+                Meteor.call("incrementViews", unit_rid);
+            }, 2000);*/
+            failUnit();
+        }
+    },
+    'click .set-goal': function(event, template) {
+        event.preventDefault();
+        var nodeId = FlowRouter.getParam('contentId');
+        console.log(nodeId);
+        Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
+            FlowRouter.go('goalPage');
+        });
     }
-  },
-  // 'click #backToUnit': function(event) {
-  //     event.preventDefault();
-  //     Session.set('callStatus', 'doingExercise');
-  //     console.log(Session.get('callStatus'));
-  // }
+
 
 });
