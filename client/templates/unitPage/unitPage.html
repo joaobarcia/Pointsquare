@@ -72,7 +72,6 @@
 </template>
 <template name="unitContent">
 <div class="card-content">
-<!-- {{unitIsOneSectionAndNoExercise}} -->
 {{#unless failedUnitAndNoGoal}}
     {{#if unitIsOneSectionAndNoExercise}}
         {{> contentByType}}
@@ -109,8 +108,12 @@
                 {{name}}</p>
         </div>
         <div class="section">
-            <a class="waves-effect waves-teal btn set-goal">
-                <i class="material-icons left">explore</i>Set this Unit as a learning goal</a>
+            {{#unless isLoading}}
+                <a class="waves-effect waves-teal btn set-goal">
+                    <i class="material-icons left">explore</i>Set this Unit as a learning goal</a>
+            {{else}}
+                {{> smallLoading}}
+            {{/unless}}
         </div>
     </div>
 {{/unless}}
@@ -180,6 +183,11 @@
             <button class="btn waves-effect waves-light {{answerFeedback}} disabled disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!" type="submit" name="action" id="exerciseButton">Submit</button>
         </form>
     {{/if}}
+    {{#if isLoading}}
+        <div class="row center-align">
+            {{> smallLoading}}
+        </div>
+    {{/if}}
 </div>
 </div>
 </template>
@@ -201,21 +209,32 @@
         </h3>
     {{/each}}
 {{/if}}
+{{#if isLoading}}
+    <div class="row center-align">
+        {{> smallLoading}}
+    </div>
+{{/if}}
 </form>
 </template>
 <template name="userConfirmation">
 <div class="section">
-{{#if currentUser}}
-    <div class="row center-align understood-buttons">
-        <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
-        <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">I didn't understand</a>
-    </div>
+{{#unless isLoading}}
+    {{#if currentUser}}
+        <div class="row center-align understood-buttons">
+            <a href="#!" class="waves-effect waves-light white-text green btn" id="understood">I understood</a>
+            <a href="#!" class="waves-effect waves-light white-text red btn" id="notUnderstood">Didn't understand</a>
+        </div>
+    {{else}}
+        <div class="row center-align understood-buttons">
+            <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">I understood</a>
+            <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Didn't understand</a>
+        </div>
+    {{/if}}
 {{else}}
     <div class="row center-align understood-buttons">
-        <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Gots it!</a>
-        <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Nots it!</a>
+        {{> smallLoading}}
     </div>
-{{/if}}
+{{/unless}}
 </div>
 </template>
 <template name="relatedConcepts">
@@ -250,80 +269,3 @@
 </div>
 </div>
 </template>
-<!-- <template name="propagatingKnowledge">
-    <div class="row center-align">
-        <div class="section">
-            <div class="preloader-wrapper big active">
-                <div class="spinner-layer spinner-blue-only">
-                    <div class="circle-clipper left">
-                        <div class="circle"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <h4>We are propagating your knowledge</h4>
-        </div>
-    </div>
-</template> -->
-<!-- <template name="learnedResults">
-<div class="row center-align">
-<div class="section">
-  <h5>Congratulations! You have learnt</h5>
-  <div class="row">
-    <div class="col s4 offset-s4">
-      {{!-- {{#each learnedConcept}}
-      <a href="../concept/{{escrid}}">{{name}}</a>
-      <br>
-    {{/each}}
-    --}}
-  </div>
-</div>
-</div>
-<div class="section">
-<h5>Why don't you try one of these units next</h5>
-<div class="row">
-  <div class="col s6 offset-s3">
-    {{> unitSuggestions}}
-  </div>
-</div>
-</div>
-<div class="section">
-<div class="row">
-  <div class="col s6 offset-s3">
-    <a href="#!" class="waves-effect waves-light white-text cyan btn" id="backToUnit">back to unit</a>
-  </div>
-</div>
-</div>
-</div>
-</template>
-<template name="unlearnedResults">
-<div class="row center-align">
-<div class="section">
-<h5>These concepts have been deactivated, but don't worry!</h5>
-<div class="row">
-  <div class="col s4 offset-s4">
-    {{#each unlearnedConcept}}
-      <a href="../concept/{{escrid}}">{{name}}</a>
-      <br>
-    {{/each}}
-  </div>
-</div>
-</div>
-<div class="section">
-<h5>Why don't you try one of this units next</h5>
-<div class="row">
-  <div class="col s6 offset-s3">
-    {{> unitSuggestions}}
-  </div>
-</div>
-</div>
-<div class="section">
-<div class="row">
-  <div class="col s6 offset-s3">
-    <a href="#!" class="waves-effect waves-light white-text cyan btn" id="backToUnit">back to unit</a>
-  </div>
-</div>
-</div>
-</div>
-</template> -->

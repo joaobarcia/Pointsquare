@@ -1,37 +1,42 @@
 <template name="conceptCard">
-  <!-- <a href="../concept/{{_id}}" class="collection-item avatar black-text valign-wrapper"> -->
-  <a class="collection-item avatar black-text valign-wrapper">
-    <div class="valign">
-      <div class="row">
-        <div class="col s6">
-          <h5>
-            <i class="circle {{mapConceptStateToColor state}}">
-              <span class="ti-light-bulb"></span>
-            </i>
-          </h5>
-          <span class="title">
-            <h4>{{name}}</h4>
-          </span>
-          <h6 class="grey-text">{{description}}</h6>
-        </div>
-        {{#unless disableSetGoal}}
-            {{#unless goalAlreadyReached state}}
+    <!-- <a href="../concept/{{_id}}" class="collection-item avatar black-text valign-wrapper"> -->
+    <a class="collection-item avatar black-text valign-wrapper">
+        <div class="valign">
+            <div class="row">
                 <div class="col s6">
-                    <div class="right">
-                        <a class="waves-effect waves-teal btn set-goal">
-                            <i class="material-icons left">explore</i>Set as goal</a>
-                    </div>
+                    <h5>
+                        <i class="circle {{mapConceptStateToColor state}}">
+                            <span class="ti-light-bulb"></span>
+                        </i>
+                    </h5>
+                    <span class="title">
+                        <h4>{{name}}</h4>
+                    </span>
+                    <h6 class="grey-text">{{description}}</h6>
                 </div>
-            {{else}}
-                <div class="col s6">
-                    <div class="right">
-                        <a class="waves-effect waves-teal btn disabled">
-                            You know this</a>
-                    </div>
-                </div>
-            {{/unless}}
-        {{/unless}}
-        <!-- <div class="col s2 center-align">
+                {{#unless disableSetGoal}}
+                    {{#unless goalAlreadyReached state}}
+                        <div class="col s6">
+                            <div class="right">
+                                {{#unless isLoading}}
+                                    <a class="waves-effect waves-teal btn set-goal">
+                                        <i class="material-icons left">explore</i>Set as goal</a>
+                                {{else}}
+                                    <a class="waves-effect waves-teal btn disabled">
+                                        <i class="material-icons left">explore</i>Set as goal</a>
+                                {{/unless}}
+                            </div>
+                        </div>
+                    {{else}}
+                        <div class="col s6">
+                            <div class="right">
+                                <a class="waves-effect waves-teal btn disabled">
+                                    You know this</a>
+                            </div>
+                        </div>
+                    {{/unless}}
+                {{/unless}}
+                <!-- <div class="col s2 center-align">
         <p class="grey-text">unlocks <strong>15</strong> units</p>
         <button class="btn waves-effect waves-light" type="submit" name="action">Test
         </button>
@@ -41,7 +46,7 @@
         <button class="btn waves-effect waves-light" type="submit" name="action">Learn
         </button>
       </div> -->
-      </div>
-    </div>
-  </a>
+            </div>
+        </div>
+    </a>
 </template>
