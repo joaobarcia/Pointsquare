@@ -90,6 +90,61 @@ set_state = function(state, node_id, user_id) {
     }
 };
 
+set_state2 = function(state, node_id, user_id,record) {
+    var info = Personal.findOne({
+        user: user_id,
+        node: node_id
+    });
+    if (info) {
+        var last_reference_state = info.last_reference_state;
+        var solidity = info.solidity;
+        if(last_reference_state == null || Math.abs(last_reference_state-state) > 0.1){
+            last_reference_state = state;
+            solidity = 1;
+        }
+        else{
+            solidity++;
+        }
+        if(record){
+            Personal.update({
+                _id: info._id
+            },{
+                $set: {
+                    state: state,
+                    last_reference_state: last_reference_state,
+                    solidity: solidity
+                }
+            });
+        }
+        else{
+            Personal.update({
+                _id: info._id
+            },{
+                $set: {
+                    state: state
+                }
+            });
+        }
+    } else {
+        if(record){
+            Personal.insert({
+                user: user_id,
+                node: node_id,
+                state: state,
+                last_reference_state: state,
+                solidity: 1
+            });
+        }
+        else{
+            Personal.insert({
+                user: user_id,
+                node: node_id,
+                state: state
+            });
+        }
+    }
+};
+
 set_personal_property = function(property, value, node_id, user_id) {
     var info = Personal.findOne({
         user: user_id,
@@ -215,6 +270,12 @@ compute_completion = function(node_id, user_id) {
 update_state = function(node_id, user_id) {
     var state = compute_state(node_id, user_id);
     set_state(state, node_id, user_id);
+    return state;
+};
+
+update_state2 = function(node_id, user_id,record) {
+    var state = compute_state(node_id, user_id);
+    set_state2(state, node_id, user_id,record);
     return state;
 };
 
@@ -599,6 +660,24 @@ starting_concepts = function(goals,user_id){
     return concepts;
 };
 
+find_test_units = function(concept_id,user_id){
+    var test = {};
+    var concept = Nodes.findOne(concept_id);
+    var in_set = concept.in_set;
+    for(var set_id in in_set){
+        var requirement = Requirements.findOne(set_id);
+        var number_of_concepts = Object.keys(requirement.weights).length;
+        var node = Nodes.findOne(requirement.node);
+        var is_a_unit = node.type == "content";
+        var unit_is_active = get_state(node._id,user_id) > 0.;
+        var set_is_most_active = most_active_requirement(node._id,user_id) == set_id;
+        if(is_a_unit && unit_is_active && set_is_most_active){
+            test[node._id] = -number_of_concepts;
+        }
+    }
+    return Object.keys(test).sort(function(a,b){return test[a]-test[b]});
+};
+
 find_micronodes = function(node_ids) {
     var micronodes = {};
     var current_layer = node_ids;
@@ -630,6 +709,20 @@ forward_update = function(node_ids, user_id) {
             //console.log(node_id);
             update_state(node_id, user_id);
             //update_completion(node_id, user_id);
+        }
+        current_layer = next_layer;
+    }
+};
+
+forward_update2 = function(node_ids, user_id,record) {
+    var current_layer = node_ids;
+    while (1) {
+        var next_layer = find_forward_layer(current_layer);
+        if (Object.keys(next_layer).length == 0) {
+            break;
+        }
+        for (var node_id in next_layer) {
+            update_state2(node_id, user_id,record);
         }
         current_layer = next_layer;
     }
@@ -690,9 +783,15 @@ readapt = function(target, user_id) {
             max_minimal_activation = (minimal_activation > max_minimal_activation) ? minimal_activation : max_minimal_activation;
             state[requirement_id] = sigmoid(arg);
         }
-        if (Object.keys(requirements).length === 0) {
-            max_maximal_activation = 1;
-            max_minimal_activation = 0;
+        if (Object.keys(requirements).length == 0) {
+            if(node.type == "concept"){
+                max_maximal_activation = 1;
+                max_minimal_activation = 0;
+            }
+            else if(node.type == "content"){
+                max_maximal_activation = 1;
+                max_minimal_activation = 1;
+            }
             //if it's a microconcept, update it straight away
             state[node_id] = target[node_id];
         }
@@ -715,7 +814,6 @@ readapt = function(target, user_id) {
     var saved_output = {};
     var error = {};
     var max_error = 0;
-
     //update target micronode states
     for (var node_id in target) {
         var node = Nodes.findOne(node_id);
@@ -760,8 +858,8 @@ readapt = function(target, user_id) {
                 var max = 0;
                 var active_requirement = Object.keys(requirements)[0];
                 for (requirement_id in requirements) {
-                    max = state[requirement_id] > max ? state[requirement_id] : max;
                     active_requirement = state[requirement_id] > max ? requirement_id : active_requirement;
+                    max = state[requirement_id] > max ? state[requirement_id] : max;
                 }
                 weights = Requirements.findOne(active_requirement).weights;
                 for (var subnode_id in weights) {
@@ -770,10 +868,8 @@ readapt = function(target, user_id) {
                 }
             }
         }
-
         //forward propagation
         while (true) {
-            //console.log(RATE);
             //increment input states
             for (var node_id in input_layer) {
                 state[node_id] = box(state[node_id] + RATE * error[node_id]);
@@ -850,9 +946,9 @@ readapt = function(target, user_id) {
     }
     //end of subnetwork update
     for (var node_id in state) {
-        set_state(state[node_id], node_id, user_id);
+        set_state2(state[node_id], node_id, user_id,true);
     }
-    forward_update(input_layer, user_id);
+    forward_update2(input_layer, user_id,true);
 
 }
 
@@ -1464,10 +1560,10 @@ Meteor.methods({
         var grants = Nodes.findOne(nodeID).grants;
         if(grants){
           for(var id in grants){
-              target[id] = 1;
+              target[id] = true;
           }
         }
-        target[nodeID] = 1;
+        target[nodeID] = true;
         var result = readapt(target, userID);
         var goal = Goals.findOne({user:userID});
         if(goal){set_goal(goal.node,userID);}
@@ -1476,7 +1572,7 @@ Meteor.methods({
 
     fail: function(nodeID, userID) {
         var target = {};
-        target[nodeID] = 0;
+        target[nodeID] = false;
         var goal = Goals.findOne({user:userID});
         if(goal){set_goal(goal.node,userID);}
         return readapt(target, userID);
