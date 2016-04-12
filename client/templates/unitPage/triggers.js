@@ -4,8 +4,17 @@ function succeedUnit() {
     var $toastSuccess = $('<span class="green-text">Good job!</span>');
     Materialize.toast($toastSuccess, 2000);
     Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
-        FlowRouter.go('goalPage');
-        Session.set('isLoading', false);
+        var goal = Goals.findOne({user:Meteor.userId()});
+        if(goal){
+            Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
+                FlowRouter.go('goalPage');
+                Session.set('isLoading', false);
+            });
+        }
+        else{
+            FlowRouter.go('dashboard');
+            Session.set('isLoading', false);
+        }
     });
 }
 
@@ -23,13 +32,14 @@ function failUnit() {
         Materialize.toast($toastFailWithoutGoal, 2000);
     }
     Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
+        var goal = Goals.findOne({user:Meteor.userId()});
         // if goal exists
-        if (typeof Goals.findOne({
-                user: Meteor.userId()
-            }) !== "undefined") {
-            // go to goal page
-            FlowRouter.go('goalPage');
-        } else {
+        if(goal){
+            Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
+                FlowRouter.go('goalPage');
+            });
+        }
+        else{
             // otherwise prompt user about setting unit as goal
             Session.set('failedUnitAndNoGoal', true);
         }
