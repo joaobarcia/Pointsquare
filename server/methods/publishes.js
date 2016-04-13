@@ -15,7 +15,12 @@ Meteor.publish('personal', function() {
 Meteor.publish('goals', function() {
   return Goals.find();
 });
-
+Meteor.publish('requirements', function() {
+  return Requirements.find();
+});
+Meteor.publish('grantements', function() {
+  return Grantements.find();
+});
 Meteor.publish('userNames', function() {
   return Meteor.users.find({},{fields:{"username":1}});
 });
