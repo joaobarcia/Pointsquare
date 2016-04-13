@@ -1,66 +1,76 @@
 <template name="goalPage">
-  <div class="container">
-    {{#if goalIsCompleted}}
-      <div class="card">
-        <div class="row center-align">
-          <div class="section">
-            <h3>Congratulations! You have reached your goal!</h3>
-            <div class="section">
-              <h4>Head over to the search page to set a concept as goal or find another unit</h4>
-              <a class="waves-effect waves-light btn-large blue" href="{{ pathFor 'search' }}">
-                <i class="material-icons left">search</i>Search for Concepts or Units</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    {{else}}
-      {{#if goalExists}}
-        <div class="card">
-          <div class="row center-align">
-            <div class="section">
-              <h3>Goal:
-                <a>{{goalName}}</a>
-              </h3>
-              <h4>Approximately
-                <a>{{goalConceptCount}}
-                  Concepts</a>
-                to go</h4>
-              <a class="waves-effect waves-light btn-flat red-text" id="removeGoal">
-                <i class="material-icons left">delete</i>reset your your goal</a>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="row center-align">
-              <div class="section">
-                <h4>Choose from one of these recommended lessons to get to your goal:</h4>
-              </div>
-            <div class="row">
-              <div class="col s6 offset-s3">
-                <div class="collection">
-                  {{#each unitId in TEMP_goalUnitsIds}}
-                  <!-- {{unitId}} -->
-                    {{> TEMP_unitCardWithIDArgument unitId=unitId}}
-                  {{/each}}
+    <div class="container">
+        {{#if Template.subscriptionsReady}}
+            {{#if isLoading}}
+                <div class="card">
+                    <div class="row center-align">
+                        {{> smallLoading}}
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      {{else}}
-        <div class="card">
-          <div class="row center-align">
-            <div class="section">
-              <h4>You have not set any goal</h4>
-            </div>
-            <div class="section">
-              <h4>Head over to the search page to set a concept as goal or find another unit</h4>
-              <a class="waves-effect waves-light btn-large blue" href="{{ pathFor 'search' }}">
-                <i class="material-icons left">search</i>Search for Concepts or Units</a>
-            </div>
-          </div>
-        </div>
-      {{/if}}
-    {{/if}}
-  </div>
+            {{else}}
+                {{#if goalIsCompleted}}
+                    <div class="card">
+                        <div class="row center-align">
+                            <div class="section">
+                                <h3>Congratulations! You have reached your goal!</h3>
+                                <div class="section">
+                                    <h4>Head over to the search page to set a concept as goal or find another unit</h4>
+                                    <a class="waves-effect waves-light btn-large blue" href="{{ pathFor 'search' }}">
+                                        <i class="material-icons left">search</i>Search for Concepts or Units</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{else}}
+                    {{#if goalExists}}
+                        <div class="card">
+                            <div class="row center-align">
+                                <div class="section">
+                                    <h3>Goal:
+                                        <a>{{goalName}}</a>
+                                    </h3>
+                                    <h4>Approximately
+                                        <a>{{goalConceptCount}}
+                                            Concepts</a>
+                                        to go</h4>
+                                    <a class="waves-effect waves-light btn-flat red-text" id="removeGoal">
+                                        <i class="material-icons left">delete</i>reset your your goal</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="row center-align">
+                                <div class="section">
+                                    <h4>Choose from one of these recommended lessons to get to your goal:</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col s6 offset-s3">
+                                        <div class="collection">
+                                            {{#each unitId in TEMP_goalUnitsIds}}
+                                                <!-- {{unitId}} -->
+                                                {{> TEMP_unitCardWithIDArgument unitId=unitId}}
+                                            {{/each}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {{else}}
+                        <div class="card">
+                            <div class="row center-align">
+                                <div class="section">
+                                    <h4>You have not set any goal</h4>
+                                </div>
+                                <div class="section">
+                                    <h4>Head over to the search page to set a concept as goal or find another unit</h4>
+                                    <a class="waves-effect waves-light btn-large blue" href="{{ pathFor 'search' }}">
+                                        <i class="material-icons left">search</i>Search for Concepts or Units</a>
+                                </div>
+                            </div>
+                        </div>
+                    {{/if}}
+                {{/if}}
+            {{/if}}
+        {{/if}}
+    </div>
 </template>
