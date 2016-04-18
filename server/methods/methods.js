@@ -506,7 +506,6 @@ find_orb = function(node_ids,user_id) {
 }
 
 find_missing_bush = function(node_ids,user_id) {
-    //if( get_state(node_id,user_id) > 0.9 ){ return []; }
     var bush = [];
     var origin = {};
     for(var id in node_ids){
@@ -542,24 +541,10 @@ find_missing_bush = function(node_ids,user_id) {
 advise = function(goals,user_id){
     var advice = [];
     var subtree = find_missing_subtree(goals,user_id);
-    //console.log(subtree);
     for(var n in subtree){
         var layer = subtree[n];
         //ordenar os nodos desta camada por estado
         var ordered = Object.keys(layer).sort(function(a,b){return layer[a]-layer[b]});
-        /*for(var node_id in subtree[layer]){
-            var state = get_state(node_id,user_id);
-            var info = {id:node_id,state:state};
-            if(ordered.length==0){ordered.push(info);}
-            for(var i in ordered){
-                var existing_state = ordered[i].state;
-                if(state>=existing_state){
-                    ordered.splice(i,0,info);
-                    break;
-                }
-            }
-        }*/
-        //if(n==0){return ordered;}
         //pegar na camada ordenada e
         for(var i in ordered){
             //var info = ordered[i];
@@ -580,19 +565,6 @@ advise_better = function(goals,user_id){
         var layer = subtree[n];
         //ordenar os nodos desta camada por estado
         var ordered = Object.keys(layer).sort(function(a,b){return layer[a]-layer[b]});
-        /*for(var node_id in subtree[layer]){
-            var state = get_state(node_id,user_id);
-            var info = {id:node_id,state:state};
-            if(ordered.length==0){ordered.push(info);}
-            for(var i in ordered){
-                var existing_state = ordered[i].state;
-                if(state>=existing_state){
-                    ordered.splice(i,0,info);
-                    break;
-                }
-            }
-        }*/
-        //if(n==0){return ordered;}
         //pegar na camada ordenada e
         for(var i in ordered){
             //var info = ordered[i];
