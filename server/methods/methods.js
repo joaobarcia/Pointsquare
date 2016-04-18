@@ -1330,7 +1330,10 @@ edit_set = function(requirement_id, concepts) {
     });
     for (var id in new_weights) {
         var update = {};
-        update["in_set." + id] = true;
+        //O ERRO DEVE ESTAR ABAIXO
+        //update["in_set." + id] = true;
+        update["in_set." + requirement_id] = true;
+        //O ERRO DEVE ESTAR ACIMA
         Nodes.update({
             _id: id
         }, {
