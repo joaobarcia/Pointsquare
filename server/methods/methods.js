@@ -506,7 +506,6 @@ find_orb = function(node_ids,user_id) {
 }
 
 find_missing_bush = function(node_ids,user_id) {
-    //if( get_state(node_id,user_id) > 0.9 ){ return []; }
     var bush = [];
     var origin = {};
     for(var id in node_ids){
@@ -542,24 +541,10 @@ find_missing_bush = function(node_ids,user_id) {
 advise = function(goals,user_id){
     var advice = [];
     var subtree = find_missing_subtree(goals,user_id);
-    //console.log(subtree);
     for(var n in subtree){
         var layer = subtree[n];
         //ordenar os nodos desta camada por estado
         var ordered = Object.keys(layer).sort(function(a,b){return layer[a]-layer[b]});
-        /*for(var node_id in subtree[layer]){
-            var state = get_state(node_id,user_id);
-            var info = {id:node_id,state:state};
-            if(ordered.length==0){ordered.push(info);}
-            for(var i in ordered){
-                var existing_state = ordered[i].state;
-                if(state>=existing_state){
-                    ordered.splice(i,0,info);
-                    break;
-                }
-            }
-        }*/
-        //if(n==0){return ordered;}
         //pegar na camada ordenada e
         for(var i in ordered){
             //var info = ordered[i];
@@ -580,19 +565,6 @@ advise_better = function(goals,user_id){
         var layer = subtree[n];
         //ordenar os nodos desta camada por estado
         var ordered = Object.keys(layer).sort(function(a,b){return layer[a]-layer[b]});
-        /*for(var node_id in subtree[layer]){
-            var state = get_state(node_id,user_id);
-            var info = {id:node_id,state:state};
-            if(ordered.length==0){ordered.push(info);}
-            for(var i in ordered){
-                var existing_state = ordered[i].state;
-                if(state>=existing_state){
-                    ordered.splice(i,0,info);
-                    break;
-                }
-            }
-        }*/
-        //if(n==0){return ordered;}
         //pegar na camada ordenada e
         for(var i in ordered){
             //var info = ordered[i];
@@ -603,6 +575,30 @@ advise_better = function(goals,user_id){
         }
     }
     return advice;
+};
+
+advise_one = function(goals,user_id){
+    var subtree = find_missing_bush(goals,user_id);
+    for(var n in subtree){
+        var layer = subtree[n];
+        //ordenar os nodos desta camada por estado
+        var ordered = Object.keys(layer).sort(function(a,b){return layer[a]-layer[b]});
+        //pegar na camada ordenada e
+        for(var i in ordered){
+            var node_id = ordered[i];
+            var state = layer[node_id];
+            var type = Nodes.findOne(node_id).type;
+            if( state > 0.9 && type == "content" ){
+                var target = build_target(true,node_id,user_id);
+                var change = simulate(target,user_id);
+                for(var id in change){
+                    if(Object.keys(subtree[n-1]).indexOf(id)>=0 && change[id] > 0.5){
+                        return node_id;
+                    }
+                }
+            }
+        }
+    }
 };
 
 //CAMINHOS!
@@ -743,6 +739,24 @@ full_forward_update = function(node_ids, user_id) {
         }
         current_layer = next_layer;
     }
+};
+
+build_target = function(success,unit_id, user_id) {
+    if(success){
+        var target = {};
+        var grants = Nodes.findOne(unit_id).grants;
+        if(grants){
+          for(var id in grants){
+              target[id] = true;
+          }
+        }
+        target[unit_id] = true;
+    }
+    else{
+        var target = {};
+        target[unit_id] = false;
+    }
+    return target;
 };
 
 readapt = function(target, user_id) {
@@ -950,7 +964,218 @@ readapt = function(target, user_id) {
     }
     forward_update2(input_layer, user_id,true);
 
-}
+};
+
+simulate = function(target, user_id) {
+    var output_layer = target;
+    var input_layer = find_micronodes(output_layer);
+    //make sure everything is up to date
+    forward_update(find_micronodes(target), user_id);
+    //draw tree
+    var tree = find_backward_tree(target);
+    //fill in state object
+    var state = {};
+    for (var order in tree) {
+        var layer = tree[order];
+        for (var node_id in layer) {
+            state[node_id] = get_state(node_id, user_id);
+        }
+    }
+    //compute maximum and minimum activations
+    var max_states = {};
+    var min_states = {};
+    for (node_id in target) {
+        var node = Nodes.findOne(node_id);
+        var requirements = node.needs;
+        var max_maximal_activation = 0.0;
+        var max_minimal_activation = 0.0;
+        for (var requirement_id in requirements) {
+            var requirement = Requirements.findOne(requirement_id);
+            var weights = requirement.weights;
+            var max_arg = 0.0;
+            var arg = requirement.bias;
+            for (var subnode_id in weights) {
+                max_arg += weights[subnode_id];
+                arg += weights[subnode_id] * state[subnode_id];
+            }
+            var maximal_activation = sigmoid(max_arg);
+            max_maximal_activation = (maximal_activation > max_maximal_activation) ? maximal_activation : max_maximal_activation;
+            var minimal_activation = sigmoid(requirement.bias);
+            max_minimal_activation = (minimal_activation > max_minimal_activation) ? minimal_activation : max_minimal_activation;
+            state[requirement_id] = sigmoid(arg);
+        }
+        if (Object.keys(requirements).length == 0) {
+            if(node.type == "concept"){
+                max_maximal_activation = 1;
+                max_minimal_activation = 0;
+            }
+            else if(node.type == "content"){
+                max_maximal_activation = 1;
+                max_minimal_activation = 1;
+            }
+            //if it's a microconcept, update it straight away
+            state[node_id] = target[node_id];
+        }
+        max_states[node_id] = max_maximal_activation;
+        min_states[node_id] = max_minimal_activation;
+    }
+    //update the target to realistic values
+    for (node_id in target) {
+        target[node_id] = target[node_id] ? max_states[node_id] : min_states[node_id];
+    }
+    //define maxmimum and minimum variations
+    var max_dist = 0;
+    for (node_id in target) {
+        var dist = Math.abs(target[node_id] - state[node_id]);
+        max_dist = max_dist < dist ? dist : max_dist;
+    }
+    var MAX_VAR = max_dist / MIN_STEPS;
+    var MIN_VAR = max_dist / MAX_STEPS;
+    //define target layer errors, save current output states and compute total error
+    var saved_output = {};
+    var error = {};
+    var max_error = 0;
+    //update target micronode states
+    for (var node_id in target) {
+        var node = Nodes.findOne(node_id);
+        if(Object.keys(node.needs).length == 0){
+            state[node_id]=target[node_id];
+        }
+    }
+    //initialize all error entries
+    for (var i in tree) {
+        var layer = tree[i];
+        for (node_id in layer) {
+            if (node_id in target) {
+                saved_output[node_id] = state[node_id];
+                error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+                max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
+            } else {
+                error[node_id] = 0;
+            }
+        }
+    }
+    //save current input states
+    saved_input = {};
+    for (node_id in input_layer) {
+        saved_input[node_id] = state[node_id];
+    }
+    //begin subnetwork update
+    while (max_error > TOLERANCE) {
+        //reset bounds
+        var is_top_set = false;
+        var is_bottom_set = false;
+        var upper_bound = Math.pow(10, 10);
+        var lower_bound = 0;
+        //backpropagation
+        for (order in tree) {
+            layer = tree[order];
+            for (node_id in layer) {
+                node = Nodes.findOne(node_id);
+                requirements = node.needs;
+                if (Object.keys(requirements).length == 0) {
+                    continue;
+                }
+                var max = 0;
+                var active_requirement = Object.keys(requirements)[0];
+                for (requirement_id in requirements) {
+                    active_requirement = state[requirement_id] > max ? requirement_id : active_requirement;
+                    max = state[requirement_id] > max ? state[requirement_id] : max;
+                }
+                weights = Requirements.findOne(active_requirement).weights;
+                for (var subnode_id in weights) {
+                    var weight = weights[subnode_id];
+                    error[subnode_id] += error[node_id] * weight;
+                }
+            }
+        }
+        //forward propagation
+        while (true) {
+            //increment input states
+            for (var node_id in input_layer) {
+                state[node_id] = box(state[node_id] + RATE * error[node_id]);
+            }
+            //forward propagate
+            for (var order = tree.length - 2; order >= 0; order--) {
+                var layer = tree[order];
+                for (var node_id in layer) {
+                    var node = Nodes.findOne(node_id);
+                    var requirements = node.needs;
+                    if (Object.keys(requirements).length == 0) {
+                        continue;
+                    }
+                    var max = 0;
+                    for (var requirement_id in requirements) {
+                        var requirement = Requirements.findOne(requirement_id);
+                        var weights = requirement.weights;
+                        var arg = requirement.bias;
+                        for (subnode_id in weights) {
+                            arg += weights[subnode_id] * state[subnode_id];
+                        }
+                        state[requirement_id] = sigmoid(arg);
+                        max = state[requirement_id] > max ? state[requirement_id] : max;
+                    }
+                    state[node_id] = max;
+                }
+            }
+            //compute maximum variations of output states
+            var max_variation = 0;
+            for (var node_id in output_layer) {
+                var variation = Math.abs(state[node_id] - saved_output[node_id]);
+                max_variation = variation > max_variation ? variation : max_variation;
+            }
+            //compute step quality
+            var high = max_variation > MAX_VAR;
+            var low = max_variation < MIN_VAR;
+            //if it's OK, carry on
+            if (!high && !low) {
+                break;
+            }
+            //if it's not OK, enhance step size and repeat
+            else if (high) {
+                var max = RATE;
+                is_top_set = true;
+                RATE = is_bottom_set ? (upper_bound + lower_bound) / 2 : RATE / 2;
+                //reset input
+                for (var node_id in input_layer) {
+                    state[node_id] = saved_input[node_id];
+                }
+                //continue;
+            } else if (low) {
+                var min = RATE;
+                is_bottom_set = true;
+                RATE = is_top_set ? (upper_bound + lower_bound) / 2. : RATE * 2;
+                //reset input
+                for (var node_id in input_layer) {
+                    state[node_id] = saved_input[node_id];
+                }
+                //continue;
+            }
+        }
+        //end of forward propagation
+        //define target layer errors, save output states and compute total error
+        max_error = 0;
+        for (var node_id in target) {
+            saved_output[node_id] = state[node_id];
+            error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+            max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
+        }
+        //save current input
+        for (var node_id in input_layer) {
+            saved_input[node_id] = state[node_id];
+        }
+    }
+    return state;
+    //end of subnetwork update
+    /*var change = {};
+    for (var node_id in state) {
+        change[node_id] = state[node_id] - get_state(node_id,user_id);
+        //set_state2(state[node_id], node_id, user_id,true);
+    }
+    return change;*/
+    //forward_update2(input_layer, user_id,true);
+
+};
 
 most_active_requirement = function(node_id,user_id){
     var node = Nodes.findOne(node_id);
@@ -1330,7 +1555,10 @@ edit_set = function(requirement_id, concepts) {
     });
     for (var id in new_weights) {
         var update = {};
-        update["in_set." + id] = true;
+        //O ERRO DEVE ESTAR ABAIXO
+        //update["in_set." + id] = true;
+        update["in_set." + requirement_id] = true;
+        //O ERRO DEVE ESTAR ACIMA
         Nodes.update({
             _id: id
         }, {
@@ -1549,6 +1777,10 @@ Meteor.methods({
 
     advise: function(goals,userId) {
         return advise(goals,userId);
+    },
+
+    nextUnit: function(goals,userId) {
+        return advise_one(goals,userId);
     },
 
     readapt: function(target, userID) {
