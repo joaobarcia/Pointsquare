@@ -4,12 +4,11 @@ Schema.Concept = new SimpleSchema({
     name: {
         type: String,
         label: "Name",
-        max: 150
+        max: 220
     },
     description: {
         type: String,
         label: "Description",
-        max: 800,
         optional: true,
         autoform: {
             afFieldInput: {
@@ -53,12 +52,11 @@ Schema.Unit = new SimpleSchema({
     name: {
         type: String,
         label: "Name",
-        max: 150
+        max: 220
     },
     description: {
         type: String,
         label: "Description",
-        max: 800,
         optional: true,
         autoform: {
             afFieldInput: {

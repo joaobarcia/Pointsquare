@@ -362,7 +362,7 @@ AutoForm.hooks({
     unitEdit: {
         onSubmit: function(doc) {
             var nodeId = FlowRouter.getParam('contentId');
-            
+
             // Handle new and edited need sets
             var needsObject = Session.get('needsObject');
             //console.log(needsObject);
@@ -423,7 +423,7 @@ AutoForm.hooks({
             // Set name, description, content
             Meteor.call('editNode', nodeId, parameters);
 
-            //FlowRouter.go('/content/' + nodeId);
+            FlowRouter.go('/content/' + nodeId);
             this.done();
             return false;
         }
