@@ -14,11 +14,15 @@ box = function(x) {
 
 //server variables
 
-MINIMUM_EASY = sigmoid(2);
+/*MINIMUM_EASY = sigmoid(2);
 MINIMUM_MEDIUM = sigmoid(-2);
 MAXIMUM_HARD = sigmoid(-4);
 WIDTH = 6;
-MINIMUM_BIAS = 1;
+MINIMUM_BIAS = 1;*/
+
+ARG_READY = 6;
+ARG_NOT_READY = -19;
+WIDTH = ARG_READY - ARG_NOT_READY;
 
 var RATE = 0.1;
 var MAX_STEPS = 10000;
@@ -42,7 +46,7 @@ build_set = function(concepts) {
     for (var id in concepts) {
         set[id] = WIDTH;
     }
-    var bias = -WIDTH * (Object.keys(concepts).length - 1)-MINIMUM_BIAS;
+    var bias = ARG_READY - WIDTH * Object.keys(concepts).length; //-WIDTH * (Object.keys(concepts).length - 1)-MINIMUM_BIAS;
     return {
         weights: set,
         bias: bias
@@ -1831,7 +1835,7 @@ Meteor.methods({
         //para cada nodo
         for(var n in nodes){
             var node = nodes[n];
-            //remover do in_set deste nodo as referencias que nao sao requesitos 
+            //remover do in_set deste nodo as referencias que nao sao requesitos
             var in_set = node.in_set;
             for(var s in in_set){
                 if(Requirements.findOne(s)==null){ delete in_set[s]; }
@@ -1842,6 +1846,28 @@ Meteor.methods({
                 $set: {in_set: in_set}
             });
         }
+    },
+
+    resetWeights: function(nodeId){
+      if(nodeId){
+        var sets = Requiments.find({_id: nodeId}).fetch();
+      }
+      else{
+        var sets = Requiments.find().fetch();
+      }
+      for(var n in sets){
+        var set = sets[n];
+        var weights = build_set(set.weights).weights;
+        var bias = build_set(set.weights).bias;
+        Requiments.update({
+            _id: set._id
+        },{
+            $set: {
+              weights: weights,
+              bias: bias
+            }
+        });
+      }
     }
 
 });
