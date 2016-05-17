@@ -4,14 +4,20 @@ function succeedUnit() {
     var $toastSuccess = $('<span class="green-text">Good job!</span>');
     Materialize.toast($toastSuccess, 2000);
     Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
-        var goal = Goals.findOne({user:Meteor.userId()});
-        if(goal){
+        var goal = Goals.findOne({
+            user: Meteor.userId()
+        });
+        if (goal) {
             Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
+                // var nodeId = Goals.findOne({
+                //     user: Meteor.userId()
+                // }).units[0];
+                // FlowRouter.go('/content/' + nodeId);
+
                 FlowRouter.go('goalPage');
                 Session.set('isLoading', false);
             });
-        }
-        else{
+        } else {
             FlowRouter.go('dashboard');
             Session.set('isLoading', false);
         }
@@ -32,14 +38,20 @@ function failUnit() {
         Materialize.toast($toastFailWithoutGoal, 2000);
     }
     Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
-        var goal = Goals.findOne({user:Meteor.userId()});
+        var goal = Goals.findOne({
+            user: Meteor.userId()
+        });
         // if goal exists
-        if(goal){
+        if (goal) {
             Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
-                FlowRouter.go('goalPage');
+              // var nodeId = Goals.findOne({
+              //     user: Meteor.userId()
+              // }).units[0];
+              // FlowRouter.go('/content/' + nodeId);
+              FlowRouter.go('goalPage');
+
             });
-        }
-        else{
+        } else {
             // otherwise prompt user about setting unit as goal
             Session.set('failedUnitAndNoGoal', true);
         }

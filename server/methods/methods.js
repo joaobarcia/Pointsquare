@@ -336,8 +336,10 @@ find_forward_layer = function(nodes) {
         //return in_set;
         for (var requirement_id in in_set) {
             var set = Requirements.findOne(requirement_id);
-            var next_node = set.node;
-            layer[next_node] = true;
+            if (typeof set !== "undefined") {
+                var next_node = set.node;
+                layer[next_node] = true;
+            }
         }
     }
     return layer;
@@ -498,8 +500,12 @@ find_orb = function(node_ids,user_id) {
         var sets = node.in_set;
         for(var set in sets){
             var requirement = Requirements.findOne(set);
-            var active = most_active_requirement(requirement.node,user_id);
-            if( set == active && !(requirement.node in orb) ){ orb[requirement.node] = false; }
+            if (typeof requirement !== "undefined") {
+                            var active = most_active_requirement(requirement.node, user_id);
+                            if (set == active && !(requirement.node in orb)) {
+                                orb[requirement.node] = false;
+                            }
+                        }
         }
     }
     return orb;
@@ -1679,6 +1685,7 @@ set_goal = function(nodeID,userID){
   });
   var goal = {};
   goal[nodeID] = get_state(nodeID,userID);
+  //var units = [advise_one(goal,userID)];
   var units = advise_better(goal,userID);
   var concepts = starting_concepts(goal,userID);
   var tree = find_missing_subtree(goal,userID);
@@ -1831,7 +1838,7 @@ Meteor.methods({
         //para cada nodo
         for(var n in nodes){
             var node = nodes[n];
-            //remover do in_set deste nodo as referencias que nao sao requesitos 
+            //remover do in_set deste nodo as referencias que nao sao requesitos
             var in_set = node.in_set;
             for(var s in in_set){
                 if(Requirements.findOne(s)==null){ delete in_set[s]; }
