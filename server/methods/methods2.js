@@ -368,6 +368,27 @@ create_concept = function(parameters) {
     return id;
 };
 
+full_create = function(p) {
+    if (p.type == "concept") {
+        var id = create_concept(p.parameters);
+    } else if (p.type == "content") {
+        var id = create_content(p.parameters);
+        var grants = p.grants;
+        if(grants){ add_grants(id, grants); }
+        var needs = p.needs;
+        add_needs(id, needs);
+    }
+    var users = Meteor.users.find().fetch();
+    for (var i in users){
+        var user_id = users[i]._id;
+        update_state(id,user_id);
+        var fwd = {};
+        fwd[id] = true;
+        forward_update(fwd,user_id);
+    }
+    return id;
+};
+
 create_gate = function(operator) {
     var id = Nodes.insert({
         type: operator,
@@ -393,6 +414,19 @@ add_author = function(node_id,author_id){
     Meteor.users.update({_id: author_id},{$set: {works: works}});
 }
 
+remove_author = function(node_id,author_id){
+    var authors = Nodes.findOne(node_id).authors;
+    delete authors[author_id];
+    Nodes.update({_id: node_id},{$set: {authors: authors}});
+    var works = Meteor.users.findOne(author_id).works;
+    delete works[node_id];
+    Meteor.users.update({
+        _id: author_id
+    },{
+        $set: {works: works}}
+    );
+}
+
 add_grants = function(node_id,concepts){
     var update = {grants: concepts};
     Nodes.update({_id: node_id},{
@@ -411,6 +445,19 @@ add_grants = function(node_id,concepts){
         });
     }
 }
+
+edit_grants = function(node_id,new_grants){
+    var old_grants = Nodes.findOne(node_id).grants;
+    for(var id in old_grants){
+      if(!new_grants){
+        remove_from_field(id,"granted_by",node_id);
+      }
+    }
+    for(var id in new_grants){
+      add_from_field(id,"granted_by",node_id);
+    }
+    Nodes.update({_id: node_id},{ $set: {grants: grants} });
+};
 
 //cria as ligações aos subnodos
 make_connector = function(subnodes,operator){
@@ -476,11 +523,12 @@ add_needs = function(node_id,needs){
             var id = make_connector(needs.concepts[i],"and");
             subands[id] = true;
         }
-        var or_id = make_connector(subands,"or");
+        //se houver conjuntos ligar à porta OR senão ligar ao nodo sempre activo
+        var or_id = needs.concepts.length? make_connector(subands,"or"):Nodes.findOne({name:"ALWAYS_ACTIVE"})._id;
         //criar porta AND ligada directamente ao nodo e que contenha a ligação ao idioma e aos pré-requesitos
         var and = {};
         and[or_id] = true;
-        var language_id = needs.language;//Nodes.findOne({"name":needs.language})._id;
+        var language_id = needs.language? needs.language : Nodes.findOne({name:"ALWAYS_ACTIVE"})._id;
         and[language_id] = true;
         //adicionar RESSALVA para o caso da língua não existir
         //var and_id = make_connector(and,"and");
@@ -651,7 +699,7 @@ add_requirement = function(node_id, concepts){
 }
 
 //função que retorna um objecto com a informação dos requesitos linguísticos e conceptuais
-get_requirements = function(node_id){
+get_needs = function(node_id){
     var info = {};
     var node = Nodes.findOne(node_id);
     if(node.type == "content"){ info["language"] = node.language; }
@@ -721,3 +769,273 @@ forward_update = function(node_ids, user_id) {
         current_layer = next_layer;
     }
 };
+
+//retorna os estados necessários dos nodos afectados pelas alterações
+simulate = function(target, user_id) {
+    var output_layer = target;
+    var input_layer = find_micronodes(output_layer);
+    //make sure everything is up to date
+    forward_update(find_micronodes(target), user_id);
+    //draw tree
+    var tree = find_backward_tree(target);
+    //fill in state object
+    var state = {};
+    for (var order in tree) {
+        var layer = tree[order];
+        for (var node_id in layer) {
+            state[node_id] = get_state(node_id, user_id);
+        }
+    }
+    //compute maximum activations
+    //increment input states
+    for (var node_id in input_layer) {
+        state[node_id] = 1;
+    }
+    var max_states = {};
+    //forward propagate
+    for (var order = tree.length - 2; order >= 0; order--) {
+        var layer = tree[order];
+        for (var node_id in layer) {
+            var node = Nodes.findOne(node_id);
+            var weights = node.needs;
+            if (Object.keys(weights).length == 0) {
+                continue;
+            }
+            var arg = node.bias;
+            for (var subnode_id in weights) {
+                arg += weights[subnode_id] * state[subnode_id];
+            }
+            state[node_id] = sigmoid(arg);
+            if( output_layer[node_id] != null ){ max_states[node_id] = state[node_id]; }
+        }
+    }
+    //compute minimum activations
+    //increment input states
+    for (var node_id in input_layer) {
+        state[node_id] = 0;
+    }
+    var min_states = {};
+    //forward propagate
+    for (var order = tree.length - 2; order >= 0; order--) {
+        var layer = tree[order];
+        for (var node_id in layer) {
+            var node = Nodes.findOne(node_id);
+            var weights = node.needs;
+            if (Object.keys(weights).length == 0) {
+                continue;
+            }
+            var arg = node.bias;
+            for (var subnode_id in weights) {
+                arg += weights[subnode_id] * state[subnode_id];
+            }
+            state[node_id] = sigmoid(arg);
+            if( output_layer[node_id] != null ){ min_states[node_id] = state[node_id]; }
+        }
+    }
+    //update the target to realistic values
+    for (node_id in target) {
+        target[node_id] = target[node_id] ? max_states[node_id] : min_states[node_id];
+    }
+    //define maxmimum and minimum variations
+    var max_dist = 0;
+    for (node_id in target) {
+        var dist = Math.abs(target[node_id] - state[node_id]);
+        max_dist = max_dist < dist ? dist : max_dist;
+    }
+    var MAX_VAR = max_dist / MIN_STEPS;
+    var MIN_VAR = max_dist / MAX_STEPS;
+    //define target layer errors, save current output states and compute total error
+    var saved_output = {};
+    var error = {};
+    var max_error = 0;
+    //update target micronode states
+    for (var node_id in target) {
+        var node = Nodes.findOne(node_id);
+        if(Object.keys(node.needs).length == 0){
+            state[node_id] = target[node_id];
+        }
+    }
+    //initialize all error entries
+    for (var i in tree) {
+        var layer = tree[i];
+        for (node_id in layer) {
+            if (node_id in target) {
+                saved_output[node_id] = state[node_id];
+                error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+                max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
+            } else {
+                error[node_id] = 0;
+            }
+        }
+    }
+    //save current input states
+    saved_input = {};
+    for (node_id in input_layer) {
+        saved_input[node_id] = state[node_id];
+    }
+    //begin subnetwork update
+    while (max_error > TOLERANCE) {
+        //reset bounds
+        var is_top_set = false;
+        var is_bottom_set = false;
+        var upper_bound = Math.pow(10, 10);
+        var lower_bound = 0;
+        //backpropagation
+        for (order in tree) {
+            layer = tree[order];
+            for (node_id in layer) {
+                node = Nodes.findOne(node_id);
+                weights = node.needs;
+                if (Object.keys(weights).length == 0) {
+                    continue;
+                }
+                for (var subnode_id in weights) {
+                    var weight = weights[subnode_id];
+                    error[subnode_id] += error[node_id] * weight;
+                }
+            }
+        }
+        //forward propagation
+        while (true) {
+            //increment input states
+            for (var node_id in input_layer) {
+                state[node_id] = box(state[node_id] + RATE * error[node_id]);
+            }
+            //forward propagate
+            for (var order = tree.length - 2; order >= 0; order--) {
+                var layer = tree[order];
+                for (var node_id in layer) {
+                    var node = Nodes.findOne(node_id);
+                    var weights = node.needs;
+                    if (Object.keys(weights).length == 0) {
+                        continue;
+                    }
+                    var arg = node.bias;
+                    for (var subnode_id in weights) {
+                        arg += weights[subnode_id] * state[subnode_id];
+                    }
+                    state[node_id] = sigmoid(arg);
+                }
+            }
+            //compute maximum variations of output states
+            var max_variation = 0;
+            for (var node_id in output_layer) {
+                var variation = Math.abs(state[node_id] - saved_output[node_id]);
+                max_variation = variation > max_variation ? variation : max_variation;
+            }
+            //compute step quality
+            var high = max_variation > MAX_VAR;
+            var low = max_variation < MIN_VAR;
+            //if it's OK, carry on
+            if (!high && !low) {
+                break;
+            }
+            //if it's not OK, enhance step size and repeat
+            else if (high) {
+                var max = RATE;
+                is_top_set = true;
+                RATE = is_bottom_set ? (upper_bound + lower_bound) / 2 : RATE / 2;
+                //reset input
+                for (var node_id in input_layer) {
+                    state[node_id] = saved_input[node_id];
+                }
+                //continue;
+                //if it's both high and low treat as if it were just high
+            } else if (low) {
+                var min = RATE;
+                is_bottom_set = true;
+                RATE = is_top_set ? (upper_bound + lower_bound) / 2. : RATE * 2;
+                //reset input
+                for (var node_id in input_layer) {
+                    state[node_id] = saved_input[node_id];
+                }
+                //continue;
+            }
+        }
+        //end of forward propagation
+        //define target layer errors, save output states and compute total error
+        max_error = 0;
+        for (var node_id in target) {
+            saved_output[node_id] = state[node_id];
+            error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+            max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
+        }
+        //save current input
+        for (var node_id in input_layer) {
+            saved_input[node_id] = state[node_id];
+        }
+    }
+    //end of subnetwork update
+    tree = find_forward_tree(input_layer);
+    for (var order = tree.length - 2; order >= 0; order--) {
+        var layer = tree[order];
+        for (var node_id in layer) {
+            var node = Nodes.findOne(node_id);
+            var weights = node.needs;
+            if (Object.keys(weights).length == 0) {
+                continue;
+            }
+            var arg = node.bias;
+            for (var subnode_id in weights) {
+                arg += weights[subnode_id] * state[subnode_id];
+            }
+            state[node_id] = sigmoid(arg);
+        }
+    }
+    return state;
+    /*var change = {};
+    for (var node_id in state) {
+        change[node_id] = state[node_id] - get_state(node_id,user_id);
+    }
+    return change;*/
+
+};
+
+
+Meteor.methods({
+
+  create: function(p) {
+      return full_create(p);
+  },
+
+  addAuthor: function(nodeID,authorID) {
+      return add_author(nodeID,authorID);
+  },
+
+  editNode: function(nodeID,parameters){
+      return edit_node(nodeID,parameters);
+  },
+
+  editNeed: function(setID, concepts) {
+      return edit_requirement(setID, concepts);
+  },
+
+  addNeed: function(nodeID, concepts) {
+      return add_requirement(nodeID, concepts);
+  },
+
+  editGrants: function(nodeID, concepts) {
+      return edit_grants(nodeID, concepts);
+  },
+
+  removeNode: function(nodeID) {
+      return remove_node(nodeID);
+  },
+
+  removeNeed: function(setID) {
+      return edit_requirement(setID, {});
+  },
+
+  removeAuthor: function(nodeID,authorID) {
+      return remove_author(nodeID,authorID);
+  },
+
+  resetUser: function(userID) {
+      return reset_user(userID);
+  },
+
+  get_needs: function(id) {
+      return get_needs(id);
+  }
+
+});
