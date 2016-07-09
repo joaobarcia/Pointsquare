@@ -991,6 +991,37 @@ simulate = function(target, user_id) {
 
 };
 
+//melhorar esta função para incluir efeitos que vêm debaixo do conceito a testar
+testing_units = function(concept_id,user_id){
+  var testability = {};
+  var to_test = {};
+  to_test[concept_id] = true;
+  var tree = find_forward_tree(to_test);
+  for(var order in tree){
+    var layer = tree[order];
+    for(var id in layer){
+      if(Nodes.findOne(id).type == "content"){
+        testability[id] = {};
+        var target = {};
+        //test for success
+        target[id] = true;
+        var state = simulate(target,user_id);
+        if(Math.abs(state[concept_id] - get_state(concept_id,user_id)) > 0.1){
+          testability[id]["success"] = true;
+        }
+        else{ testability[id]["success"] = true; }
+        //test for failure
+        target[id] = false;
+        var state = simulate(target,user_id);
+        if(Math.abs(state[concept_id] - get_state(concept_id,user_id)) > 0.1){
+          testability[id]["failure"] = true;
+        }
+        else{ testability[id]["failure"] = false; }
+      }
+    }
+  }
+  return testability;
+}
 
 Meteor.methods({
 
@@ -1036,6 +1067,26 @@ Meteor.methods({
 
   get_needs: function(id) {
       return get_needs(id);
+  },
+
+  succeed: function(unit_id,user_id) {
+    var target = {};
+    target[unit_id] = true;
+    var grants = Nodes.findOne(user_id).grants;
+    if(grants){
+      for(var id in grants){
+        target[id] = true;
+      }
+    }
+    var state = simulate(target,user_id);
+    for(var id in state){ set_state(state[id],id,user_id); }
+  },
+
+  fail: function(unit_id,user_id) {
+    var target = {};
+    target[unit_id] = false;
+    var state = simulate(target,user_id);
+    for(var id in state){ set_state(state[id],id,user_id); }
   }
 
 });
