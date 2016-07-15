@@ -1025,6 +1025,12 @@ testing_units = function(concept_id,user_id){
 
 Meteor.methods({
 
+
+  /*{ parameters: {name: "unit", description: "blabla"},
+      type: "content",
+      grants: { id: true, id: true, id: true },
+      needs: { language: id ,
+               concepts: [{ id: true, id: true },{ id: true, id: true }] } }*/
   create: function(p) {
       return full_create(p);
   },
@@ -1065,6 +1071,7 @@ Meteor.methods({
       return reset_user(userID);
   },
 
+  //devolve um objecto que contem os requesitos linguisticos e conceptuais dum determinado nodo
   get_needs: function(id) {
       return get_needs(id);
   },
