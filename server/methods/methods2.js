@@ -307,7 +307,37 @@ find_missing_subtree = function(node_ids,user_id) {
     return tree;
 };
 
-//FALTAM
+find_adjacent_nodes = function(node_ids){
+    var adjacent_nodes = {};
+    var backward_layer = find_backward_layer(node_ids);
+    var forward_layer = find_forward_layer(node_ids);
+    for(var id in backward_layer){
+        adjacent_nodes[id] = true;
+    }
+    for(var id in forward_layer){
+        adjacent_nodes[id] = true;
+    }
+    return adjacent_nodes;
+}
+
+find_wake_orb = function(node_ids){
+    var orb = [];
+    var visited = {};
+    var layer = node_ids;
+    while( Object.keys(layer).length == 0 ){
+        var to_keep = {}; //lista de nodos cujos adjacentes passarão ao passo seguinte
+        for(var id in layer){
+            if( visited[id] ){ delete layer[id]; } //se já tiver sido visitado ignorá-lo
+            else if( Node.findOne(id).type != "content" ){ //só guardar para o passo seguinte se não for um conteúdo
+                to_keep[id] = true;
+            }
+            visited[id] = true; //marcar como visitado
+        }
+        orb.push(layer); //guardar esta camada incluindo os conteúdos
+        layer = find_adjacent_nodes(to_keep); //proseguir sem os vizinhos dos nodos de conteúdo
+    }
+    return orb;
+}
 
 //creation functions
 create_content = function(parameters) {
@@ -991,36 +1021,46 @@ simulate = function(target, user_id) {
 
 };
 
-//melhorar esta função para incluir efeitos que vêm debaixo do conceito a testar
+//retorna objecto que contém os identificadores das unidades que testam um dado conceito
 testing_units = function(concept_id,user_id){
   var testability = {};
+  var highest_states = {"ascending":0,"descending":0};
+  var current_state = get_state(concept_id,user_id);
   var to_test = {};
   to_test[concept_id] = true;
-  var tree = find_forward_tree(to_test);
+  var orb = find_wake_orb(to_test);
   for(var order in tree){
     var layer = tree[order];
     for(var id in layer){
-      if(Nodes.findOne(id).type == "content"){
-        testability[id] = {};
+      var unit_state = get_state(id,user_id);
+      if(Nodes.findOne(id).type == "content" ){
         var target = {};
         //test for success
         target[id] = true;
-        var state = simulate(target,user_id);
-        if(Math.abs(state[concept_id] - get_state(concept_id,user_id)) > 0.1){
-          testability[id]["success"] = true;
+        var altered_state = simulate(target,user_id);
+        if(altered_state[concept_id] - current_state > 0.1 && unit_state >= highest_state["ascending"]){
+          testability["ascending"] = id;
+          highest_state["ascending"] = unit_state;
         }
-        else{ testability[id]["success"] = true; }
+        else if(altered_state[concept_id] - current_state < -0.1 && unit_state >= highest_state["descending"]){
+          testability["descending"] = id;
+          highest_state["descending"] = unit_state;
+        }
         //test for failure
         target[id] = false;
-        var state = simulate(target,user_id);
-        if(Math.abs(state[concept_id] - get_state(concept_id,user_id)) > 0.1){
-          testability[id]["failure"] = true;
+        var altered_state = simulate(target,user_id);
+        if(altered_state[concept_id] - current_state > 0.1 && unit_state >= highest_state["ascending"]){
+          testability["ascending"] = id;
+          highest_state["ascending"] = unit_state;
         }
-        else{ testability[id]["failure"] = false; }
+        else if(altered_state[concept_id] - current_state < -0.1 && unit_state >= highest_state["descending"]){
+          testability["descending"] = id;
+          highest_state["descending"] = unit_state;
+        }
       }
+      if( highest_state["ascending"] > 0.9 && highest_state["descending"] > 0.9 ){ break; }
     }
   }
-  return testability;
 }
 
 Meteor.methods({
@@ -1072,7 +1112,7 @@ Meteor.methods({
   },
 
   //devolve um objecto que contem os requesitos linguisticos e conceptuais dum determinado nodo
-  get_needs: function(id) {
+  getNeeds: function(id) {
       return get_needs(id);
   },
 
