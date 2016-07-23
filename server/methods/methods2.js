@@ -108,6 +108,26 @@ get_state = function(value,node_id,user_id) {
     return get_personal_property("state",0,value,node_id,user_id);
 };
 
+set_solidity = function(value,node_id,user_id) {
+    return set_personal_property("solidity",value,node_id,user_id);
+};
+
+get_solidity = function(value,node_id,user_id) {
+    return get_personal_property("solidity",0,value,node_id,user_id);
+};
+
+set_SS = function(value,node_id,user_id) {
+    var state = get_state(node_id,user_id);
+    if( Math.abs(value - state) < 0.1 ){ //se a variação for insignificante aumentar a solidez
+      var solidity = get_solidity(node_id,user_id);
+      set_personal_property("solidity",solidity+1,node_id,user_id);
+    }
+    else{ //se a variação for significativa, reduzir a solidez
+      set_personal_property("solidity",solidity-1,node_id,user_id);
+    }
+    set_personal_property("state",value,node_id,user_id);
+};
+
 compute_state = function(node_id, user_id, update) {
     var state;
     var node = Nodes.findOne(node_id);
@@ -323,17 +343,18 @@ find_adjacent_nodes = function(node_ids){
 find_wake_orb = function(node_ids){
     var orb = [];
     var visited = {};
-    var layer = node_ids;
-    while( Object.keys(layer).length == 0 ){
+    var layer = {};
+    for(var id in node_ids){ layer[id] = true; }
+    while( Object.keys(layer).length != 0 ){
         var to_keep = {}; //lista de nodos cujos adjacentes passarão ao passo seguinte
         for(var id in layer){
-            if( visited[id] ){ delete layer[id]; } //se já tiver sido visitado ignorá-lo
-            else if( Node.findOne(id).type != "content" ){ //só guardar para o passo seguinte se não for um conteúdo
+            if( visited[id] != null ){ console.log(id);delete layer[id]; } //se já tiver sido visitado ignorá-lo
+            else if( Nodes.findOne(id).type != "content" ){ //só guardar para o passo seguinte se não for um conteúdo
                 to_keep[id] = true;
             }
             visited[id] = true; //marcar como visitado
         }
-        orb.push(layer); //guardar esta camada incluindo os conteúdos
+        if( Object.keys(layer).length != 0 ){ orb.push(layer); } //guardar esta camada incluindo os conteúdos
         layer = find_adjacent_nodes(to_keep); //proseguir sem os vizinhos dos nodos de conteúdo
     }
     return orb;
@@ -792,7 +813,6 @@ forward_update = function(node_ids, user_id) {
             break;
         }
         for (var node_id in next_layer) {
-            //console.log(node_id);
             update_state(node_id, user_id);
             //update_completion(node_id, user_id);
         }
@@ -1021,16 +1041,34 @@ simulate = function(target, user_id) {
 
 };
 
+//pré-calcula os novos estados
+precompute = function(unit_id,user_id) {
+  var result = {};
+  var target = {};
+  target[unit_id] = true;
+  var grants = Nodes.findOne(unit_id).grants;
+  if(grants){
+    for(var id in grants){
+      target[id] = true;
+    }
+  }
+  result["success"] = simulate(target,user_id);
+  target = {};
+  target[unit_id] = false;
+  result["failure"] = simulate(target,user_id);
+  return result;
+}
+
 //retorna objecto que contém os identificadores das unidades que testam um dado conceito
 testing_units = function(concept_id,user_id){
   var testability = {};
-  var highest_states = {"ascending":0,"descending":0};
+  var highest_state = {"ascending":0,"descending":0};
   var current_state = get_state(concept_id,user_id);
   var to_test = {};
   to_test[concept_id] = true;
   var orb = find_wake_orb(to_test);
-  for(var order in tree){
-    var layer = tree[order];
+  for(var order in orb){
+    var layer = orb[order];
     for(var id in layer){
       var unit_state = get_state(id,user_id);
       if(Nodes.findOne(id).type == "content" ){
@@ -1061,10 +1099,12 @@ testing_units = function(concept_id,user_id){
       if( highest_state["ascending"] > 0.9 && highest_state["descending"] > 0.9 ){ break; }
     }
   }
-}
+  return testability;
+};
+
+
 
 Meteor.methods({
-
 
   /*{ parameters: {name: "unit", description: "blabla"},
       type: "content",
@@ -1072,68 +1112,117 @@ Meteor.methods({
       needs: { language: id ,
                concepts: [{ id: true, id: true },{ id: true, id: true }] } }*/
   create: function(p) {
-      return full_create(p);
+    return full_create(p);
   },
 
   addAuthor: function(nodeID,authorID) {
-      return add_author(nodeID,authorID);
+    return add_author(nodeID,authorID);
   },
 
   editNode: function(nodeID,parameters){
-      return edit_node(nodeID,parameters);
+    return edit_node(nodeID,parameters);
   },
 
   editNeed: function(setID, concepts) {
-      return edit_requirement(setID, concepts);
+    return edit_requirement(setID, concepts);
   },
 
   addNeed: function(nodeID, concepts) {
-      return add_requirement(nodeID, concepts);
+    return add_requirement(nodeID, concepts);
   },
 
   editGrants: function(nodeID, concepts) {
-      return edit_grants(nodeID, concepts);
+    return edit_grants(nodeID, concepts);
   },
 
   removeNode: function(nodeID) {
-      return remove_node(nodeID);
+    return remove_node(nodeID);
   },
 
   removeNeed: function(setID) {
-      return edit_requirement(setID, {});
+    return edit_requirement(setID, {});
   },
 
   removeAuthor: function(nodeID,authorID) {
-      return remove_author(nodeID,authorID);
+    return remove_author(nodeID,authorID);
   },
 
   resetUser: function(userID) {
-      return reset_user(userID);
+    return reset_user(userID);
   },
 
   //devolve um objecto que contem os requesitos linguisticos e conceptuais dum determinado nodo
   getNeeds: function(id) {
-      return get_needs(id);
+    return get_needs(id);
+  },
+
+  precompute: function(unit_id,user_id) {
+    return precompute(unit_id,user_id);
   },
 
   succeed: function(unit_id,user_id) {
-    var target = {};
-    target[unit_id] = true;
-    var grants = Nodes.findOne(user_id).grants;
-    if(grants){
-      for(var id in grants){
-        target[id] = true;
+    var result = precompute(unit_id,user_id);
+    var success_state = result.success;
+    var failure_state = result.failure;
+    for(var id in success_state){
+      //set_SS(state[id],id,user_id);
+      var state = get_state(id,user_id);
+      var solidity = get_solidity(id,user_id);
+      //se o estado variar de muito reduzir a solidez
+      var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
+      if( varies_significantly ){
+        set_solidity(solidity-1,id,user_id);
+        set_state(success_state[id],id,user_id);
+      }
+      //se o estado não variar,
+      else {
+        //verificar se no caso contrário variaria,
+        var other = failure_state[id]!=null? failure_state[id] : get_state(id,user_id);
+        var current = get_state(id,user_id);
+        var would_vary_otherwise = Math.abs(other-current) > 0.1;
+        //se variar então aumentar a solidez,
+        if( would_vary_otherwise ){
+          set_solidity(solidity+1,id,user_id);
+          set_state(success_state[id],id,user_id);
+        }
+        //senão manter tal como está
+        else {
+          set_state(success_state[id],id,user_id);
+        }
       }
     }
-    var state = simulate(target,user_id);
-    for(var id in state){ set_state(state[id],id,user_id); }
   },
 
   fail: function(unit_id,user_id) {
-    var target = {};
-    target[unit_id] = false;
-    var state = simulate(target,user_id);
-    for(var id in state){ set_state(state[id],id,user_id); }
+    var result = precompute(unit_id,user_id);
+    var success_state = result.success;
+    var failure_state = result.failure;
+    for(var id in failure_state){
+      var state = get_state(id,user_id);
+      var solidity = get_solidity(id,user_id);
+      //se o estado variar de muito reduzir a solidez
+      var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
+      if( varies_significantly ){
+        set_solidity(solidity-1,id,user_id);
+        set_state(failure_state[id],id,user_id);
+      }
+      //se o estado não variar,
+      else {
+        //verificar se no caso contrário variaria,
+        var other = success_state[id]!=null? success_state[id] : get_state(id,user_id);
+        var current = get_state(id,user_id);
+        var would_vary_otherwise = Math.abs(other-current) > 0.1;
+        //se variar então aumentar a solidez,
+        if( would_vary_otherwise ){
+          set_solidity(solidity+1,id,user_id);
+          set_state(failure_state[id],id,user_id);
+        }
+        //senão manter tal como está
+        else {
+          set_state(failure_state[id],id,user_id);
+        }
+      }
+    }
   }
 
 });
