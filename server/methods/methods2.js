@@ -116,6 +116,18 @@ get_solidity = function(value,node_id,user_id) {
     return get_personal_property("solidity",0,value,node_id,user_id);
 };
 
+lock_state = function(node_id,user_id) {
+    set_personal_property("locked",true,node_id,user_id);
+};
+
+unlock_state = function(node_id,user_id) {
+    set_personal_property("locked",false,node_id,user_id);
+};
+
+is_locked = function(node_id,user_id) {
+    return get_personal_property("locked",false,node_id,user_id);
+}
+
 set_SS = function(value,node_id,user_id) {
     var state = get_state(node_id,user_id);
     if( Math.abs(value - state) < 0.1 ){ //se a variação for insignificante aumentar a solidez
@@ -830,16 +842,18 @@ simulate = function(target, user_id) {
     var tree = find_backward_tree(target);
     //fill in state object
     var state = {};
+    var locked = {};
     for (var order in tree) {
         var layer = tree[order];
         for (var node_id in layer) {
             state[node_id] = get_state(node_id, user_id);
+            locked[node_id] = is_locked(node_id, user_id);
         }
     }
     //compute maximum activations
     //increment input states
     for (var node_id in input_layer) {
-        state[node_id] = 1;
+        if( !locked[node_id] ){ state[node_id] = 1; }
     }
     var max_states = {};
     //forward propagate
@@ -862,7 +876,7 @@ simulate = function(target, user_id) {
     //compute minimum activations
     //increment input states
     for (var node_id in input_layer) {
-        state[node_id] = 0;
+        if( !locked[node_id] ){ state[node_id] = 0; }
     }
     var min_states = {};
     //forward propagate
@@ -911,7 +925,7 @@ simulate = function(target, user_id) {
         for (node_id in layer) {
             if (node_id in target) {
                 saved_output[node_id] = state[node_id];
-                error[node_id] = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+                error[node_id] = locked[node_id]? 0: state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
                 max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
             } else {
                 error[node_id] = 0;
@@ -941,7 +955,7 @@ simulate = function(target, user_id) {
                 }
                 for (var subnode_id in weights) {
                     var weight = weights[subnode_id];
-                    error[subnode_id] += error[node_id] * weight;
+                    error[subnode_id] += locked[subnode_id]? 0: error[node_id] * weight;
                 }
             }
         }
@@ -984,6 +998,7 @@ simulate = function(target, user_id) {
             else if (high) {
                 var max = RATE;
                 is_top_set = true;
+                upper_bound = RATE;
                 RATE = is_bottom_set ? (upper_bound + lower_bound) / 2 : RATE / 2;
                 //reset input
                 for (var node_id in input_layer) {
@@ -994,6 +1009,7 @@ simulate = function(target, user_id) {
             } else if (low) {
                 var min = RATE;
                 is_bottom_set = true;
+                lower_bound = RATE;
                 RATE = is_top_set ? (upper_bound + lower_bound) / 2. : RATE * 2;
                 //reset input
                 for (var node_id in input_layer) {
@@ -1033,11 +1049,6 @@ simulate = function(target, user_id) {
         }
     }
     return state;
-    /*var change = {};
-    for (var node_id in state) {
-        change[node_id] = state[node_id] - get_state(node_id,user_id);
-    }
-    return change;*/
 
 };
 
@@ -1100,6 +1111,117 @@ testing_units = function(concept_id,user_id){
     }
   }
   return testability;
+};
+
+positive_impact_units = function(unit_ids,user_id){
+  var found_unit = {};
+  var found_unit_state = 0;
+  var current_states = {};
+  var to_test = {};
+  for(var unit_id in unit_ids){
+    var needs = Nodes.findOne(unit_id).needs;
+    if(needs){
+      for(var id in needs){
+        to_test[id] = true;
+        current_states[id] = get_state(id,user_id);
+      }
+    }
+  }
+  var orb = find_wake_orb(to_test);
+  for(var order in orb){
+    var layer = orb[order];
+    for(var id in layer){
+      var node_state = get_state(id,user_id);
+      var node = Nodes.findOne(id);
+      if(node.type == "content" ){
+        var target = {};
+        //test for success
+        target[id] = true;
+        for(var granted_id in node.grants){ target[granted_id] = true; }
+        var altered_state = simulate(target,user_id);
+        for(var unit_id in to_test){
+          if(altered_state[unit_id] - current_states[unit_id] > 0.1 && node_state >= found_unit_state){
+            found_unit = id;
+            found_unit_state = node_state;
+          }
+        }
+        if( found_unit_state > 0.9 ){ break; }
+      }
+    }
+  }
+  return found_unit;
+};
+
+find_starting_lesson = function(unit_ids,user_id) {
+    var current = {};
+    var visited = {};
+    for(var id in unit_ids){ current[id] = true; }
+    while(true){
+      var id = positive_impact_units(current,user_id);
+      console.log(id);
+      var state = get_state(id,user_id);
+      if( state > 0.9 || id == null || visited[id] ){ break; }
+      current = {};
+      current[id] = true;
+      visited[id] = true;
+    }
+    return id;
+}
+
+find_orb = function(node_ids,user_id) {
+    var orb = {};
+    for(var node_id in node_ids){
+        var node = Nodes.findOne(node_id);
+        //if down is activated add required nodes
+        if(node_ids[node_id]){
+            var needs = node.needs;
+            for(var id in needs){ orb[id] = true; }
+        }
+        //add these anyway
+        var granted_by = node.granted_by;
+        for(var id in granted_by){
+            orb[id] = true;
+        }
+        var needed_by = node.needed_by;
+        for(var id in needed_by){
+            if( !(id in orb) ){ orb[id] = false; }
+        }
+    }
+    return orb;
+};
+
+//falta acabar esta função!
+find_missing_bush = function(node_ids,user_id) {
+    var bush = [];
+    var origin = {};
+    for(var id in node_ids){
+        origin[id] = get_state(id,user_id);
+    }
+    bush.push(origin);
+    var bag = node_ids;
+    var current_layer = find_orb(node_ids,user_id);
+    while(1){
+        bush.push({});
+        var to_keep = {};
+        for(var id in current_layer){
+            var state = get_state(id,user_id);
+            var type = Nodes.findOne(id).type;
+            if( type == "content" && !(id in bag) ){
+                bush[bush.length-1][id] = state;
+                bag[id] = true;
+                if( state < 0.9 ){ to_keep[id] = true; }
+            }
+            else if( type != "content" && state < 0.9 && !(id in bag) ){
+                bush[bush.length-1][id] = state;
+                bag[id] = true;
+                to_keep[id] = current_layer[id];
+            }
+        }
+        current_layer = find_orb(to_keep);
+        if( Object.keys(bush[bush.length-1]).length == 0 ){ bush.pop(); }
+        if( Object.keys(current_layer).length == 0 ){ break; }
+    }
+    return bush;
 };
 
 
