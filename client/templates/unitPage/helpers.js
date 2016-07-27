@@ -33,16 +33,17 @@ Template.unitPage.helpers({
         // if content.needs exist
         if (typeof content.needs !== "undefined") {
             //extract needed concepts as array of ids and query db
-            var neededIds = Object.keys(content.needs);
-            var neededConcepts = Requirements.find({
-                "_id": {
-                    "$in": neededIds
-                }
-            }).fetch();
+            console.log(nodeId);
+            console.log(Meteor.call("getNeeds", nodeId));
+            // var neededConcepts = Requirements.find({
+            //     "_id": {
+            //         "$in": neededIds
+            //     }
+            // }).fetch();
             // for(let setOfConcepts of neededConcepts){
             //   console.log(Object.keys(setOfConcepts.weights))
             // };
-            return neededConcepts;
+            //return neededConcepts;
         } else return null;
     },
 

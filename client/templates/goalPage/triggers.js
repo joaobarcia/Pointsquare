@@ -1,12 +1,3 @@
-Template.goalPage.onCreated(function() {
-    var self = this;
-    self.autorun(function() {
-        self.subscribe('nodes');
-        self.subscribe('personal');
-        self.subscribe('goals');
-    });
-});
-
 Template.goalPage.events({
     'click #removeGoal': function(event) {
         event.preventDefault();

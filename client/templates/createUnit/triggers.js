@@ -1,16 +1,3 @@
-Template.createUnit.onCreated(function() {
-    var self = this;
-    self.autorun(function() {
-        self.subscribe('allConcepts');
-        Session.set('tempContent', []);
-    });
-});
-
-
-/*Array.prototype.move = function(from, to) { // Array move prototype until ECMA 2015 Array.prototype.copyWithin() is implemented
-    this.splice(to, 0, this.splice(from, 1)[0]);
-};*/
-
 /*function applySort() { // must apply sort and dropdown properties everytime the content is changed
     Sortable.create(document.getElementById('content-sections'), {
         animation: 150, // ms, animation speed moving items when sorting, `0` — without animation

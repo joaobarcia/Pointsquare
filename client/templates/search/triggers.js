@@ -1,13 +1,3 @@
-Template.search.onCreated(function() {
-    var self = this;
-    self.autorun(function() {
-        self.subscribe('userNames');
-    });
-    self.subscribe('nodes');
-    self.subscribe('personal');
-    self.subscribe('goals');
-});
-
 Template.search.rendered = function() {
     //Fixed search options
     /*    $(document).ready(function() {

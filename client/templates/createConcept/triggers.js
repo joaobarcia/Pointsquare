@@ -1,10 +1,3 @@
-Template.createConcept.onCreated(function() {
-    var self = this;
-    self.autorun(function() {
-        self.subscribe('allConcepts');
-    });
-});
-
 AutoForm.hooks({
     createConcept: {
         onSubmit: function(doc) {
@@ -22,16 +15,17 @@ AutoForm.hooks({
             var conceptDefinitions = {};
             conceptDefinitions.type = 'concept';
             conceptDefinitions.parameters = doc;
-            conceptDefinitions.needs = needsMappedAsArrayofObjects;
-
-            console.log(conceptDefinitions);
+            conceptDefinitions.needs = {};
+            conceptDefinitions.needs.concepts = {};
+            conceptDefinitions.needs.concepts = needsMappedAsArrayofObjects;
 
             var nodeId;
-            Meteor.call('create', conceptDefinitions, function(error, result) {
-                nodeId = result;
-                //FlowRouter.go('/concept/' + nodeId);
-                FlowRouter.go('search');
-            });
+            console.log(conceptDefinitions);
+             Meteor.call('create', conceptDefinitions, function(error, result) {
+                 nodeId = result;
+                 FlowRouter.go('/concept/' + nodeId);
+                 //FlowRouter.go('search');
+             });
             this.done();
             return false;
         }

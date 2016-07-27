@@ -43,7 +43,6 @@ function needsAsJSONSession() {
 //     var id = FlowRouter.getParam('contentId');
 //     console.log(Template.getData().grants);
 //
-//     console.log(grantments);
 //      var json = [];
 //     // for (var i = 0; i < requirements.length; i++) {
 //     //     var requirement = requirements[i];
@@ -77,15 +76,6 @@ function needsAsJSONSession() {
 // }
 
 
-
-Template.unitEdit.onCreated(function() {
-    var self = this;
-    self.autorun(function() {
-        var nodeId = FlowRouter.getParam('contentId');
-        self.subscribe('singleContent', nodeId);
-        self.subscribe('allConcepts');
-    });
-});
 
 Template.unitEdit.rendered = function() {
     this.autorun(() => {

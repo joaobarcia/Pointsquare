@@ -59,15 +59,6 @@ function failUnit() {
     });
 }
 
-Template.unitPage.onCreated(function() {
-    var self = this;
-    self.autorun(function() {
-        var contentId = FlowRouter.getParam('contentId');
-        self.subscribe('singleContent', contentId);
-        self.subscribe('allConcepts');
-    });
-});
-
 Template.unitPage.onRendered(function() {
     this.autorun(() => {
         if (this.subscriptionsReady()) {
