@@ -7,6 +7,24 @@ FlowRouter.route('/', {
     }
 });
 
+FlowRouter.route('/home_new', {
+    name: 'home_new',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "home_new"
+        });
+    }
+});
+
+FlowRouter.route('/exam', {
+    name: 'exam',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "exam"
+        });
+    }
+});
+
 FlowRouter.route('/search', {
     name: 'search',
     action: function(params) {
