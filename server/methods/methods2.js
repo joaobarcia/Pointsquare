@@ -12,6 +12,10 @@ box = function(x) {
     return x > 1 ? 1 : (x < 0 ? 0 : x);
 };
 
+cut_negative = function(x) {
+    return x >= 0 ? x : 0;
+};
+
 ARG_READY = 6;
 ARG_NOT_READY = -12;
 WIDTH = ARG_READY - ARG_NOT_READY;
@@ -944,7 +948,8 @@ simulate = function(target, user_id) {
     //compute maximum activations
     //increment input states
     for (var node_id in input_layer) {
-        if( !locked[node_id] ){ state[node_id] = 1; }
+        //if( !locked[node_id] ){ state[node_id] = 1; }
+        state[node_id] = 1;
     }
     var max_states = {};
     //forward propagate
@@ -1016,7 +1021,8 @@ simulate = function(target, user_id) {
         for (node_id in layer) {
             if (node_id in target) {
                 saved_output[node_id] = state[node_id];
-                error[node_id] = locked[node_id]? 0: state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+                var delta = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+                error[node_id] = locked[node_id]? cut_negative(delta) : delta;
                 max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
             } else {
                 error[node_id] = 0;
@@ -1249,7 +1255,6 @@ find_starting_lesson = function(unit_ids,user_id) {
     for(var id in unit_ids){ current[id] = true; }
     while(true){
       var id = positive_impact_units(current,user_id);
-      console.log(id);
       var state = get_state(id,user_id);
       if( state > 0.9 || id == null || visited[id] ){ break; }
       current = {};
