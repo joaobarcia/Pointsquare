@@ -7,6 +7,7 @@ FlowRouter.route('/', {
     }
 });
 
+// WARNING: NEW ROUTES, TO ORGANIZE
 FlowRouter.route('/home_new', {
     name: 'home_new',
     action: function(params) {
@@ -17,13 +18,23 @@ FlowRouter.route('/home_new', {
 });
 
 FlowRouter.route('/exam', {
-    name: 'exam',
+    name: 'examPage',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
-            main: "exam"
+            main: "examPage"
         });
     }
 });
+
+FlowRouter.route('/create/exam', {
+    name: 'examCreate',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "createExam"
+        });
+    }
+});
+// WARNING: END OF NEW ROUTES
 
 FlowRouter.route('/search', {
     name: 'search',

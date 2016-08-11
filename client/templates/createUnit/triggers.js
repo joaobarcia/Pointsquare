@@ -165,6 +165,10 @@ AutoForm.hooks({
                     }
                 }
             }
+            var needsWithLanguage = {};
+            needsWithLanguage.language = doc.language;
+            delete doc.language;
+            needsWithLanguage.concepts = needsMappedAsArrayofObjects;
             delete doc.needs;
 
             var grantsMappedAsObject = {};
@@ -179,11 +183,9 @@ AutoForm.hooks({
             var unitDefinitions = {};
             unitDefinitions.type = 'content';
             unitDefinitions.parameters = doc;
-            unitDefinitions.needs = needsMappedAsArrayofObjects;
+            unitDefinitions.needs = needsWithLanguage;
             unitDefinitions.grants = grantsMappedAsObject;
-            console.log(unitDefinitions);
 
-            console.log(unitDefinitions);
             Meteor.call('create', unitDefinitions, function(error, result) {
                 nodeId = result;
                 Meteor.call("addAuthor",nodeId,Meteor.userId(), function(error, result) {

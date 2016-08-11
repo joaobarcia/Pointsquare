@@ -64,6 +64,30 @@ Schema.Unit = new SimpleSchema({
             }
         }
     },
+    language: {
+        type: String,
+        optional: true,
+        label:"Language",
+        autoform: {
+            type: "select",
+            options: function() {
+                // return names and rids of concepts in the format [{label: 'name', value:'rid'}]
+                function nameAndRID(n) {
+                    var newObject = {};
+                    newObject.label = n.name;
+                    newObject.value = n._id;
+                    return newObject;
+                }
+
+                var conceptsMappedToSelectize = _.map(Nodes.find({
+                  // WARNING: TO BE REPLACED WITH PROPER IDENTIFIER OF LANGUAGE NODES
+                    name: {$in: ["English", "Portuguese"]}
+                }).fetch(), nameAndRID);
+
+                return conceptsMappedToSelectize;
+            }
+        }
+    },
     needs: {
         type: Array,
         optional: true,
@@ -191,4 +215,47 @@ Schema.Unit = new SimpleSchema({
     "exerciseString.answers.$": {
         type: String,
     }
+});
+
+Schema.Exam = new SimpleSchema({
+    name: {
+        type: String,
+        label: "Name",
+        max: 220
+    },
+    description: {
+        type: String,
+        label: "Description",
+        optional: true,
+        autoform: {
+            afFieldInput: {
+                type: "textarea"
+            }
+        }
+    },
+    exercises: {
+        type: [String],
+        label: " _",
+        optional: true,
+        autoform: {
+            type: "selectize",
+            multiple: true,
+            isReactiveOptions: true,
+            options: function() {
+                // return names and rids of concepts in the format [{label: 'name', value:'rid'}]
+                function nameAndRID(n) {
+                    var newObject = {};
+                    newObject.label = n.name;
+                    newObject.value = n._id;
+                    return newObject;
+                }
+
+                var contentsMappedToSelectize = _.map(Nodes.find({
+                    type: 'content'
+                }).fetch(), nameAndRID);
+
+                return contentsMappedToSelectize;
+            }
+        }
+    },
 });
