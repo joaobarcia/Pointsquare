@@ -8,6 +8,7 @@ accounts-password@1.2.12
 reywood:publish-composite
 momentjs:moment
 mrt:underscore-string-latest
+dburles:factory
 cunneen:mailgun
 yasinuslu:blaze-meta
 http@1.2.8
@@ -53,11 +54,12 @@ gildaspk:autoform-materialize
 aldeed:template-extension
 reactive-var@1.0.10
 jquery@1.11.9
+materialize:materialize
 meteorhacks:aggregate
 ecmascript@0.5.7
+babrahams:constellation
 bojicas:howler2
 kadira:debug
 meteorhacks:kadira
 standard-minifier-css@1.1.8
 standard-minifier-js@1.1.8
-materialize:materialize

@@ -12,6 +12,10 @@ box = function(x) {
     return x > 1 ? 1 : (x < 0 ? 0 : x);
 };
 
+cut_negative = function(x) {
+    return x >= 0 ? x : 0;
+};
+
 ARG_READY = 6;
 ARG_NOT_READY = -12;
 WIDTH = ARG_READY - ARG_NOT_READY;
@@ -141,28 +145,40 @@ set_SS = function(value,node_id,user_id) {
 };
 
 compute_state = function(node_id, user_id, update) {
-    var state;
     var node = Nodes.findOne(node_id);
-    var weights = node.needs;
-    var bias = node.bias;
-    //if it's a microconcept, return its current state
-    if (Object.keys(weights).length === 0) {
-        if (node.type == "concept") {
-            state = get_state(node_id, user_id);
-        } else if (node.type == "content") {
-            state = 1;
+    var type = node.type;
+    if(type == exam){
+        var contains = node.contains;
+        var norm = Object.keys(contains).length;
+        var score = 0;
+        for(var id in contains) {
+          score += get_state(id, user_id);
         }
+        return score / norm;
     }
-    else{
-        var arg = bias;
-        for(id in weights){
-            arg += weights[id]*get_state(id,user_id);
-        }
-        state = sigmoid(arg);
+    else {
+      var state;
+      var weights = node.needs;
+      var bias = node.bias;
+      //if it's a microconcept, return its current state
+      if (Object.keys(weights).length === 0) {
+          if (node.type == "concept") {
+              state = get_state(node_id, user_id);
+          } else if (node.type == "content") {
+              state = 1;
+          }
+      }
+      else{
+          var arg = bias;
+          for(id in weights){
+              arg += weights[id]*get_state(id,user_id);
+          }
+          state = sigmoid(arg);
+      }
+      //if update is true then write this value to the database
+      if(update){ set_state(state, node_id, user_id); }
+      return state;
     }
-    //if update is true then write this value to the database
-    if(update){ set_state(state, node_id, user_id); }
-    return state;
 };
 
 reset_user = function(user_id) {
@@ -431,6 +447,35 @@ create_concept = function(parameters) {
     return id;
 };
 
+create_exam = function(parameters) {
+    var id = Nodes.insert({
+        type: "exam",
+        created_on: Date.now(),
+        name: "",
+        description: "",
+        contains: [],
+        authors: {},
+        likes: 0,
+        dislikes: 0,
+        successes: 0,
+        attempts: 0
+    });
+    if (!_.isEmpty(parameters)) {
+        Nodes.update({
+            _id: id
+        }, {
+            $set: parameters
+        });
+    }
+    var users = Meteor.users.find().fetch();
+    for (var i in users) {
+        var user_id = users[i]._id;
+        set_state(1, id, user_id);
+        //set_completion(1, id, user_id);
+    }
+    return id;
+};
+
 full_create = function(p) {
     if (p.type == "concept") {
         var id = create_concept(p.parameters);
@@ -440,14 +485,20 @@ full_create = function(p) {
         if(grants){ add_grants(id, grants); }
         var needs = p.needs;
         add_needs(id, needs);
+    } else if (p.type == "exam") {
+        var id = create_exam(p.parameters);
+        var contains = p.contains;
+        if(contains){ add_contains(id, contains); }
     }
     var users = Meteor.users.find().fetch();
     for (var i in users){
-        var user_id = users[i]._id;
-        update_state(id,user_id);
+      var user_id = users[i]._id;
+      update_state(id,user_id);
+      if(p.type != "exam") {
         var fwd = {};
         fwd[id] = true;
         forward_update(fwd,user_id);
+      }
     }
     return id;
 };
@@ -512,14 +563,58 @@ add_grants = function(node_id,concepts){
 edit_grants = function(node_id,new_grants){
     var old_grants = Nodes.findOne(node_id).grants;
     for(var id in old_grants){
-      if(!new_grants){
+      if(!new_grants[id]){
         remove_from_field(id,"granted_by",node_id);
       }
     }
     for(var id in new_grants){
-      add_from_field(id,"granted_by",node_id);
+      add_to_field(id,"granted_by",node_id);
     }
     Nodes.update({_id: node_id},{ $set: {grants: grants} });
+};
+
+add_contains = function(exam_id,exercises){
+    var update = {contains: exercises};
+    Nodes.update({_id: exam_id},{
+        $set: update
+    });
+    for (var id in exercises) {
+        var contained_in = Nodes.findOne(id).contained_in;
+        contained_in[exam_id] = true;
+        update = {
+            contained_in: contained_in
+        };
+        Nodes.update({
+            _id: id
+        }, {
+            $set: update
+        });
+    }
+}
+
+edit_contains = function(exam_id,new_contains){
+    var old_contains = Nodes.findOne(exam_id).contains;
+    for(var id in old_contains){
+      if(!new_contains[id]){
+        var contained_in = Nodes.findOne(id).contained_in;
+        delete contained_in[id];
+        Nodes.update({
+            _id: id
+        }, {
+            $set: { contained_in: contained_in }
+        });
+      }
+    }
+    for(var id in new_contains){
+      var contained_in = Nodes.findOne(id).contained_in;
+      contained_in[id] = true;
+      Nodes.update({
+          _id: id
+      }, {
+          $set: { contained_in: contained_in }
+      });
+    }
+    Nodes.update({_id: exam_id},{ $set: {contains: new_contains} });
 };
 
 //cria as ligações aos subnodos
@@ -853,7 +948,8 @@ simulate = function(target, user_id) {
     //compute maximum activations
     //increment input states
     for (var node_id in input_layer) {
-        if( !locked[node_id] ){ state[node_id] = 1; }
+        //if( !locked[node_id] ){ state[node_id] = 1; }
+        state[node_id] = 1;
     }
     var max_states = {};
     //forward propagate
@@ -925,7 +1021,8 @@ simulate = function(target, user_id) {
         for (node_id in layer) {
             if (node_id in target) {
                 saved_output[node_id] = state[node_id];
-                error[node_id] = locked[node_id]? 0: state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+                var delta = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+                error[node_id] = locked[node_id]? cut_negative(delta) : delta;
                 max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
             } else {
                 error[node_id] = 0;
@@ -1158,7 +1255,6 @@ find_starting_lesson = function(unit_ids,user_id) {
     for(var id in unit_ids){ current[id] = true; }
     while(true){
       var id = positive_impact_units(current,user_id);
-      console.log(id);
       var state = get_state(id,user_id);
       if( state > 0.9 || id == null || visited[id] ){ break; }
       current = {};
@@ -1263,6 +1359,10 @@ Meteor.methods({
 
   removeNeed: function(setID) {
     return edit_requirement(setID, {});
+  },
+
+  editContains: function(examId, exercises) {
+    return edit_contains(examId, exercises);
   },
 
   removeAuthor: function(nodeID,authorID) {
