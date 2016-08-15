@@ -1,0 +1,31 @@
+{
+  "name": "pointsquare",
+  "description": "**This read-me is under construction**",
+  "version": "0.0.5",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://joaobarcia@bitbucket.org/pointsquare/meteor.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/pointsquare/meteor#readme",
+  "dependencies": {
+    "autoprefixer": "^6.4.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.3.1"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {
+        "browsers": [
+          "last 2 versions"
+        ]
+      }
+    }
+  }
+}

@@ -186,6 +186,8 @@ AutoForm.hooks({
             unitDefinitions.needs = needsWithLanguage;
             unitDefinitions.grants = grantsMappedAsObject;
 
+            console.log(unitDefinitions);
+
             Meteor.call('create', unitDefinitions, function(error, result) {
                 nodeId = result;
                 Meteor.call("addAuthor",nodeId,Meteor.userId(), function(error, result) {

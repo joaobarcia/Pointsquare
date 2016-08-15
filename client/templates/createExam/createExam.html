@@ -1,5 +1,5 @@
 <template name="createExam">
-  <div class="container">
+  <!-- <div class="container">
     <div class="section">
       <h4>Create Exam</h4>
       {{#autoForm schema=createExamSchema id="createExam" resetOnSuccess=false}}
@@ -25,11 +25,41 @@
               {{> smallLoading}}
             {{else}}
               <button type="submit" class="btn btn-primary btn-large">Submit</button>
-              {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
             {{/if}}
           </div>
         </fieldset>
       {{/autoForm}}
     </div>
+  </div> -->
+  <div class="ui main text container">
+    <h2 class="ui header"><i class="ti-pencil-alt"></i> New exam </h2>
+    {{#autoForm schema=createExamSchema id="createExam" resetOnSuccess=false}}
+      <fieldset>
+
+        <div class="card dropdown-overflow">
+          <div class="section">
+            <div class="container">
+              <div class="section">
+                <h4 class="center-align">Info</h4>
+                {{> afQuickField name="name"}}
+                {{> afQuickField name="description"}}
+              </div>
+              <div class="section">
+                <div class="divider"></div>
+                <h4 class="center-align">Content which composes this exam</h4>
+                {{> afQuickField name="exercises"}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          {{#if submitting}}
+            {{> smallLoading}}
+          {{else}}
+            <button type="submit" class="btn btn-primary btn-large">Submit</button>
+          {{/if}}
+        </div>
+      </fieldset>
+    {{/autoForm}}
   </div>
 </template>
