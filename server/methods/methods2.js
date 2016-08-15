@@ -23,7 +23,7 @@ WIDTH = ARG_READY - ARG_NOT_READY;
 var RATE = 0.1;
 var ADJUSTMENT = 2.;
 var MAX_STEPS = 10000;
-var MIN_STEPS = 10;
+var MIN_STEPS = 100;
 var TOLERANCE = 0.01;
 
 compute_weights = function(concepts,operator) {
@@ -677,33 +677,57 @@ add_needs = function(node_id,needs){
     else if(type == "content"){
         //criar porta OR que agrupe os diferentes ANDs dos pré-requesitos
         var subands = {};
+        console.log(1);
         for(var i = 0; i < needs.concepts.length; i++){
             var id = make_connector(needs.concepts[i],"and");
             subands[id] = true;
         }
+        console.log(2);
+        //verificar que o nodo sempre activo existe senão criá-lo e pôr o seu estado a 1 para todos os utilizadores
+        var always_active = Nodes.findOne("ALWAYS_ACTIVE");
+        var always_active_id;
+        if(always_active == null){
+            always_active_id = Nodes.insert({name:"ALWAYS_ACTIVE"});
+            var users = Meteor.users.find().fetch();
+            for(var n in users){
+                set_state(1,always_active_id,users[n]._id);
+                lock_state(always_active_id,users[n]._id);
+            }
+        }
+        else{ always_active_id = always_active._id; }
+        console.log(3);
         //se houver conjuntos ligar à porta OR senão ligar ao nodo sempre activo
-        var or_id = needs.concepts.length? make_connector(subands,"or"):Nodes.findOne({name:"ALWAYS_ACTIVE"})._id;
+        var or_id = needs.concepts.length? make_connector(subands,"or"):always_active_id;
+        console.log(4);
         //criar porta AND ligada directamente ao nodo e que contenha a ligação ao idioma e aos pré-requesitos
         var and = {};
         and[or_id] = true;
-        var language_id = needs.language? needs.language : Nodes.findOne({name:"ALWAYS_ACTIVE"})._id;
+        var language_id = needs.language? needs.language : always_active_id;
         and[language_id] = true;
+        console.log(5);
         //adicionar RESSALVA para o caso da língua não existir
         //var and_id = make_connector(and,"and");
         var sublinks = compute_weights(and,"and");
         Nodes.update({_id:node_id},{$set:
           {needs: sublinks.weights, bias:sublinks.bias, language: language_id, requirements: or_id}
         });
-        var needed_by = Nodes.findOne(language_id).needed_by;
-        needed_by[node_id] = true;
-        Nodes.update({_id:language_id},{$set:
-          {needed_by: needed_by}
-        });
-        needed_by = Nodes.findOne(or_id).needed_by;
-        needed_by[node_id] = true;
-        Nodes.update({_id:or_id},{$set:
-          {needed_by: needed_by}
-        });
+        console.log(6);
+        if(needs.language){
+          var needed_by = Nodes.findOne(language_id).needed_by;
+          needed_by[node_id] = true;
+          Nodes.update({_id:language_id},{$set:
+            {needed_by: needed_by}
+          });
+        }
+        console.log(7);
+        if(Object.keys(needs.concepts).length){
+          needed_by = Nodes.findOne(or_id).needed_by;
+          needed_by[node_id] = true;
+          Nodes.update({_id:or_id},{$set:
+            {needed_by: needed_by}
+          });
+        }
+        console.log(8);
     }
 };
 
@@ -1021,7 +1045,7 @@ simulate = function(target, user_id) {
         for (node_id in layer) {
             if (node_id in target) {
                 saved_output[node_id] = state[node_id];
-                var delta = state[node_id] * (1 - state[node_id]) * (target[node_id] - state[node_id]);
+                var delta = (target[node_id] - state[node_id]);
                 error[node_id] = locked[node_id]? cut_negative(delta) : delta;
                 max_error = Math.abs(target[node_id] - state[node_id]) > max_error ? Math.abs(target[node_id] - state[node_id]) : max_error;
             } else {
@@ -1052,7 +1076,9 @@ simulate = function(target, user_id) {
                 }
                 for (var subnode_id in weights) {
                     var weight = weights[subnode_id];
-                    error[subnode_id] += locked[subnode_id]? 0: error[node_id] * weight;
+                    delta = error[node_id] * weight * state[node_id] * (1 - state[node_id]);
+                    error[subnode_id] += locked[subnode_id]? cut_negative(delta): delta;
+                    var subnode = Nodes.findOne(subnode_id);
                 }
             }
         }
@@ -1355,6 +1381,13 @@ Meteor.methods({
 
   removeNode: function(nodeID) {
     return remove_node(nodeID);
+  },
+
+  deleteAllNodes: function() {
+    var nodes = Nodes.find().fetch();
+    for(var i in nodes){
+      remove_node(nodes[i]._id);
+    }
   },
 
   removeNeed: function(setID) {
