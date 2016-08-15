@@ -147,7 +147,7 @@ set_SS = function(value,node_id,user_id) {
 compute_state = function(node_id, user_id, update) {
     var node = Nodes.findOne(node_id);
     var type = node.type;
-    if(type == exam){
+    if(type == "exam"){
         var contains = node.contains;
         var norm = Object.keys(contains).length;
         var score = 0;
