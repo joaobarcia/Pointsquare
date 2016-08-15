@@ -484,7 +484,7 @@ full_create = function(p) {
         var grants = p.grants;
         if(grants){ add_grants(id, grants); }
         var needs = p.needs;
-        add_needs(id, needs);
+        if(needs){ add_needs(id, needs); }
     } else if (p.type == "exam") {
         var id = create_exam(p.parameters);
         var contains = p.contains;
