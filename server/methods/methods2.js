@@ -784,20 +784,36 @@ edit_node_info = function(node_id,parameters){
 
 change_language_requisite = function(content_id,new_language_id){
     var content = Nodes.findOne(content_id);
-    var old_language_id = content.language;
-    var old_language = Nodes.findOne(old_language_id);
-    var other = old_language.needed_by;
-    delete other[content_id];
-    Nodes.update({_id:old_language_id},{$set:{needed_by:other}});
-    var new_language = Nodes.findOne(new_language_id);
-    other = new_language.needed_by;
-    other[content_id] = true;
-    Nodes.update({_id:new_language_id},{$set:{needed_by:other}});
+    //requesitos actuais (um para língua e um para OR)
     var needs = content.needs;
-    var weight = needs[old_language_id];
-    delete needs[old_language_id];
-    needs[new_language_id] = weight;
-    Nodes.update({_id:content_id},{$set:{needs:needs}})
+    //tratar da língua anterior
+    var old_language_id = content.language;
+    var needed_language = old_language_id != null;
+    //se havia já um pré-requesito linguístico
+    if(needed_language){
+      //apagar a sua referência no nodo da língua
+      var old_language = Nodes.findOne(old_language_id);
+      var other = old_language.needed_by;
+      delete other[content_id];
+      Nodes.update({_id:old_language_id},{$set:{needed_by:other}});
+      //apagar a referência à língua no objecto temporário de requesitos
+      delete needs[old_language_id];
+    }
+    //tratar da nova língua
+    var new_language = Nodes.findOne(new_language_id);
+    var needs_language = new_language_id != null;
+    //se ele precisar de pré-requesitos linguísticos
+    if(needs_language){
+      //meter a referência no nodo da nova língua
+      other = new_language.needed_by;
+      other[content_id] = true;
+      Nodes.update({_id:new_language_id},{$set:{needed_by:other}});
+      //adicionar a nova língua ao objecto temporário de requesitos
+      needs[new_language_id] = true;
+    }
+    //recalcular os pesos da unidade e actualizar na base de dados
+    var sublinks = compute_weights(needs,"and");
+    Nodes.update({_id:content_id},{$set:{needs:sublinks.weights,bias:sublinks.bias}})
 }
 //A-OK
 
