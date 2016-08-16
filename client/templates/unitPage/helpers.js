@@ -27,24 +27,13 @@ Template.unitPage.helpers({
 
     neededConcepts: function() {
         var nodeId = FlowRouter.getParam('contentId');
-        var content = Nodes.findOne({
-            _id: nodeId
-        }) || {};
-        // if content.needs exist
-        if (typeof content.needs !== "undefined") {
-            //extract needed concepts as array of ids and query db
-            console.log(nodeId);
-            console.log(Meteor.call("getNeeds", nodeId));
-            // var neededConcepts = Requirements.find({
-            //     "_id": {
-            //         "$in": neededIds
-            //     }
-            // }).fetch();
-            // for(let setOfConcepts of neededConcepts){
-            //   console.log(Object.keys(setOfConcepts.weights))
-            // };
-            //return neededConcepts;
-        } else return null;
+        Meteor.call("getNeeds", nodeId, function(e, r) {
+            if (typeof r !== "undefined") Session.set("needs", r.sets);
+        });
+        var needs = Session.get("needs");
+        var neededSetsOfConceptsArray = Object.keys(needs);
+        console.log(neededSetsOfConceptsArray);
+        return neededSetsOfConceptsArray;
     },
 
     'doingExercise': function() {
@@ -147,13 +136,18 @@ Template.unitContent.helpers({
 });
 
 Template.relatedConcepts.helpers({
-    subConcepts: function(weights) {
-        var subConceptIds = Object.keys(weights);
-        var subConcepts = Nodes.find({
-            "_id": {
-                "$in": subConceptIds
-            }
-        }).fetch();
+    subConceptsOf: function(setOfConceptsID) {
+        var setId = setOfConceptsID;
+        var subConcepts = {};
+        var needs = Session.get("needs");
+        if (typeof needs !== "undefined") {
+            var subConceptIds = Object.keys(needs[setId]);
+            var subConcepts = Nodes.find({
+                "_id": {
+                    "$in": subConceptIds
+                }
+            }).fetch();
+        }
         return subConcepts;
     }
 });
