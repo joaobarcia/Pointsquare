@@ -398,6 +398,7 @@ create_content = function(parameters) {
         content: [],
         needs: {},
         grants: {},
+        contained_in: {},
         authors: {},
         likes: 0,
         dislikes: 0,
@@ -759,7 +760,7 @@ remove_node = function(node_id){
             }
         }
         var needed_by = node.needed_by;
-        for(var id in needs){
+        for(var id in needed_by){
             other = Nodes.findOne(id).needs;
             delete other[node_id];
             Nodes.update({_id: node_id},{$set:
