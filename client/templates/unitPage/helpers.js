@@ -45,27 +45,7 @@ Template.unitPage.helpers({
             // };
             //return neededConcepts;
         } else return null;
-    },
-
-    'doingExercise': function() {
-        return 1;
-        //return Session.get('callStatus') == 'doingExercise';
-    },
-
-    'learning': function() {
-        return 0;
-        //return Session.get('callStatus') == 'learning' || Session.get('callStatus') == 'unlearning';
-    },
-
-    'learned': function() {
-        return 0;
-        //return Session.get('callStatus') == 'learned';
-    },
-
-    'unlearned': function() {
-        return 0;
-        //return Session.get('callStatus') == 'unlearned';
-    },
+    }
 
     /*    'learnedConcept': function() {
             var newConcepts = Session.get('newConcepts');

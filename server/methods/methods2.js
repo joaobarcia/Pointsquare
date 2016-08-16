@@ -376,7 +376,7 @@ find_wake_orb = function(node_ids){
     while( Object.keys(layer).length != 0 ){
         var to_keep = {}; //lista de nodos cujos adjacentes passarão ao passo seguinte
         for(var id in layer){
-            if( visited[id] != null ){ console.log(id);delete layer[id]; } //se já tiver sido visitado ignorá-lo
+            if( visited[id] != null ){ delete layer[id]; } //se já tiver sido visitado ignorá-lo
             else if( Nodes.findOne(id).type != "content" ){ //só guardar para o passo seguinte se não for um conteúdo
                 to_keep[id] = true;
             }
@@ -727,17 +727,20 @@ remove_node = function(node_id){
     var type = node.type;
     //remover referências a este nodo
     var needs = node.needs;
+    var other;
     for(var id in needs){
         other = Nodes.findOne(id).needed_by;
-        delete other[node_id];
-        Nodes.update({_id: node_id},{$set:
-          {needed_by: other}
-        });
+        if(other){
+          delete other[node_id];
+          Nodes.update({_id: node_id},{$set:
+            {needed_by: other}
+          });
+        }
     }
     if(node.type == "content"){
         var grants = node.grants;
         for(var id in grants){
-            var other = Nodes.findOne(id).granted_by;
+            other = Nodes.findOne(id).granted_by;
             delete other[node_id];
             Nodes.update({_id: node_id},{$set:
               {granted_by: other}
@@ -747,7 +750,6 @@ remove_node = function(node_id){
     else{
         if(node.type == "concept"){
             var granted_by = node.granted_by;
-            var other;
             for(var id in granted_by){
                 other = Nodes.findOne(id).grants;
                 delete other[node_id];
@@ -947,7 +949,7 @@ simulate = function(target, user_id) {
     var output_layer = target;
     var input_layer = find_micronodes(output_layer);
     //make sure everything is up to date
-    forward_update(find_micronodes(target), user_id);
+    forward_update(input_layer, user_id);
     //draw tree
     var tree = find_backward_tree(target);
     //fill in state object
@@ -1375,7 +1377,7 @@ Meteor.methods({
   },
 
   deleteAllNodes: function() {
-    var nodes = Nodes.find().fetch();
+    var nodes = Nodes.find({name:{$ne:"ALWAYS_ACTIVE"}}).fetch();
     for(var i in nodes){
       remove_node(nodes[i]._id);
     }
