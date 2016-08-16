@@ -676,50 +676,56 @@ add_needs = function(node_id,needs){
         });
     }
     else if(type == "content"){
+        //há pré-requesitos conceptuais ou linguísticos?
+        var needs_language = needs.language != null;
+        var needs_concepts = needs.concepts.length > 0;
+        //a unidade é uma porta AND que liga ao OR dos requesitos e à língua
+        var and = {};
         //criar porta OR que agrupe os diferentes ANDs dos pré-requesitos
         var subands = {};
         for(var i = 0; i < needs.concepts.length; i++){
             var id = make_connector(needs.concepts[i],"and");
             subands[id] = true;
         }
-        //verificar que o nodo sempre activo existe senão criá-lo e pôr o seu estado a 1 para todos os utilizadores
-        var always_active = Nodes.findOne("ALWAYS_ACTIVE");
-        var always_active_id;
-        if(always_active == null){
-            always_active_id = Nodes.insert({name:"ALWAYS_ACTIVE"});
-            var users = Meteor.users.find().fetch();
-            for(var n in users){
-                set_state(1,always_active_id,users[n]._id);
-                lock_state(always_active_id,users[n]._id);
-            }
+        //se houver conjuntos ligar à porta OR
+        if(needs_concepts){
+            var or_id = make_connector(subands,"or");
+            and[or_id] = true;
         }
-        else{ always_active_id = always_active._id; }
-        //se houver conjuntos ligar à porta OR senão ligar ao nodo sempre activo
-        var or_id = needs.concepts.length? make_connector(subands,"or"):always_active_id;
-        //criar porta AND ligada directamente ao nodo e que contenha a ligação ao idioma e aos pré-requesitos
-        var and = {};
-        and[or_id] = true;
-        var language_id = needs.language? needs.language : always_active_id;
-        and[language_id] = true;
+        else{ or_id = null; }
+        //se houver língua ligar à língua
+        if(needs_language){
+          var language_id = needs.language;
+          and[language_id] = true;
+        }
+        else{ language_id = null; }
         //var and_id = make_connector(and,"and");
         var sublinks = compute_weights(and,"and");
         Nodes.update({_id:node_id},{$set:
           {needs: sublinks.weights, bias:sublinks.bias, language: language_id, requirements: or_id}
         });
-        if(needs.language){
+        //fazer as referências a este nodo nos subnodos (língua e OR)
+        for(var id in sublinks.weights){
+          var needed_by = Nodes.findOne(id).needed_by;
+          needed_by[node_id] = true;
+          Nodes.update({_id:id},{$set:
+            {needed_by: needed_by}
+          });
+        }/*
+        if(needs_language){
           var needed_by = Nodes.findOne(language_id).needed_by;
           needed_by[node_id] = true;
           Nodes.update({_id:language_id},{$set:
             {needed_by: needed_by}
           });
         }
-        if(Object.keys(needs.concepts).length){
+        if(needs_concepts){
           needed_by = Nodes.findOne(or_id).needed_by;
           needed_by[node_id] = true;
           Nodes.update({_id:or_id},{$set:
             {needed_by: needed_by}
           });
-        }
+        }*/
     }
 };
 
@@ -1378,7 +1384,6 @@ Meteor.methods({
   },
 
   deleteAllNodes: function() {
-    var nodes = Nodes.find({name:{$ne:"ALWAYS_ACTIVE"}}).fetch();
     for(var i in nodes){
       remove_node(nodes[i]._id);
     }
