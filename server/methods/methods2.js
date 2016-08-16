@@ -677,12 +677,10 @@ add_needs = function(node_id,needs){
     else if(type == "content"){
         //criar porta OR que agrupe os diferentes ANDs dos pré-requesitos
         var subands = {};
-        console.log(1);
         for(var i = 0; i < needs.concepts.length; i++){
             var id = make_connector(needs.concepts[i],"and");
             subands[id] = true;
         }
-        console.log(2);
         //verificar que o nodo sempre activo existe senão criá-lo e pôr o seu estado a 1 para todos os utilizadores
         var always_active = Nodes.findOne("ALWAYS_ACTIVE");
         var always_active_id;
@@ -695,23 +693,18 @@ add_needs = function(node_id,needs){
             }
         }
         else{ always_active_id = always_active._id; }
-        console.log(3);
         //se houver conjuntos ligar à porta OR senão ligar ao nodo sempre activo
         var or_id = needs.concepts.length? make_connector(subands,"or"):always_active_id;
-        console.log(4);
         //criar porta AND ligada directamente ao nodo e que contenha a ligação ao idioma e aos pré-requesitos
         var and = {};
         and[or_id] = true;
         var language_id = needs.language? needs.language : always_active_id;
         and[language_id] = true;
-        console.log(5);
-        //adicionar RESSALVA para o caso da língua não existir
         //var and_id = make_connector(and,"and");
         var sublinks = compute_weights(and,"and");
         Nodes.update({_id:node_id},{$set:
           {needs: sublinks.weights, bias:sublinks.bias, language: language_id, requirements: or_id}
         });
-        console.log(6);
         if(needs.language){
           var needed_by = Nodes.findOne(language_id).needed_by;
           needed_by[node_id] = true;
@@ -719,7 +712,6 @@ add_needs = function(node_id,needs){
             {needed_by: needed_by}
           });
         }
-        console.log(7);
         if(Object.keys(needs.concepts).length){
           needed_by = Nodes.findOne(or_id).needed_by;
           needed_by[node_id] = true;
@@ -727,7 +719,6 @@ add_needs = function(node_id,needs){
             {needed_by: needed_by}
           });
         }
-        console.log(8);
     }
 };
 
@@ -1415,8 +1406,7 @@ Meteor.methods({
     return precompute(unit_id,user_id);
   },
 
-  succeed: function(unit_id,user_id) {
-    var result = precompute(unit_id,user_id);
+  succeed: function(result,user_id) {
     var success_state = result.success;
     var failure_state = result.failure;
     for(var id in success_state){
@@ -1448,8 +1438,7 @@ Meteor.methods({
     }
   },
 
-  fail: function(unit_id,user_id) {
-    var result = precompute(unit_id,user_id);
+  fail: function(result,user_id) {
     var success_state = result.success;
     var failure_state = result.failure;
     for(var id in failure_state){
