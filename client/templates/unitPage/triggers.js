@@ -1,31 +1,42 @@
 function succeedUnit() {
+    //definir que o utilizador já fez a sua escolha
+    Session.set("outcome","success");
     Session.set('isLoading', true);
     soundSuccess.play();
     var $toastSuccess = $('<span class="green-text">Good job!</span>');
     Materialize.toast($toastSuccess, 2000);
-    Meteor.call("succeed", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
-        var goal = Goals.findOne({
-            user: Meteor.userId()
-        });
-        if (goal) {
-            Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
-                // var nodeId = Goals.findOne({
-                //     user: Meteor.userId()
-                // }).units[0];
-                // FlowRouter.go('/content/' + nodeId);
+    //se ainda não tiverem chegado os resultados do servidor, não fazer nada
+    if(Session.get("precalculation") != "waiting"){
+      Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
+          var goal = Goals.findOne({
+              user: Meteor.userId()
+          });
+          if (goal) {
+              Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
+                  // var nodeId = Goals.findOne({
+                  //     user: Meteor.userId()
+                  // }).units[0];
+                  // FlowRouter.go('/content/' + nodeId);
 
-                FlowRouter.go('goalPage');
-                Session.set('isLoading', false);
-            });
-        } else {
-            FlowRouter.go('dashboard');
-            Session.set('isLoading', false);
-        }
-    });
+                  FlowRouter.go('goalPage');
+                  Session.set('isLoading', false);
+                  delete Session.keys["outcome"];
+                  delete Session.keys["precalculation"];
+              });
+          } else {
+              FlowRouter.go('dashboard');
+              Session.set('isLoading', false);
+              delete Session.keys["outcome"];
+              delete Session.keys["precalculation"];
+          }
+      });
+    }
 }
 
 function failUnit() {
+    //definir que o utilizador já fez a sua escolha
     Session.set('isLoading', true);
+    Session.set("outcome","failure");
     soundFail.play();
     var $toastFailWithGoal = $('<span class="red-text">Try another unit next</span>');
     var $toastFailWithoutGoal = $('<span class="red-text">Try setting this unit as goal!</span>');
@@ -37,27 +48,46 @@ function failUnit() {
     } else {
         Materialize.toast($toastFailWithoutGoal, 2000);
     }
-    Meteor.call("fail", FlowRouter.getParam('contentId'), Meteor.userId(), function(e, r) {
-        var goal = Goals.findOne({
-            user: Meteor.userId()
-        });
-        // if goal exists
-        if (goal) {
-            Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
-              // var nodeId = Goals.findOne({
-              //     user: Meteor.userId()
-              // }).units[0];
-              // FlowRouter.go('/content/' + nodeId);
-              FlowRouter.go('goalPage');
-
-            });
-        } else {
-            // otherwise prompt user about setting unit as goal
-            Session.set('failedUnitAndNoGoal', true);
-        }
-        Session.set('isLoading', false);
-    });
+    //se ainda não tiverem chegado os resultados do servidor, não fazer nada
+    if(Session.get("precalculation") != "waiting"){
+      Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {
+          var goal = Goals.findOne({
+              user: Meteor.userId()
+          });
+          // if goal exists
+          if (goal) {
+              Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
+                // var nodeId = Goals.findOne({
+                //     user: Meteor.userId()
+                // }).units[0];
+                // FlowRouter.go('/content/' + nodeId);
+                FlowRouter.go('goalPage');
+              });
+          } else {
+              // otherwise prompt user about setting unit as goal
+              Session.set('failedUnitAndNoGoal', true);
+          }
+          Session.set('isLoading', false);
+          delete Session.keys["outcome"];
+          delete Session.keys["precalculation"];
+      });
+    }
 }
+
+Template.unitPage.onCreated(function() {
+    Session.set("precalculation","waiting");
+    if(Meteor.userId()){
+      Meteor.call("precompute", FlowRouter.getParam('contentId'), Meteor.userId(), function(e,r){
+        Session.set("precalculation",r);
+        if(Session.get("outcome") == "success"){
+          succeedUnit();
+        }
+        else if(Session.get("outcome") == "failure"){
+          failUnit();
+        }
+      });
+    }
+});
 
 Template.unitPage.onRendered(function() {
     this.autorun(() => {
