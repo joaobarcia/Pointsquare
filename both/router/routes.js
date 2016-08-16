@@ -17,7 +17,7 @@ FlowRouter.route('/home_new', {
     }
 });
 
-FlowRouter.route('/exam', {
+FlowRouter.route('/exam/:examId', {
     name: 'examPage',
     action: function(params) {
         BlazeLayout.render("mainLayout", {

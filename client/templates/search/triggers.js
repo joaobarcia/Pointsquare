@@ -1,52 +1,36 @@
 Template.search.rendered = function() {
-    //Fixed search options
-    /*    $(document).ready(function() {
-            console.log("entrou!");
-            $('.toc-wrapper .row').pushpin({
-                top: $('.toc-wrapper').offset().top
-            });
-        });*/
 
-    NodesSearchIndex.getComponentMethods().addProps('type', 'concept');
-    //NodesSearchIndex.getComponentMethods().addProps('sortBy', 'state');
+    NodesSearchIndex.getComponentMethods().addProps('type', 'exam');
 };
 
 Template.search.events({
-    'click #searchBoth': function() {
+  'click #searchExams': function() {
+      NodesSearchIndex.getComponentMethods().addProps('type', 'exam');
+
+      $("#searchAll").removeClass("grey-text").addClass("cyan lighten-2");
+      $("#searchUnits").removeClass("cyan lighten-2").addClass("grey-text");
+      $("#searchConcepts").removeClass("cyan lighten-2").addClass("grey-text");
+  },
+    'click #searchAll': function() {
         NodesSearchIndex.getComponentMethods().removeProps('type');
 
-        $("#searchBoth").removeClass("grey-text");
-        $("#searchBoth").addClass("cyan lighten-2");
-
-        $("#searchUnits").removeClass("cyan lighten-2");
-        $("#searchUnits").addClass("grey-text");
-
-        $("#searchConcepts").removeClass("cyan lighten-2");
-        $("#searchConcepts").addClass("grey-text");
+        $("#searchAll").removeClass("grey-text").addClass("cyan lighten-2");
+        $("#searchUnits").removeClass("cyan lighten-2").addClass("grey-text");
+        $("#searchConcepts").removeClass("cyan lighten-2").addClass("grey-text");
     },
     'click #searchUnits': function() {
         NodesSearchIndex.getComponentMethods().addProps('type', 'content');
 
-        $("#searchBoth").removeClass("cyan lighten-2");
-        $("#searchBoth").addClass("grey-text");
-
-        $("#searchUnits").removeClass("grey-text");
-        $("#searchUnits").addClass("cyan lighten-2");
-
-        $("#searchConcepts").removeClass("cyan lighten-2");
-        $("#searchConcepts").addClass("grey-text");
+        $("#searchAll").removeClass("cyan lighten-2").addClass("grey-text");
+        $("#searchUnits").removeClass("grey-text").addClass("cyan lighten-2");
+        $("#searchConcepts").removeClass("cyan lighten-2").addClass("grey-text");
     },
     'click #searchConcepts': function() {
         NodesSearchIndex.getComponentMethods().addProps('type', 'concept');
 
-        $("#searchBoth").removeClass("cyan lighten-2");
-        $("#searchBoth").addClass("grey-text");
-
-        $("#searchUnits").removeClass("cyan lighten-2");
-        $("#searchUnits").addClass("grey-text");
-
-        $("#searchConcepts").removeClass("grey-text");
-        $("#searchConcepts").addClass("cyan lighten-2");
+        $("#searchAll").removeClass("cyan lighten-2").addClass("grey-text");
+        $("#searchUnits").removeClass("cyan lighten-2").addClass("grey-text");
+        $("#searchConcepts").removeClass("grey-text").addClass("cyan lighten-2");
     },
     'click #sortState': function() {
         NodesSearchIndex.getComponentMethods().addProps('sortBy', 'state');

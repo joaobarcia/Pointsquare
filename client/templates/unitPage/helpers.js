@@ -27,91 +27,16 @@ Template.unitPage.helpers({
 
     neededConcepts: function() {
         var nodeId = FlowRouter.getParam('contentId');
+        var needs = {};
         Meteor.call("getNeeds", nodeId, function(e, r) {
             if (typeof r !== "undefined") Session.set("needs", r.sets);
+            needs = Session.get("needs");
         });
-        var needs = Session.get("needs");
         var neededSetsOfConceptsArray = Object.keys(needs);
-        console.log(neededSetsOfConceptsArray);
         return neededSetsOfConceptsArray;
-    },
-
-    'doingExercise': function() {
-        return 1;
-        //return Session.get('callStatus') == 'doingExercise';
-    },
-
-    'learning': function() {
-        return 0;
-        //return Session.get('callStatus') == 'learning' || Session.get('callStatus') == 'unlearning';
-    },
-
-    'learned': function() {
-        return 0;
-        //return Session.get('callStatus') == 'learned';
-    },
-
-    'unlearned': function() {
-        return 0;
-        //return Session.get('callStatus') == 'unlearned';
-    },
-
-    /*    'learnedConcept': function() {
-            var newConcepts = Session.get('newConcepts');
-            console.log(knowledge.find({
-                'rid': {
-                    $in: newConcepts
-                }
-            }).fetch());
-            return knowledge.find({
-                'rid': {
-                    $in: newConcepts
-                }
-            }, {
-                limit: 3
-            });
-            //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-        },*/
-
-    /*    'activatedUnit': function() {
-            var newConcepts = Session.get('newUnits');
-            return knowledge.find({
-                'rid': {
-                    $in: newUnits
-                }
-            }, {
-                limit: 3
-            });
-            //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-        },
-
-        'unlearnedConcept': function() {
-            var lostConcepts = Session.get('lostConcepts');
-            return knowledge.find({
-                'rid': {
-                    $in: lostConcepts
-                }
-            }, {
-                limit: 3
-            });
-            //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-        },
-
-        'deactivatedUnit': function() {
-            var newConcepts = Session.get('newConcepts');
-            return knowledge.find({
-                'rid': {
-                    $in: newConcepts
-                }
-            }, {
-                limit: 3
-            });
-            //return knowledge.find({ 'rid':{$in:['#14:20','#14:21','#14:22']} });
-        },*/
-
-
-
+    }
 });
+
 Template.unitContent.helpers({
     'unitIsOneSectionAndNoExercise': function() {
         var unitContent = Template.currentData().content;

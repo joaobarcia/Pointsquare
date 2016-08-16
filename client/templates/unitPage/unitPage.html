@@ -3,9 +3,7 @@
         {{#with contentPage}}
             <div class="container">
                 <div class="card">
-                    {{#if doingExercise}}
-                        {{> unitContent}}
-                    {{/if}}
+                    {{> unitContent}}
                     {{> relatedConcepts grantedConcepts=grantedConcepts neededConcepts=neededConcepts }}
                 </div>
                 <div class="card-panel">
@@ -243,7 +241,7 @@
                 <a>{{concept.name}}</a>
             {{/each}}
             <br>
-            or 
+            or
         {{/each}}
     </div>
     <div class="col s1">

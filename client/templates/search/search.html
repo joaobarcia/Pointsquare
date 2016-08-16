@@ -1,23 +1,47 @@
 <template name="search">
-  <div class="container">
-    <div class="section">
-      <div class="row search-input">
-        <div class="card z-depth-0">
-          <div class="col s1">
-            <h3><i class="material-icons right">search</i></h3></div>
-          <div class="col s11">{{> EasySearch.Input index=nodesSearchIndex}}</div>
+    <div class="container">
+        <div class="section">
+            <div class="row search-input">
+                <div class="card z-depth-0">
+                    <div class="col s1">
+                        <h3>
+                            <i class="material-icons right">search</i>
+                        </h3>
+                    </div>
+                    <div class="col s11">{{> EasySearch.Input index=nodesSearchIndex}}</div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col s3">
-        <div class="toc-wrapper">
-          <div class="section">
-            <h5><a class="btn-flat cyan lighten-2" id="searchConcepts"><i class="material-icons left"></i><span class="ti-light-bulb"></span> Concepts</a></h5>
-            <h5><a class="btn-flat grey-text" id="searchUnits"><i class="material-icons left"></i><span class="ti-book"></span> Units</a></h5>
-            <h5><a class="btn-flat grey-text" id="searchBoth"><i class="material-icons left"></i><span class="ti-search"></span> Both</a></h5>
-          </div>
-          <!-- <div class="section">
+        <div class="row">
+            <div class="col s3">
+                <div class="toc-wrapper">
+                    <div class="section">
+                        <h5>
+                            <a class="btn-flat cyan lighten-2" id="searchExams">
+                                <i class="material-icons left"></i>
+                                <span class="ti-pencil-alt"></span>
+                                Exams</a>
+                        </h5>
+                        <h5>
+                            <a class="btn-flat grey-text" id="searchConcepts">
+                                <i class="material-icons left"></i>
+                                <span class="ti-light-bulb"></span>
+                                Concepts</a>
+                        </h5>
+                        <h5>
+                            <a class="btn-flat grey-text" id="searchUnits">
+                                <i class="material-icons left"></i>
+                                <span class="ti-book"></span>
+                                Units</a>
+                        </h5>
+                        <h5>
+                            <a class="btn-flat grey-text" id="searchAll">
+                                <i class="material-icons left"></i>
+                                <span class="ti-search"></span>
+                                All</a>
+                        </h5>
+                    </div>
+                    <!-- <div class="section">
             <h6 class="grey-text">Filter</h6>
             <div class="divider"></div>
             <div class="switch">
@@ -35,7 +59,7 @@
               </label>
             </div>
           </div> -->
-          <!-- <div class="section">
+                    <!-- <div class="section">
             <h6 class="grey-text">Sort</h6>
             <div class="divider"></div>
             <form action="#">
@@ -53,17 +77,22 @@
               </p>
             </form>
           </div> -->
+                </div>
+            </div>
+            <div class="col s9">
+                <div class="collection">
+                    {{#EasySearch.Each index=nodesSearchIndex}}
+                        {{#if isExam}}<div class="col s4">{{> examCard _id=__originalId name=name description=description authors=authors created_on=created_on}}</div>{{/if}}
+                        {{#if isConcept}}{{> conceptCard _id=__originalId name=name description=description authors=authors created_on=created_on}}{{/if}}
+                        {{#if isUnit}}{{> unitCard _id=__originalId name=name description=description
+          authors=authors created_on=created_on}}{{/if}}
+                    {{/EasySearch.Each}}
+                </div>
+                {{> EasySearch.LoadMore index=nodesSearchIndex}}
+                {{#EasySearch.IfNoResults index=nodesSearchIndex}}
+                    <div class="no-results">No results found!</div>
+                {{/EasySearch.IfNoResults}}
+            </div>
         </div>
-      </div>
-      <div class="col s9">
-        <div class="collection">
-          {{#EasySearch.Each index=nodesSearchIndex}} {{#if isConcept}}{{> conceptCard _id=__originalId name=name description=description authors=authors created_on=created_on}}{{/if}} {{#if isUnit}}{{> unitCard _id=__originalId name=name description=description
-          authors=authors created_on=created_on}}{{/if}} {{/EasySearch.Each}}
-        </div>
-        {{> EasySearch.LoadMore index=nodesSearchIndex}} {{#EasySearch.IfNoResults index=nodesSearchIndex}}
-        <div class="no-results">No results found!</div>
-        {{/EasySearch.IfNoResults}}
-      </div>
     </div>
-  </div>
 </template>
