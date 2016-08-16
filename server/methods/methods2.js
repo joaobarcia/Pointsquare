@@ -1358,7 +1358,7 @@ Meteor.methods({
   },
 
   editNode: function(nodeID,parameters){
-    return edit_node(nodeID,parameters);
+    return edit_node_info(nodeID,parameters);
   },
 
   editNeed: function(setID, concepts) {
