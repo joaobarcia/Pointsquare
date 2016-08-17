@@ -1369,7 +1369,7 @@ find_orb = function(node_ids,user_id) {
     return orb;
 };
 
-//falta acabar esta função!
+//encontra toda a região da rede que pode potencialmente afectar positivamente o nodo de objectivo
 find_missing_bush = function(node_ids,user_id) {
     var bush = [];
     var origin = {};
@@ -1400,8 +1400,34 @@ find_missing_bush = function(node_ids,user_id) {
         if( Object.keys(bush[bush.length-1]).length == 0 ){ bush.pop(); }
         if( Object.keys(current_layer).length == 0 ){ break; }
     }
-    return bush;
+    return {"bush": bush, "ids": bag};
 };
+
+//fazer uma versão desta função para ser précalculada enquanto o utilizador faz a unidade
+find_useful_content = function(node_ids,user_id){
+    var find = find_missing_bush(node_ids,user_id);
+    var bush = find.bush;
+    var ids = find.ids;
+    for(var n in bush){
+        var layer = bush[n];
+        for(var id in layer){
+            var node = Nodes.findOne(id);
+            var state = get_state(id,user_id);
+            if(node.type == "content" && state > 0.8){
+                /*var target = {};
+                target[id] = true;
+                for(var granted_id in node.grants){ target[granted_id] = true; }
+                var simulation = simulate(target,user_id);
+                for(var altered_id in simulation){
+                    var change = simulation[altered_id] - get_state(altered_id,user_id);
+                    var is_in_bush = ids[altered_id];
+                    if(change > 0.1 && is_in_bush){ return altered_id; }
+                }*/
+                return id;
+            }
+        }
+    }
+}
 
 
 
@@ -1532,6 +1558,12 @@ Meteor.methods({
         }
       }
     }
+  },
+
+  setGoal: function(exam_id,user_id){
+      var exercises = Nodes.findOne(exam_id).contains;
+      var unit = find_useful_content(exercises);
+      Meteor.users.update({_id:user_id},{$set:{goal:exam_id,usefulForGoal:unit}});
   }
 
 });
