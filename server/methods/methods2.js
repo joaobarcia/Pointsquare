@@ -569,7 +569,7 @@ edit_grants = function(node_id,new_grants){
       }
     }
     for(var id in new_grants){
-      add_to_field(id,"granted_by",node_id);
+      add_to_field(id,"granted_by",node_id,true);
     }
     Nodes.update({_id: node_id},{ $set: {grants: grants} });
 };
@@ -711,28 +711,25 @@ add_needs = function(node_id,needs){
           Nodes.update({_id:id},{$set:
             {needed_by: needed_by}
           });
-        }/*
-        if(needs_language){
-          var needed_by = Nodes.findOne(language_id).needed_by;
-          needed_by[node_id] = true;
-          Nodes.update({_id:language_id},{$set:
-            {needed_by: needed_by}
-          });
         }
-        if(needs_concepts){
-          needed_by = Nodes.findOne(or_id).needed_by;
-          needed_by[node_id] = true;
-          Nodes.update({_id:or_id},{$set:
-            {needed_by: needed_by}
-          });
-        }*/
     }
 };
 
+//nesta função falta apagar os subnodos lógicos (ANDs e ORs) que já não são necessários
 remove_node = function(node_id){
     var node = Nodes.findOne(node_id);
     var type = node.type;
-    //remover referências a este nodo
+    //apagar os subconjuntos todos deste nodo; desta forma as portas OR e AND são apagadas também
+    if(node.type == "content" || node.type == "concept"){
+      var prerequisites = get_needs(node_id);
+      var requirements = prerequisites.sets;
+      var language = prerequisites.language;
+      for(var and_id in requirements){
+        edit_requirement(and_id,{});
+      }
+      if(language){ change_language_requisite(node_id,null); }
+    }
+    //remover referências a este nodo em subnodos (válido para qualquer tipo de nodo)
     var needs = node.needs;
     var other;
     for(var id in needs){
@@ -744,6 +741,7 @@ remove_node = function(node_id){
           });
         }
     }
+    //se for um conteúdo apagar a sua referência nos conceitos que ele confere
     if(node.type == "content"){
         var grants = node.grants;
         for(var id in grants){
@@ -754,7 +752,9 @@ remove_node = function(node_id){
             });
         }
     }
+    //se for um conceitos ou um porta lógica
     else{
+        //se for um conceito apagar a sua referência nos conteúdos que o conferem
         if(node.type == "concept"){
             var granted_by = node.granted_by;
             for(var id in granted_by){
@@ -765,6 +765,7 @@ remove_node = function(node_id){
                 });
             }
         }
+        //apagar a sua referência nos nodos que precisam deste nodo
         var needed_by = node.needed_by;
         for(var id in needed_by){
             other = Nodes.findOne(id).needs;
@@ -778,10 +779,12 @@ remove_node = function(node_id){
     Nodes.remove(node_id);
 }
 
+//muda o nome, descrição, etc... duma lição
 edit_node_info = function(node_id,parameters){
     Nodes.update({_id:node_id},{$set:parameters});
 }
 
+//muda a língua dum conteúdo
 change_language_requisite = function(content_id,new_language_id){
     var content = Nodes.findOne(content_id);
     //requesitos actuais (um para língua e um para OR)
@@ -813,7 +816,11 @@ change_language_requisite = function(content_id,new_language_id){
     }
     //recalcular os pesos da unidade e actualizar na base de dados
     var sublinks = compute_weights(needs,"and");
-    Nodes.update({_id:content_id},{$set:{needs:sublinks.weights,bias:sublinks.bias}})
+    Nodes.update({_id:content_id},{$set:{
+      needs: sublinks.weights,
+      bias: sublinks.bias,
+      language: new_language_id
+    }});
 }
 //A-OK
 
@@ -838,16 +845,16 @@ add_to_field = function(node_id, field_name, key, value){
 //A-OK
 
 //modifica um dos conjuntos de requesitos
-edit_requirement = function(set_id,new_concepts){
-    var set = Nodes.findOne(set_id);
+edit_requirement = function(and_id,new_concepts){
+    var and = Nodes.findOne(and_id);
     var dropped_concepts = {};
     var inserted_concepts = {};
-    var old_concepts = set.needs;
+    var old_concepts = and.needs;
     //encontrar os conceitos abandonados e retirar as suas referências correspondentes
     for(var id in old_concepts){
         var concept = Nodes.findOne(id);
         if(!new_concepts[id]){
-            remove_from_field(id,"needed_by",set_id);
+            remove_from_field(id,"needed_by",and_id);
         }
     }
     var weights = compute_weights(new_concepts,"and");
@@ -858,42 +865,76 @@ edit_requirement = function(set_id,new_concepts){
     });
     for(var id in new_concepts){
         var concept = Nodes.findOne(id);
-        add_to_field(id,"needed_by",set_id,true);
+        add_to_field(id,"needed_by",and_id,true);
     }
     //apagar o nodo AND do conjunto se ele ficar sem subconceitos
     if(Object.keys(new_concepts).length == 0){
-        //o nodo que precisa deste conjunto (que será sempre um OR ou um conceito)
-        var node_id = Object.keys(set.needed_by)[0];
+        // o nodo que precisa deste conjunto (que será sempre um OR,
+        //    um conceito ou um conteúdo mas cuja lógica será sempre do tipo OR)
+        var node_id = Object.keys(and.needed_by)[0];
         //apagar o nodo, o que vai também apagar a sua referência no sobrenodo
-        remove_node(set_id);
+        remove_node(and_id);
         var node = Nodes.findOne(node_id);
         needs = node.needs;
         //recalcular os pesos para dar uma porta OR
         weights = compute_weights(needs,"or");
         needs = weights.weights;
         bias = weights.bias;
-        //reinserir esses novos pesos
+        //se o OR ficar vazio apagá-lo também e concluir saindo da função
+        var or_is_empty = Object.keys(needs.weights).length == 0;
+        var is_an_or_gate = node.type == "or";
+        if(or_is_empty && is_an_or_gate){
+          remove_node(node_id);
+          return true;
+        }
+        //senão reinserir esses novos pesos no OR
         Nodes.update({_id:node_id},{$set:{needs:needs,bias:bias}});
     }
 }
 
+//adiciona um conjunto de requesitos conceptuais a um nodo já existente
 add_requirement = function(node_id, concepts){
     var node = Nodes.findOne(node_id);
-    //se for um conteúdo o nodo a que queremos adicionar este conjunto é o seu subnodo OR
-    if(node.type == "content"){
-        node_id = node.requirements;
-        node = Nodes.findOne(node_id);
-    }
-    //pegar nos diversos ANDs de requesitos
-    var needs = node.needs;
-    //adicionar-lhes este conjunto de conceitos
+    //criar o AND do conjunto
     var and_id = make_connector(concepts,"and");
-    needs[and_id] = true;
-    //recalcular os pesos do OR
-    var weights = compute_weights(needs,"or");
-    needs = weights.weights;
-    var bias = weights.bias;
-    Nodes.update({_id:node_id},{$set:{needs:needs,bias:bias}});
+    var and = Nodes.findOne(and_id);
+    //se for um conteúdo o nodo a que queremos adicionar este conjunto é o seu subnodo OR
+    var is_content = node.type == "content";
+    if(is_content){
+        var or_id = node.requirements;
+        var needs = {};
+        //se o conteúdo ainda não tiver um OR criá-lo
+        if(or_id == null){
+          needs[and_id] = true;
+          var or_id = make_connector(needs,"or");
+          Nodes.update({_id: node_id}, {$set:{ requirements: or_id }});
+        }
+        else{
+          var or = Nodes.findOne(or_id);
+          //pegar nos diversos ANDs de requesitos
+          needs = or.needs;
+          //adicionar-lhes este conjunto de conceitos
+          needs[and_id] = true;
+          //recalcular os pesos do OR
+          var weights = compute_weights(needs,"or");
+          needs = weights.weights;
+          var bias = weights.bias;
+          Nodes.update({_id: or_id},{$set:{needs:needs,bias:bias}});
+        }
+        //fazer a referência ao OR no AND
+        add_to_field(and_id,"needed_by",or_id,true);
+    }
+    else{
+        //pegar nos diversos ANDs de requesitos
+        var needs = node.needs;
+        //adicionar-lhes este conjunto de conceitos
+        needs[and_id] = true;
+        //recalcular os pesos do OR
+        var weights = compute_weights(needs,"or");
+        needs = weights.weights;
+        var bias = weights.bias;
+        Nodes.update({_id:node_id},{$set:{needs:needs,bias:bias}});
+    }
 }
 
 //função que retorna um objecto com a informação dos requesitos linguísticos e conceptuais
