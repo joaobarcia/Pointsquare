@@ -12,7 +12,7 @@ Template.examPage.helpers({
             _id: examId
         }) || {};
         if (typeof exam.contains != "undefined") {
-            var examContentsIDs = Object.keys(exam.contains);
+            var examContentsIDs = exam.contains;//Object.keys(exam.contains);
             var examContents = Nodes.find({
                 "_id": {
                     "$in": examContentsIDs

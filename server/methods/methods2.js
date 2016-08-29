@@ -26,6 +26,28 @@ var MAX_STEPS = 10000;
 var MIN_STEPS = 100;
 var TOLERANCE = 0.01;
 
+
+is_in_array = function(array,value){
+    return array.indexOf(value) > 0;
+}
+
+remove_ocurrences_from_array = function(array,value){
+    while(true){
+      var i = array.indexOf(value);
+      if(i < 0){ return array; }
+      array.splice(i,1);
+    }
+}
+
+replace_ocurrences_in_array = function(array,old_value,new_value){
+    if(old_value == new_value){ return array; }
+    while(true){
+      var i = array.indexOf(old_value);
+      if(i < 0){ return array; }
+      array.splice(i,1,new_value);
+    }
+}
+
 compute_weights = function(concepts,operator) {
     var weights = {};
     if(Object.keys(concepts).length == 0) {
@@ -579,7 +601,8 @@ add_contains = function(exam_id,exercises){
     Nodes.update({_id: exam_id},{
         $set: update
     });
-    for (var id in exercises) {
+    for (var i in exercises) {
+        var id = exercises[i];
         var contained_in = Nodes.findOne(id).contained_in;
         contained_in[exam_id] = true;
         update = {
@@ -595,9 +618,12 @@ add_contains = function(exam_id,exercises){
 
 edit_contains = function(exam_id,new_contains){
     var old_contains = Nodes.findOne(exam_id).contains;
-    for(var id in old_contains){
-      if(!new_contains[id]){
-        var contained_in = Nodes.findOne(id).contained_in;
+    var id;
+    var contained_in;
+    for(var i in old_contains){
+      id = old_contains[i];
+      if(!is_in_array(new_contains,id)){
+        contained_in = Nodes.findOne(id).contained_in;
         delete contained_in[id];
         Nodes.update({
             _id: id
@@ -606,9 +632,10 @@ edit_contains = function(exam_id,new_contains){
         });
       }
     }
-    for(var id in new_contains){
+    for(var i in new_contains){
+      id = new_contains[i];
       var contained_in = Nodes.findOne(id).contained_in;
-      contained_in[id] = true;
+      contained_in[id] = i;
       Nodes.update({
           _id: id
       }, {
