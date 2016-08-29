@@ -8,11 +8,9 @@ function succeedUnit() {
     //se ainda não tiverem chegado os resultados do servidor, não fazer nada
     if(Session.get("precalculation") != "waiting"){
       Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
-          var goal = Goals.findOne({
-              user: Meteor.userId()
-          });
-          if (goal) {
-              Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
+          var goal_id = Meteor.users.findOne(Meteor.userId())._id;
+          if (goal_id) {
+              Meteor.call("setGoal", goal_id, Meteor.userId(), function(e, r) {
                   // var nodeId = Goals.findOne({
                   //     user: Meteor.userId()
                   // }).units[0];
@@ -51,12 +49,9 @@ function failUnit() {
     //se ainda não tiverem chegado os resultados do servidor, não fazer nada
     if(Session.get("precalculation") != "waiting"){
       Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {
-          var goal = Goals.findOne({
-              user: Meteor.userId()
-          });
-          // if goal exists
-          if (goal) {
-              Meteor.call("setGoal", goal.node, Meteor.userId(), function(e, r) {
+        var goal_id = Meteor.users.findOne(Meteor.userId())._id;
+        if (goal_id) {
+            Meteor.call("setGoal", goal_id, Meteor.userId(), function(e, r) {
                 // var nodeId = Goals.findOne({
                 //     user: Meteor.userId()
                 // }).units[0];
@@ -74,20 +69,20 @@ function failUnit() {
     }
 }
 
-// Template.unitPage.onCreated(function() {
-//     Session.set("precalculation","waiting");
-//     if(Meteor.userId()){
-//       Meteor.call("precompute", FlowRouter.getParam('contentId'), Meteor.userId(), function(e,r){
-//         Session.set("precalculation",r);
-//         if(Session.get("outcome") == "success"){
-//           succeedUnit();
-//         }
-//         else if(Session.get("outcome") == "failure"){
-//           failUnit();
-//         }
-//       });
-//     }
-// });
+ Template.unitPage.onCreated(function() {
+     Session.set("precalculation","waiting");
+     if(Meteor.userId()){
+       Meteor.call("precompute", FlowRouter.getParam('contentId'), Meteor.userId(), function(e,r){
+         Session.set("precalculation",r);
+         if(Session.get("outcome") == "success"){
+           succeedUnit();
+         }
+         else if(Session.get("outcome") == "failure"){
+           failUnit();
+         }
+       });
+     }
+ });
 
 Template.unitPage.onRendered(function() {
     this.autorun(() => {

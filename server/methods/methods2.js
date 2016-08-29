@@ -26,6 +26,28 @@ var MAX_STEPS = 10000;
 var MIN_STEPS = 100;
 var TOLERANCE = 0.01;
 
+
+is_in_array = function(array,value){
+    return array.indexOf(value) > 0;
+}
+
+remove_ocurrences_from_array = function(array,value){
+    while(true){
+      var i = array.indexOf(value);
+      if(i < 0){ return array; }
+      array.splice(i,1);
+    }
+}
+
+replace_ocurrences_in_array = function(array,old_value,new_value){
+    if(old_value == new_value){ return array; }
+    while(true){
+      var i = array.indexOf(old_value);
+      if(i < 0){ return array; }
+      array.splice(i,1,new_value);
+    }
+}
+
 compute_weights = function(concepts,operator) {
     var weights = {};
     if(Object.keys(concepts).length == 0) {
@@ -149,9 +171,11 @@ compute_state = function(node_id, user_id, update) {
     var type = node.type;
     if(type == "exam"){
         var contains = node.contains;
-        var norm = Object.keys(contains).length;
+        var norm = contains;
         var score = 0;
-        for(var id in contains) {
+        var id;
+        for(var i in contains) {
+          id = contains[i];
           score += get_state(id, user_id);
         }
         return score / norm;
@@ -579,7 +603,8 @@ add_contains = function(exam_id,exercises){
     Nodes.update({_id: exam_id},{
         $set: update
     });
-    for (var id in exercises) {
+    for (var i in exercises) {
+        var id = exercises[i];
         var contained_in = Nodes.findOne(id).contained_in;
         contained_in[exam_id] = true;
         update = {
@@ -595,9 +620,12 @@ add_contains = function(exam_id,exercises){
 
 edit_contains = function(exam_id,new_contains){
     var old_contains = Nodes.findOne(exam_id).contains;
-    for(var id in old_contains){
-      if(!new_contains[id]){
-        var contained_in = Nodes.findOne(id).contained_in;
+    var id;
+    var contained_in;
+    for(var i in old_contains){
+      id = old_contains[i];
+      if(!is_in_array(new_contains,id)){
+        contained_in = Nodes.findOne(id).contained_in;
         delete contained_in[id];
         Nodes.update({
             _id: id
@@ -606,9 +634,10 @@ edit_contains = function(exam_id,new_contains){
         });
       }
     }
-    for(var id in new_contains){
+    for(var i in new_contains){
+      id = new_contains[i];
       var contained_in = Nodes.findOne(id).contained_in;
-      contained_in[id] = true;
+      contained_in[id] = i;
       Nodes.update({
           _id: id
       }, {
@@ -1369,7 +1398,7 @@ find_orb = function(node_ids,user_id) {
     return orb;
 };
 
-//falta acabar esta função!
+//encontra toda a região da rede que pode potencialmente afectar positivamente o nodo de objectivo
 find_missing_bush = function(node_ids,user_id) {
     var bush = [];
     var origin = {};
@@ -1400,8 +1429,34 @@ find_missing_bush = function(node_ids,user_id) {
         if( Object.keys(bush[bush.length-1]).length == 0 ){ bush.pop(); }
         if( Object.keys(current_layer).length == 0 ){ break; }
     }
-    return bush;
+    return {"bush": bush, "ids": bag};
 };
+
+//fazer uma versão desta função para ser précalculada enquanto o utilizador faz a unidade
+find_useful_content = function(node_ids, user_id, not_in = {}){
+    var find = find_missing_bush(node_ids,user_id);
+    var bush = find.bush;
+    var ids = find.ids;
+    for(var n in bush){
+        var layer = bush[n];
+        for(var id in layer){
+            var node = Nodes.findOne(id);
+            var state = get_state(id,user_id);
+            if(node.type == "content" && state > 0.8 && not_in[id] != null){
+                /*var target = {};
+                target[id] = true;
+                for(var granted_id in node.grants){ target[granted_id] = true; }
+                var simulation = simulate(target,user_id);
+                for(var altered_id in simulation){
+                    var change = simulation[altered_id] - get_state(altered_id,user_id);
+                    var is_in_bush = ids[altered_id];
+                    if(change > 0.1 && is_in_bush){ return altered_id; }
+                }*/
+                return id;
+            }
+        }
+    }
+}
 
 
 
@@ -1532,6 +1587,18 @@ Meteor.methods({
         }
       }
     }
+  },
+
+  setGoal: function(exam_id, user_id, not_in = {}){
+      var contains = Nodes.findOne(exam_id).contains;
+      var exercises = {};
+      var id;
+      for(var i in contains){
+          id = contains[i];
+          exercises[id] = true;
+      }
+      var unit = find_useful_content(exercises,user_id,not_in);
+      Meteor.users.update({_id:user_id},{$set:{goal:exam_id,usefulForGoal:unit}});
   }
 
 });
