@@ -1394,7 +1394,20 @@ find_orb = function(node_ids,user_id) {
         }
         var needed_by = node.needed_by;
         for(var id in needed_by){
-            if( !(id in orb) ){ orb[id] = false; }
+            if( !(id in orb) ){ orb[id] = true/*false*/; }
+        }
+        var contains = node.contains;
+        if(typeof contains !== "undefined"){
+            for(var i in contains){
+              var id = contains[i];
+              if( !(id in orb) ){ orb[id] = true; }
+            }
+        }
+        var contained_in = node.contained_in;
+        if(typeof contained_in !== "undefined"){
+            for(var id in contained_in){
+              if( !(id in orb) ){ orb[id] = true; }
+            }
         }
     }
     return orb;
@@ -1416,12 +1429,13 @@ find_missing_bush = function(node_ids,user_id) {
         for(var id in current_layer){
             var state = get_state(id,user_id);
             var type = Nodes.findOne(id).type;
-            if( type == "content" && !(id in bag) ){
+            //var id_in_bag = typeof bag[id] !== null
+            if( type == "content" && !bag[id] ){
                 bush[bush.length-1][id] = state;
                 bag[id] = true;
                 if( state < 0.9 ){ to_keep[id] = true; }
             }
-            else if( type != "content" && state < 0.9 && !(id in bag) ){
+            else if( type != "content" && state < 0.9 && !bag[id] ){
                 bush[bush.length-1][id] = state;
                 bag[id] = true;
                 to_keep[id] = current_layer[id];
@@ -1438,13 +1452,13 @@ find_missing_bush = function(node_ids,user_id) {
 find_useful_content = function(node_ids, user_id, not_in = {}){
     var find = find_missing_bush(node_ids,user_id);
     var bush = find.bush;
-    var ids = find.ids;
+    var ids = find["ids"];
     for(var n in bush){
         var layer = bush[n];
         for(var id in layer){
             var node = Nodes.findOne(id);
             var state = get_state(id,user_id);
-            if(node.type == "content" && state > 0.8 && not_in[id] != null){
+            if(node.type == "content" && state > 0.8 && typeof not_in[id] === "undefined"){
                 /*var target = {};
                 target[id] = true;
                 for(var granted_id in node.grants){ target[granted_id] = true; }
@@ -1601,6 +1615,10 @@ Meteor.methods({
       }
       var unit = find_useful_content(exercises,user_id,not_in);
       Meteor.users.update({_id:user_id},{$set:{goal:exam_id,usefulForGoal:unit}});
+  },
+
+  removeGoal: function(user_id){
+      Meteor.users.update({_id:user_id},{$set:{goal:null,usefulForGoal:null}});
   }
 
 });

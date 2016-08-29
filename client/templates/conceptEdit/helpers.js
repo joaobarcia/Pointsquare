@@ -1,4 +1,5 @@
 Template.conceptEdit.helpers({
+
     conceptEditPage: function() {
         var conceptId = FlowRouter.getParam('conceptId');
         var concept = Nodes.findOne({
@@ -6,10 +7,13 @@ Template.conceptEdit.helpers({
         }) || {};
         return concept;
     },
+
     conceptEditSchema: function() {
         return Schema.Concept;
     },
+
     needs: function() {
         return Session.get('needsObject');
     }
+    
 });
