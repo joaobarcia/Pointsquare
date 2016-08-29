@@ -504,6 +504,8 @@ create_exam = function(parameters) {
 full_create = function(p) {
     if (p.type == "concept") {
         var id = create_concept(p.parameters);
+        var needs = p.needs;
+        if(needs){ add_needs(id, needs); }
     } else if (p.type == "content") {
         var id = create_content(p.parameters);
         var grants = p.grants;
