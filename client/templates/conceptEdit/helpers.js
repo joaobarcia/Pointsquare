@@ -10,6 +10,17 @@ Template.conceptEdit.helpers({
         return Schema.Concept;
     },
     needs: function() {
-        return Session.get('needsObject');
-    }
+        var nodeId = FlowRouter.getParam('contentId');
+        console.log(nodeId);
+        var needs = {};
+        Meteor.call("getNeeds", nodeId, function(e, r) {
+            if (typeof r !== "undefined") {
+                console.log(r);
+                Session.set("needs", r.sets)
+            };
+        });
+        needs = Session.get("needs");
+        var neededSetsOfConceptsArray = Object.keys(needs);
+        return neededSetsOfConceptsArray;
+    },
 });
