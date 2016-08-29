@@ -12,8 +12,8 @@ Template.conceptEdit.helpers({
         return Schema.Concept;
     },
 
-    needs: function() {
-        var nodeId = FlowRouter.getParam('contentId');
+    neededConcepts: function() {
+        var nodeId = FlowRouter.getParam('conceptId');
         console.log(nodeId);
         var needs = {};
         Meteor.call("getNeeds", nodeId, function(e, r) {
@@ -25,6 +25,20 @@ Template.conceptEdit.helpers({
         needs = Session.get("needs");
         var neededSetsOfConceptsArray = Object.keys(needs);
         return neededSetsOfConceptsArray;
-    }
-    
+    },
+    subConceptsOf: function(setOfConceptsID) {
+        var setId = setOfConceptsID;
+        var subConcepts = {};
+        var needs = Session.get("needs");
+        if (typeof needs !== "undefined") {
+            var subConceptIds = Object.keys(needs[setId]);
+            var subConcepts = Nodes.find({
+                "_id": {
+                    "$in": subConceptIds
+                }
+            }).fetch();
+        }
+        return subConcepts;
+    },
+
 });

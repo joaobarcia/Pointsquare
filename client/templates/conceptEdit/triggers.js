@@ -61,7 +61,7 @@ function applySelectizeCode() {
     }).fetch();
     //console.log(conceptsMappedForSelectize);
 
-    var needsObject = Session.get("needsObject");
+    var needsObject = Session.get("needs");
     //console.log(needsObject);
 
     // For each set of concepts, apply selectize js to the respective selectize html

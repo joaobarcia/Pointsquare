@@ -23,8 +23,12 @@
                   </div>
                   <div class="section">
                     <h3 class="center-align">Necessary Concepts</h3>
-                    {{#each needs}}
-                      {{>conceptEditSelectBox}}
+                    {{#each setOfConceptsID in neededConcepts}}
+                        {{#each concept in subConceptsOf (setOfConceptsID)}}
+                            <a>{{concept.name}}</a>
+                        {{/each}}
+                        <br>
+                        or
                     {{/each}}
                     <a class='dropdown-button cyan-text right-align add-set' href='#!'>
                       <i class="material-icons tiny">add_circle_outline</i>

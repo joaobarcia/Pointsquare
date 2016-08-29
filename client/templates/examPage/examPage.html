@@ -8,8 +8,15 @@
                     </div>
                     {{#each unit in examContents}}
                         {{> contentByType content=unit.content}}
+                        <div class="col s3">
+                            <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Mark question as known, without solving">
+                                <i class="material-icons">done</i>
+                            </a>
+                            <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Set question as goal">
+                                <i class="material-icons">navigation</i>
+                            </a>
+                        </div>
                     {{/each}}
-                    <div class="divider"></div>
                     <div class="section">
                         <h4 class="center-align">Grupo I</h4>
                         <p>1. Uma bola move-se segundo uma trajetória retilínea. Considere que a bola pode ser representada pelo seu centro de massa (modelo da partícula material). Admita que a componente escalar da posição, x, da bola em relação a um determinado
@@ -35,17 +42,7 @@
                         <p>1.2 A componente escalar, segundo o referencial Ox considerado, da velocidade, vx, da bola varia com o tempo, t, de acordo com a equação</p>
                         <div class="row">
 
-                            <div class="input-field col s9 no-margin">
-                                <input placeholder="your answer" id="first_name" type="text" class="validate">
-                            </div>
-                            <div class="col s3">
-                                <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Mark question as known, without solving">
-                                    <i class="material-icons">done</i>
-                                </a>
-                                <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Set question as goal">
-                                    <i class="material-icons">navigation</i>
-                                </a>
-                            </div>
+
                         </div>
                     </div>
                     <div class="section">

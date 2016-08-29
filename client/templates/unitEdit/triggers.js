@@ -1,82 +1,5 @@
-// WARNING: LEGACY FUNCTION. CURRENTLY REMADE FOR NEW "NEEDS" STRUCTURE
-// function needsAsJSONSession() {
-//     //console.log('needsAsJSONSession');
-//     var id = FlowRouter.getParam('contentId');
-//     var requirements = Requirements.find({
-//         node: id
-//     }).fetch();
-//     var json = [];
-//     for (var i = 0; i < requirements.length; i++) {
-//         var requirement = requirements[i];
-//         var requirementId = requirement._id;
-//         var info = Personal.findOne({
-//             node: requirementId
-//         });
-//         var state = info ? info.state : 0;
-//         var contains = [];
-//         var subconcepts = requirement.weights;
-//         for (var subconceptId in subconcepts) {
-//             var subObj = {};
-//             var subconcept = Nodes.findOne(subconceptId);
-//             subObj["_id"] = subconceptId;
-//             subObj["name"] = subconcept.name;
-//             subObj["description"] = subconcept.description;
-//             var subinfo = Personal.findOne({
-//                 node: subconceptId,
-//                 user: Meteor.userId()
-//             });
-//             var substate = subinfo ? subinfo.state : 0;
-//             contains.push(subObj);
-//         }
-//         var obj = {};
-//         obj["_id"] = requirementId;
-//         obj["state"] = state;
-//         obj["contains"] = contains;
-//         json.push(obj);
-//     }
-//     //console.log(json);
-//     Session.set("needsObject", json);
-// }
-// FAZER GRANTS AS JSON SESSION
-// function grantsAsJSONSession() {
-//     console.log('grantsAsJSONSession');
-//     var id = FlowRouter.getParam('contentId');
-//     console.log(Template.getData().grants);
-//
-//      var json = [];
-//     // for (var i = 0; i < requirements.length; i++) {
-//     //     var requirement = requirements[i];
-//     //     var requirementId = requirement._id;
-//     //     var info = Personal.findOne({
-//     //         node: requirementId
-//     //     });
-//     //     var state = info ? info.state : 0;
-//     //     var contains = [];
-//     //     var subconcepts = requirement.weights;
-//     //     for (var subconceptId in subconcepts) {
-//     //         var subObj = {};
-//     //         var subconcept = Nodes.findOne(subconceptId);
-//     //         subObj["_id"] = subconceptId;
-//     //         subObj["name"] = subconcept.name;
-//     //         subObj["description"] = subconcept.description;
-//     //         var subinfo = Personal.findOne({
-//     //             node: subconceptId,
-//     //             user: Meteor.userId()
-//     //         });
-//     //         var substate = subinfo ? subinfo.state : 0;
-//     //         contains.push(subObj);
-//     //     }
-//     //     var obj = {};
-//     //     obj["_id"] = requirementId;
-//     //     obj["state"] = state;
-//     //     obj["contains"] = contains;
-//     //     json.push(obj);
-//     // }
-//     // Session.set("grantsObject", json)
-// }
-
 function needsAsJSONSession() {
-  
+
 }
 
 Template.unitEdit.rendered = function() {
@@ -86,16 +9,20 @@ Template.unitEdit.rendered = function() {
                 delay: 20
             });
             var nodeId = FlowRouter.getParam('contentId');
-            var tempContent = Nodes.findOne({
+            var contentNode = Nodes.findOne({
                 _id: nodeId
-            }).content;
-            _.remove(tempContent, {
-                type: 'unitEvaluationSection'
-            });
+            }) || {};
+            var tempContent = {};
+            if (contentNode.content !== "undefined") {
+                var tempContent = contentNode.content
+                _.remove(tempContent, {
+                    type: 'unitEvaluationSection'
+                });
+            };
             Session.set('tempContent', tempContent);
 
             //console.log('conceptEdit rendered > subs ready');
-            needsAsJSONSession();
+            //needsAsJSONSession();
             //grantsAsJSONSession();
 
             var deletedNeedsSets = [];
