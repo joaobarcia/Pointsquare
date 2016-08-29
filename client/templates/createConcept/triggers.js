@@ -9,14 +9,14 @@ AutoForm.hooks({
                         needsMappedAsArrayofObjects[i][doc.needs[i][n]] = true;
                     }
                 }
-            };
+            }
+            console.log(needsMappedAsArrayofObjects);
             delete doc.needs;
 
             var conceptDefinitions = {};
             conceptDefinitions.type = 'concept';
             conceptDefinitions.parameters = doc;
             conceptDefinitions.needs = {};
-            conceptDefinitions.needs.concepts = {};
             conceptDefinitions.needs.concepts = needsMappedAsArrayofObjects;
 
             var nodeId;

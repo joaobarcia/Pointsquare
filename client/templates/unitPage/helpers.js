@@ -5,35 +5,6 @@ Template.unitPage.helpers({
             _id: nodeId
         }) || {};
         return content;
-    },
-
-    grantedConcepts: function() {
-        var nodeId = FlowRouter.getParam('contentId');
-        var content = Nodes.findOne({
-            _id: nodeId
-        }) || {};
-        // if content.grants exist
-        if (typeof content.grants !== "undefined") {
-            //extract granted concepts as array of ids and query db
-            var grantedIds = Object.keys(content.grants);
-            var grantedConcepts = Nodes.find({
-                "_id": {
-                    "$in": grantedIds
-                }
-            }).fetch();
-            return grantedConcepts;
-        } else return null;
-    },
-
-    neededConcepts: function() {
-        var nodeId = FlowRouter.getParam('contentId');
-        var needs = {};
-        Meteor.call("getNeeds", nodeId, function(e, r) {
-            if (typeof r !== "undefined") Session.set("needs", r.sets);
-            needs = Session.get("needs");
-        });
-        var neededSetsOfConceptsArray = Object.keys(needs);
-        return neededSetsOfConceptsArray;
     }
 });
 
@@ -61,6 +32,20 @@ Template.unitContent.helpers({
 });
 
 Template.relatedConcepts.helpers({
+    neededConcepts: function() {
+        var nodeId = FlowRouter.getParam('contentId');
+        console.log(nodeId);
+        var needs = {};
+        Meteor.call("getNeeds", nodeId, function(e, r) {
+            if (typeof r !== "undefined") {
+                console.log(r);
+                Session.set("needs", r.sets)
+            };
+        });
+        needs = Session.get("needs");
+        var neededSetsOfConceptsArray = Object.keys(needs);
+        return neededSetsOfConceptsArray;
+    },
     subConceptsOf: function(setOfConceptsID) {
         var setId = setOfConceptsID;
         var subConcepts = {};
@@ -74,5 +59,22 @@ Template.relatedConcepts.helpers({
             }).fetch();
         }
         return subConcepts;
+    },
+    grantedConcepts: function() {
+        var nodeId = FlowRouter.getParam('contentId');
+        var content = Nodes.findOne({
+            _id: nodeId
+        }) || {};
+        // if content.grants exist
+        if (typeof content.grants !== "undefined") {
+            //extract granted concepts as array of ids and query db
+            var grantedIds = Object.keys(content.grants);
+            var grantedConcepts = Nodes.find({
+                "_id": {
+                    "$in": grantedIds
+                }
+            }).fetch();
+            return grantedConcepts;
+        } else return null;
     }
 });

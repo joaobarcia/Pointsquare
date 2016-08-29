@@ -2,16 +2,6 @@ FlowRouter.route('/', {
     name: 'home',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
-            main: "home"
-        });
-    }
-});
-
-// WARNING: NEW ROUTES, TO ORGANIZE
-FlowRouter.route('/home_new', {
-    name: 'home_new',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
             main: "home_new"
         });
     }
