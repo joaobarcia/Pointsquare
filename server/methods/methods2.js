@@ -171,9 +171,11 @@ compute_state = function(node_id, user_id, update) {
     var type = node.type;
     if(type == "exam"){
         var contains = node.contains;
-        var norm = Object.keys(contains).length;
+        var norm = contains;
         var score = 0;
-        for(var id in contains) {
+        var id;
+        for(var i in contains) {
+          id = contains[i];
           score += get_state(id, user_id);
         }
         return score / norm;
@@ -1431,7 +1433,7 @@ find_missing_bush = function(node_ids,user_id) {
 };
 
 //fazer uma versão desta função para ser précalculada enquanto o utilizador faz a unidade
-find_useful_content = function(node_ids,user_id){
+find_useful_content = function(node_ids, user_id, not_in = {}){
     var find = find_missing_bush(node_ids,user_id);
     var bush = find.bush;
     var ids = find.ids;
@@ -1440,7 +1442,7 @@ find_useful_content = function(node_ids,user_id){
         for(var id in layer){
             var node = Nodes.findOne(id);
             var state = get_state(id,user_id);
-            if(node.type == "content" && state > 0.8){
+            if(node.type == "content" && state > 0.8 && not_in[id] != null){
                 /*var target = {};
                 target[id] = true;
                 for(var granted_id in node.grants){ target[granted_id] = true; }
@@ -1587,9 +1589,15 @@ Meteor.methods({
     }
   },
 
-  setGoal: function(exam_id,user_id){
-      var exercises = Nodes.findOne(exam_id).contains;
-      var unit = find_useful_content(exercises);
+  setGoal: function(exam_id, user_id, not_in = {}){
+      var contains = Nodes.findOne(exam_id).contains;
+      var exercises = {};
+      var id;
+      for(var i in contains){
+          id = contains[i];
+          exercises[id] = true;
+      }
+      var unit = find_useful_content(exercises,user_id,not_in);
       Meteor.users.update({_id:user_id},{$set:{goal:exam_id,usefulForGoal:unit}});
   }
 
