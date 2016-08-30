@@ -11,9 +11,9 @@ Template.unitCard.events({
         event.preventDefault();
         Session.set('isLoading', true);
         var nodeId = template.data._id;
-        console.log(nodeId);
         Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
-            FlowRouter.go('goalPage');
+            if( r ){ FlowRouter.go('/content/' +r); }
+            else{ console.log("No options!"); }
             Session.set('isLoading', false);
         });
     }

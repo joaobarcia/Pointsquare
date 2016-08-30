@@ -4,8 +4,8 @@ Template.conceptCard.events({
         Session.set('isLoading', true);
         var nodeId = template.data._id;
         Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
-            var nextUnitId = r;
-            FlowRouter.go('/content/' +nextUnitId);
+            if( r ){ FlowRouter.go('/content/' +r); }
+            else{ console.log("No options!"); }
             Session.set('isLoading', false);
         });
     }
