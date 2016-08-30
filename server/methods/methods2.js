@@ -1605,20 +1605,22 @@ Meteor.methods({
     }
   },
 
-  setGoal: function(exam_id, user_id, not_in = {}){
-      var contains = Nodes.findOne(exam_id).contains;
+  setGoal: function(node_id, user_id, not_in = {}){
+      /*var contains = Nodes.findOne(exam_id).contains;
       var exercises = {};
       var id;
       for(var i in contains){
           id = contains[i];
           exercises[id] = true;
       }
-      var unit = find_useful_content(exercises,user_id,not_in);
-      Meteor.users.update({_id:user_id},{$set:{goal:exam_id,usefulForGoal:unit}});
+      var unit = find_useful_content(exercises,user_id,not_in);*/
+      var goal = {}; goal[node_id] = true;
+      var unit = find_useful_content(goal,user_id,not_in);
+      Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}});
   },
 
   removeGoal: function(user_id){
-      Meteor.users.update({_id:user_id},{$set:{goal:null,usefulForGoal:null}});
+      Meteor.users.update({_id:user_id},{$set:{goal:null,nextUnit:null}});
   }
 
 });
