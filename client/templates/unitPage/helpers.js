@@ -1,6 +1,6 @@
 Template.unitPage.helpers({
     contentPage: function() {
-        var nodeId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('nodeId');
         var content = Nodes.findOne({
             _id: nodeId
         }) || {};
@@ -33,7 +33,7 @@ Template.unitContent.helpers({
 
 Template.relatedConcepts.helpers({
     neededConcepts: function() {
-        var nodeId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('nodeId');
         console.log(nodeId);
         var needs = {};
         Meteor.call("getNeeds", nodeId, function(e, r) {
@@ -61,7 +61,7 @@ Template.relatedConcepts.helpers({
         return subConcepts;
     },
     grantedConcepts: function() {
-        var nodeId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('nodeId');
         var content = Nodes.findOne({
             _id: nodeId
         }) || {};

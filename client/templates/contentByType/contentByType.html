@@ -1,0 +1,91 @@
+<template name="contentByType">
+    {{#each content }}
+        <div id="unitTab{{increaseByOne @index}}" class="col s12">
+            {{#if isType 'unitSection'}}
+                {{#each subContent}}
+                    {{#if isType 'text'}}
+                        {{#mathjax}}
+                            <p>
+                                {{#markdown}}{{text}}{{/markdown}}
+                            </p>
+                        {{/mathjax}}
+                    {{/if}}
+                    {{#if isType 'image'}}
+                        <img class="responsive-img" src="../images/units/{{imgURL}}">
+                    {{/if}}
+                    {{#if isType 'remoteImage'}}
+                        <div class="section center-align">
+                            <img class="responsive-img" style="max-height: 300px;" src="{{remoteImgURL}}">
+                        </div>
+                    {{/if}}
+                    {{#if isType 'youtube'}}
+                        <div class="section">
+                            <div class="video-container no-controls">
+                                <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    {{/if}}
+                {{/each }}
+            {{/if}}
+            {{#if isType 'unitEvaluationSection'}}
+                {{#if evaluationIsType 'exerciseRadioButton'}}
+                    {{> exerciseRadioButton}}
+                {{/if}}
+                {{#if evaluationIsType 'exerciseString'}}
+                    {{> exerciseString}}
+                {{/if}}
+                {{#if evaluationIsType 'userConfirmation'}}
+                    {{> userConfirmation}}
+                {{/if}}
+            {{/if}}
+        </div>
+    {{/each }}
+</template>
+<template name="exerciseString">
+    <div class="section center-align">
+        {{#if currentUser}}
+            <p>{{{question}}}</p>
+            <form id="exerciseStringForm">
+                <input type="text" name="exerciseString" id="exerciseInputText">
+                <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
+                </button>
+            </form>
+        {{else}}
+            <p>{{{question}}}</p>
+            <form id="exerciseStringForm">
+                <input disabled value="Login so we can follow your progress " type="text" name="exerciseString" id="exerciseInputText">
+                <button class="btn waves-effect waves-light {{answerFeedback}} disabled disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!" type="submit" name="action" id="exerciseButton">Submit</button>
+            </form>
+        {{/if}}
+        {{#if isLoading}}
+            <div class="row center-align">
+                {{> smallLoading}}
+            </div>
+        {{/if}}
+    </div>
+</template>
+<template name="exerciseRadioButton">
+    <p class="section center-align">{{question}}</p>
+    <form id="exerciseRadioButtonForm" action="#">
+        {{#if currentUser}}
+            {{#each options}}
+                <p class="center-align">
+                    <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}"/>
+                    <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{label}}</label>
+                </p>
+            {{/each}}
+        {{else}}
+            {{#each options}}
+                <p class="center-align tooltipped" data-position="bottom" data-delay="20" data-tooltip="Login so we can follow your progress!">
+                    <input name="group1" class="{{isCorrectOption}}RadioButton" disabled="disabled" type="radio" id="radioButton{{@index}}"/>
+                    <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{label}}</label>
+                </p>
+            {{/each}}
+        {{/if}}
+        {{#if isLoading}}
+            <div class="row center-align">
+                {{> smallLoading}}
+            </div>
+        {{/if}}
+    </form>
+</template>

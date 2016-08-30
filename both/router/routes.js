@@ -7,7 +7,7 @@ FlowRouter.route('/', {
     }
 });
 
-FlowRouter.route('/exam/:examId', {
+FlowRouter.route('/exam/:nodeId', {
     name: 'examPage',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
@@ -44,7 +44,7 @@ FlowRouter.route('/dashboard', {
     }
 });
 
-FlowRouter.route('/content/:contentId', {
+FlowRouter.route('/content/:nodeId', {
     name: 'unitPage',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
@@ -53,7 +53,7 @@ FlowRouter.route('/content/:contentId', {
     }
 });
 
-FlowRouter.route('/content/:contentId/edit', {
+FlowRouter.route('/content/:nodeId/edit', {
     name: 'unitEdit',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
@@ -62,7 +62,7 @@ FlowRouter.route('/content/:contentId/edit', {
     }
 });
 
-FlowRouter.route('/concept/:conceptId', {
+FlowRouter.route('/concept/:nodeId', {
     name: 'conceptPage',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
@@ -71,7 +71,7 @@ FlowRouter.route('/concept/:conceptId', {
     }
 });
 
-FlowRouter.route('/concept/:conceptId/edit', {
+FlowRouter.route('/concept/:nodeId/edit', {
     name: 'conceptEdit',
     action: function(params) {
         BlazeLayout.render("mainLayout", {

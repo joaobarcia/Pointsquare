@@ -1,14 +1,10 @@
-function needsAsJSONSession() {
-
-}
-
 Template.unitEdit.rendered = function() {
     this.autorun(() => {
         if (this.subscriptionsReady()) {
             $('.tooltipped').tooltip({
                 delay: 20
             });
-            var nodeId = FlowRouter.getParam('contentId');
+            var nodeId = FlowRouter.getParam('nodeId');
             var contentNode = Nodes.findOne({
                 _id: nodeId
             }) || {};
@@ -21,8 +17,8 @@ Template.unitEdit.rendered = function() {
             };
             Session.set('tempContent', tempContent);
 
-            //console.log('conceptEdit rendered > subs ready');
-            //needsAsJSONSession();
+            console.log('conceptEdit rendered > subs ready');
+            Meteor.globalFunctions.needsAsJSONSession();
             //grantsAsJSONSession();
 
             var deletedNeedsSets = [];
@@ -31,10 +27,19 @@ Template.unitEdit.rendered = function() {
     });
 };
 
+// Template.conceptEditSelectBox.rendered = function() {
+//     this.autorun(() => {
+//         if (Template.instance().parent(1).subscriptionsReady()) {
+//             //console.log('conceptEditSelectBox rendered > subs ready');
+//             Meteor.globalFunctions.applySelectizeCode();
+//         }
+//     });
+// };
+
 Template.unitEdit.events({
     'click #deleteUnit': function(event) {
         event.preventDefault();
-        var nodeId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('nodeId');
         Meteor.call('removeNode', nodeId);
         FlowRouter.go('dashboard');
     },
@@ -209,78 +214,78 @@ Template.unitEditContent.events({
     },
 });
 
-function applySelectizeCode() {
-    //console.log('applySelectizeCode');
-    var conceptsMappedForSelectize = Nodes.find({
-        type: 'concept'
-    }, {
-        fields: {
-            _id: 1,
-            name: 1,
-            description: 1
-        }
-    }).fetch();
-    //console.log(conceptsMappedForSelectize);
+// function applySelectizeCode() {
+//     //console.log('applySelectizeCode');
+//     var conceptsMappedForSelectize = Nodes.find({
+//         type: 'concept'
+//     }, {
+//         fields: {
+//             _id: 1,
+//             name: 1,
+//             description: 1
+//         }
+//     }).fetch();
+//     //console.log(conceptsMappedForSelectize);
+//
+//     var needsObject = Session.get("needsObject");
+//     //console.log(needsObject);
+//
+//     // For each set of concepts, apply selectize js to the respective selectize html
+//     _.forEach(needsObject, function(nSet) {
+//         var setId = nSet['_id'];
+//         //console.log('#' + setId);
+//         var $select = $('#' + setId).selectize({
+//             theme: 'links',
+//             maxItems: null,
+//             valueField: '_id',
+//             searchField: ['name', 'description'],
+//             options: conceptsMappedForSelectize,
+//
+//             render: {
+//                 option: function(data, escape) {
+//                     return '<div class="option">' +
+//                         '<h5><span class="title"><strong>' + escape(data.name) + '</strong></span><h5>' +
+//                         '<span class="url">' + escape(data.description) + '</span>' +
+//                         '</div>';
+//                 },
+//                 item: function(data, escape) {
+//                     return '<div class="item">' + escape(data.name) + '</div>';
+//                 }
+//             }
+//         });
+//
+//         // For each set of concepts, set the default values
+//         subConcepts = nSet.contains;
+//         _.forEach(subConcepts, function(nSubConcept) {
+//             subConceptId = nSubConcept['_id'];
+//             $('#' + setId).selectize()[0].selectize.addItem(subConceptId);
+//         });
+//     });
+// }
 
-    var needsObject = Session.get("needsObject");
-    //console.log(needsObject);
-
-    // For each set of concepts, apply selectize js to the respective selectize html
-    _.forEach(needsObject, function(nSet) {
-        var setId = nSet['_id'];
-        //console.log('#' + setId);
-        var $select = $('#' + setId).selectize({
-            theme: 'links',
-            maxItems: null,
-            valueField: '_id',
-            searchField: ['name', 'description'],
-            options: conceptsMappedForSelectize,
-
-            render: {
-                option: function(data, escape) {
-                    return '<div class="option">' +
-                        '<h5><span class="title"><strong>' + escape(data.name) + '</strong></span><h5>' +
-                        '<span class="url">' + escape(data.description) + '</span>' +
-                        '</div>';
-                },
-                item: function(data, escape) {
-                    return '<div class="item">' + escape(data.name) + '</div>';
-                }
-            }
-        });
-
-        // For each set of concepts, set the default values
-        subConcepts = nSet.contains;
-        _.forEach(subConcepts, function(nSubConcept) {
-            subConceptId = nSubConcept['_id'];
-            $('#' + setId).selectize()[0].selectize.addItem(subConceptId);
-        });
-    });
-}
-
-Template.conceptEditSelectBox.rendered = function() {
-    this.autorun(() => {
-        if (Template.instance().parent(1).subscriptionsReady()) {
-            //console.log('conceptEditSelectBox rendered > subs ready');
-            applySelectizeCode();
-            /*$(document).ready(function() {
-                $('.tooltipped').tooltip({
-                    delay: 20
-                });
-            });*/
-
-
-
-            //$('#select-links').selectize()[0].selectize.setValue(["MPhF2KaYg2wsA5ScG"]);
-        }
-    });
-
-};
+// Template.conceptEditSelectBox.rendered = function() {
+//     this.autorun(() => {
+//         if (Template.instance().parent(1).subscriptionsReady()) {
+//             //console.log('conceptEditSelectBox rendered > subs ready');
+//             applySelectizeCode();
+//             /*$(document).ready(function() {
+//                 $('.tooltipped').tooltip({
+//                     delay: 20
+//                 });
+//             });*/
+//
+//
+//
+//             //$('#select-links').selectize()[0].selectize.setValue(["MPhF2KaYg2wsA5ScG"]);
+//         }
+//     });
+//
+// };
 
 AutoForm.hooks({
     unitEdit: {
         onSubmit: function(doc) {
-            var nodeId = FlowRouter.getParam('contentId');
+            var nodeId = FlowRouter.getParam('nodeId');
 
             // Handle new and edited need sets
             var needsObject = Session.get('needsObject');

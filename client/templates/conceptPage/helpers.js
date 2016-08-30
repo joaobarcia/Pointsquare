@@ -1,6 +1,6 @@
 Template.conceptPage.helpers({
     conceptPage: function() {
-        var conceptId = FlowRouter.getParam('conceptId');
+        var conceptId = FlowRouter.getParam('nodeId');
         var concept = Nodes.findOne({
             _id: conceptId
         }) || {};

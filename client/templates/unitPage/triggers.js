@@ -72,7 +72,7 @@ function failUnit() {
  Template.unitPage.onCreated(function() {
      Session.set("precalculation","waiting");
      if(Meteor.userId()){
-       Meteor.call("precompute", FlowRouter.getParam('contentId'), Meteor.userId(), function(e,r){
+       Meteor.call("precompute", FlowRouter.getParam('nodeId'), Meteor.userId(), function(e,r){
          Session.set("precalculation",r);
          if(Session.get("outcome") == "success"){
            succeedUnit();
@@ -167,7 +167,7 @@ Template.unitPage.events({
     'click .set-goal': function(event, template) {
         Session.set('isLoading', true);
         event.preventDefault();
-        var nodeId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('nodeId');
         console.log(nodeId);
         Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
             FlowRouter.go('goalPage');
