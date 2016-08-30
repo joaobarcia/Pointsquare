@@ -1,4 +1,4 @@
-Template.conceptCard.events({
+Template.examCard.events({
     'click .set-goal': function(event, template) {
         event.preventDefault();
         Session.set('isLoading', true);

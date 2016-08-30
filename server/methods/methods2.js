@@ -1617,6 +1617,7 @@ Meteor.methods({
       var goal = {}; goal[node_id] = true;
       var unit = find_useful_content(goal,user_id,not_in);
       Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}});
+      return unit;
   },
 
   removeGoal: function(user_id){
