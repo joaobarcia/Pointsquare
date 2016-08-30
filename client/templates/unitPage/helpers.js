@@ -34,17 +34,18 @@ Template.unitContent.helpers({
 Template.relatedConcepts.helpers({
     neededConcepts: function() {
         var nodeId = FlowRouter.getParam('nodeId');
-        console.log(nodeId);
-        var needs = {};
         Meteor.call("getNeeds", nodeId, function(e, r) {
             if (typeof r !== "undefined") {
+                var needs = {};
                 console.log(r);
                 Session.set("needs", r.sets)
+                needs = Session.get("needs");
+                var neededSetsOfConceptsArray = Object.keys(needs);
+                return neededSetsOfConceptsArray;
+            } else {
+                return null
             };
         });
-        needs = Session.get("needs");
-        var neededSetsOfConceptsArray = Object.keys(needs);
-        return neededSetsOfConceptsArray;
     },
     subConceptsOf: function(setOfConceptsID) {
         var setId = setOfConceptsID;

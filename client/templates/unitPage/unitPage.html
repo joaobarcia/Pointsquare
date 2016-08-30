@@ -63,7 +63,7 @@
 <div class="card-content">
 {{#unless failedUnitAndNoGoal}}
     {{#if unitIsOneSectionAndNoExercise}}
-        {{> contentByType}}
+        {{> contentByType isUnitPage=true content=content}}
     {{else}}
         <div class="unit-tabs">
             <div class="row">
@@ -86,7 +86,7 @@
         </div>
         <div class="unit-content">
             <div class="section">
-                {{> contentByType}}
+                {{> contentByType isUnitPage=true content=content}}
             </div>
         </div>
     {{/if}}
