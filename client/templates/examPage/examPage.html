@@ -7,10 +7,9 @@
                         <h2>{{name}}</h2>
                     </div>
                     {{#each unit in examContents}}
-                        {{> contentByType content=unit.content isExamPage=true}}
-
+                        {{> contentByType content=unit.content isExamPage=true unitId=unit._id}}
                     {{/each}}
-                    
+
                     <div class="section">
                         <!-- Modal Trigger -->
                         <p class="center-align">

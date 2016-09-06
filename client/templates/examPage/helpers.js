@@ -7,19 +7,7 @@ Template.examPage.helpers({
         return exam;
     },
     examContents: function() {
-        var examId = FlowRouter.getParam('nodeId');
-        var exam = Nodes.findOne({
-            _id: examId
-        }) || {};
-        if (typeof exam.contains != "undefined") {
-            var examContentsIDs = exam.contains;
-            var examContents = Nodes.find({
-                "_id": {
-                    "$in": examContentsIDs
-                }
-            }).fetch();
-        };
-        console.log(examContents);
-        return examContents;
+      var examContent = Meteor.globalFunctions.getExamContent();
+      return examContent;
     }
 });
