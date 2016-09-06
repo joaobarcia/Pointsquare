@@ -1,17 +1,14 @@
 Template.registerHelper('goalExists', function() {
-  if (typeof Goals.findOne({
-      user: Meteor.userId()
-    }) !== "undefined") {
+  var goal = Meteor.user().goal;
+  if (typeof goal !== "undefined") {
     return 1;
   } else return 0;
 
 });
 
 Template.registerHelper('goalName', function() {
-  var goal = Goals.findOne({
-    user: Meteor.userId()
-  });
-  return Nodes.findOne(goal.node).name;
+  var goal = Meteor.user().goal;
+  return Nodes.findOne(goal).name;
 });
 
 Template.registerHelper('goalConceptCount', function() {

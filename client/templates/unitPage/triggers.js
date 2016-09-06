@@ -29,6 +29,7 @@ function succeedUnit() {
           }
       });
     }
+    Session.set("triedUnits",{});
 }
 
 function failUnit() {
@@ -67,6 +68,7 @@ function failUnit() {
           delete Session.keys["precalculation"];
       });
     }
+    Session.set("triedUnits",{});
 }
 
  Template.unitPage.onCreated(function() {
