@@ -5,6 +5,7 @@ Template.registerHelper('userIsAuthor', function() {
     if (Meteor.userId() === null) {
         return false;
     } else {
+      // WARNING: ORIENTCODE. MUST CHANGE
         var currentUserRID = Session.get('currentUserRID');
         var userIsAuthor = _.includes(authorsRID, currentUserRID);
         return userIsAuthor;

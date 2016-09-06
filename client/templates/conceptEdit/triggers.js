@@ -103,7 +103,9 @@ AutoForm.hooks({
                 Meteor.call('removeNeed', setId);
             }
 
-            FlowRouter.go('/concept/' + nodeId);
+
+            Materialize.toast('concept edited successfully', 3000);
+            //FlowRouter.go('/concept/' + nodeId);
             this.done();
             return false;
         }
