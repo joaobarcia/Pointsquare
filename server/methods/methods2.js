@@ -891,7 +891,7 @@ edit_requirement = function(and_id,new_concepts){
     var weights = compute_weights(new_concepts,"and");
     var needs = weights.weights;
     var bias = weights.bias;
-    Nodes.update({_id:id},{$set:
+    Nodes.update({_id:and_id},{$set:
       { needs: needs, bias: bias }
     });
     for(var id in new_concepts){
@@ -912,7 +912,7 @@ edit_requirement = function(and_id,new_concepts){
         needs = weights.weights;
         bias = weights.bias;
         //se o OR ficar vazio apagá-lo também e concluir saindo da função
-        var or_is_empty = Object.keys(needs.weights).length == 0;
+        var or_is_empty = Object.keys(needs).length == 0;
         var is_an_or_gate = node.type == "or";
         if(or_is_empty && is_an_or_gate){
           remove_node(node_id);
@@ -1512,6 +1512,7 @@ Meteor.methods({
   },
 
   deleteAllNodes: function() {
+    var nodes = Nodes.find().fetch();
     for(var i in nodes){
       remove_node(nodes[i]._id);
     }
