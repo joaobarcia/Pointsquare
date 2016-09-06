@@ -1,6 +1,6 @@
 function examExercisesAsSession() {
     var examContent = Meteor.globalFunctions.getExamContent();
-    console.log(examContent);
+    //console.log(examContent);
     var unitIdsSetToFailedExercise = {};
     for (var index in examContent) {
         var unitId = examContent[index]["_id"];
@@ -10,9 +10,11 @@ function examExercisesAsSession() {
 };
 
 function succeedUnitInExam(unitId) {
-    var examResults = Session.get("examResults");
-    examResults[unitId] = true;
-    Session.set("examResults", examResults);
+    // WARNING: COMMENTED CODE IS FOR STORING EXAM RESULTS TO BE LATER SENT TO SERVER AS AN OBJECT AND COMPUTED
+    //          CURRENT MODUS OPERANDI IS SENDING INDIVUDAL EXERCISE STRAIGHT TO SERVER TO BE CALCULATED
+    // var examResults = Session.get("examResults");
+    // examResults[unitId] = true;
+    // Session.set("examResults", examResults);
 };
 
 Template.examPage.onRendered(function() {
@@ -55,13 +57,7 @@ Template.examPage.events({
         $(".trueRadioButtonLabel").addClass("green-text");
         $(".falseRadioButtonLabel").addClass("red-text");
         if (Meteor.userId()) {
-          console.log(this);
-          console.log(Template.currentData());
-          console.log(Template.parentData(1));
-          console.log(Template.parentData(2));
-          console.log(Template.parentData(3));
-          console.log(Template.parentData(4));
-          var unitId = this.unitId;
+          var unitId = $(event.currentTarget).attr("unit_id");
           succeedUnitInExam(unitId);
         }
     },

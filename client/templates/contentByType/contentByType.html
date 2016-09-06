@@ -3,7 +3,9 @@
         HSADKJASDLKAS
     {{/if}} -->
     {{#let isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId}}
+
         {{#each content}}
+
             <!-- {{#if isUnitPage}}
             dentro do each content
         {{/if}} -->
@@ -36,6 +38,7 @@
                 {{/if}}
                 {{#if isType 'unitEvaluationSection'}}
                     {{#if evaluationIsType 'exerciseRadioButton'}}
+
                         {{> exerciseRadioButton unitId=unitId question=question options=options}}
                     {{/if}}
                     {{#if evaluationIsType 'exerciseString'}}
@@ -95,13 +98,15 @@
     </div>
 </template>
 <template name="exerciseRadioButton">
+
     <p class="section center-align">{{question}}</p>
     <form id="exerciseRadioButtonForm" action="#">
         {{#if currentUser}}
             {{#let unitId=unitId}}
                 {{#each options}}
+
                     <p class="center-align">
-                        <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}"/>
+                        <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}" unit_id="{{unitId}}"/>
                         <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{label}}</label>
                     </p>
                 {{/each}}
