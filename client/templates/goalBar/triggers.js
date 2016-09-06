@@ -8,10 +8,21 @@ Template.goalBar.events({
             if( r ){
               triedUnits[r] = true;
               Session.set("triedUnits",triedUnits);
+              Session.set('isLoading', false);
               FlowRouter.go('/content/' +r);
             }
-            else{ console.log("No options found!"); }
-            Session.set('isLoading', false);
+            else{
+                triedUnits = {};
+                Meteor.call("setGoal", goal, Meteor.userId(), triedUnits, function(e2, r2) {
+                    if( r2 ){
+                      triedUnits[r2] = true;
+                      Session.set("triedUnits",triedUnits);
+                      Session.set('isLoading', false);
+                      FlowRouter.go('/content/' +r2);
+                    }
+                    else{ console.log("No options found!"); }
+                });
+            }
         });
     }
 });
