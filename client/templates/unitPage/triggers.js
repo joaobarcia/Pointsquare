@@ -62,17 +62,17 @@ function failUnit() {
 
  Template.unitPage.onCreated(function() {
      Session.set("precalculation","waiting");
-    //  if(Meteor.userId()){
-    //    Meteor.call("precompute", FlowRouter.getParam('nodeId'), Meteor.userId(), function(e,r){
-    //      Session.set("precalculation",r);
-    //      if(Session.get("outcome") == "success"){
-    //        succeedUnit();
-    //      }
-    //      else if(Session.get("outcome") == "failure"){
-    //        failUnit();
-    //      }
-    //    });
-    //  }
+     if(Meteor.userId()){
+       Meteor.call("precompute", FlowRouter.getParam('nodeId'), Meteor.userId(), function(e,r){
+         Session.set("precalculation",r);
+         if(Session.get("outcome") == "success"){
+           succeedUnit();
+         }
+         else if(Session.get("outcome") == "failure"){
+           failUnit();
+         }
+       });
+     }
  });
 
 Template.unitPage.onRendered(function() {
