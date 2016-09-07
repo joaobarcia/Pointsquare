@@ -8,5 +8,15 @@ Template.conceptCard.events({
             else{ console.log("No options found!"); }
             Session.set('isLoading', false);
         });
+    },
+    'click .just-set-goal': function(event, template) {
+        event.preventDefault();
+        Session.set('isLoading', true);
+        var nodeId = template.data._id;
+        Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
+            if( r ){ 0; }
+            else{ console.log("No options found!"); }
+            Session.set('isLoading', false);
+        });
     }
 });

@@ -18,11 +18,16 @@
                         <div class="col s6">
                             <div class="right">
                                 {{#unless isLoading}}
-                                    <a class="waves-effect waves-teal btn set-goal">
-                                        <i class="material-icons left">explore</i>Set as goal</a>
+                                    {{#unless goalIsNot _id}}
+                                        <a class="waves-effect waves-teal btn set-goal">
+                                          <i class="material-icons left">explore</i>go to learning</a>
+                                    {{else}}
+                                        <a class="waves-effect waves-teal btn just-set-goal">
+                                          <i class="material-icons left">explore</i>Set as goal</a>
+                                    {{/unless}}
                                 {{else}}
-                                    <a class="waves-effect waves-teal btn disabled">
-                                        <i class="material-icons left">explore</i>Set as goal</a>
+                                    <a class="waves-effect waves-teal btn set-goal">
+                                      <i class="material-icons left">explore</i>Set as goal</a>
                                 {{/unless}}
                             </div>
                         </div>
