@@ -16,20 +16,26 @@
             </ul>-->
             <div class="col s6">
               <h4 class="center-align black-text">
-                Studying for
+                {{#if goalIsCompleted}}
+                  You have successfully learned
+                {{else}}
+                  Studying for
+                {{/if}}
                 <span class="blue-text">
-                  <strong>{{goalName}}</strong>
+                  <strong>{{goalName}}.</strong>
                 </span>
               </h4>
             </div>
             <div class="col s3">
-              <a class="waves-effect waves-teal btn next-unit right-align">
-                  {{#unless currentUnitIsOnPath}}
-                    RESUME LEARNING
-                  {{else}}
-                    SKIP THIS UNIT
-                  {{/unless}}
-              </a>
+              {{#unless goalIsCompleted}}
+                <a class="waves-effect waves-teal btn next-unit right-align">
+                    {{#unless currentUnitIsOnPath}}
+                      RESUME LEARNING
+                    {{else}}
+                      SKIP THIS UNIT
+                    {{/unless}}
+                </a>
+              {{/unless}}
             </div>
           </div>
         </div>
