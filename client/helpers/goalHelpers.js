@@ -6,56 +6,25 @@ Template.registerHelper('goalExists', function() {
 
 });
 
+Template.registerHelper("goalIsNot", function(id){
+  var goal = Meteor.user().goal;
+  return id != goal;
+});
+
 Template.registerHelper('goalName', function() {
   var goal = Meteor.user().goal;
   return Nodes.findOne(goal).name;
 });
 
-Template.registerHelper('goalConceptCount', function() {
-  var goal = Goals.findOne({
-    user: Meteor.userId()
-  });
-  return goal.conceptCount;
-});
-
-//UNDER CONSTRUCTION
-Template.registerHelper('goalConcepts', function() {
-  var goal = Goals.findOne({
-    user: Meteor.userId()
-  });
-  var conceptIDs = Object.keys(goal.concepts);
-  console.log(conceptIDs);
-});
-
-// workaround because Mongo does not accept sorted find({_id: { $in: unitIds}})
-Template.registerHelper('TEMP_goalUnitsIds', function() {
-  var goal = Goals.findOne({
-    user: Meteor.userId()
-  });
-  var unitIds = goal.units;
-  return unitIds;
-  // return Nodes.find({
-  //   _id: {
-  //     $in: unitIds
-  //   }
-  // });
-});
-
 Template.registerHelper('goalIsCompleted', function() {
+  var goalId = Meteor.user().goal;
   // if user has a goal
-  if (typeof Goals.findOne({
-      user: Meteor.userId()
-    }) !== 'undefined') {
-    var goal = Goals.findOne({
-      user: Meteor.userId()
-    });
+  if (typeof goalId !== 'undefined') {
+    var goal = Nodes.findOne(goalId);
     // if that goal has a defined state
-    if (typeof Personal.findOne({
-        node: goal.node,
-        user: Meteor.userId()
-      }) !== 'undefined') {
-      var goalInfo = Personal.findOne({
-        node: goal.node,
+    if (typeof goal !== 'undefined') {
+      var stateInfo = Personal.findOne({
+        node: goalId,
         user: Meteor.userId()
       });
       var goalState = goalInfo.state;
