@@ -1062,11 +1062,14 @@ simulate = function(target, user_id) {
     }
     //compute maximum activations
     //increment input states
+    var max_state = {};
+    for (var node_id in state) {
+        max_state[node_id] = state[node_id];
+    }
     for (var node_id in input_layer) {
         //if( !locked[node_id] ){ state[node_id] = 1; }
-        state[node_id] = 1;
+        max_state[node_id] = 1;
     }
-    var max_states = {};
     //forward propagate
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
@@ -1078,18 +1081,21 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * max_state[subnode_id];
             }
-            state[node_id] = sigmoid(arg);
-            if( output_layer[node_id] != null ){ max_states[node_id] = state[node_id]; }
+            max_state[node_id] = sigmoid(arg);
+            //if( output_layer[node_id] != null ){ max_states[node_id] = state[node_id]; }
         }
     }
     //compute minimum activations
-    //increment input states
-    for (var node_id in input_layer) {
-        if( !locked[node_id] ){ state[node_id] = 0; }
+    //decrement input states
+    var min_state = {};
+    for (var node_id in state) {
+        min_state[node_id] = state[node_id];
     }
-    var min_states = {};
+    for (var node_id in input_layer) {
+        if( !locked[node_id] ){ min_state[node_id] = 0; }
+    }
     //forward propagate
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
@@ -1101,15 +1107,15 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * min_state[subnode_id];
             }
-            state[node_id] = sigmoid(arg);
-            if( output_layer[node_id] != null ){ min_states[node_id] = state[node_id]; }
+            min_state[node_id] = sigmoid(arg);
+            //if( output_layer[node_id] != null ){ min_states[node_id] = state[node_id]; }
         }
     }
     //update the target to realistic values
     for (node_id in target) {
-        target[node_id] = target[node_id] ? max_states[node_id] : min_states[node_id];
+        target[node_id] = target[node_id] ? max_state[node_id] : min_state[node_id];
     }
     //define maxmimum and minimum variations
     var max_dist = 0;
