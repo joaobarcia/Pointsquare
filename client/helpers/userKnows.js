@@ -1,4 +1,4 @@
-Template.registerHelper('userKnows', function() {
+Template.registerHelper('knownConcepts', function() {
     if (Meteor.userId() === null) {
         return false;
     } else {
@@ -18,9 +18,8 @@ Template.registerHelper('userKnows', function() {
         });
 
         var knownConcepts = Nodes.find({
-            _id: {
-                $in: knownConceptIds
-            }
+            _id:  { $in: knownConceptIds },
+            type: "concept"
         }).fetch();
         return knownConcepts;
     }

@@ -8,9 +8,9 @@ function succeedUnit() {
     //se ainda não tiverem chegado os resultados do servidor, não fazer nada
     if(Session.get("precalculation") != "waiting"){
       Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
-          var goal_id = Meteor.users.findOne(Meteor.userId())._id;
-          if (goal_id) {
-              Meteor.call("setGoal", goal_id, Meteor.userId(), function(e, r) {
+          var goalId = Meteor.user().goal;
+          if (goalId) {
+              Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
                   FlowRouter.go('goalPage');
                   Session.set('isLoading', false);
                   delete Session.keys["outcome"];
@@ -43,9 +43,9 @@ function failUnit() {
     //se ainda não tiverem chegado os resultados do servidor, não fazer nada
     if(Session.get("precalculation") != "waiting"){
       Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {
-        var goal_id = Meteor.users.findOne(Meteor.userId())._id;
-        if (goal_id) {
-            Meteor.call("setGoal", goal_id, Meteor.userId(), function(e, r) {
+        var goalId = Meteor.user().goal;
+        if (goalId) {
+            Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
                 FlowRouter.go('goalPage');
               });
           } else {
