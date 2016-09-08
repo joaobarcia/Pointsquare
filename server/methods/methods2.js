@@ -1646,8 +1646,8 @@ Meteor.methods({
       for(var id in answers){
           if(answers[id]){
             var target = {};
-            target[unit_id] = true;
-            var grants = Nodes.findOne(unit_id).grants;
+            target[id] = true;
+            var grants = Nodes.findOne(id).grants;
             if(grants){
               for(var id in grants){
                 target[id] = true;
