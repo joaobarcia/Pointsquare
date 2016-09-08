@@ -1,9 +1,6 @@
 Template.registerHelper('goalExists', function() {
   var goal = Meteor.user().goal;
-  if (typeof goal !== "undefined") {
-    return 1;
-  } else return 0;
-
+  return goal != null
 });
 
 Template.registerHelper("goalIsNot", function(id){
@@ -16,13 +13,17 @@ Template.registerHelper('goalName', function() {
   return Nodes.findOne(goal).name;
 });
 
+Template.registerHelper("noOptionsFound", function(id){
+  return Session.get("noOptionsFound") == id;
+});
+
 Template.registerHelper('goalIsCompleted', function() {
   var goalId = Meteor.user().goal;
   // if user has a goal
-  if (typeof goalId !== 'undefined') {
+  if (goalId) {
     var goal = Nodes.findOne(goalId);
     // if that goal has a defined state
-    if (typeof goal !== 'undefined') {
+    if (goal) {
       var stateInfo = Personal.findOne({
         node: goalId,
         user: Meteor.userId()

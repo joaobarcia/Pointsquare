@@ -37,10 +37,9 @@ Template.relatedConcepts.helpers({
         Meteor.call("getNeeds", nodeId, function(e, r) {
             if (typeof r !== "undefined") {
                 var needs = {};
-                console.log(r);
                 Session.set("needs", r.sets)
                 needs = Session.get("needs");
-                var neededSetsOfConceptsArray = Object.keys(needs);
+                var neededSetsOfConceptsArray = needs? Object.keys(needs) : [];
                 return neededSetsOfConceptsArray;
             } else {
                 return null
