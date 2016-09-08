@@ -13,8 +13,8 @@ Template.registerHelper('goalName', function() {
   return Nodes.findOne(goal).name;
 });
 
-Template.registerHelper("noOptionsFound", function(id){
-  return Session.get("noOptionsFound") == id;
+Template.registerHelper("noOptionsFound", function(){
+  return Meteor.user().goal != null && Meteor.user().nextUnit == null;
 });
 
 Template.registerHelper('goalIsCompleted', function() {
