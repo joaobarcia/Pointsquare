@@ -32,6 +32,15 @@ FlowRouter.route('/create/exam', {
         });
     }
 });
+
+FlowRouter.route('/exam/:nodeId/edit', {
+    name: 'examEdit',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "examEdit"
+        });
+    }
+});
 // WARNING: END OF NEW ROUTES
 
 FlowRouter.route('/search', {

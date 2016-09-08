@@ -1,0 +1,39 @@
+<template name="examEdit">
+    {{#with examEditPage}}
+        <div class="container">
+            <div class="section">
+              <h4>Editing
+                <a href="../{{_id}}">{{name}}</a>
+              </h4>
+                {{#autoForm schema=examEditSchema id="editExam" resetOnSuccess=false}}
+                    <fieldset>
+                        <div class="card dropdown-overflow">
+                            <div class="section">
+                                <div class="container">
+                                    <div class="section">
+                                        <h4 class="center-align">Info</h4>
+                                        {{> afQuickField name="name" value=name}}
+                                        {{> afQuickField name="description" value=description}}
+                                    </div>
+                                    <div class="section">
+                                        <div class="divider"></div>
+                                        <h4 class="center-align">Content which composes this exam</h4>
+                                        {{> afQuickField name="exercises" value=exercisesAsSelectizeArray}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            {{#if submitting}}
+                                {{> smallLoading}}
+                            {{else}}
+                                <button type="submit" class="btn btn-primary btn-large">Submit</button>
+                                {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
+                            {{/if}}
+                        </div>
+                    </fieldset>
+                {{/autoForm}}
+            </div>
+        </div>
+    {{/with}}
+</template>
