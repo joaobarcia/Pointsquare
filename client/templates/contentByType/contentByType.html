@@ -80,13 +80,13 @@
     <div class="section center-align">
         {{#if currentUser}}
             <p>{{{question}}}</p>
-            <form id="exerciseStringForm">
-                <input type="text" name="exerciseString" id="exerciseInputText">
+            <form class="exerciseStringForm" id={{unitId}}>
+                <input type="text" name="exerciseString" class="exerciseInputText">
             </form>
         {{else}}
             <p>{{{question}}}</p>
-            <form id="exerciseStringForm">
-                <input disabled value="Login so we can follow your progress " type="text" name="exerciseString" id="exerciseInputText">
+            <form class="exerciseStringForm" id={{unitId}}>
+                <!-- <input disabled value="Login so we can follow your progress " type="text" name="exerciseString" id="exerciseInputText"> -->
                 <button class="btn waves-effect waves-light {{answerFeedback}} disabled disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!" type="submit" name="action" id="exerciseButton">Submit</button>
             </form>
         {{/if}}
@@ -104,10 +104,9 @@
         {{#if currentUser}}
             {{#let unitId=unitId}}
                 {{#each options}}
-
                     <p class="center-align">
-                        <input name="group1" class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton{{@index}}" unit_id="{{unitId}}"/>
-                        <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{label}}</label>
+                        <input name={{unitId}} class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton_{{unitId}}_{{@index}}" unit_id="{{unitId}}"/>
+                        <label for="radioButton_{{unitId}}_{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{label}}</label>
                     </p>
                 {{/each}}
             {{/let}}

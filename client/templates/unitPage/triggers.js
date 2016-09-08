@@ -113,7 +113,7 @@ Template.unitPage.events({
         }
     },
 
-    'submit #exerciseStringForm': function(event) {
+    'submit .exerciseStringForm': function(event) {
         event.preventDefault();
         var answerIsCorrect = null;
         if (this.answers.indexOf(event.target.exerciseString.value) > -1) {

@@ -10,11 +10,17 @@ function examExercisesAsSession() {
 };
 
 function succeedUnitInExam(unitId) {
-    // WARNING: COMMENTED CODE IS FOR STORING EXAM RESULTS TO BE LATER SENT TO SERVER AS AN OBJECT AND COMPUTED
-    //          CURRENT MODUS OPERANDI IS SENDING INDIVUDAL EXERCISE STRAIGHT TO SERVER TO BE CALCULATED
-    // var examResults = Session.get("examResults");
-    // examResults[unitId] = true;
-    // Session.set("examResults", examResults);
+    console.log("true");
+    var examResults = Session.get("examResults");
+    examResults[unitId] = true;
+    Session.set("examResults", examResults);
+};
+
+function failUnitInExam(unitId) {
+    console.log("false");
+    var examResults = Session.get("examResults");
+    examResults[unitId] = false;
+    Session.set("examResults", examResults);
 };
 
 Template.examPage.onRendered(function() {
@@ -23,52 +29,55 @@ Template.examPage.onRendered(function() {
             $('.tooltipped').tooltip({
                 delay: 20
             });
-            $('.modal-trigger').leanModal();
             examExercisesAsSession();
         }
     });
 });
 
 Template.examPage.events({
-    'submit #exerciseStringForm': function(event) {
+    'submit .exerciseStringForm': function(event) {
+        event.preventDefault();
+    },
+    'change .exerciseStringForm': function(event) {
         event.preventDefault();
         var answerIsCorrect = null;
-        if (this.answers.indexOf(event.target.exerciseString.value) > -1) {
+        if (this.answers.indexOf(event.target.value) > -1) {
             answerIsCorrect = true;
         } else answerIsCorrect = false;
+        var unitId = this.unitId;
         if (answerIsCorrect) {
-            $("#exerciseButton").removeClass("orange red").addClass("green");
-            $("#exerciseInputText").removeClass("red-text").addClass("green-text").attr("disabled", "disabled");
+            // $("#exerciseInputText").removeClass("red-text").addClass("green-text").attr("disabled", "disabled");
             if (Meteor.userId()) {
-                var unitId = this.unitId;
+                $(event.currentTarget).children("input").addClass("true_string");
                 succeedUnitInExam(unitId);
             }
         } else if (!answerIsCorrect) {
-            $("#exerciseButton").removeClass("orange").removeClass("green").addClass("red");
-            $("#exerciseInputText").removeClass("green-text").addClass("red-text").attr("disabled", "disabled");
+            // $("#exerciseInputText").removeClass("green-text").addClass("red-text").attr("disabled", "disabled
             if (Meteor.userId()) {
-                //failUnit();
+                $(event.currentTarget).children("input").removeClass("true_string");
+                failUnitInExam(unitId);
             }
         }
     },
     'change .trueRadioButton': function(event, template) {
-        $(".trueRadioButton").prop('disabled', 'disabled');
-        $(".falseRadioButton").prop('disabled', 'disabled');
-        $(".trueRadioButtonLabel").addClass("green-text");
-        $(".falseRadioButtonLabel").addClass("red-text");
+        // $(".trueRadioButton").prop('disabled', 'disabled');
+        // $(".falseRadioButton").prop('disabled', 'disabled');
+        // $(".trueRadioButtonLabel").addClass("green-text");
+        // $(".falseRadioButtonLabel").addClass("red-text");
         if (Meteor.userId()) {
-          var unitId = $(event.currentTarget).attr("unit_id");
-          succeedUnitInExam(unitId);
+            var unitId = $(event.currentTarget).attr("unit_id");
+            succeedUnitInExam(unitId);
         }
     },
 
     'change .falseRadioButton': function(event) {
-        $(".trueRadioButton").prop('disabled', 'disabled');
-        $(".falseRadioButton").prop('disabled', 'disabled');
-        $(".trueRadioButtonLabel").addClass("green-text");
-        $(".falseRadioButtonLabel").addClass("red-text");
+        // $(".trueRadioButton").prop('disabled', 'disabled');
+        // $(".falseRadioButton").prop('disabled', 'disabled');
+        // $(".trueRadioButtonLabel").addClass("green-text");
+        // $(".falseRadioButtonLabel").addClass("red-text");
         if (Meteor.userId()) {
-            console.log("Another one bites the dust!");
+            var unitId = $(event.currentTarget).attr("unit_id");
+            failUnitInExam(unitId);
         }
     },
     // 'click .set-goal': function(event, template) {
@@ -81,6 +90,26 @@ Template.examPage.events({
     //         Session.set('isLoading', false);
     //     });
     // }
+    'click #submit_exam': function(event) {
+        console.log("SUBMIT EXAM!");
+
+        // FEEDBACK ON RADIO BUTTON EXERCISES
+        $(".trueRadioButton").prop('disabled', 'disabled');
+        $(".falseRadioButton").prop('disabled', 'disabled');
+        $(".trueRadioButtonLabel").addClass("green-text");
+        $(".falseRadioButtonLabel").addClass("red-text");
+
+        // FEEDBACK ON STRING EXERCISES
+        $(".exerciseStringForm:not(.true_string)").addClass("red-text").attr("disabled", "disabled");
+        $(".exerciseStringForm .true_string").addClass("green-text").attr("disabled", "disabled");
+
+        // CALL LEARNING METHODS
+        if (Meteor.userId()) {
+            var examResults = Session.get("examResults");
+            Meteor.call("submitExam", examResults, Meteor.userId());
+        }
+
+    },
 
 
 });

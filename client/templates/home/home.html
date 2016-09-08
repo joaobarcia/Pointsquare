@@ -1,53 +1,82 @@
 <template name="home">
-  <div class="container">
-    {{#if currentUser}}
-      {{> currentUserHome}}
-    {{else}}
-      <div class="card">
-        <div class="row center-align">
-          <div class="section"></div>
-          <div class="section">
-            <a class="waves-effect waves-light btn-large green" href="{{ pathFor 'atSignUp' }}">
-              <i class="material-icons left">person_add</i>Register to start your knowledge journey!</a>
-          </div>
-          <div class="section">
-            <p>Or
-              <a href="{{ pathFor 'atSignIn' }}">sign in</a>
-              if you are already registered</p>
-          </div>
+    <div id="index-banner" class="parallax-container" style="min-height:380px">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <br><br>
+                <h1 class="header center light white-text">Learning reimagined</h1>
+                <div class="row center">
+                    <h5 class="header col s12 light white-text">Search for an exam or skill to set as a learning goal</h5>
+                    <h5 class="header col s12 light white-text">We help you find your learning path</h5>
+                    <div>
+                        <input id="search" class="white-text">
+                        <i class="material-icons">search</i>
+                    </div>
+                </div>
+
+                <div class="row center">
+                    <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
+                </div>
+                <br><br>
+
+            </div>
         </div>
-      </div>
-    {{/if}}
-  </div>
-</template>
-<template name="currentUserHome">
-  <div class="card">
-    <div class="container center-align">
-      <div class="row">
-        <div class="section">
-          <h4>Want to dive right in and see what Pointsquare is about?</h4>
-          <a class="waves-effect waves-light btn-large blue" href="content/bwC6NgGXNZi2Xw42g">
-            <span class="ti-book"></span> Test your Latin language skills</a>
-        </div>
-        <div class="divider"></div>
-        <div class="section">
-          <h4>Want to learn something new?</h4>
-          <a class="waves-effect waves-light btn-large blue" href="{{ pathFor 'search' }}">
-            <i class="material-icons left">search</i>Search for Concepts or Units</a>
-        </div>
-        <div class="divider"></div>
-        <div class="section">
-          <h4>Want to add your content to our network?</h4>
-          <a class="waves-effect waves-light btn-large blue" href="{{ pathFor 'contentCreate' }}">
-            <i class="material-icons left">add_circle_outline</i>Share your content</a>
-         </div>
-        <!--<div class="divider"></div>
-        <div class="section">
-          <h4>Just want to see how our paths work?</h4>
-          <a class="waves-effect waves-light btn-large blue" href="{{ pathFor 'goal' }}">
-            <i class="material-icons left">explore</i>Set Banana Peeling as goal</a>
-        </div> -->
-      </div>
+        <div class="parallax"><img style="display:block" src="/images/background1.jpg" alt="Unsplashed background img 1"></div>
     </div>
-  </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="row center">
+                <h3 class="header col s12 light">Get ready for one of these tests</h3>
+            </div>
+            <!--   Icon Section   -->
+            <div class="row">
+                {{#each exam in mainPageExams}}
+                    <div class="col s12 m3">
+                        {{> examCard name=exam.name _id=exam._id}}
+                    </div>
+                {{/each}}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="parallax-container valign-wrapper">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <div class="row center">
+                    <h5 class="header col s12 white-text light">A modern responsive front-end framework based on Material Design</h5>
+                </div>
+            </div>
+        </div>
+        <div class="parallax"><img style="display:block" src="/images/background2.jpg" alt="Unsplashed background img 2"></div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+
+            <div class="row">
+                <div class="col s12 center">
+                    <h3>
+                        <i class="mdi-content-send brown-text"></i>
+                    </h3>
+                    <h4>Contact Us</h4>
+                    <p class="left-align light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque id nunc nec volutpat. Etiam pellentesque tristique arcu, non consequat magna fermentum ac. Cras ut ultricies eros. Maecenas eros justo,
+                        ullamcorper a sapien id, viverra ultrices eros. Morbi sem neque, posuere et pretium eget, bibendum sollicitudin lacus. Aliquam eleifend sollicitudin diam, eu mattis nisl maximus sed. Nulla imperdiet semper molestie. Morbi massa odio, condimentum sed
+                        ipsum ac, gravida ultrices erat. Nullam eget dignissim mauris, non tristique erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="parallax-container valign-wrapper">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <div class="row center">
+                    <h5 class="header col white-text s12 light">A modern responsive front-end framework based on Material Design</h5>
+                </div>
+            </div>
+        </div>
+        <div class="parallax"><img style="display:block" src="/images/background3.jpg" alt="Unsplashed background img 3"></div>
+    </div>
 </template>
