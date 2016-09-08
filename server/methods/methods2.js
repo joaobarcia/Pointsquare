@@ -1253,7 +1253,7 @@ simulate = function(target, user_id) {
     }
     //end of subnetwork update
     tree = find_forward_tree(input_layer);
-    for (var order = tree.length - 2; order >= 0; order--) {
+    for (var order = 1; order < tree.length; order++) {
         var layer = tree[order];
         for (var node_id in layer) {
             var node = Nodes.findOne(node_id);
@@ -1263,7 +1263,7 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
             }
             state[node_id] = sigmoid(arg);
         }
