@@ -1658,7 +1658,7 @@ Meteor.methods({
           }
           else{
             var target = {};
-            target[unit_id] = false;
+            target[id] = false;
             var result = simulate(target,user_id);
             fail(result,user_id);
           }
