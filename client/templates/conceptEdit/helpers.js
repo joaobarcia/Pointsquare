@@ -1,5 +1,4 @@
 Template.conceptEdit.helpers({
-
     conceptEditPage: function() {
         var conceptId = FlowRouter.getParam('nodeId');
         var concept = Nodes.findOne({
