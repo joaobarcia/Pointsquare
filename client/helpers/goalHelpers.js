@@ -27,7 +27,7 @@ Template.registerHelper('goalIsCompleted', function() {
         node: goalId,
         user: Meteor.userId()
       });
-      var goalState = goalInfo.state;
+      var goalState = stateInfo.state;
       //if the goal is higher than 0.9
       var goalCompleted = goalState > 0.9;
       if (goalCompleted) {
