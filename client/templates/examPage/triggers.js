@@ -102,6 +102,13 @@ Template.examPage.events({
         // FEEDBACK ON STRING EXERCISES
         $(".exerciseStringForm:not(.true_string)").addClass("red-text").attr("disabled", "disabled");
         $(".exerciseStringForm .true_string").addClass("green-text").attr("disabled", "disabled");
+
+        // CALL LEARNING METHODS
+        if (Meteor.userId()) {
+            var examResults = Session.get("examResults");
+            Meteor.call("submitExam", examResults, Meteor.userId());
+        }
+
     },
 
 
