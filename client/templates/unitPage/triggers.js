@@ -11,7 +11,7 @@ function succeedUnit() {
           var goalId = Meteor.user().goal;
           if (goalId) {
               Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
-                  FlowRouter.go('goalPage');
+                  //FlowRouter.go('goalPage');
                   Session.set('isLoading', false);
                   delete Session.keys["outcome"];
                   delete Session.keys["precalculation"];
@@ -46,7 +46,7 @@ function failUnit() {
         var goalId = Meteor.user().goal;
         if (goalId) {
             Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
-                FlowRouter.go('goalPage');
+                //FlowRouter.go('goalPage');
               });
           } else {
               // otherwise prompt user about setting unit as goal
@@ -161,7 +161,7 @@ Template.unitPage.events({
         var nodeId = FlowRouter.getParam('nodeId');
         console.log(nodeId);
         Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
-            FlowRouter.go('goalPage');
+            //FlowRouter.go('goalPage');
             Session.set('isLoading', false);
         });
     }

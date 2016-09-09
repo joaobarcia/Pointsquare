@@ -1,0 +1,25 @@
+<template name="setGoalButton">
+  {{#unless disableSetGoal}}
+    {{#unless goalAlreadyReached state}}
+      <div class="col s6">
+        <div class="right">
+            {{#if thisIsGoal}}
+              <a class="waves-effect waves-teal btn start-learning">
+                <i class="material-icons left">explore</i>Start learning</a>
+            {{else}}
+              <a class="waves-effect waves-teal btn set-goal">
+                <i class="material-icons left">explore</i>Set as goal</a>
+            {{/if}}
+        </div>
+      </div>
+    {{else}}
+      <div class="col s6">
+        <div class="right">
+          <a class="waves-effect waves-teal btn disabled">
+            You know this</a>
+        </div>
+      </div>
+    {{/unless}}
+  {{/unless}}
+
+</template>
