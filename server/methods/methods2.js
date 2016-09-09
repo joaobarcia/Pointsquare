@@ -1626,7 +1626,7 @@ Meteor.methods({
   setGoal: function(node_id, user_id, not_in = {}){
       var goal = {}; goal[node_id] = true;
       var unit = find_useful_content(goal,user_id,not_in);
-      if(unit !== null){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
+      if(unit !== null || typeof unit !== "undefined"){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
       return unit;
   },
 
