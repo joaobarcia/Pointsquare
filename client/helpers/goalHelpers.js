@@ -1,11 +1,18 @@
 Template.registerHelper('goalExists', function() {
-  var goal = Meteor.user().goal;
-  return goal != null
+  if (typeof Meteor.user() !== 'undefined') {
+    return Meteor.user().goal != null;
+  };
 });
 
-Template.registerHelper("goalIsNot", function(id){
+Template.registerHelper("thisIsGoal", function() {
   var goal = Meteor.user().goal;
-  return id != goal;
+  var thisNodeId = this._id;
+  return thisNodeId == goal;
+});
+
+Template.registerHelper('goalId', function() {
+  var goal = Meteor.user().goal;
+  return Nodes.findOne(goal)._id;
 });
 
 Template.registerHelper('goalName', function() {
@@ -13,7 +20,12 @@ Template.registerHelper('goalName', function() {
   return Nodes.findOne(goal).name;
 });
 
-Template.registerHelper("noOptionsFound", function(id){
+Template.registerHelper('goalType', function() {
+  var goal = Meteor.user().goal;
+  return Nodes.findOne(goal).type;
+});
+
+Template.registerHelper("noOptionsFound", function(id) {
   return Session.get("noOptionsFound") == id;
 });
 
@@ -24,16 +36,22 @@ Template.registerHelper('goalIsCompleted', function() {
     var goal = Nodes.findOne(goalId);
     // if that goal has a defined state
     if (goal) {
-      var stateInfo = Personal.findOne({
+      // if meteor has already loaded user info
+      if (typeof Personal.findOne({
         node: goalId,
         user: Meteor.userId()
-      });
-      var goalState = stateInfo.state;
-      //if the goal is higher than 0.9
-      var goalCompleted = goalState > 0.9;
-      if (goalCompleted) {
-        Session.set('removeGoalOnDestroyGoalPage', true);
-        return true;
+      }) !== 'undefined') {
+        var stateInfo = Personal.findOne({
+          node: goalId,
+          user: Meteor.userId()
+        });
+        var goalState = stateInfo.state;
+        //if the goal is higher than 0.9
+        var goalCompleted = goalState > 0.9;
+        if (goalCompleted) {
+          Session.set('removeGoalOnDestroyGoalPage', true);
+          return true;
+        } else return false;
       } else return false;
     } else return false;
   } else return false;

@@ -3,7 +3,7 @@
         <div class="valign">
             <div class="row">
                 <div class="col s6">
-                    <h5>
+                    <h5> {{state}}
                         <i class="circle {{mapConceptStateToColor state}}">
                             <span class="ti-light-bulb"></span>
                         </i>
@@ -13,33 +13,7 @@
                     </span>
                     <h6 class="grey-text">{{description}}</h6>
                 </div>
-                {{#unless disableSetGoal}}
-                    {{#unless goalAlreadyReached state}}
-                        <div class="col s6">
-                            <div class="right">
-                                {{#unless isLoading}}
-                                    {{#unless goalIsNot _id}}
-                                        <a class="waves-effect waves-teal btn set-goal">
-                                          <i class="material-icons left">explore</i>go to learning</a>
-                                    {{else}}
-                                        <a class="waves-effect waves-teal btn just-set-goal">
-                                          <i class="material-icons left">explore</i>Set as goal</a>
-                                    {{/unless}}
-                                {{else}}
-                                    <a class="waves-effect waves-teal btn set-goal">
-                                      <i class="material-icons left">explore</i>Set as goal</a>
-                                {{/unless}}
-                            </div>
-                        </div>
-                    {{else}}
-                        <div class="col s6">
-                            <div class="right">
-                                <a class="waves-effect waves-teal btn disabled">
-                                    You know this</a>
-                            </div>
-                        </div>
-                    {{/unless}}
-                {{/unless}}
+                {{> setGoalButton}}
                 <!-- <div class="col s2 center-align">
         <p class="grey-text">unlocks <strong>15</strong> units</p>
         <button class="btn waves-effect waves-light" type="submit" name="action">Test
