@@ -597,7 +597,7 @@ edit_grants = function(node_id,new_grants){
     for(var id in new_grants){
       add_to_field(id,"granted_by",node_id,true);
     }
-    Nodes.update({_id: node_id},{ $set: {grants: grants} });
+    Nodes.update({_id: node_id},{ $set: {grants: new_grants} });
 };
 
 add_contains = function(exam_id,exercises){
