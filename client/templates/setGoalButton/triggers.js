@@ -6,7 +6,7 @@ Template.setGoalButton.events({
       if (!r) {
         Materialize.toast('Unfortunately there is no content to reach this goal yet', 3000)
         $(this).prop('disabled', true);
-        Meteor.call('removeGoal', Meteor.userId());
+        //Meteor.call('removeGoal', Meteor.userId());
       }
     });
   },
@@ -18,7 +18,7 @@ Template.setGoalButton.events({
         FlowRouter.go('/content/' + r);
       } else {
         Session.set("noOptionsFound", nodeId);
-        Meteor.call('removeGoal', Meteor.userId());
+        //Meteor.call('removeGoal', Meteor.userId());
       }
     });
   }
