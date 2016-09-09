@@ -16,8 +16,8 @@ cut_negative = function(x) {
     return x >= 0 ? x : 0;
 };
 
-ARG_READY = 6;
-ARG_NOT_READY = -12;
+ARG_READY = 2.5;
+ARG_NOT_READY = -5;
 WIDTH = ARG_READY - ARG_NOT_READY;
 
 var RATE = 0.1;
