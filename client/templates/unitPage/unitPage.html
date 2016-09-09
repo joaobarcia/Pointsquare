@@ -24,13 +24,13 @@
                             </p>
                         </div>
                         <div class="col s2 right-align">
-                            {{#if userIsAuthor}}
+                            {{#if isGodMode}}
                                 <!-- <a href="{{_id}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"> -->
-                                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="Edit is temporarily disabled">
+                                <a class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="left" data-delay="1" data-tooltip="Edit this unit.">
                                     <i class="material-icons">create</i>
                                 </a>
                             {{else}}
-                                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="Edit is temporarily disabled">
+                                <a class="btn-floating btn-large waves-effect waves-light disabled tooltipped" data-position="left" data-delay="1" data-tooltip="Edit is temporarily disabled.">
                                     <i class="material-icons">create</i>
                                 </a>
                             {{/if}}

@@ -16,8 +16,8 @@ cut_negative = function(x) {
     return x >= 0 ? x : 0;
 };
 
-ARG_READY = 6;
-ARG_NOT_READY = -12;
+ARG_READY = 2.5;
+ARG_NOT_READY = -5;
 WIDTH = ARG_READY - ARG_NOT_READY;
 
 var RATE = 0.1;
@@ -1253,7 +1253,7 @@ simulate = function(target, user_id) {
     }
     //end of subnetwork update
     tree = find_forward_tree(input_layer);
-    for (var order = tree.length - 2; order >= 0; order--) {
+    for (var order = 1; order < tree.length; order++) {
         var layer = tree[order];
         for (var node_id in layer) {
             var node = Nodes.findOne(node_id);
@@ -1263,7 +1263,7 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
             }
             state[node_id] = sigmoid(arg);
         }

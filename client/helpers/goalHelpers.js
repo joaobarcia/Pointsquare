@@ -26,7 +26,7 @@ Template.registerHelper('goalType', function() {
 });
 
 Template.registerHelper("noOptionsFound", function(id) {
-  return Session.get("noOptionsFound") == id;
+  return Meteor.user().goal != null && Meteor.user().nextUnit == null;
 });
 
 Template.registerHelper('goalIsCompleted', function() {
