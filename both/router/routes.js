@@ -1,3 +1,11 @@
+FlowRouter.notFound = {
+    action: function() {
+      BlazeLayout.render("mainLayout", {
+          main: "notFound"
+      });
+    }
+};
+
 FlowRouter.route('/', {
     name: 'home',
     action: function(params) {
@@ -7,17 +15,7 @@ FlowRouter.route('/', {
     }
 });
 
-// WARNING: NEW ROUTES, TO ORGANIZE
-FlowRouter.route('/home_new', {
-    name: 'home_new',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "home_new"
-        });
-    }
-});
-
-FlowRouter.route('/exam', {
+FlowRouter.route('/exam/:nodeId', {
     name: 'examPage',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
@@ -31,6 +29,15 @@ FlowRouter.route('/create/exam', {
     action: function(params) {
         BlazeLayout.render("mainLayout", {
             main: "createExam"
+        });
+    }
+});
+
+FlowRouter.route('/exam/:nodeId/edit', {
+    name: 'examEdit',
+    action: function(params) {
+        BlazeLayout.render("mainLayout", {
+            main: "examEdit"
         });
     }
 });
@@ -54,7 +61,7 @@ FlowRouter.route('/dashboard', {
     }
 });
 
-FlowRouter.route('/content/:contentId', {
+FlowRouter.route('/content/:nodeId', {
     name: 'unitPage',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
@@ -63,7 +70,7 @@ FlowRouter.route('/content/:contentId', {
     }
 });
 
-FlowRouter.route('/content/:contentId/edit', {
+FlowRouter.route('/content/:nodeId/edit', {
     name: 'unitEdit',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
@@ -72,16 +79,17 @@ FlowRouter.route('/content/:contentId/edit', {
     }
 });
 
-FlowRouter.route('/concept/:conceptId', {
-    name: 'conceptPage',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "conceptPage"
-        });
-    }
-});
+// WARNING: Concept page currently does not exist
+// FlowRouter.route('/concept/:nodeId', {
+//     name: 'conceptPage',
+//     action: function(params) {
+//         BlazeLayout.render("mainLayout", {
+//             main: "conceptPage"
+//         });
+//     }
+// });
 
-FlowRouter.route('/concept/:conceptId/edit', {
+FlowRouter.route('/concept/:nodeId/edit', {
     name: 'conceptEdit',
     action: function(params) {
         BlazeLayout.render("mainLayout", {
@@ -108,11 +116,11 @@ FlowRouter.route('/create/content', {
     }
 });
 
-FlowRouter.route('/goal', {
-    name: 'goalPage',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "goalPage"
-        });
-    }
-});
+// FlowRouter.route('/goal', {
+//     name: 'goalPage',
+//     action: function(params) {
+//         BlazeLayout.render("mainLayout", {
+//             main: "goalPage"
+//         });
+//     }
+// });

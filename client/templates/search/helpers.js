@@ -1,4 +1,7 @@
 Template.search.helpers({
+  'isExam': function() {
+      return this.type == "exam"
+  },
     'isConcept': function() {
         return this.type == "concept"
     },

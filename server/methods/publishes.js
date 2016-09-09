@@ -6,9 +6,6 @@ Meteor.publish('personal', function() {
     return Personal.find();
 });
 
-Meteor.publish('goals', function() {
-    return Goals.find();
-});
 Meteor.publish('userNames', function() {
     return Meteor.users.find({}, {
         fields: {
@@ -104,11 +101,26 @@ Meteor.publish('allConcepts', function(conceptId) {
     })];
 });
 
+Meteor.publish("user",function(userId){
+    return Meteor.users.find({_id:userId},{
+      fields: {
+          username: 1,
+          profile: 1,
+          goal: 1,
+          nextUnit: 1,
+          works: 1
+      }
+    });
+});
+
 Meteor.publish('people', function() {
     var userCursor = Meteor.users.find({}, {
         fields: {
             username: 1,
-            profile: 1
+            profile: 1,
+            goal: 1,
+            nextUnit: 1,
+            works: 1
         }
     });
 

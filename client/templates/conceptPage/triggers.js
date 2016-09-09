@@ -9,6 +9,6 @@ Template.conceptPage.rendered = function() {
 Template.conceptPage.onCreated(function() {
     var self = this;
     self.autorun(function() {
-        var conceptId = FlowRouter.getParam('conceptId');
+        var conceptId = FlowRouter.getParam('nodeId');
     });
 });

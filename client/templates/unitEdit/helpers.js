@@ -1,6 +1,6 @@
 Template.unitEdit.helpers({
     contentEditPage: function() {
-        var nodeId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('nodeId');
         var content = Nodes.findOne({
             _id: nodeId
         }) || {};
@@ -20,7 +20,7 @@ Template.unitEdit.helpers({
             return evaluation.evaluationType
         },*/
     grants: function() {
-        var nodeId = FlowRouter.getParam('contentId');
+        var nodeId = FlowRouter.getParam('nodeId');
         var content = Nodes.findOne({
             _id: nodeId
         }) || {};

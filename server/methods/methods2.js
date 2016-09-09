@@ -16,8 +16,8 @@ cut_negative = function(x) {
     return x >= 0 ? x : 0;
 };
 
-ARG_READY = 6;
-ARG_NOT_READY = -12;
+ARG_READY = 2.5;
+ARG_NOT_READY = -5;
 WIDTH = ARG_READY - ARG_NOT_READY;
 
 var RATE = 0.1;
@@ -25,6 +25,28 @@ var ADJUSTMENT = 2.;
 var MAX_STEPS = 10000;
 var MIN_STEPS = 100;
 var TOLERANCE = 0.01;
+
+
+is_in_array = function(array,value){
+    return array.indexOf(value) > 0;
+}
+
+remove_ocurrences_from_array = function(array,value){
+    while(true){
+      var i = array.indexOf(value);
+      if(i < 0){ return array; }
+      array.splice(i,1);
+    }
+}
+
+replace_ocurrences_in_array = function(array,old_value,new_value){
+    if(old_value == new_value){ return array; }
+    while(true){
+      var i = array.indexOf(old_value);
+      if(i < 0){ return array; }
+      array.splice(i,1,new_value);
+    }
+}
 
 compute_weights = function(concepts,operator) {
     var weights = {};
@@ -149,9 +171,11 @@ compute_state = function(node_id, user_id, update) {
     var type = node.type;
     if(type == "exam"){
         var contains = node.contains;
-        var norm = Object.keys(contains).length;
+        var norm = contains;
         var score = 0;
-        for(var id in contains) {
+        var id;
+        for(var i in contains) {
+          id = contains[i];
           score += get_state(id, user_id);
         }
         return score / norm;
@@ -376,7 +400,7 @@ find_wake_orb = function(node_ids){
     while( Object.keys(layer).length != 0 ){
         var to_keep = {}; //lista de nodos cujos adjacentes passarão ao passo seguinte
         for(var id in layer){
-            if( visited[id] != null ){ console.log(id);delete layer[id]; } //se já tiver sido visitado ignorá-lo
+            if( visited[id] != null ){ delete layer[id]; } //se já tiver sido visitado ignorá-lo
             else if( Nodes.findOne(id).type != "content" ){ //só guardar para o passo seguinte se não for um conteúdo
                 to_keep[id] = true;
             }
@@ -398,6 +422,7 @@ create_content = function(parameters) {
         content: [],
         needs: {},
         grants: {},
+        contained_in: {},
         authors: {},
         likes: 0,
         dislikes: 0,
@@ -479,6 +504,8 @@ create_exam = function(parameters) {
 full_create = function(p) {
     if (p.type == "concept") {
         var id = create_concept(p.parameters);
+        var needs = p.needs;
+        if(needs){ add_needs(id, needs); }
     } else if (p.type == "content") {
         var id = create_content(p.parameters);
         var grants = p.grants;
@@ -568,9 +595,9 @@ edit_grants = function(node_id,new_grants){
       }
     }
     for(var id in new_grants){
-      add_to_field(id,"granted_by",node_id);
+      add_to_field(id,"granted_by",node_id,true);
     }
-    Nodes.update({_id: node_id},{ $set: {grants: grants} });
+    Nodes.update({_id: node_id},{ $set: {grants: new_grants} });
 };
 
 add_contains = function(exam_id,exercises){
@@ -578,7 +605,8 @@ add_contains = function(exam_id,exercises){
     Nodes.update({_id: exam_id},{
         $set: update
     });
-    for (var id in exercises) {
+    for (var i in exercises) {
+        var id = exercises[i];
         var contained_in = Nodes.findOne(id).contained_in;
         contained_in[exam_id] = true;
         update = {
@@ -594,9 +622,12 @@ add_contains = function(exam_id,exercises){
 
 edit_contains = function(exam_id,new_contains){
     var old_contains = Nodes.findOne(exam_id).contains;
-    for(var id in old_contains){
-      if(!new_contains[id]){
-        var contained_in = Nodes.findOne(id).contained_in;
+    var id;
+    var contained_in;
+    for(var i in old_contains){
+      id = old_contains[i];
+      if(!is_in_array(new_contains,id)){
+        contained_in = Nodes.findOne(id).contained_in;
         delete contained_in[id];
         Nodes.update({
             _id: id
@@ -605,9 +636,10 @@ edit_contains = function(exam_id,new_contains){
         });
       }
     }
-    for(var id in new_contains){
+    for(var i in new_contains){
+      id = new_contains[i];
       var contained_in = Nodes.findOne(id).contained_in;
-      contained_in[id] = true;
+      contained_in[id] = i;
       Nodes.update({
           _id: id
       }, {
@@ -675,79 +707,87 @@ add_needs = function(node_id,needs){
         });
     }
     else if(type == "content"){
+        //há pré-requesitos conceptuais ou linguísticos?
+        var needs_language = needs.language != null;
+        var needs_concepts = needs.concepts.length > 0;
+        //a unidade é uma porta AND que liga ao OR dos requesitos e à língua
+        var and = {};
         //criar porta OR que agrupe os diferentes ANDs dos pré-requesitos
         var subands = {};
         for(var i = 0; i < needs.concepts.length; i++){
             var id = make_connector(needs.concepts[i],"and");
             subands[id] = true;
         }
-        //verificar que o nodo sempre activo existe senão criá-lo e pôr o seu estado a 1 para todos os utilizadores
-        var always_active = Nodes.findOne("ALWAYS_ACTIVE");
-        var always_active_id;
-        if(always_active == null){
-            always_active_id = Nodes.insert({name:"ALWAYS_ACTIVE"});
-            var users = Meteor.users.find().fetch();
-            for(var n in users){
-                set_state(1,always_active_id,users[n]._id);
-                lock_state(always_active_id,users[n]._id);
-            }
+        //se houver conjuntos ligar à porta OR
+        if(needs_concepts){
+            var or_id = make_connector(subands,"or");
+            and[or_id] = true;
         }
-        else{ always_active_id = always_active._id; }
-        //se houver conjuntos ligar à porta OR senão ligar ao nodo sempre activo
-        var or_id = needs.concepts.length? make_connector(subands,"or"):always_active_id;
-        //criar porta AND ligada directamente ao nodo e que contenha a ligação ao idioma e aos pré-requesitos
-        var and = {};
-        and[or_id] = true;
-        var language_id = needs.language? needs.language : always_active_id;
-        and[language_id] = true;
+        else{ or_id = null; }
+        //se houver língua ligar à língua
+        if(needs_language){
+          var language_id = needs.language;
+          and[language_id] = true;
+        }
+        else{ language_id = null; }
         //var and_id = make_connector(and,"and");
         var sublinks = compute_weights(and,"and");
         Nodes.update({_id:node_id},{$set:
           {needs: sublinks.weights, bias:sublinks.bias, language: language_id, requirements: or_id}
         });
-        if(needs.language){
-          var needed_by = Nodes.findOne(language_id).needed_by;
+        //fazer as referências a este nodo nos subnodos (língua e OR)
+        for(var id in sublinks.weights){
+          var needed_by = Nodes.findOne(id).needed_by;
           needed_by[node_id] = true;
-          Nodes.update({_id:language_id},{$set:
-            {needed_by: needed_by}
-          });
-        }
-        if(Object.keys(needs.concepts).length){
-          needed_by = Nodes.findOne(or_id).needed_by;
-          needed_by[node_id] = true;
-          Nodes.update({_id:or_id},{$set:
+          Nodes.update({_id:id},{$set:
             {needed_by: needed_by}
           });
         }
     }
 };
 
+//nesta função falta apagar os subnodos lógicos (ANDs e ORs) que já não são necessários
 remove_node = function(node_id){
     var node = Nodes.findOne(node_id);
     var type = node.type;
-    //remover referências a este nodo
+    //apagar os subconjuntos todos deste nodo; desta forma as portas OR e AND são apagadas também
+    if(node.type == "content" || node.type == "concept"){
+      var prerequisites = get_needs(node_id);
+      var requirements = prerequisites.sets;
+      var language = prerequisites.language;
+      for(var and_id in requirements){
+        edit_requirement(and_id,{});
+      }
+      if(language){ change_language_requisite(node_id,null); }
+    }
+    //remover referências a este nodo em subnodos (válido para qualquer tipo de nodo)
     var needs = node.needs;
+    var other;
     for(var id in needs){
         other = Nodes.findOne(id).needed_by;
-        delete other[node_id];
-        Nodes.update({_id: node_id},{$set:
-          {needed_by: other}
-        });
+        if(other){
+          delete other[node_id];
+          Nodes.update({_id: node_id},{$set:
+            {needed_by: other}
+          });
+        }
     }
+    //se for um conteúdo apagar a sua referência nos conceitos que ele confere
     if(node.type == "content"){
         var grants = node.grants;
         for(var id in grants){
-            var other = Nodes.findOne(id).granted_by;
+            other = Nodes.findOne(id).granted_by;
             delete other[node_id];
             Nodes.update({_id: node_id},{$set:
               {granted_by: other}
             });
         }
     }
+    //se for um conceitos ou um porta lógica
     else{
+        //se for um conceito apagar a sua referência nos conteúdos que o conferem
         if(node.type == "concept"){
             var granted_by = node.granted_by;
-            var other;
             for(var id in granted_by){
                 other = Nodes.findOne(id).grants;
                 delete other[node_id];
@@ -756,8 +796,9 @@ remove_node = function(node_id){
                 });
             }
         }
+        //apagar a sua referência nos nodos que precisam deste nodo
         var needed_by = node.needed_by;
-        for(var id in needs){
+        for(var id in needed_by){
             other = Nodes.findOne(id).needs;
             delete other[node_id];
             Nodes.update({_id: node_id},{$set:
@@ -769,26 +810,48 @@ remove_node = function(node_id){
     Nodes.remove(node_id);
 }
 
+//muda o nome, descrição, etc... duma lição
 edit_node_info = function(node_id,parameters){
     Nodes.update({_id:node_id},{$set:parameters});
 }
 
+//muda a língua dum conteúdo
 change_language_requisite = function(content_id,new_language_id){
     var content = Nodes.findOne(content_id);
-    var old_language_id = content.language;
-    var old_language = Nodes.findOne(old_language_id);
-    var other = old_language.needed_by;
-    delete other[content_id];
-    Nodes.update({_id:old_language_id},{$set:{needed_by:other}});
-    var new_language = Nodes.findOne(new_language_id);
-    other = new_language.needed_by;
-    other[content_id] = true;
-    Nodes.update({_id:new_language_id},{$set:{needed_by:other}});
+    //requesitos actuais (um para língua e um para OR)
     var needs = content.needs;
-    var weight = needs[old_language_id];
-    delete needs[old_language_id];
-    needs[new_language_id] = weight;
-    Nodes.update({_id:content_id},{$set:{needs:needs}})
+    //tratar da língua anterior
+    var old_language_id = content.language;
+    var needed_language = old_language_id != null;
+    //se havia já um pré-requesito linguístico
+    if(needed_language){
+      //apagar a sua referência no nodo da língua
+      var old_language = Nodes.findOne(old_language_id);
+      var other = old_language.needed_by;
+      delete other[content_id];
+      Nodes.update({_id:old_language_id},{$set:{needed_by:other}});
+      //apagar a referência à língua no objecto temporário de requesitos
+      delete needs[old_language_id];
+    }
+    //tratar da nova língua
+    var new_language = Nodes.findOne(new_language_id);
+    var needs_language = new_language_id != null;
+    //se ele precisar de pré-requesitos linguísticos
+    if(needs_language){
+      //meter a referência no nodo da nova língua
+      other = new_language.needed_by;
+      other[content_id] = true;
+      Nodes.update({_id:new_language_id},{$set:{needed_by:other}});
+      //adicionar a nova língua ao objecto temporário de requesitos
+      needs[new_language_id] = true;
+    }
+    //recalcular os pesos da unidade e actualizar na base de dados
+    var sublinks = compute_weights(needs,"and");
+    Nodes.update({_id:content_id},{$set:{
+      needs: sublinks.weights,
+      bias: sublinks.bias,
+      language: new_language_id
+    }});
 }
 //A-OK
 
@@ -813,62 +876,96 @@ add_to_field = function(node_id, field_name, key, value){
 //A-OK
 
 //modifica um dos conjuntos de requesitos
-edit_requirement = function(set_id,new_concepts){
-    var set = Nodes.findOne(set_id);
+edit_requirement = function(and_id,new_concepts){
+    var and = Nodes.findOne(and_id);
     var dropped_concepts = {};
     var inserted_concepts = {};
-    var old_concepts = set.needs;
+    var old_concepts = and.needs;
     //encontrar os conceitos abandonados e retirar as suas referências correspondentes
     for(var id in old_concepts){
         var concept = Nodes.findOne(id);
         if(!new_concepts[id]){
-            remove_from_field(id,"needed_by",set_id);
+            remove_from_field(id,"needed_by",and_id);
         }
     }
     var weights = compute_weights(new_concepts,"and");
     var needs = weights.weights;
     var bias = weights.bias;
-    Nodes.update({_id:id},{$set:
+    Nodes.update({_id:and_id},{$set:
       { needs: needs, bias: bias }
     });
     for(var id in new_concepts){
         var concept = Nodes.findOne(id);
-        add_to_field(id,"needed_by",set_id,true);
+        add_to_field(id,"needed_by",and_id,true);
     }
     //apagar o nodo AND do conjunto se ele ficar sem subconceitos
     if(Object.keys(new_concepts).length == 0){
-        //o nodo que precisa deste conjunto (que será sempre um OR ou um conceito)
-        var node_id = Object.keys(set.needed_by)[0];
+        // o nodo que precisa deste conjunto (que será sempre um OR,
+        //    um conceito ou um conteúdo mas cuja lógica será sempre do tipo OR)
+        var node_id = Object.keys(and.needed_by)[0];
         //apagar o nodo, o que vai também apagar a sua referência no sobrenodo
-        remove_node(set_id);
+        remove_node(and_id);
         var node = Nodes.findOne(node_id);
         needs = node.needs;
         //recalcular os pesos para dar uma porta OR
         weights = compute_weights(needs,"or");
         needs = weights.weights;
         bias = weights.bias;
-        //reinserir esses novos pesos
+        //se o OR ficar vazio apagá-lo também e concluir saindo da função
+        var or_is_empty = Object.keys(needs).length == 0;
+        var is_an_or_gate = node.type == "or";
+        if(or_is_empty && is_an_or_gate){
+          remove_node(node_id);
+          return true;
+        }
+        //senão reinserir esses novos pesos no OR
         Nodes.update({_id:node_id},{$set:{needs:needs,bias:bias}});
     }
 }
 
+//adiciona um conjunto de requesitos conceptuais a um nodo já existente
 add_requirement = function(node_id, concepts){
     var node = Nodes.findOne(node_id);
-    //se for um conteúdo o nodo a que queremos adicionar este conjunto é o seu subnodo OR
-    if(node.type == "content"){
-        node_id = node.requirements;
-        node = Nodes.findOne(node_id);
-    }
-    //pegar nos diversos ANDs de requesitos
-    var needs = node.needs;
-    //adicionar-lhes este conjunto de conceitos
+    //criar o AND do conjunto
     var and_id = make_connector(concepts,"and");
-    needs[and_id] = true;
-    //recalcular os pesos do OR
-    var weights = compute_weights(needs,"or");
-    needs = weights.weights;
-    var bias = weights.bias;
-    Nodes.update({_id:node_id},{$set:{needs:needs,bias:bias}});
+    var and = Nodes.findOne(and_id);
+    //se for um conteúdo o nodo a que queremos adicionar este conjunto é o seu subnodo OR
+    var is_content = node.type == "content";
+    if(is_content){
+        var or_id = node.requirements;
+        var needs = {};
+        //se o conteúdo ainda não tiver um OR criá-lo
+        if(or_id == null){
+          needs[and_id] = true;
+          var or_id = make_connector(needs,"or");
+          Nodes.update({_id: node_id}, {$set:{ requirements: or_id }});
+        }
+        else{
+          var or = Nodes.findOne(or_id);
+          //pegar nos diversos ANDs de requesitos
+          needs = or.needs;
+          //adicionar-lhes este conjunto de conceitos
+          needs[and_id] = true;
+          //recalcular os pesos do OR
+          var weights = compute_weights(needs,"or");
+          needs = weights.weights;
+          var bias = weights.bias;
+          Nodes.update({_id: or_id},{$set:{needs:needs,bias:bias}});
+        }
+        //fazer a referência ao OR no AND
+        add_to_field(and_id,"needed_by",or_id,true);
+    }
+    else{
+        //pegar nos diversos ANDs de requesitos
+        var needs = node.needs;
+        //adicionar-lhes este conjunto de conceitos
+        needs[and_id] = true;
+        //recalcular os pesos do OR
+        var weights = compute_weights(needs,"or");
+        needs = weights.weights;
+        var bias = weights.bias;
+        Nodes.update({_id:node_id},{$set:{needs:needs,bias:bias}});
+    }
 }
 
 //função que retorna um objecto com a informação dos requesitos linguísticos e conceptuais
@@ -876,11 +973,14 @@ get_needs = function(node_id){
     var info = {};
     var node = Nodes.findOne(node_id);
     if(node.type == "content"){ info["language"] = node.language; }
-    var set_ids = node.type == "concept"? node.needs : Nodes.findOne(node.requirements).needs;//adicionar uma RESSALVA para o caso do nodo ser um operador
-    for(var id in set_ids){
-        set_ids[id] = Nodes.findOne(id).needs;
+    if(typeof node.requirements !== undefined){ info["sets"] = null; }
+    else{
+      var set_ids = node.type == "concept"? node.needs : Nodes.findOne(node.requirements).needs;//adicionar uma RESSALVA para o caso do nodo ser um operador
+      for(var id in set_ids){
+          set_ids[id] = Nodes.findOne(id).needs;
+      }
+      info["sets"] = set_ids;
     }
-    info["sets"] = set_ids;
     return info;
 }
 //A-OK
@@ -947,7 +1047,7 @@ simulate = function(target, user_id) {
     var output_layer = target;
     var input_layer = find_micronodes(output_layer);
     //make sure everything is up to date
-    forward_update(find_micronodes(target), user_id);
+    forward_update(input_layer, user_id);
     //draw tree
     var tree = find_backward_tree(target);
     //fill in state object
@@ -962,11 +1062,14 @@ simulate = function(target, user_id) {
     }
     //compute maximum activations
     //increment input states
+    var max_state = {};
+    for (var node_id in state) {
+        max_state[node_id] = state[node_id];
+    }
     for (var node_id in input_layer) {
         //if( !locked[node_id] ){ state[node_id] = 1; }
-        state[node_id] = 1;
+        max_state[node_id] = 1;
     }
-    var max_states = {};
     //forward propagate
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
@@ -978,18 +1081,21 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * max_state[subnode_id];
             }
-            state[node_id] = sigmoid(arg);
-            if( output_layer[node_id] != null ){ max_states[node_id] = state[node_id]; }
+            max_state[node_id] = sigmoid(arg);
+            //if( output_layer[node_id] != null ){ max_states[node_id] = state[node_id]; }
         }
     }
     //compute minimum activations
-    //increment input states
-    for (var node_id in input_layer) {
-        if( !locked[node_id] ){ state[node_id] = 0; }
+    //decrement input states
+    var min_state = {};
+    for (var node_id in state) {
+        min_state[node_id] = state[node_id];
     }
-    var min_states = {};
+    for (var node_id in input_layer) {
+        if( !locked[node_id] ){ min_state[node_id] = 0; }
+    }
     //forward propagate
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
@@ -1001,15 +1107,15 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * min_state[subnode_id];
             }
-            state[node_id] = sigmoid(arg);
-            if( output_layer[node_id] != null ){ min_states[node_id] = state[node_id]; }
+            min_state[node_id] = sigmoid(arg);
+            //if( output_layer[node_id] != null ){ min_states[node_id] = state[node_id]; }
         }
     }
     //update the target to realistic values
     for (node_id in target) {
-        target[node_id] = target[node_id] ? max_states[node_id] : min_states[node_id];
+        target[node_id] = target[node_id] ? max_state[node_id] : min_state[node_id];
     }
     //define maxmimum and minimum variations
     var max_dist = 0;
@@ -1147,7 +1253,7 @@ simulate = function(target, user_id) {
     }
     //end of subnetwork update
     tree = find_forward_tree(input_layer);
-    for (var order = tree.length - 2; order >= 0; order--) {
+    for (var order = 1; order < tree.length; order++) {
         var layer = tree[order];
         for (var node_id in layer) {
             var node = Nodes.findOne(node_id);
@@ -1157,7 +1263,7 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
             }
             state[node_id] = sigmoid(arg);
         }
@@ -1182,6 +1288,69 @@ precompute = function(unit_id,user_id) {
   target[unit_id] = false;
   result["failure"] = simulate(target,user_id);
   return result;
+}
+
+succeed = function(result,user_id) {
+  var success_state = result.success;
+  var failure_state = result.failure;
+  for(var id in success_state){
+    //set_SS(state[id],id,user_id);
+    var state = get_state(id,user_id);
+    var solidity = get_solidity(id,user_id);
+    //se o estado variar de muito reduzir a solidez
+    var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
+    if( varies_significantly ){
+      set_solidity(solidity-1,id,user_id);
+      set_state(success_state[id],id,user_id);
+    }
+    //se o estado não variar,
+    else {
+      //verificar se no caso contrário variaria,
+      var other = failure_state[id]!=null? failure_state[id] : get_state(id,user_id);
+      var current = get_state(id,user_id);
+      var would_vary_otherwise = Math.abs(other-current) > 0.1;
+      //se variar então aumentar a solidez,
+      if( would_vary_otherwise ){
+        set_solidity(solidity+1,id,user_id);
+        set_state(success_state[id],id,user_id);
+      }
+      //senão manter tal como está
+      else {
+        set_state(success_state[id],id,user_id);
+      }
+    }
+  }
+}
+
+fail = function(result,user_id) {
+  var success_state = result.success;
+  var failure_state = result.failure;
+  for(var id in failure_state){
+    var state = get_state(id,user_id);
+    var solidity = get_solidity(id,user_id);
+    //se o estado variar de muito reduzir a solidez
+    var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
+    if( varies_significantly ){
+      set_solidity(solidity-1,id,user_id);
+      set_state(failure_state[id],id,user_id);
+    }
+    //se o estado não variar,
+    else {
+      //verificar se no caso contrário variaria,
+      var other = success_state[id]!=null? success_state[id] : get_state(id,user_id);
+      var current = get_state(id,user_id);
+      var would_vary_otherwise = Math.abs(other-current) > 0.1;
+      //se variar então aumentar a solidez,
+      if( would_vary_otherwise ){
+        set_solidity(solidity+1,id,user_id);
+        set_state(failure_state[id],id,user_id);
+      }
+      //senão manter tal como está
+      else {
+        set_state(failure_state[id],id,user_id);
+      }
+    }
+  }
 }
 
 //retorna objecto que contém os identificadores das unidades que testam um dado conceito
@@ -1297,13 +1466,26 @@ find_orb = function(node_ids,user_id) {
         }
         var needed_by = node.needed_by;
         for(var id in needed_by){
-            if( !(id in orb) ){ orb[id] = false; }
+            if( !(id in orb) ){ orb[id] = true/*false*/; }
+        }
+        var contains = node.contains;
+        if(typeof contains !== "undefined"){
+            for(var i in contains){
+              var id = contains[i];
+              if( !(id in orb) ){ orb[id] = true; }
+            }
+        }
+        var contained_in = node.contained_in;
+        if(typeof contained_in !== "undefined"){
+            for(var id in contained_in){
+              if( !(id in orb) ){ orb[id] = true; }
+            }
         }
     }
     return orb;
 };
 
-//falta acabar esta função!
+//encontra toda a região da rede que pode potencialmente afectar positivamente o nodo de objectivo
 find_missing_bush = function(node_ids,user_id) {
     var bush = [];
     var origin = {};
@@ -1319,12 +1501,13 @@ find_missing_bush = function(node_ids,user_id) {
         for(var id in current_layer){
             var state = get_state(id,user_id);
             var type = Nodes.findOne(id).type;
-            if( type == "content" && !(id in bag) ){
+            //var id_in_bag = typeof bag[id] !== null
+            if( type == "content" && !bag[id] ){
                 bush[bush.length-1][id] = state;
                 bag[id] = true;
                 if( state < 0.9 ){ to_keep[id] = true; }
             }
-            else if( type != "content" && state < 0.9 && !(id in bag) ){
+            else if( type != "content" && state < 0.9 && !bag[id] ){
                 bush[bush.length-1][id] = state;
                 bag[id] = true;
                 to_keep[id] = current_layer[id];
@@ -1334,8 +1517,34 @@ find_missing_bush = function(node_ids,user_id) {
         if( Object.keys(bush[bush.length-1]).length == 0 ){ bush.pop(); }
         if( Object.keys(current_layer).length == 0 ){ break; }
     }
-    return bush;
+    return {"bush": bush, "ids": bag};
 };
+
+//fazer uma versão desta função para ser précalculada enquanto o utilizador faz a unidade
+find_useful_content = function(node_ids, user_id, not_in = {}){
+    var find = find_missing_bush(node_ids,user_id);
+    var bush = find.bush;
+    var ids = find["ids"];
+    for(var n in bush){
+        var layer = bush[n];
+        for(var id in layer){
+            var node = Nodes.findOne(id);
+            var state = get_state(id,user_id);
+            if(node.type == "content" && state > 0.8 && typeof not_in[id] === "undefined"){
+                /*var target = {};
+                target[id] = true;
+                for(var granted_id in node.grants){ target[granted_id] = true; }
+                var simulation = simulate(target,user_id);
+                for(var altered_id in simulation){
+                    var change = simulation[altered_id] - get_state(altered_id,user_id);
+                    var is_in_bush = ids[altered_id];
+                    if(change > 0.1 && is_in_bush){ return altered_id; }
+                }*/
+                return id;
+            }
+        }
+    }
+}
 
 
 
@@ -1355,7 +1564,7 @@ Meteor.methods({
   },
 
   editNode: function(nodeID,parameters){
-    return edit_node(nodeID,parameters);
+    return edit_node_info(nodeID,parameters);
   },
 
   editNeed: function(setID, concepts) {
@@ -1407,66 +1616,45 @@ Meteor.methods({
   },
 
   succeed: function(result,user_id) {
-    var success_state = result.success;
-    var failure_state = result.failure;
-    for(var id in success_state){
-      //set_SS(state[id],id,user_id);
-      var state = get_state(id,user_id);
-      var solidity = get_solidity(id,user_id);
-      //se o estado variar de muito reduzir a solidez
-      var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
-      if( varies_significantly ){
-        set_solidity(solidity-1,id,user_id);
-        set_state(success_state[id],id,user_id);
-      }
-      //se o estado não variar,
-      else {
-        //verificar se no caso contrário variaria,
-        var other = failure_state[id]!=null? failure_state[id] : get_state(id,user_id);
-        var current = get_state(id,user_id);
-        var would_vary_otherwise = Math.abs(other-current) > 0.1;
-        //se variar então aumentar a solidez,
-        if( would_vary_otherwise ){
-          set_solidity(solidity+1,id,user_id);
-          set_state(success_state[id],id,user_id);
-        }
-        //senão manter tal como está
-        else {
-          set_state(success_state[id],id,user_id);
-        }
-      }
-    }
+    succeed(result,user_id);
   },
 
   fail: function(result,user_id) {
-    var success_state = result.success;
-    var failure_state = result.failure;
-    for(var id in failure_state){
-      var state = get_state(id,user_id);
-      var solidity = get_solidity(id,user_id);
-      //se o estado variar de muito reduzir a solidez
-      var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
-      if( varies_significantly ){
-        set_solidity(solidity-1,id,user_id);
-        set_state(failure_state[id],id,user_id);
+    fail(result,user_id);
+  },
+
+  setGoal: function(node_id, user_id, not_in = {}){
+      var goal = {}; goal[node_id] = true;
+      var unit = find_useful_content(goal,user_id,not_in);
+      if(unit !== null){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
+      return unit;
+  },
+
+  removeGoal: function(user_id){
+      Meteor.users.update({_id:user_id},{$set:{goal:null,nextUnit:null}});
+  },
+
+  submitExam: function(answers,user_id){
+      for(var id in answers){
+          if(answers[id]){
+            var target = {};
+            target[id] = true;
+            var grants = Nodes.findOne(id).grants;
+            if(grants){
+              for(var id in grants){
+                target[id] = true;
+              }
+            }
+            var result = simulate(target,user_id);
+            succeed(result,user_id);
+          }
+          else{
+            var target = {};
+            target[id] = false;
+            var result = simulate(target,user_id);
+            fail(result,user_id);
+          }
       }
-      //se o estado não variar,
-      else {
-        //verificar se no caso contrário variaria,
-        var other = success_state[id]!=null? success_state[id] : get_state(id,user_id);
-        var current = get_state(id,user_id);
-        var would_vary_otherwise = Math.abs(other-current) > 0.1;
-        //se variar então aumentar a solidez,
-        if( would_vary_otherwise ){
-          set_solidity(solidity+1,id,user_id);
-          set_state(failure_state[id],id,user_id);
-        }
-        //senão manter tal como está
-        else {
-          set_state(failure_state[id],id,user_id);
-        }
-      }
-    }
   }
 
 });

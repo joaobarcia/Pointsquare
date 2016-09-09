@@ -3,4 +3,7 @@ Meteor.startup(function() {
         event.preventDefault();
         AccountsTemplates.logout();
     });
+
+    // WARNING: REMOVE WHEN DEPLOY
+    Session.set("godMode", true);
 });

@@ -9,21 +9,27 @@ AutoForm.hooks({
                         needsMappedAsArrayofObjects[i][doc.needs[i][n]] = true;
                     }
                 }
-            };
+            }
+            //console.log(needsMappedAsArrayofObjects);
             delete doc.needs;
 
             var conceptDefinitions = {};
             conceptDefinitions.type = 'concept';
             conceptDefinitions.parameters = doc;
             conceptDefinitions.needs = {};
-            conceptDefinitions.needs.concepts = {};
             conceptDefinitions.needs.concepts = needsMappedAsArrayofObjects;
 
             var nodeId;
-            console.log(conceptDefinitions);
+            //console.log(conceptDefinitions);
              Meteor.call('create', conceptDefinitions, function(error, result) {
-                 nodeId = result;
-                 FlowRouter.go('/concept/' + nodeId);
+                 //nodeId = result;
+                AutoForm.resetForm("createConcept");
+
+                // WARNING: RELOAD IS VERY NON-FANCY. PROBLEM IS RESETFORM DOES NOT CLEAR SELECTIZE ELEMENTS
+                //          (https://github.com/aldeed/meteor-autoform/issues/1116)
+                window.location.reload();
+
+                 Materialize.toast('concept successfully created!', 3000);
                  //FlowRouter.go('search');
              });
             this.done();

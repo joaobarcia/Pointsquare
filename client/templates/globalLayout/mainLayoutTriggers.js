@@ -4,8 +4,8 @@ Template.mainLayout.onCreated(function() {
   self.autorun(function() {
     self.subscribe('nodes');
     self.subscribe('personal');
-    self.subscribe('goals');
     self.subscribe('userNames');
+    self.subscribe("user",Meteor.userId());
   });
   soundSuccess = new Howl({
     src: ['../audio/success.mp3'],

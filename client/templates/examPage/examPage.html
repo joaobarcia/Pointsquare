@@ -1,70 +1,23 @@
 <template name="examPage">
-    <div class="container">
-        <div class="card">
-            <div class="container">
-                <div class="section">
-                    <h2>Exame Nacional de Física e Química</h2>
-                    <h3>2016</h3>
-                </div>
-                <div class="section">
-                    <h4 class="center-align">Grupo I</h4>
-                    <p>1. Uma bola move-se segundo uma trajetória retilínea. Considere que a bola pode ser representada pelo seu centro de massa (modelo da partícula material). Admita que a componente escalar da posição, x, da bola em relação a um determinado
-                        referencial unidimensional Ox varia com o tempo, t, de acordo com a equação</p>
-                    <p class="center-align">x = 2,4 - 2,0t + 0.60t^2 (SI)</p>
-                    <!-- {{> exerciseString question="1.1 cenas"}} -->
-                    <p>1.1 A que distância se encontra a bola da origem do referencial Ox considerado, no instante t= 0,0 s?</p>
-                    <div class="row">
-
-                        <div class="input-field col s9 no-margin">
-                            <input placeholder="your answer" id="first_name" type="text" class="validate">
-                        </div>
-                        <div class="col s3">
-                            <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Mark question as known, without solving"><i class="material-icons">done</i></a>
-                            <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Set question as learning goal"><i class="material-icons">navigation</i></a>
-                        </div>
-
+    {{#with examPage}}
+        <div class="container">
+            <div class="card">
+                <div class="container">
+                    <div class="section">
+                        <h2>{{name}}</h2>
                     </div>
-                    <p>1.2 A componente escalar, segundo o referencial Ox considerado, da velocidade, vx, da bola varia com o tempo, t, de acordo com a equação</p>
-                    <div class="row">
+                    {{#each unit in examContents}}
+                        {{> contentByType content=unit.content isExamPage=true unitId=unit._id}}
+                    {{/each}}
 
-                        <div class="input-field col s9 no-margin">
-                            <input placeholder="your answer" id="first_name" type="text" class="validate">
-                        </div>
-                        <div class="col s3">
-                            <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Mark question as known, without solving"><i class="material-icons">done</i></a>
-                            <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Set question as goal"><i class="material-icons">navigation</i></a>
-                        </div>
+                    <div class="section">
+                        <!-- Modal Trigger -->
+                        <p class="center-align">
+                            <a class="waves-effect waves-light btn" id="submit_exam">Submit Exam</a>
+                        </p>
                     </div>
-                </div>
-                <div class="section">
-                    <!-- Modal Trigger -->
-                    <p class="center-align"><a class="waves-effect waves-light btn modal-trigger" href="#exam-results-modal">Submit Exam</a></p>
-                    <!-- Modal Structure -->
-                    <div id="exam-results-modal" class="modal">
-                        <div class="modal-content">
-                            <div class="section">
-                                <h4>Exam results</h4>
-                            </div>
-                            <div class="section">
-                                <p><i class="material-icons green-text">done</i> 1.1 A que distância se encontra a bola da origem do referencial Ox considerado, no instante t= 0,0 s?</p>
-                                <p><i class="material-icons red-text">clear</i>1.2 A componente escalar, segundo o referencial Ox considerado, da velocidade, vx, da bola varia com o tempo, t, de acordo com a equação</p>
-                            </div>
-                            <div class="section">
-                                <div class="container">
-                                    <h4 class="center-align">You are 50% of the way there!</h4>
-                                    <div class="progress">
-                                        <div class="determinate" style="width: 50%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <a href="#!" class=" modal-action modal-close waves-effect waves-green btn">Set exam as learning goal</a>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
-    </div>
+    {{/with}}
 </template>
