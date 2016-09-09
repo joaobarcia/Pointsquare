@@ -46,6 +46,8 @@ function failUnit() {
         var goalId = Meteor.user().goal;
         if (goalId) {
             Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
+                if(r){ FlowRouter.go("/content/"+r); }
+                else{ FlowRouter.go("goalPage"); }
                 //FlowRouter.go('goalPage');
               });
           } else {

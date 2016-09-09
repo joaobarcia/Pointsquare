@@ -1,5 +1,4 @@
 //math functions
-
 sigmoid = function(x) {
     return 1.0 / (1 + Math.exp(-x));
 };
@@ -16,9 +15,10 @@ cut_negative = function(x) {
     return x >= 0 ? x : 0;
 };
 
-ARG_READY = 2.5;
-ARG_NOT_READY = -5;
-WIDTH = ARG_READY - ARG_NOT_READY;
+//ARG_READY = 2.5;
+//ARG_NOT_READY = -5;
+WIDTH = 10;//ARG_READY - ARG_NOT_READY;
+DEFAULT_BIAS = -WIDTH/2;
 
 var RATE = 0.1;
 var ADJUSTMENT = 2.;
@@ -51,11 +51,11 @@ replace_ocurrences_in_array = function(array,old_value,new_value){
 compute_weights = function(concepts,operator) {
     var weights = {};
     if(Object.keys(concepts).length == 0) {
-        var bias = ARG_READY;
+        var bias = -DEFAULT_BIAS;//ARG_READY;
     }
     //aceso se qualquer um dos requesitos estiver activado
     else if(operator == "or"){
-        var bias = ARG_NOT_READY;
+        var bias = DEFAULT_BIAS;//ARG_NOT_READY;
         for (var id in concepts) {
             weights[id] = WIDTH;
         }
@@ -63,28 +63,28 @@ compute_weights = function(concepts,operator) {
     //aceso se todos os requesitos estiverem activados
     else if(operator == "and"){
         //definição estricta
-        /*var bias = ARG_READY - WIDTH*Object.keys(concepts).length;
+        var bias = -DEFAULT_BIAS*(1-2*Object.keys(concepts).length);//ARG_READY - WIDTH*Object.keys(concepts).length;
         for (var id in concepts) {
-            set[id] = WIDTH;
-        }*/
+            weights[id] = WIDTH;
+        }
         //definição relaxada
-        var bias = ARG_NOT_READY;
+        /*var bias = BIAS;//ARG_NOT_READY;
         for (var id in concepts) {
             weights[id] = WIDTH/Object.keys(concepts).length;
-        }
+        }*/
     }
     //aceso se todos os requesitos menos um estiverem activados
     else if(operator == "parand"){
         //definição estricta
-        /*var bias = ARG_READY - WIDTH*(Object.keys(concepts).length-1);
+        var bias = -DEFAULT_BIAS*(3-2*Object.keys(concepts).length);//ARG_READY - WIDTH*(Object.keys(concepts).length-1);
         for (var id in concepts) {
-            set[id] = WIDTH;
-        }*/
+            weights[id] = WIDTH;
+        }
         //definição relaxada
-        var bias = ARG_NOT_READY;
+        /*var bias = ARG_NOT_READY;
         for (var id in concepts) {
             weights[id] = WIDTH/(Object.keys(concepts).length-1);
-        }
+        }*/
     }
     return {
         weights: weights,
@@ -1603,7 +1603,13 @@ Meteor.methods({
   },
 
   resetUser: function(userID) {
-    return reset_user(userID);
+    reset_user(userID);
+    var goalId = Meteor.users.findOne(userID).goal;
+    if(goalId){
+      var goal = {}; goal[goalId] = true;
+      var unit = find_useful_content(goal,userID);
+      if(unit !== null && typeof unit !== "undefined"){ Meteor.users.update({_id:userID},{$set:{goal:goalId,nextUnit:unit}}); }
+    }
   },
 
   //devolve um objecto que contem os requesitos linguisticos e conceptuais dum determinado nodo
