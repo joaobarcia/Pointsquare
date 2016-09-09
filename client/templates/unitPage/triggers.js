@@ -8,15 +8,10 @@ function succeedUnit() {
     //se ainda não tiverem chegado os resultados do servidor, não fazer nada
     if(Session.get("precalculation") != "waiting"){
       Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
-          var goal_id = Meteor.users.findOne(Meteor.userId())._id;
-          if (goal_id) {
-              Meteor.call("setGoal", goal_id, Meteor.userId(), function(e, r) {
-                  // var nodeId = Goals.findOne({
-                  //     user: Meteor.userId()
-                  // }).units[0];
-                  // FlowRouter.go('/content/' + nodeId);
-
-                  FlowRouter.go('goalPage');
+          var goalId = Meteor.user().goal;
+          if (goalId) {
+              Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
+                  //FlowRouter.go('goalPage');
                   Session.set('isLoading', false);
                   delete Session.keys["outcome"];
                   delete Session.keys["precalculation"];
@@ -40,9 +35,7 @@ function failUnit() {
     var $toastFailWithGoal = $('<span class="red-text">Try another unit next</span>');
     var $toastFailWithoutGoal = $('<span class="red-text">Try setting this unit as goal!</span>');
     // if goal exists
-    if (typeof Goals.findOne({
-            user: Meteor.userId()
-        }) !== "undefined") {
+    if (typeof Meteor.user().goal !== "undefined") {
         Materialize.toast($toastFailWithGoal, 2000);
     } else {
         Materialize.toast($toastFailWithoutGoal, 2000);
@@ -50,14 +43,10 @@ function failUnit() {
     //se ainda não tiverem chegado os resultados do servidor, não fazer nada
     if(Session.get("precalculation") != "waiting"){
       Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {
-        var goal_id = Meteor.users.findOne(Meteor.userId())._id;
-        if (goal_id) {
-            Meteor.call("setGoal", goal_id, Meteor.userId(), function(e, r) {
-                // var nodeId = Goals.findOne({
-                //     user: Meteor.userId()
-                // }).units[0];
-                // FlowRouter.go('/content/' + nodeId);
-                FlowRouter.go('goalPage');
+        var goalId = Meteor.user().goal;
+        if (goalId) {
+            Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
+                //FlowRouter.go('goalPage');
               });
           } else {
               // otherwise prompt user about setting unit as goal
@@ -73,17 +62,17 @@ function failUnit() {
 
  Template.unitPage.onCreated(function() {
      Session.set("precalculation","waiting");
-    //  if(Meteor.userId()){
-    //    Meteor.call("precompute", FlowRouter.getParam('nodeId'), Meteor.userId(), function(e,r){
-    //      Session.set("precalculation",r);
-    //      if(Session.get("outcome") == "success"){
-    //        succeedUnit();
-    //      }
-    //      else if(Session.get("outcome") == "failure"){
-    //        failUnit();
-    //      }
-    //    });
-    //  }
+     if(Meteor.userId()){
+       Meteor.call("precompute", FlowRouter.getParam('nodeId'), Meteor.userId(), function(e,r){
+         Session.set("precalculation",r);
+         if(Session.get("outcome") == "success"){
+           succeedUnit();
+         }
+         else if(Session.get("outcome") == "failure"){
+           failUnit();
+         }
+       });
+     }
  });
 
 Template.unitPage.onRendered(function() {
@@ -124,7 +113,7 @@ Template.unitPage.events({
         }
     },
 
-    'submit #exerciseStringForm': function(event) {
+    'submit .exerciseStringForm': function(event) {
         event.preventDefault();
         var answerIsCorrect = null;
         if (this.answers.indexOf(event.target.exerciseString.value) > -1) {
@@ -172,10 +161,9 @@ Template.unitPage.events({
         var nodeId = FlowRouter.getParam('nodeId');
         console.log(nodeId);
         Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
-            FlowRouter.go('goalPage');
+            //FlowRouter.go('goalPage');
             Session.set('isLoading', false);
         });
     }
-
 
 });

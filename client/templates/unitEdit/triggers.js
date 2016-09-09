@@ -317,7 +317,8 @@ AutoForm.hooks({
                     grantsMappedAsObject[doc.grants[i]] = true;
                 }
             }
-            console.log(nodeId + ' ' + grantsMappedAsObject);
+            console.log(nodeId);
+            console.log(grantsMappedAsObject);
             Meteor.call('editGrants', nodeId, grantsMappedAsObject);
             delete doc.grants;
 

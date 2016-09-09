@@ -16,8 +16,8 @@ cut_negative = function(x) {
     return x >= 0 ? x : 0;
 };
 
-ARG_READY = 6;
-ARG_NOT_READY = -12;
+ARG_READY = 2.5;
+ARG_NOT_READY = -5;
 WIDTH = ARG_READY - ARG_NOT_READY;
 
 var RATE = 0.1;
@@ -597,7 +597,7 @@ edit_grants = function(node_id,new_grants){
     for(var id in new_grants){
       add_to_field(id,"granted_by",node_id,true);
     }
-    Nodes.update({_id: node_id},{ $set: {grants: grants} });
+    Nodes.update({_id: node_id},{ $set: {grants: new_grants} });
 };
 
 add_contains = function(exam_id,exercises){
@@ -973,11 +973,14 @@ get_needs = function(node_id){
     var info = {};
     var node = Nodes.findOne(node_id);
     if(node.type == "content"){ info["language"] = node.language; }
-    var set_ids = node.type == "concept"? node.needs : Nodes.findOne(node.requirements).needs;//adicionar uma RESSALVA para o caso do nodo ser um operador
-    for(var id in set_ids){
-        set_ids[id] = Nodes.findOne(id).needs;
+    if(typeof node.requirements !== undefined){ info["sets"] = null; }
+    else{
+      var set_ids = node.type == "concept"? node.needs : Nodes.findOne(node.requirements).needs;//adicionar uma RESSALVA para o caso do nodo ser um operador
+      for(var id in set_ids){
+          set_ids[id] = Nodes.findOne(id).needs;
+      }
+      info["sets"] = set_ids;
     }
-    info["sets"] = set_ids;
     return info;
 }
 //A-OK
@@ -1059,11 +1062,14 @@ simulate = function(target, user_id) {
     }
     //compute maximum activations
     //increment input states
+    var max_state = {};
+    for (var node_id in state) {
+        max_state[node_id] = state[node_id];
+    }
     for (var node_id in input_layer) {
         //if( !locked[node_id] ){ state[node_id] = 1; }
-        state[node_id] = 1;
+        max_state[node_id] = 1;
     }
-    var max_states = {};
     //forward propagate
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
@@ -1075,18 +1081,21 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * max_state[subnode_id];
             }
-            state[node_id] = sigmoid(arg);
-            if( output_layer[node_id] != null ){ max_states[node_id] = state[node_id]; }
+            max_state[node_id] = sigmoid(arg);
+            //if( output_layer[node_id] != null ){ max_states[node_id] = state[node_id]; }
         }
     }
     //compute minimum activations
-    //increment input states
-    for (var node_id in input_layer) {
-        if( !locked[node_id] ){ state[node_id] = 0; }
+    //decrement input states
+    var min_state = {};
+    for (var node_id in state) {
+        min_state[node_id] = state[node_id];
     }
-    var min_states = {};
+    for (var node_id in input_layer) {
+        if( !locked[node_id] ){ min_state[node_id] = 0; }
+    }
     //forward propagate
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
@@ -1098,15 +1107,15 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * min_state[subnode_id];
             }
-            state[node_id] = sigmoid(arg);
-            if( output_layer[node_id] != null ){ min_states[node_id] = state[node_id]; }
+            min_state[node_id] = sigmoid(arg);
+            //if( output_layer[node_id] != null ){ min_states[node_id] = state[node_id]; }
         }
     }
     //update the target to realistic values
     for (node_id in target) {
-        target[node_id] = target[node_id] ? max_states[node_id] : min_states[node_id];
+        target[node_id] = target[node_id] ? max_state[node_id] : min_state[node_id];
     }
     //define maxmimum and minimum variations
     var max_dist = 0;
@@ -1244,7 +1253,7 @@ simulate = function(target, user_id) {
     }
     //end of subnetwork update
     tree = find_forward_tree(input_layer);
-    for (var order = tree.length - 2; order >= 0; order--) {
+    for (var order = 1; order < tree.length; order++) {
         var layer = tree[order];
         for (var node_id in layer) {
             var node = Nodes.findOne(node_id);
@@ -1254,7 +1263,7 @@ simulate = function(target, user_id) {
             }
             var arg = node.bias;
             for (var subnode_id in weights) {
-                arg += weights[subnode_id] * state[subnode_id];
+                arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
             }
             state[node_id] = sigmoid(arg);
         }
@@ -1279,6 +1288,69 @@ precompute = function(unit_id,user_id) {
   target[unit_id] = false;
   result["failure"] = simulate(target,user_id);
   return result;
+}
+
+succeed = function(result,user_id) {
+  var success_state = result.success;
+  var failure_state = result.failure;
+  for(var id in success_state){
+    //set_SS(state[id],id,user_id);
+    var state = get_state(id,user_id);
+    var solidity = get_solidity(id,user_id);
+    //se o estado variar de muito reduzir a solidez
+    var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
+    if( varies_significantly ){
+      set_solidity(solidity-1,id,user_id);
+      set_state(success_state[id],id,user_id);
+    }
+    //se o estado não variar,
+    else {
+      //verificar se no caso contrário variaria,
+      var other = failure_state[id]!=null? failure_state[id] : get_state(id,user_id);
+      var current = get_state(id,user_id);
+      var would_vary_otherwise = Math.abs(other-current) > 0.1;
+      //se variar então aumentar a solidez,
+      if( would_vary_otherwise ){
+        set_solidity(solidity+1,id,user_id);
+        set_state(success_state[id],id,user_id);
+      }
+      //senão manter tal como está
+      else {
+        set_state(success_state[id],id,user_id);
+      }
+    }
+  }
+}
+
+fail = function(result,user_id) {
+  var success_state = result.success;
+  var failure_state = result.failure;
+  for(var id in failure_state){
+    var state = get_state(id,user_id);
+    var solidity = get_solidity(id,user_id);
+    //se o estado variar de muito reduzir a solidez
+    var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
+    if( varies_significantly ){
+      set_solidity(solidity-1,id,user_id);
+      set_state(failure_state[id],id,user_id);
+    }
+    //se o estado não variar,
+    else {
+      //verificar se no caso contrário variaria,
+      var other = success_state[id]!=null? success_state[id] : get_state(id,user_id);
+      var current = get_state(id,user_id);
+      var would_vary_otherwise = Math.abs(other-current) > 0.1;
+      //se variar então aumentar a solidez,
+      if( would_vary_otherwise ){
+        set_solidity(solidity+1,id,user_id);
+        set_state(failure_state[id],id,user_id);
+      }
+      //senão manter tal como está
+      else {
+        set_state(failure_state[id],id,user_id);
+      }
+    }
+  }
 }
 
 //retorna objecto que contém os identificadores das unidades que testam um dado conceito
@@ -1544,85 +1616,45 @@ Meteor.methods({
   },
 
   succeed: function(result,user_id) {
-    var success_state = result.success;
-    var failure_state = result.failure;
-    for(var id in success_state){
-      //set_SS(state[id],id,user_id);
-      var state = get_state(id,user_id);
-      var solidity = get_solidity(id,user_id);
-      //se o estado variar de muito reduzir a solidez
-      var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
-      if( varies_significantly ){
-        set_solidity(solidity-1,id,user_id);
-        set_state(success_state[id],id,user_id);
-      }
-      //se o estado não variar,
-      else {
-        //verificar se no caso contrário variaria,
-        var other = failure_state[id]!=null? failure_state[id] : get_state(id,user_id);
-        var current = get_state(id,user_id);
-        var would_vary_otherwise = Math.abs(other-current) > 0.1;
-        //se variar então aumentar a solidez,
-        if( would_vary_otherwise ){
-          set_solidity(solidity+1,id,user_id);
-          set_state(success_state[id],id,user_id);
-        }
-        //senão manter tal como está
-        else {
-          set_state(success_state[id],id,user_id);
-        }
-      }
-    }
+    succeed(result,user_id);
   },
 
   fail: function(result,user_id) {
-    var success_state = result.success;
-    var failure_state = result.failure;
-    for(var id in failure_state){
-      var state = get_state(id,user_id);
-      var solidity = get_solidity(id,user_id);
-      //se o estado variar de muito reduzir a solidez
-      var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
-      if( varies_significantly ){
-        set_solidity(solidity-1,id,user_id);
-        set_state(failure_state[id],id,user_id);
-      }
-      //se o estado não variar,
-      else {
-        //verificar se no caso contrário variaria,
-        var other = success_state[id]!=null? success_state[id] : get_state(id,user_id);
-        var current = get_state(id,user_id);
-        var would_vary_otherwise = Math.abs(other-current) > 0.1;
-        //se variar então aumentar a solidez,
-        if( would_vary_otherwise ){
-          set_solidity(solidity+1,id,user_id);
-          set_state(failure_state[id],id,user_id);
-        }
-        //senão manter tal como está
-        else {
-          set_state(failure_state[id],id,user_id);
-        }
-      }
-    }
+    fail(result,user_id);
   },
 
   setGoal: function(node_id, user_id, not_in = {}){
-      /*var contains = Nodes.findOne(exam_id).contains;
-      var exercises = {};
-      var id;
-      for(var i in contains){
-          id = contains[i];
-          exercises[id] = true;
-      }
-      var unit = find_useful_content(exercises,user_id,not_in);*/
       var goal = {}; goal[node_id] = true;
       var unit = find_useful_content(goal,user_id,not_in);
-      Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}});
+      if(unit !== null && typeof unit !== "undefined"){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
       return unit;
   },
 
   removeGoal: function(user_id){
       Meteor.users.update({_id:user_id},{$set:{goal:null,nextUnit:null}});
+  },
+
+  submitExam: function(answers,user_id){
+      for(var id in answers){
+          if(answers[id]){
+            var target = {};
+            target[id] = true;
+            var grants = Nodes.findOne(id).grants;
+            if(grants){
+              for(var id in grants){
+                target[id] = true;
+              }
+            }
+            var result = simulate(target,user_id);
+            succeed(result,user_id);
+          }
+          else{
+            var target = {};
+            target[id] = false;
+            var result = simulate(target,user_id);
+            fail(result,user_id);
+          }
+      }
   }
 
 });

@@ -1,37 +1,38 @@
 <template name="examCard">
-    <div class="card">
-        <div class="card-image">
-            <img src="https://eebatou.files.wordpress.com/2011/10/particle-physics.jpg">
-            <span class="card-title">{{name}}</span>
-        </div>
-        <div class="card-content">
-            {{description}}
-        </div>
-        <div class="card-action">
-            <a href="../exam/{{_id}}">Get ready for this test</a>
-        </div>
-        WARNING: BOTAO FEIO
-        {{#unless disableSetGoal}}
-            {{#unless goalAlreadyReached state}}
-                <div class="col s6">
-                    <div class="right">
-                        {{#unless isLoading}}
-                            <a class="waves-effect waves-teal btn set-goal">
-                                <i class="material-icons left">explore</i>Set as goal</a>
-                        {{else}}
-                            <a class="waves-effect waves-teal btn disabled">
-                                <i class="material-icons left">explore</i>Set as goal</a>
-                        {{/unless}}
-                    </div>
-                </div>
-            {{else}}
-                <div class="col s6">
-                    <div class="right">
-                        <a class="waves-effect waves-teal btn disabled">
-                            You know this</a>
-                    </div>
-                </div>
-            {{/unless}}
-        {{/unless}}
+  <div class="card">
+    <div class="card-image">
+      <img src="https://eebatou.files.wordpress.com/2011/10/particle-physics.jpg">
+      <span class="card-title">{{name}}</span>
     </div>
+    <div class="card-content">
+      {{description}}
+    </div>
+    <div class="card-action">
+      <a href="../exam/{{_id}}">Get ready for this test</a>
+    </div>
+    WARNING: BOTAO FEIO
+    <!-- {{#unless disableSetGoal}}
+      {{#unless goalAlreadyReached state}}
+        <div class="col s6">
+          <div class="right">
+            {{#unless isLoading}}
+              <a class="waves-effect waves-teal btn set-goal">
+                <i class="material-icons left">explore</i>Set as goal</a>
+            {{else}}
+              <a class="waves-effect waves-teal btn disabled">
+                <i class="material-icons left">explore</i>Set as goal</a>
+            {{/unless}}
+          </div>
+        </div>
+      {{else}}
+        <div class="col s6">
+          <div class="right">
+            <a class="waves-effect waves-teal btn disabled">
+              You know this</a>
+          </div>
+        </div>
+      {{/unless}}
+    {{/unless}} -->
+    {{> setGoalButton}}
+  </div>
 </template>
