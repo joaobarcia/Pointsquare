@@ -6,7 +6,7 @@
           <div class="row">
             <a href="{{pathFor 'home'}}"><img height="50px" alt="Logo" src="../images/pointsquare-logo-white.svg" style="padding-top:12px; margin-right:8px"></a><a class="brand-logo" style="position:absolute" href="{{pathFor 'home'}}">Pointsquare<sub><small> αlpha</small></sub></a>
 
-            
+
 
             <ul class="right">
               <li><a href="{{ pathFor 'search' }}"><i class="material-icons left">search</i> Search</a></li>
@@ -42,7 +42,6 @@
 
 </template>
 <template name="_headerUserIsLogged">
-<<<<<<< HEAD
 <div class="ui dropdown item">
     Create
     <i class="dropdown icon"></i>
@@ -79,7 +78,7 @@
             <span class="ti-book"></span>
             Unit</a>
     </li>
-=======
+
   {{#if isGodMode}}
     <li><a class='dropdown-button' href='#' data-activates='createDropdown'><i class="material-icons left">add_circle_outline</i> Create</a></li>
   {{/if}}
@@ -87,7 +86,7 @@
   <li><a href="#" data-action="logout">Sign Out</a></li>
   <ul id='createDropdown' class='dropdown-content'>
     <li><a href="{{ pathFor 'contentCreate' }}"><span class="ti-book"></span> Unit</a></li>
->>>>>>> foco_nos_exames
+
     <li class="divider"></li>
     <li>
         <a href="{{ pathFor 'conceptCreate' }}">
