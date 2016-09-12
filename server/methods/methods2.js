@@ -628,7 +628,7 @@ edit_contains = function(exam_id,new_contains){
       id = old_contains[i];
       if(!is_in_array(new_contains,id)){
         contained_in = Nodes.findOne(id).contained_in;
-        delete contained_in[id];
+        delete contained_in[exam_id];
         Nodes.update({
             _id: id
         }, {
@@ -639,7 +639,7 @@ edit_contains = function(exam_id,new_contains){
     for(var i in new_contains){
       id = new_contains[i];
       var contained_in = Nodes.findOne(id).contained_in;
-      contained_in[id] = i;
+      contained_in[exam_id] = i;
       Nodes.update({
           _id: id
       }, {
@@ -648,6 +648,11 @@ edit_contains = function(exam_id,new_contains){
     }
     Nodes.update({_id: exam_id},{ $set: {contains: new_contains} });
 };
+
+remove_exam = function(exam_id){
+    edit_contains(exam_id,[]);
+    Nodes.remove(exam_id);
+}
 
 //cria as ligações aos subnodos
 make_connector = function(subnodes,operator){
@@ -1662,6 +1667,10 @@ Meteor.methods({
             fail(result,user_id);
           }
       }
+  },
+
+  removeExam: function(examId){
+      return remove_exam(examId);
   }
 
 });
