@@ -178,7 +178,6 @@ AutoForm.hooks({
                 }
                 doc.grants = grantsMappedAsObject;
             };
-            delete doc.grants;
 
             var unitDefinitions = {};
             unitDefinitions.type = 'content';

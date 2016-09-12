@@ -1,30 +1,30 @@
 Template.unitEdit.rendered = function() {
-    this.autorun(() => {
-        if (this.subscriptionsReady()) {
-            $('.tooltipped').tooltip({
-                delay: 20
-            });
-            var nodeId = FlowRouter.getParam('nodeId');
-            var contentNode = Nodes.findOne({
-                _id: nodeId
-            }) || {};
-            var tempContent = {};
-            if (contentNode.content !== "undefined") {
-                var tempContent = contentNode.content
-                _.remove(tempContent, {
-                    type: 'unitEvaluationSection'
-                });
-            };
-            Session.set('tempContent', tempContent);
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      $('.tooltipped').tooltip({
+        delay: 20
+      });
+      var nodeId = FlowRouter.getParam('nodeId');
+      var contentNode = Nodes.findOne({
+        _id: nodeId
+      }) || {};
+      var tempContent = {};
+      if (contentNode.content !== "undefined") {
+        var tempContent = contentNode.content
+        _.remove(tempContent, {
+          type: 'unitEvaluationSection'
+        });
+      };
+      Session.set('tempContent', tempContent);
 
-            console.log('conceptEdit rendered > subs ready');
-            Meteor.globalFunctions.needsAsJSONSession();
-            //grantsAsJSONSession();
+      console.log('conceptEdit rendered > subs ready');
+      Meteor.globalFunctions.needsAsJSONSession();
+      //grantsAsJSONSession();
 
-            var deletedNeedsSets = [];
-            Session.set('deletedNeedsSets', deletedNeedsSets);
-        }
-    });
+      var deletedNeedsSets = [];
+      Session.set('deletedNeedsSets', deletedNeedsSets);
+    }
+  });
 };
 
 // Template.conceptEditSelectBox.rendered = function() {
@@ -37,40 +37,40 @@ Template.unitEdit.rendered = function() {
 // };
 
 Template.unitEdit.events({
-    'click #deleteUnit': function(event) {
-        event.preventDefault();
-        var nodeId = FlowRouter.getParam('nodeId');
-        Meteor.call('removeNode', nodeId);
-        FlowRouter.go('dashboard');
-    },
-    'click .add-set': function(event) {
-        event.preventDefault();
-        var needsObject = Session.get('needsObject');
-        needsObject.push({
-            '_id': 'newSet-' + Math.random().toString(36).substr(2, 9),
-            'contains': {}
-        });
-        //console.log(uniqueId());
-        Session.set('needsObject', needsObject);
+  'click #deleteUnit': function(event) {
+    event.preventDefault();
+    var nodeId = FlowRouter.getParam('nodeId');
+    Meteor.call('removeNode', nodeId);
+    FlowRouter.go('dashboard');
+  },
+  'click .add-set': function(event) {
+    event.preventDefault();
+    var needsObject = Session.get('needsObject');
+    needsObject.push({
+      '_id': 'newSet-' + Math.random().toString(36).substr(2, 9),
+      'contains': {}
+    });
+    //console.log(uniqueId());
+    Session.set('needsObject', needsObject);
 
-        //tempContent.splice(section, 1);
-    },
-    'click .remove-set': function(event) {
-        event.preventDefault();
-        var setId = event.target.id;
-        setId = setId.replace('remove-', '');
-        //console.log(setId);
+    //tempContent.splice(section, 1);
+  },
+  'click .remove-set': function(event) {
+    event.preventDefault();
+    var setId = event.target.id;
+    setId = setId.replace('remove-', '');
+    //console.log(setId);
 
-        var needsObject = Session.get('needsObject');
-        needsObject = _.reject(needsObject, {
-            '_id': setId
-        });
-        Session.set('needsObject', needsObject);
+    var needsObject = Session.get('needsObject');
+    needsObject = _.reject(needsObject, {
+      '_id': setId
+    });
+    Session.set('needsObject', needsObject);
 
-        var deletedNeedsSets = Session.get('deletedNeedsSets');
-        deletedNeedsSets.push(setId);
-        Session.set('deletedNeedsSets', deletedNeedsSets);
-    },
+    var deletedNeedsSets = Session.get('deletedNeedsSets');
+    deletedNeedsSets.push(setId);
+    Session.set('deletedNeedsSets', deletedNeedsSets);
+  },
 });
 
 /*function applySort() { // must apply sort and dropdown properties everytime the content is changed
@@ -102,116 +102,116 @@ Template.unitEdit.events({
 };*/
 
 function applyDropdown() { // jquery was being called before the changes were propagated to the DOM
-    if (Session.get('tempContent') !== undefined) {
-        var sectionsInJSON = Session.get('tempContent').length;
-        var sectionsInHTML = $('.dropdown-button.add-content').length;
-        if (sectionsInJSON == sectionsInHTML) { // if the changes have been propagated, call jquery
-            $('.dropdown-button.add-content').dropdown({
-                inDuration: 300,
-                outDuration: 225,
-                //constrain_width: false, // Does not change width of dropdown to that of the activator
-                hover: true, // Activate on hover
-                //gutter: 0, // Spacing from edge
-                //belowOrigin: false, // Displays dropdown below the button
-                //alignment: 'left' // Displays dropdown with edge aligned to the left of button
-            });
-        } else {
-            setTimeout(applyDropdown, 50); // re-run function asynchronously until conditions are met
-        }
+  if (Session.get('tempContent') !== undefined) {
+    var sectionsInJSON = Session.get('tempContent').length;
+    var sectionsInHTML = $('.dropdown-button.add-content').length;
+    if (sectionsInJSON == sectionsInHTML) { // if the changes have been propagated, call jquery
+      $('.dropdown-button.add-content').dropdown({
+        inDuration: 300,
+        outDuration: 225,
+        //constrain_width: false, // Does not change width of dropdown to that of the activator
+        hover: true, // Activate on hover
+        //gutter: 0, // Spacing from edge
+        //belowOrigin: false, // Displays dropdown below the button
+        //alignment: 'left' // Displays dropdown with edge aligned to the left of button
+      });
     } else {
-        setTimeout(applyDropdown, 50); // re-run function asynchronously until conditions are met
+      setTimeout(applyDropdown, 50); // re-run function asynchronously until conditions are met
     }
+  } else {
+    setTimeout(applyDropdown, 50); // re-run function asynchronously until conditions are met
+  }
 }
 
 
 
 Template.unitEditContent.rendered = function() {
-    //console.log('defined');
-    //var tempContent = Session.get('tempContent');
+  //console.log('defined');
+  //var tempContent = Session.get('tempContent');
+  applyDropdown();
+  Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
+    var tempContent = Session.get('tempContent'); // must call Session (even if not used) to make function reactive
+    //applySort();
     applyDropdown();
-    Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
-        var tempContent = Session.get('tempContent'); // must call Session (even if not used) to make function reactive
-        //applySort();
-        applyDropdown();
 
-    });
+  });
 };
 
 Template.unitEditContent.events({
-    'click .remove-section': function(event) {
-        event.preventDefault();
-        var section = event.target.id;
-        var tempContent = Session.get('tempContent');
-        tempContent.splice(section, 1);
-        Session.set('tempContent', tempContent);
-    },
-    'click .add-section': function(event) {
-        event.preventDefault();
-        tempContent = Session.get('tempContent');
-        tempContent.push({
-            "type": "unitSection",
-            "subContent": []
-        });
-        Session.set('tempContent', tempContent);
-    },
-    'click .add-text': function(event) {
-        event.preventDefault();
-        var section = event.target.id;
-        var tempContent = Session.get('tempContent');
-        tempContent[section].subContent.push({
-            "type": "text",
-            "text": ""
-        });
-        Session.set('tempContent', tempContent);
-    },
-    'click .add-video': function(event) {
-        event.preventDefault();
-        var section = event.target.id;
-        var tempContent = Session.get('tempContent');
-        tempContent[section].subContent.push({
-            "type": "youtube",
-            "youtubeVidID": ""
-        });
-        Session.set('tempContent', tempContent);
-    },
-    'click .add-image': function(event) {
-        event.preventDefault();
-        var section = event.target.id;
-        var tempContent = Session.get('tempContent');
-        tempContent[section].subContent.push({
-            "type": "remoteImage",
-            "remoteImgURL": ""
-        });
-        Session.set('tempContent', tempContent);
-    },
-    'click .remove-content': function(event) {
-        event.preventDefault();
-        var arrayOfIds = _.words(event.target.id, /[^, ]+/g); // extract array indexes from @index ids
-        var section = arrayOfIds[0];
-        var content = arrayOfIds[1];
-        var tempContent = Session.get('tempContent');
-        tempContent[section].subContent.splice(content, 1);
-        Session.set('tempContent', tempContent);
-    },
-    /* 'submit': function(event) {
-         event.preventDefault();
-         console.log("entered event");
-     },*/
-    'input .content-input': function(event) {
-        event.preventDefault();
-        var arrayOfIds = _.words(event.target.id, /[^, ]+/g); // extract array indexes from @index ids
-        var section = arrayOfIds[0];
-        var content = arrayOfIds[1];
-        var keyToChange = arrayOfIds[2];
-        var tempContent = Session.get('tempContent');
-        /*if (keyToChange == 'text') { // text strings need to be escaped
-            console.log("IT IS TEXT!!!");
-            tempContent[section].subContent[content][keyToChange] = escape(event.target.value);
-        } else {*/
-        tempContent[section].subContent[content][keyToChange] = event.target.value;
-        //};
-        Session.set('tempContent', tempContent);
-    },
+  'click .remove-section': function(event) {
+    event.preventDefault();
+    var section = event.target.id;
+    var tempContent = Session.get('tempContent');
+    tempContent.splice(section, 1);
+    Session.set('tempContent', tempContent);
+  },
+  'click .add-section': function(event) {
+    event.preventDefault();
+    tempContent = Session.get('tempContent');
+    tempContent.push({
+      "type": "unitSection",
+      "subContent": []
+    });
+    Session.set('tempContent', tempContent);
+  },
+  'click .add-text': function(event) {
+    event.preventDefault();
+    var section = event.target.id;
+    var tempContent = Session.get('tempContent');
+    tempContent[section].subContent.push({
+      "type": "text",
+      "text": ""
+    });
+    Session.set('tempContent', tempContent);
+  },
+  'click .add-video': function(event) {
+    event.preventDefault();
+    var section = event.target.id;
+    var tempContent = Session.get('tempContent');
+    tempContent[section].subContent.push({
+      "type": "youtube",
+      "youtubeVidID": ""
+    });
+    Session.set('tempContent', tempContent);
+  },
+  'click .add-image': function(event) {
+    event.preventDefault();
+    var section = event.target.id;
+    var tempContent = Session.get('tempContent');
+    tempContent[section].subContent.push({
+      "type": "remoteImage",
+      "remoteImgURL": ""
+    });
+    Session.set('tempContent', tempContent);
+  },
+  'click .remove-content': function(event) {
+    event.preventDefault();
+    var arrayOfIds = _.words(event.target.id, /[^, ]+/g); // extract array indexes from @index ids
+    var section = arrayOfIds[0];
+    var content = arrayOfIds[1];
+    var tempContent = Session.get('tempContent');
+    tempContent[section].subContent.splice(content, 1);
+    Session.set('tempContent', tempContent);
+  },
+  /* 'submit': function(event) {
+       event.preventDefault();
+       console.log("entered event");
+   },*/
+  'input .content-input': function(event) {
+    event.preventDefault();
+    var arrayOfIds = _.words(event.target.id, /[^, ]+/g); // extract array indexes from @index ids
+    var section = arrayOfIds[0];
+    var content = arrayOfIds[1];
+    var keyToChange = arrayOfIds[2];
+    var tempContent = Session.get('tempContent');
+    /*if (keyToChange == 'text') { // text strings need to be escaped
+        console.log("IT IS TEXT!!!");
+        tempContent[section].subContent[content][keyToChange] = escape(event.target.value);
+    } else {*/
+    tempContent[section].subContent[content][keyToChange] = event.target.value;
+    //};
+    Session.set('tempContent', tempContent);
+  },
 });
 
 // function applySelectizeCode() {
@@ -283,74 +283,77 @@ Template.unitEditContent.events({
 // };
 
 AutoForm.hooks({
-    unitEdit: {
-        onSubmit: function(doc) {
-            var nodeId = FlowRouter.getParam('nodeId');
+  unitEdit: {
+    onSubmit: function(doc) {
+      var nodeId = FlowRouter.getParam('nodeId');
 
-            // Handle new and edited need sets
-            var needsObject = Session.get('needsObject');
-            //console.log(needsObject);
-            _.forEach(needsObject, function(n) {
-                var setId = n['_id'];
-                var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
-                var needsMappedAsArrayofObjects = {};
-                for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
-                    needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
-                }
-                if (_(setId).startsWith('newSet')) {
-                    Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
-                } else {
-                    Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
-                }
-            });
-
-            // Handle deleted need sets
-            var deletedNeedsSets = Session.get('deletedNeedsSets');
-            for (setId of deletedNeedsSets) {
-                Meteor.call('removeNeed', setId);
-            }
-
-            // Handle grants
-            var grantsMappedAsObject = {};
-            if (typeof doc.grants !== 'undefined') {
-                for (var i = 0; i < doc.grants.length; i += 1) {
-                    grantsMappedAsObject[doc.grants[i]] = true;
-                }
-            }
-            console.log(nodeId);
-            console.log(grantsMappedAsObject);
-            Meteor.call('editGrants', nodeId, grantsMappedAsObject);
-            delete doc.grants;
-
-
-
-            // Handle NAME, DESCRIPTION AND CONTENT
-            var content = Session.get('tempContent'); // fetch content
-            var evaluation = { // create evaluation object
-                "type": "unitEvaluationSection"
-            };
-            evaluation.evaluationType = doc.evaluationType; // define evaluation type from autoform
-            if (doc.evaluationType == "exerciseRadioButton") { // add options or answers to evaluation
-                evaluation.question = doc.exerciseRadioButton.question;
-                evaluation.options = doc.exerciseRadioButton.options;
-            } else if (doc.evaluationType == "exerciseString") {
-                evaluation.question = doc.exerciseString.question;
-                evaluation.answers = doc.exerciseString.answers;
-            }
-
-            content.push(evaluation); // push evaluation object into content array
-            doc.content = content;
-            delete doc.evaluationType;
-
-            var parameters = doc;
-            //console.log(parameters);
-
-            // Set name, description, content
-            Meteor.call('editNode', nodeId, parameters);
-
-            FlowRouter.go('/content/' + nodeId);
-            this.done();
-            return false;
+      // Handle new and edited need sets
+      var needsObject = Session.get('needsObject');
+      //console.log(needsObject);
+      _.forEach(needsObject, function(n) {
+        var setId = n['_id'];
+        var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
+        var needsMappedAsArrayofObjects = {};
+        for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
+          needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
         }
+        if (_(setId).startsWith('newSet')) {
+          Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+        } else {
+          Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
+        }
+      });
+
+      // Handle deleted need sets
+      var deletedNeedsSets = Session.get('deletedNeedsSets');
+      for (setId of deletedNeedsSets) {
+        Meteor.call('removeNeed', setId);
+      };
+
+      // Handle grants
+      var grantsMappedAsObject = {};
+      if (typeof doc.grants !== 'undefined') {
+        for (var i = 0; i < doc.grants.length; i += 1) {
+          grantsMappedAsObject[doc.grants[i]] = true;
+        }
+      };
+      console.log(nodeId);
+      console.log(grantsMappedAsObject);
+      Meteor.call('editGrants', nodeId, grantsMappedAsObject);
+
+      // Handle NAME, DESCRIPTION AND CONTENT
+      var content = Session.get('tempContent'); // fetch content
+      var evaluation = { // create evaluation object
+        "type": "unitEvaluationSection"
+      };
+      evaluation.evaluationType = doc.evaluationType; // define evaluation type from autoform
+      if (doc.evaluationType == "exerciseRadioButton") { // add options or answers to evaluation
+        evaluation.question = doc.exerciseRadioButton.question;
+        evaluation.options = doc.exerciseRadioButton.options;
+      } else if (doc.evaluationType == "exerciseString") {
+        evaluation.question = doc.exerciseString.question;
+        evaluation.answers = doc.exerciseString.answers;
+      }
+
+      content.push(evaluation); // push evaluation object into content array
+      doc.content = content;
+
+      // change language
+      Meteor.call('changeLanguage', nodeId, doc.language);
+
+      delete doc.language;
+      delete doc.needs;
+      delete doc.grants;
+      delete doc.evaluationType;
+      var parameters = doc;
+      //console.log(parameters);
+
+      // Set name, description, content
+      Meteor.call('editNode', nodeId, parameters);
+
+      FlowRouter.go('/content/' + nodeId);
+      this.done();
+      return false;
     }
+  }
 });
