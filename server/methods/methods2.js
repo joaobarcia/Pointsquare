@@ -801,7 +801,7 @@ remove_node = function(node_id){
         for(var id in needed_by){
             other = Nodes.findOne(id).needs;
             delete other[node_id];
-            Nodes.update({_id: node_id},{$set:
+            Nodes.update({_id: id},{$set:
               {needs: other}
             });
         }
@@ -915,6 +915,7 @@ edit_requirement = function(and_id,new_concepts){
         var or_is_empty = Object.keys(needs).length == 0;
         var is_an_or_gate = node.type == "or";
         if(or_is_empty && is_an_or_gate){
+          Nodes.update(Object.keys(node.needed_by)[0],{$set: {requirements:null}});
           remove_node(node_id);
           return true;
         }
@@ -973,7 +974,7 @@ get_needs = function(node_id){
     var info = {};
     var node = Nodes.findOne(node_id);
     if(node.type == "content"){ info["language"] = node.language; }
-    if(typeof node.requirements !== undefined){ info["sets"] = null; }
+    if(typeof node.requirements == "undefined" || node.requirements == null){ info["sets"] = null; }
     else{
       var set_ids = node.type == "concept"? node.needs : Nodes.findOne(node.requirements).needs;//adicionar uma RESSALVA para o caso do nodo ser um operador
       for(var id in set_ids){
