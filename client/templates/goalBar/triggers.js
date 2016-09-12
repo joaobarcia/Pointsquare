@@ -1,3 +1,11 @@
+Template.goalBar.onCreated(function() {
+  console.log("yo");
+});
+
+Template.goalBar.onRendered(function() {
+  $(".bottom-goalbar").fadeIn()
+});
+
 Template.goalBar.events({
   "click .next-unit": function(event, template) {
     event.preventDefault();

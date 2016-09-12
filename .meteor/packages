@@ -49,7 +49,6 @@ sergeyt:typeahead
 comerc:bs-typeahead
 comerc:autoform-typeahead
 comerc:autoform-selectize
-useraccounts:materialize
 aldeed:template-extension
 reactive-var@1.0.10
 jquery@1.11.9
@@ -64,3 +63,5 @@ less
 juliancwirko:postcss
 materialize:materialize
 fabienb4:autoform-semantic-ui
+useraccounts:semantic-ui
+percolate:momentum

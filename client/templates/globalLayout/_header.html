@@ -23,8 +23,8 @@
   </div> -->
     <div class="ui huge blue inverted fixed menu">
         <div class="ui container">
-            <a href="{{pathFor 'home_new'}}" class="header item">
-                <img class="logo" src="../images/pointsquare-logo-white.svg">
+            <a href="{{pathFor 'home'}}" class="header item">
+                <img class="logo" src="/images/pointsquare-logo-white.svg">
                 Pointsquare
             </a>
             <div class="right menu">
@@ -42,7 +42,7 @@
 
 </template>
 <template name="_headerUserIsLogged">
-<div class="ui dropdown item">
+<div class="ui simple dropdown item">
     Create
     <i class="dropdown icon"></i>
     <div class="menu">
@@ -58,6 +58,7 @@
     </div>
 
 </div>
+<a href="{{ pathFor 'dashboard' }}" class="item">Dashboard</a>
 <a href="#" class="item" data-action="logout">Sign Out</a>
 <!-- <li>
     <a class='dropdown-button' href='#' data-activates='createDropdown'>
