@@ -16,6 +16,11 @@ Schema.Concept = new SimpleSchema({
             }
         }
     },
+    isLanguageConcept: {
+       type: Boolean,
+       defaultValue: false,
+       label: "Concept is a language"
+    },
     needs: {
         type: Array,
         optional: true,
@@ -80,8 +85,7 @@ Schema.Unit = new SimpleSchema({
                 }
 
                 var conceptsMappedToSelectize = _.map(Nodes.find({
-                  // WARNING: TO BE REPLACED WITH PROPER IDENTIFIER OF LANGUAGE NODES
-                    name: {$in: ["English", "Portuguese"]}
+                    isLanguageConcept: true
                 }).fetch(), nameAndRID);
 
                 return conceptsMappedToSelectize;
