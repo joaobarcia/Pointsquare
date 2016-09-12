@@ -69,6 +69,11 @@ Schema.Unit = new SimpleSchema({
             }
         }
     },
+    isUnitFromModule: {
+       type: Boolean,
+       defaultValue: false,
+       label: "This Unit should only be presented as part of an Exam"
+    },
     language: {
         type: String,
         optional: true,
