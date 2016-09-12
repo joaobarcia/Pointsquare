@@ -1577,6 +1577,10 @@ Meteor.methods({
     return edit_requirement(setID, concepts);
   },
 
+  editLanguage: function(unitId, newLanguageId) {
+    return change_language_requisite(unitId, newLanguageId);
+  },
+
   addNeed: function(nodeID, concepts) {
     return add_requirement(nodeID, concepts);
   },
