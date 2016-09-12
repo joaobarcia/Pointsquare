@@ -339,7 +339,7 @@ AutoForm.hooks({
       doc.content = content;
 
       // change language
-      Meteor.call('changeLanguage', nodeId, doc.language);
+      Meteor.call('editLanguage', nodeId, doc.language);
 
       delete doc.language;
       delete doc.needs;
