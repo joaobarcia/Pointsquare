@@ -26,6 +26,9 @@ var MAX_STEPS = 10000;
 var MIN_STEPS = 100;
 var TOLERANCE = 0.01;
 
+var SOLIDITY_TOLERANCE = 0.1;
+READY = 0.5;
+NOT_READY = 0.5;
 
 is_in_array = function(array,value){
     return array.indexOf(value) > 0;
@@ -360,14 +363,14 @@ find_missing_subtree = function(node_ids,user_id) {
             if( type == "content" && !(node_id in bag) ){
                 tree[tree.length-1][node_id] = state;
                 bag[node_id] = true;
-                if( state < 0.9 ){ to_keep[node_id] = true; }
+                if( state < READY ){ to_keep[node_id] = true; }
             }
-            else if( type == "concept" && state < 0.9 && !(node_id in bag) ){
+            else if( type == "concept" && state < READY && !(node_id in bag) ){
                 tree[tree.length-1][node_id] = state;
                 bag[node_id] = true;
                 to_keep[node_id] = true;
             }
-            else if( ( type == "and" || type == "or" || type == "parand" ) && state < 0.9 && !(node_id in bag) ){
+            else if( ( type == "and" || type == "or" || type == "parand" ) && state < READY && !(node_id in bag) ){
                 //tree[tree.length-1][node_id] = state;
                 bag[node_id] = true;
                 to_keep[node_id] = true;
@@ -1048,6 +1051,18 @@ forward_update = function(node_ids, user_id) {
     }
 };
 
+change_states = function(state,user_id){
+    for(var id in state){
+        set_state(state[id],id,user_id);
+    }
+    forward_update(state,user_id);
+};
+
+change_state = function(state,node_id,user_id){
+    var states = {}; states[id] = state;
+    change_states(states,user_id);
+};
+
 //retorna os estados necessários dos nodos afectados pelas alterações
 simulate = function(target, user_id) {
     var output_layer = target;
@@ -1306,7 +1321,7 @@ succeed = function(result,user_id) {
     //se o estado variar de muito reduzir a solidez
     var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
     if( varies_significantly ){
-      set_solidity(solidity-1,id,user_id);
+      set_solidity(0,id,user_id);//set_solidity(solidity-1,id,user_id);
       set_state(success_state[id],id,user_id);
     }
     //se o estado não variar,
@@ -1337,7 +1352,7 @@ fail = function(result,user_id) {
     //se o estado variar de muito reduzir a solidez
     var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
     if( varies_significantly ){
-      set_solidity(solidity-1,id,user_id);
+      set_solidity(0,id,user_id);//set_solidity(solidity-1,id,user_id);
       set_state(failure_state[id],id,user_id);
     }
     //se o estado não variar,
@@ -1396,7 +1411,7 @@ testing_units = function(concept_id,user_id){
           highest_state["descending"] = unit_state;
         }
       }
-      if( highest_state["ascending"] > 0.9 && highest_state["descending"] > 0.9 ){ break; }
+      if( highest_state["ascending"] > READY && highest_state["descending"] > READY ){ break; }
     }
   }
   return testability;
@@ -1434,7 +1449,7 @@ positive_impact_units = function(unit_ids,user_id){
             found_unit_state = node_state;
           }
         }
-        if( found_unit_state > 0.9 ){ break; }
+        if( found_unit_state > READY ){ break; }
       }
     }
   }
@@ -1448,7 +1463,7 @@ find_starting_lesson = function(unit_ids,user_id) {
     while(true){
       var id = positive_impact_units(current,user_id);
       var state = get_state(id,user_id);
-      if( state > 0.9 || id == null || visited[id] ){ break; }
+      if( state > READY || id == null || visited[id] ){ break; }
       current = {};
       current[id] = true;
       visited[id] = true;
@@ -1511,9 +1526,9 @@ find_missing_bush = function(node_ids,user_id) {
             if( type == "content" && !bag[id] ){
                 bush[bush.length-1][id] = state;
                 bag[id] = true;
-                if( state < 0.9 ){ to_keep[id] = true; }
+                if( state < READY ){ to_keep[id] = true; }
             }
-            else if( type != "content" && state < 0.9 && !bag[id] ){
+            else if( type != "content" && state < READY && !bag[id] ){
                 bush[bush.length-1][id] = state;
                 bag[id] = true;
                 to_keep[id] = current_layer[id];
@@ -1536,7 +1551,7 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
         for(var id in layer){
             var node = Nodes.findOne(id);
             var state = get_state(id,user_id);
-            if(node.type == "content" && state > 0.8 && typeof not_in[id] === "undefined"){
+            if(node.type == "content" && state > READY && typeof not_in[id] === "undefined"){
                 /*var target = {};
                 target[id] = true;
                 for(var granted_id in node.grants){ target[granted_id] = true; }
@@ -1675,6 +1690,10 @@ Meteor.methods({
 
   removeExam: function(examId){
       return remove_exam(examId);
+  },
+
+  readyThreshold: function(){
+    return READY;
   }
 
 });

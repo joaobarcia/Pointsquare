@@ -55,8 +55,8 @@ Template.registerHelper('goalIsCompleted', function() {
             user: Meteor.userId()
           });
           var goalState = stateInfo.state;
-          //if the goal is higher than 0.9
-          var goalCompleted = goalState > 0.9;
+          //if the goal is higher than Session.get("ready threshold")
+          var goalCompleted = goalState > Session.get("ready threshold");
           if (goalCompleted) {
             Session.set('removeGoalOnDestroyGoalPage', true);
             return true;
