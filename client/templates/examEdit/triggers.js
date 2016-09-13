@@ -25,8 +25,6 @@ AutoForm.hooks({
       var examContains = doc.exercises; //exercisesMappedAsObject;
       delete doc.exercises
 
-      console.log(examDefinitions);
-
       Meteor.call('editNode', nodeId, examDefinitions, function(error, result) {
         Meteor.call('editContains', nodeId, examContains, function(error, result) {
           FlowRouter.go('/exam/' + nodeId);

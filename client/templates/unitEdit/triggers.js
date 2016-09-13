@@ -348,6 +348,8 @@ AutoForm.hooks({
       var parameters = doc;
       //console.log(parameters);
 
+      Session.set('tempContent', []);
+
       // Set name, description, content
       Meteor.call('editNode', nodeId, parameters);
 

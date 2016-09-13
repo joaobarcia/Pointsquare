@@ -49,6 +49,7 @@ Template.createUnitContent.rendered = function() {
         Session.set('tempContent', []);
     };
 
+    console.log('rendered');
     //applySort(); // apply once the template is loaded
     applyDropdown();
     Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
@@ -183,6 +184,7 @@ AutoForm.hooks({
             unitDefinitions.parameters = doc;
             unitDefinitions.needs = needsWithLanguage;
             unitDefinitions.grants = grantsMappedAsObject;
+            Session.set('tempContent', []);
 
             Meteor.call('create', unitDefinitions, function(error, result) {
                 nodeId = result;
