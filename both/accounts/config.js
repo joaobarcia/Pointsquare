@@ -1,7 +1,7 @@
 AccountsTemplates.configure({
   defaultLayout: 'mainLayout',
   defaultLayoutRegions: {},
-  defaultContentRegion: 'main'
+  defaultContentRegion: 'main',
 });
 
 AccountsTemplates.addField({
@@ -19,15 +19,12 @@ AccountsTemplates.addField({
 //   displayName: 'Choose your language(s)',
 //   //negativeValidation: false
 // });
-AccountsTemplates.addField({
-  _id: 'languages',
-  displayName: 'Choose your language(s)',
-  type: 'text',
-  template: "languages"
-});
+
 
 AccountsTemplates.configureRoute('signIn');
-AccountsTemplates.configureRoute('signUp');
+AccountsTemplates.configureRoute('signUp', {
+    redirect: '/dashboard',
+});
 
 /*
 AccountsTemplates.configureRoute('ensureSignedIn', {

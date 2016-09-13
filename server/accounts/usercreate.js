@@ -1,14 +1,21 @@
-Accounts.onCreateUser( function(options, user) {
+Accounts.onCreateUser(function(options, user) {
 
-	user["works"] = {};
-	user["goal"] = null;
-	user["nextUnit"] = null;
+  user["works"] = {};
+  user["goal"] = null;
+  user["nextUnit"] = null;
+  // Assume user knows all currently available languages
+  user["languagesUserKnows"] = _.map(Nodes.find({
+    isLanguageConcept: true
+  }).fetch(), "_id");
 
-  	if (options.profile)
-    	user.profile = options.profile;
+  console.log(user);
+  console.log(options);
 
-  	reset_user(user._id);
+  if (options.profile) {
+    user.profile = options.profile;
+  };
+	reset_user(user._id);
 
-  	return user;
-
+	console.log(user);
+  return user;
 });
