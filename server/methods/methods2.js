@@ -424,6 +424,8 @@ create_content = function(parameters) {
         description: "",
         content: [],
         needs: {},
+        requirements: {},
+        language: null,
         grants: {},
         contained_in: {},
         authors: {},
@@ -457,6 +459,7 @@ create_concept = function(parameters) {
         granted_by: {},
         needed_by: {},
         needs: {},
+        requirements: {},
         authors: {}
     });
     if (!_.isEmpty(parameters)) {
@@ -697,14 +700,14 @@ add_needs = function(node_id,needs){
         return "error";//ERROR
     }
     else if(type == "concept"){
-        //criar porta OR que agrupe os diferentes ANDs dos pré-requesitos
+        //o próprio nodo de conceito é uma porta OR que agrupa os diferentes ANDs dos pré-requesitos
         var subands = {};
         for(var i = 0; i < needs.concepts.length; i++){
-            var id = make_connector(needs.concepts[i],"and");
-            subands[id] = true;
-            var needed_by = Nodes.findOne(id).needed_by;
+            var and_id = make_connector(needs.concepts[i],"and");
+            subands[and_id] = true;
+            var needed_by = Nodes.findOne(and_id).needed_by;
             needed_by[node_id] = true;
-            Nodes.update({_id:id},{$set:
+            Nodes.update({_id:and_id},{$set:
               {needed_by: needed_by}
             });
         }
@@ -829,7 +832,8 @@ change_language_requisite = function(content_id,new_language_id){
     //requesitos actuais (um para língua e um para OR)
     var needs = content.needs;
     //tratar da língua anterior
-    var old_language_id = content.language;
+    var needs_info = get_needs(content_id);
+    var old_language_id = needs_info.language;
     var needed_language = old_language_id != null;
     //se havia já um pré-requesito linguístico
     if(needed_language){
@@ -857,8 +861,7 @@ change_language_requisite = function(content_id,new_language_id){
     var sublinks = compute_weights(needs,"and");
     Nodes.update({_id:content_id},{$set:{
       needs: sublinks.weights,
-      bias: sublinks.bias,
-      language: new_language_id
+      bias: sublinks.bias
     }});
 }
 //A-OK
@@ -934,22 +937,27 @@ edit_requirement = function(and_id,new_concepts){
 
 //adiciona um conjunto de requesitos conceptuais a um nodo já existente
 add_requirement = function(node_id, concepts){
+    //console.log("adding requirement");
     var node = Nodes.findOne(node_id);
     //criar o AND do conjunto
     var and_id = make_connector(concepts,"and");
     var and = Nodes.findOne(and_id);
     //se for um conteúdo o nodo a que queremos adicionar este conjunto é o seu subnodo OR
     var is_content = node.type == "content";
+    var needs_info = get_needs(node_id);
+    var has_sets = Object.keys(needs_info.sets).length;
+    var has_language = needs_info.language != null;
     if(is_content){
-        var or_id = node.requirements;
-        var needs = {};
+        var needs;
+        var or_id;
         //se o conteúdo ainda não tiver um OR criá-lo
-        if(or_id == null){
+        if(!has_sets){
+          needs = {};
           needs[and_id] = true;
-          var or_id = make_connector(needs,"or");
-          Nodes.update({_id: node_id}, {$set:{ requirements: or_id }});
+          or_id = make_connector(needs,"or");
         }
         else{
+          or_id = Object.keys(Nodes.findOne(Object.keys(needs_info.sets)[0]).needed_by)[0];
           var or = Nodes.findOne(or_id);
           //pegar nos diversos ANDs de requesitos
           needs = or.needs;
@@ -960,9 +968,9 @@ add_requirement = function(node_id, concepts){
           needs = weights.weights;
           var bias = weights.bias;
           Nodes.update({_id: or_id},{$set:{needs:needs,bias:bias}});
+          //fazer a referência ao OR no AND
+          add_to_field(and_id,"needed_by",or_id,true);
         }
-        //fazer a referência ao OR no AND
-        add_to_field(and_id,"needed_by",or_id,true);
     }
     else{
         //pegar nos diversos ANDs de requesitos
@@ -974,22 +982,27 @@ add_requirement = function(node_id, concepts){
         needs = weights.weights;
         var bias = weights.bias;
         Nodes.update({_id:node_id},{$set:{needs:needs,bias:bias}});
+        add_to_field(and_id,"needed_by",node_id,true);
     }
 }
+//A-OK!
 
 //função que retorna um objecto com a informação dos requesitos linguísticos e conceptuais
 get_needs = function(node_id){
     var info = {};
     var node = Nodes.findOne(node_id);
-    if(node.type == "content"){ info["language"] = node.language; }
-    if(typeof node.requirements == "undefined" || node.requirements == null){ info["sets"] = null; }
-    else{
-      var set_ids = node.type == "concept"? node.needs : Nodes.findOne(node.requirements).needs;//adicionar uma RESSALVA para o caso do nodo ser um operador
-      for(var id in set_ids){
-          set_ids[id] = Nodes.findOne(id).needs;
-      }
-      info["sets"] = set_ids;
+    var or_id = node_id;
+    for(var id in node.needs){
+      var subnode = Nodes.findOne(id);
+      if(subnode.isLanguage){ info["language"] = node.language; }
+      else if(subnode.type == "or"){ or_id = id; }
     }
+    var or = Nodes.findOne(or_id);
+    var set_ids = or.needs;
+    for(var id in set_ids){
+        set_ids[id] = Nodes.findOne(id).needs;
+    }
+    info["sets"] = set_ids;
     return info;
 }
 //A-OK
@@ -1035,6 +1048,15 @@ find_micronodes = function(node_ids) {
     return micronodes;
 };
 
+down_search = function(node_ids){
+    var tree = node_ids;
+    for(var id in tree){
+        var needs = Nodes.findOne(id).needs;
+        tree[id] = down_search(needs);
+    }
+    return tree;
+};
+
 //update forward tree
 forward_update = function(node_ids, user_id) {
     var current_layer = node_ids;
@@ -1044,8 +1066,10 @@ forward_update = function(node_ids, user_id) {
             break;
         }
         for (var node_id in next_layer) {
-            update_state(node_id, user_id);
+            var state = update_state(node_id, user_id);
             //update_completion(node_id, user_id);
+            var node = Nodes.findOne(node_id);
+            console.log(node_id+" , "+(node.name||node.type)+" was updated to "+state);
         }
         current_layer = next_layer;
     }
@@ -1067,6 +1091,8 @@ change_state = function(state,node_id,user_id){
 simulate = function(target, user_id) {
     var output_layer = target;
     var input_layer = find_micronodes(output_layer);
+    console.log("micronodes");
+    console.log(input_layer);
     //make sure everything is up to date
     forward_update(input_layer, user_id);
     //draw tree
@@ -1176,6 +1202,12 @@ simulate = function(target, user_id) {
     for (node_id in input_layer) {
         saved_input[node_id] = state[node_id];
     }
+    //console.log("target");
+    //console.log(target);
+    //console.log("first swipe error");
+    //console.log(error);
+    console.log("states:")
+    console.log(state);
     //begin subnetwork update
     while (max_error > TOLERANCE) {
         //reset bounds
@@ -1188,6 +1220,7 @@ simulate = function(target, user_id) {
             layer = tree[order];
             for (node_id in layer) {
                 node = Nodes.findOne(node_id);
+                console.log(node_id+" , "+(node.name||node.type)+" with an error of "+error[node_id]+" and state equal to "+state[node_id]+ " gives to");
                 weights = node.needs;
                 if (Object.keys(weights).length == 0) {
                     continue;
@@ -1197,9 +1230,14 @@ simulate = function(target, user_id) {
                     delta = error[node_id] * weight * state[node_id] * (1 - state[node_id]);
                     error[subnode_id] += locked[subnode_id]? cut_negative(delta): delta;
                     var subnode = Nodes.findOne(subnode_id);
+                    console.log(node_id+" , "+(subnode.name||subnode.type)+" an error contribution of "+(locked[subnode_id]? cut_negative(delta): delta));
                 }
             }
         }
+        console.log("state");
+        console.log(state);
+        console.log("error");
+        console.log(error);
         //forward propagation
         while (true) {
             //increment input states
@@ -1233,10 +1271,12 @@ simulate = function(target, user_id) {
             var low = max_variation < MIN_VAR;
             //if it's OK, carry on
             if (!high && !low) {
+                //console.log("not high and not low");
                 break;
             }
             //if it's not OK, enhance step size and repeat
             else if (high) {
+                //console.log("high");
                 var max = RATE;
                 is_top_set = true;
                 upper_bound = RATE;
@@ -1248,6 +1288,8 @@ simulate = function(target, user_id) {
                 //continue;
                 //if it's both high and low treat as if it were just high
             } else if (low) {
+                //console.log("low and not high");
+                //console.log(RATE);
                 var min = RATE;
                 is_bottom_set = true;
                 lower_bound = RATE;
@@ -1272,6 +1314,7 @@ simulate = function(target, user_id) {
             saved_input[node_id] = state[node_id];
         }
     }
+    console.log("end of subnetwork update");
     //end of subnetwork update
     tree = find_forward_tree(input_layer);
     for (var order = 1; order < tree.length; order++) {
@@ -1702,6 +1745,10 @@ Meteor.methods({
 
   changeState: function(state,nodeId,userId){
     change_state(state,nodeId,userId);
+  },
+
+  downSearch: function(ids){
+    return down_search(ids);
   }
 
 });
