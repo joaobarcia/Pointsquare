@@ -5,7 +5,7 @@ Template.registerHelper('knownConcepts', function() {
         $eq: Meteor.user()._id
       },
       state: {
-        $gt: Session.get("ready threshold")
+        $gt: Session.get("readyThreshold")
       }
     }, {
       fields: {

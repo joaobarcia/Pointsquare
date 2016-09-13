@@ -1059,7 +1059,7 @@ change_states = function(state,user_id){
 };
 
 change_state = function(state,node_id,user_id){
-    var states = {}; states[id] = state;
+    var states = {}; states[node_id] = state;
     change_states(states,user_id);
 };
 

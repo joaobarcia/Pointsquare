@@ -9,6 +9,6 @@ Meteor.startup(function() {
     // WARNING: REMOVE WHEN DEPLOY
     Session.set("godMode", true);
     Meteor.call("readyThreshold",function(e,r){
-      Session.set("ready threshold",r);
+      Session.set("readyThreshold",r);
     });
 });
