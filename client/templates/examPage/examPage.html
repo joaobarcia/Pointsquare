@@ -5,6 +5,12 @@
                 <div class="container">
                     <div class="section">
                         <h2>{{name}}</h2>
+                        {{#if isGodMode}}
+                            <!-- <a href="{{_id}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"> -->
+                            <a class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="left" data-delay="1" data-tooltip="Edit this unit." href="{{_id}}/edit">
+                                <i class="material-icons">create</i>
+                            </a>
+                        {{/if}}
                     </div>
                     {{#each unit in examContents}}
                         {{> contentByType content=unit.content isExamPage=true unitId=unit._id}}
@@ -15,6 +21,7 @@
                         <p class="center-align">
                             <a class="waves-effect waves-light btn" id="submit_exam">Submit Exam</a>
                         </p>
+
                     </div>
                 </div>
             </div>
