@@ -1,7 +1,9 @@
 Template.dashboard.helpers({
-  userKnowsThisLanguage: function() {
-    console.log(Blaze._globalHelpers.knownLanguages());
-    console.log(Blaze._globalHelpers.availableLanguages());
-    console.log(Template.parentData());
+  userKnowsLanguage: function(languageId) {
+    var knownLanguagesIds = _.map(Blaze._globalHelpers.knownLanguages(), "_id");
+    if (_.includes(knownLanguagesIds, languageId)) {
+      return "checked"
+    }
+    else return "false"
   }
 });

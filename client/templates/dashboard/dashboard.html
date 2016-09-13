@@ -12,10 +12,13 @@
           <h3>Check the languages you know</h3>
           {{#each language in availableLanguages}}
             <div class="col s3">
-              <input type="checkbox" id={{language._id}} checked={{userKnowsThisLanguage}}/>
+              <input type="checkbox" class="languageCheckbox" id={{language._id}} {{userKnowsLanguage (language._id)}}/>
               <label for={{language._id}}>{{language.name}}</label>
             </div>
           {{/each}}
+          <div class="col s3">
+            <a class="waves-effect waves-light btn-flat" id="submitKnownLanguages">submit</a>
+          </div>
         </div>
       </div>
     </div>
