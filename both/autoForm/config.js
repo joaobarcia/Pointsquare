@@ -16,7 +16,7 @@ Schema.Concept = new SimpleSchema({
             }
         }
     },
-    isLanguageConcept: {
+    isLanguage: {
        type: Boolean,
        defaultValue: false,
        label: "Concept is a language"
@@ -90,7 +90,7 @@ Schema.Unit = new SimpleSchema({
                 }
 
                 var conceptsMappedToSelectize = _.map(Nodes.find({
-                    isLanguageConcept: true
+                    isLanguage: true
                 }).fetch(), nameAndRID);
 
                 return conceptsMappedToSelectize;

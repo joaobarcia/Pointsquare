@@ -4,9 +4,6 @@ Accounts.onCreateUser(function(options, user) {
   user["goal"] = null;
   user["nextUnit"] = null;
 
-  console.log(user);
-  console.log(options);
-
   if (options.profile) {
     user.profile = options.profile;
   };
@@ -16,7 +13,7 @@ Accounts.onCreateUser(function(options, user) {
 
   // assume user knows all currently available languages
   var availableLanguages = Nodes.find({
-    isLanguageConcept: true
+    isLanguage: true
   }).fetch();
   var availableLanguagesAsKnownConceptBag = {};
   for (index in availableLanguages) {
@@ -28,7 +25,6 @@ Accounts.onCreateUser(function(options, user) {
       console.log("error", error);
     }
   });
-
-  console.log(user);
+  
   return user;
 });
