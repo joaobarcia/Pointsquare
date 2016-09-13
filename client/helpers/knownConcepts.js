@@ -19,7 +19,10 @@ Template.registerHelper('knownConcepts', function() {
       _id: {
         $in: knownConceptIds
       },
-      type: "concept"
+      type: "concept",
+      isLanguage: {
+        $ne: true
+      }
     }).fetch();
     return knownConcepts;
   } else {

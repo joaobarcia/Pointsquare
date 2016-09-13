@@ -108,8 +108,7 @@ Meteor.publish("user",function(userId){
           profile: 1,
           goal: 1,
           nextUnit: 1,
-          works: 1,
-          languagesUserKnows: 1
+          works: 1
       }
     });
 });

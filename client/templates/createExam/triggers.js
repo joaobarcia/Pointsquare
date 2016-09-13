@@ -4,8 +4,10 @@ AutoForm.hooks({
 
             var examDefinitions = {}
             examDefinitions.type = 'exam';
-            examDefinitions.parameters = doc;
             examDefinitions.contains = doc.exercises;//exercisesMappedAsObject;
+            delete doc.exercises;
+            examDefinitions.parameters = doc;
+
 
             console.log(examDefinitions);
 

@@ -45,7 +45,6 @@ function applyDropdown() { // jquery was being called before the changes were pr
 };
 
 Template.createUnitContent.rendered = function() {
-    console.log("rendered!")
     if (Session.get('tempContent') == undefined) { // if session variable 'tempContent' does not exist, create one
         Session.set('tempContent', []);
     };
