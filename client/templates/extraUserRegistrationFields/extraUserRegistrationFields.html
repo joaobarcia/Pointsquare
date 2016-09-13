@@ -1,0 +1,47 @@
+<template name="extraUserRegistrationFields">
+  <!-- <div class="at-input inline field">
+    <div class="container">
+      <h5>Select the languages you know</h5>
+      {{#each language in availableLanguages}}
+        <p>
+          <input type="checkbox" id={{language._id}}>
+          <label for={{language._id}}>{{language.name}}</label>
+        </p>
+      {{/each}}
+    </div>
+  </div> -->
+
+  <div class="at-input">
+    <div class="container">
+      <!-- {{#each language in availableLanguages}}
+        {{language._id}}{{language.name}}
+      {{/each}} -->
+      <label for="{{_id}}">{{displayName}}</label>
+      <input id="at-field-{{_id}}" type="hidden">
+      <select id="{{_id}}" class="languages" multiple="multiple" style="width: 100%">
+        {{#each language in availableLanguages}}
+          {{#if language._id}}
+            {{#if language.name}}
+              <option value={{language._id}}>{{language.name}}</option>
+            {{else}}
+            {{/if}}
+          {{else}}
+          {{/if}}
+        {{/each}}
+        <!-- <option value="id">nome</option> -->
+      </select>
+    </div>
+  </div>
+
+</template>
+
+<template name="languages">
+    <div class="at-input">
+        <label for="{{_id}}">{{displayName}}</label>
+        <input id="at-field-{{_id}}" type="hidden">
+        <select id="{{_id}}" class="languages" multiple="multiple" style="width: 100%">
+            <option value="Afrikaans">Afrikaans</option>
+            <option value="Akan">Akan</option>
+        </select>
+    </div>
+</template>
