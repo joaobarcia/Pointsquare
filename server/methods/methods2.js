@@ -1694,6 +1694,14 @@ Meteor.methods({
 
   readyThreshold: function(){
     return READY;
+  },
+
+  changeStates: function(nodeIds,userId){
+    change_states(nodeIds,userId);
+  },
+
+  changeState: function(state,nodeId,userId){
+    change_state(state,nodeId,userId);
   }
 
 });
