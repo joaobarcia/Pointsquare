@@ -169,12 +169,12 @@ set_SS = function(value,node_id,user_id) {
     set_personal_property("state",value,node_id,user_id);
 };
 
-compute_state = function(node_id, user_id, update) {
+compute_state = function(node_id, user_id, update=false) {
     var node = Nodes.findOne(node_id);
     var type = node.type;
     if(type == "exam"){
         var contains = node.contains;
-        var norm = contains;
+        var norm = Object.keys(contains).length;
         var score = 0;
         var id;
         for(var i in contains) {
@@ -222,16 +222,20 @@ reset_user = function(user_id) {
     }
 };
 
-//sum of all the needed_by
+//sum of all the needed_by and contained_in
 find_forward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
         var node = Nodes.findOne(node_id);
-        if (node.type == "content") {
+        if (node.type == "content" || node.type == "exam") {
             continue;
         }
         var needed_by = node.needed_by;
         for (var id in needed_by) {
+          layer[id] = true;
+        }
+        var contained_in = node.contained_in;
+        for (var id in contained_in) {
           layer[id] = true;
         }
     }
@@ -937,7 +941,6 @@ edit_requirement = function(and_id,new_concepts){
 
 //adiciona um conjunto de requesitos conceptuais a um nodo já existente
 add_requirement = function(node_id, concepts){
-    //console.log("adding requirement");
     var node = Nodes.findOne(node_id);
     //criar o AND do conjunto
     var and_id = make_connector(concepts,"and");
@@ -1069,7 +1072,6 @@ forward_update = function(node_ids, user_id) {
             var state = update_state(node_id, user_id);
             //update_completion(node_id, user_id);
             var node = Nodes.findOne(node_id);
-            console.log(node_id+" , "+(node.name||node.type)+" was updated to "+state);
         }
         current_layer = next_layer;
     }
@@ -1091,13 +1093,13 @@ change_state = function(state,node_id,user_id){
 simulate = function(target, user_id) {
     var output_layer = target;
     var input_layer = find_micronodes(output_layer);
-    console.log("micronodes");
-    console.log(input_layer);
     //make sure everything is up to date
     forward_update(input_layer, user_id);
     //draw tree
     var tree = find_backward_tree(target);
-    //fill in state object
+    //get weights
+    var needs = {};
+    //and fill in state object
     var state = {};
     var locked = {};
     for (var order in tree) {
@@ -1105,6 +1107,10 @@ simulate = function(target, user_id) {
         for (var node_id in layer) {
             state[node_id] = get_state(node_id, user_id);
             locked[node_id] = is_locked(node_id, user_id);
+            var node = Nodes.findOne(node_id);
+            needs[node_id] = {};
+            needs[node_id]["weights"] = node.needs;
+            needs[node_id]["bias"] = node.bias;
         }
     }
     //compute maximum activations
@@ -1121,12 +1127,11 @@ simulate = function(target, user_id) {
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
         for (var node_id in layer) {
-            var node = Nodes.findOne(node_id);
-            var weights = node.needs;
+            var weights = needs[node_id].weights;
             if (Object.keys(weights).length == 0) {
                 continue;
             }
-            var arg = node.bias;
+            var arg = needs[node_id].bias;
             for (var subnode_id in weights) {
                 arg += weights[subnode_id] * max_state[subnode_id];
             }
@@ -1147,12 +1152,11 @@ simulate = function(target, user_id) {
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
         for (var node_id in layer) {
-            var node = Nodes.findOne(node_id);
-            var weights = node.needs;
+            var weights = needs[node_id].weights;
             if (Object.keys(weights).length == 0) {
                 continue;
             }
-            var arg = node.bias;
+            var arg = needs[node_id].bias;
             for (var subnode_id in weights) {
                 arg += weights[subnode_id] * min_state[subnode_id];
             }
@@ -1178,8 +1182,8 @@ simulate = function(target, user_id) {
     var max_error = 0;
     //update target micronode states
     for (var node_id in target) {
-        var node = Nodes.findOne(node_id);
-        if(Object.keys(node.needs).length == 0){
+        //var node = Nodes.findOne(node_id);
+        if(Object.keys(needs[node_id].weights).length == 0){
             state[node_id] = target[node_id];
         }
     }
@@ -1202,12 +1206,6 @@ simulate = function(target, user_id) {
     for (node_id in input_layer) {
         saved_input[node_id] = state[node_id];
     }
-    //console.log("target");
-    //console.log(target);
-    //console.log("first swipe error");
-    //console.log(error);
-    console.log("states:")
-    console.log(state);
     //begin subnetwork update
     while (max_error > TOLERANCE) {
         //reset bounds
@@ -1219,9 +1217,7 @@ simulate = function(target, user_id) {
         for (order in tree) {
             layer = tree[order];
             for (node_id in layer) {
-                node = Nodes.findOne(node_id);
-                console.log(node_id+" , "+(node.name||node.type)+" with an error of "+error[node_id]+" and state equal to "+state[node_id]+ " gives to");
-                weights = node.needs;
+                weights = needs[node_id].weights;
                 if (Object.keys(weights).length == 0) {
                     continue;
                 }
@@ -1230,14 +1226,9 @@ simulate = function(target, user_id) {
                     delta = error[node_id] * weight * state[node_id] * (1 - state[node_id]);
                     error[subnode_id] += locked[subnode_id]? cut_negative(delta): delta;
                     var subnode = Nodes.findOne(subnode_id);
-                    console.log(node_id+" , "+(subnode.name||subnode.type)+" an error contribution of "+(locked[subnode_id]? cut_negative(delta): delta));
                 }
             }
         }
-        console.log("state");
-        console.log(state);
-        console.log("error");
-        console.log(error);
         //forward propagation
         while (true) {
             //increment input states
@@ -1248,12 +1239,11 @@ simulate = function(target, user_id) {
             for (var order = tree.length - 2; order >= 0; order--) {
                 var layer = tree[order];
                 for (var node_id in layer) {
-                    var node = Nodes.findOne(node_id);
-                    var weights = node.needs;
+                    var weights = needs[node_id].weights;
                     if (Object.keys(weights).length == 0) {
                         continue;
                     }
-                    var arg = node.bias;
+                    var arg = needs[node_id].bias;
                     for (var subnode_id in weights) {
                         arg += weights[subnode_id] * state[subnode_id];
                     }
@@ -1271,12 +1261,10 @@ simulate = function(target, user_id) {
             var low = max_variation < MIN_VAR;
             //if it's OK, carry on
             if (!high && !low) {
-                //console.log("not high and not low");
                 break;
             }
             //if it's not OK, enhance step size and repeat
             else if (high) {
-                //console.log("high");
                 var max = RATE;
                 is_top_set = true;
                 upper_bound = RATE;
@@ -1288,8 +1276,6 @@ simulate = function(target, user_id) {
                 //continue;
                 //if it's both high and low treat as if it were just high
             } else if (low) {
-                //console.log("low and not high");
-                //console.log(RATE);
                 var min = RATE;
                 is_bottom_set = true;
                 lower_bound = RATE;
@@ -1314,18 +1300,23 @@ simulate = function(target, user_id) {
             saved_input[node_id] = state[node_id];
         }
     }
-    console.log("end of subnetwork update");
     //end of subnetwork update
     tree = find_forward_tree(input_layer);
     for (var order = 1; order < tree.length; order++) {
         var layer = tree[order];
         for (var node_id in layer) {
-            var node = Nodes.findOne(node_id);
-            var weights = node.needs;
+            var wnb = needs[node_id];
+            if(typeof wnb === "undefined"){
+              var node = Nodes.findOne(node_id);
+              needs[node_id] = {};
+              needs[node_id].weights = node.needs;
+              needs[node_id].bias = node.bias;
+            }
+            var weights = needs[node_id].weights;
+            var arg = needs[node_id].bias;
             if (Object.keys(weights).length == 0) {
                 continue;
             }
-            var arg = node.bias;
             for (var subnode_id in weights) {
                 arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
             }
