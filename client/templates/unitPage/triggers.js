@@ -86,10 +86,14 @@ Template.unitPage.onCreated(function() {
       return null
     };
   });
+  precompute(FlowRouter.getParam('nodeId'));
 
+};
+
+var precompute = function(nodeId){
   Session.set("precalculation", "waiting");
   if (Meteor.userId()) {
-    Meteor.call("precompute", FlowRouter.getParam('nodeId'), Meteor.userId(), function(e, r) {
+    Meteor.call("precompute", nodeId, Meteor.userId(), function(e, r) {
       Session.set("precalculation", r);
       if (Session.get("outcome") == "success") {
         succeedUnit();

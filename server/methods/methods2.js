@@ -1586,16 +1586,18 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
             var node = Nodes.findOne(id);
             var state = get_state(id,user_id);
             if(node.type == "content" && state > READY && typeof not_in[id] === "undefined"){
-                /*var target = {};
+                var target = {};
                 target[id] = true;
                 for(var granted_id in node.grants){ target[granted_id] = true; }
                 var simulation = simulate(target,user_id);
                 for(var altered_id in simulation){
                     var change = simulation[altered_id] - get_state(altered_id,user_id);
                     var is_in_bush = ids[altered_id];
-                    if(change > 0.1 && is_in_bush){ return altered_id; }
-                }*/
-                return id;
+                    if(change > 0.1 && is_in_bush){
+                      return id;
+                    }
+                }
+                //return id;
             }
         }
     }
@@ -1696,6 +1698,14 @@ Meteor.methods({
   },
 
   setGoal: function(node_id, user_id, not_in = {}){
+      /*var goalNode = Nodes.findOne(node_id);
+      var goalType = goalNode.type;
+      if(goalType == "exam"){
+        var goal = node.contains;
+      }
+      else{
+        var goal = {}; goal[node_id] = true;
+      }*/
       var goal = {}; goal[node_id] = true;
       var unit = find_useful_content(goal,user_id,not_in);
       if(unit !== null && typeof unit !== "undefined"){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
