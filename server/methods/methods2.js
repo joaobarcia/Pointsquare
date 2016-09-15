@@ -174,7 +174,7 @@ compute_state = function(node_id, user_id, update=false) {
     var type = node.type;
     if(type == "exam"){
         var contains = node.contains;
-        var norm = Object.keys(contains).length;
+        var norm = contains.length;
         var score = 0;
         var id;
         for(var i in contains) {
@@ -227,9 +227,6 @@ find_forward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
         var node = Nodes.findOne(node_id);
-        if (node.type == "content" || node.type == "exam") {
-            continue;
-        }
         var needed_by = node.needed_by;
         for (var id in needed_by) {
           layer[id] = true;
@@ -1097,10 +1094,11 @@ simulate = function(target, user_id) {
     forward_update(input_layer, user_id);
     //draw tree
     var tree = find_backward_tree(target);
-    //get weights
-    var needs = {};
-    //and fill in state object
+    //get weights, types and states
     var state = {};
+    var needs = {};
+    var type = {};
+    var contains = {};
     var locked = {};
     for (var order in tree) {
         var layer = tree[order];
@@ -1111,6 +1109,8 @@ simulate = function(target, user_id) {
             needs[node_id] = {};
             needs[node_id]["weights"] = node.needs;
             needs[node_id]["bias"] = node.bias;
+            type[node_id] = node.type;
+            contains[node_id] = node.contains;
         }
     }
     //compute maximum activations
@@ -1305,22 +1305,36 @@ simulate = function(target, user_id) {
     for (var order = 1; order < tree.length; order++) {
         var layer = tree[order];
         for (var node_id in layer) {
-            var wnb = needs[node_id];
-            if(typeof wnb === "undefined"){
+            if(typeof state[node_id] === "undefined"){
               var node = Nodes.findOne(node_id);
               needs[node_id] = {};
               needs[node_id].weights = node.needs;
               needs[node_id].bias = node.bias;
+              type[node_id] = node.type;
+              contains[node_id] = node.contains;
             }
-            var weights = needs[node_id].weights;
-            var arg = needs[node_id].bias;
-            if (Object.keys(weights).length == 0) {
-                continue;
+            if(type[node_id] == "exam"){
+              var exercises = contains[node_id];
+              var norm = contains.length;
+              var score = 0;
+              var id;
+              for(var i in exercises) {
+                id = exercises[i];
+                score += get_state(id, user_id);
+              }
+              state[node_id] = score / norm;
             }
-            for (var subnode_id in weights) {
-                arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
+            else{
+              var weights = needs[node_id].weights;
+              var arg = needs[node_id].bias;
+              if (Object.keys(weights).length == 0) {
+                  continue;
+              }
+              for (var subnode_id in weights) {
+                  arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
+              }
+              state[node_id] = sigmoid(arg);
             }
-            state[node_id] = sigmoid(arg);
         }
     }
     return state;
