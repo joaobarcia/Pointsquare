@@ -1,3 +1,17 @@
+function precompute(nodeId) {
+  Session.set("precalculation", "waiting");
+  if (Meteor.userId()) {
+    Meteor.call("precompute", nodeId, Meteor.userId(), function(e, r) {
+      Session.set("precalculation", r);
+      if (Session.get("outcome") == "success") {
+        succeedUnit();
+      } else if (Session.get("outcome") == "failure") {
+        failUnit();
+      }
+    });
+  };
+};
+
 function resetQuestionFeedback() {
   // reset radio button elements
   $(":radio").prop("checked", false);
@@ -24,9 +38,10 @@ function succeedUnit() {
           Session.set('isLoading', false);
           delete Session.keys["outcome"];
           delete Session.keys["precalculation"];
+          precompute(FlowRouter.getParam('nodeId'));
         });
       } else {
-        FlowRouter.go('dashboard');
+        FlowRouter.go('/dashboard');
         Session.set('isLoading', false);
         delete Session.keys["outcome"];
         delete Session.keys["precalculation"];
@@ -58,8 +73,9 @@ function failUnit() {
         Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
           if (r) {
             FlowRouter.go("/content/" + r);
+            precompute(FlowRouter.getParam('nodeId'));
           } else {
-            FlowRouter.go("goalPage");
+            FlowRouter.go("/dashboard");
           }
           //FlowRouter.go('goalPage');
         });
@@ -77,6 +93,7 @@ function failUnit() {
 };
 
 Template.unitPage.onCreated(function() {
+  precompute(FlowRouter.getParam('nodeId'));
   var nodeId = FlowRouter.getParam('nodeId');
   Meteor.call("getNeeds", nodeId, function(e, r) {
     if (typeof r !== "undefined") {
@@ -86,25 +103,7 @@ Template.unitPage.onCreated(function() {
       return null
     };
   });
-  precompute(FlowRouter.getParam('nodeId'));
-
-};
-
-var precompute = function(nodeId){
-  Session.set("precalculation", "waiting");
-  if (Meteor.userId()) {
-    Meteor.call("precompute", nodeId, Meteor.userId(), function(e, r) {
-      Session.set("precalculation", r);
-      if (Session.get("outcome") == "success") {
-        succeedUnit();
-      } else if (Session.get("outcome") == "failure") {
-        failUnit();
-      }
-    });
-  };
 });
-
-
 
 Template.unitPage.onRendered(function() {
   this.autorun(() => {
