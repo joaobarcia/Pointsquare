@@ -1662,7 +1662,14 @@ Meteor.methods({
   },
 
   resetUser: function(userID) {
+    var knownLanguages = {};
+    var languages = Nodes.find({isLanguage:true}).fetch();
+    for(var i in languages){
+      var id = languages[i]._id;
+      knownLanguages[id] = get_state(id,userID);
+    }
     reset_user(userID);
+    change_states(knownLanguages,userID);
     var goalId = Meteor.users.findOne(userID).goal;
     if(goalId){
       var goal = {}; goal[goalId] = true;
