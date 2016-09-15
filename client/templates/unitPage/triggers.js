@@ -34,6 +34,7 @@ function succeedUnit() {
       var goalId = Meteor.user().goal;
       if (goalId) {
         Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
+          resetQuestionFeedback();
           FlowRouter.go('/content/' + Meteor.user().nextUnit);
           Session.set('isLoading', false);
           delete Session.keys["outcome"];
@@ -46,7 +47,6 @@ function succeedUnit() {
         delete Session.keys["outcome"];
         delete Session.keys["precalculation"];
       }
-      resetQuestionFeedback();
     });
   }
   Session.set("triedUnits", {});
@@ -73,6 +73,7 @@ function failUnit() {
         Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
           if (r) {
             FlowRouter.go("/content/" + r);
+            resetQuestionFeedback();
             precompute(FlowRouter.getParam('nodeId'));
           } else {
             FlowRouter.go("/dashboard");
@@ -88,7 +89,6 @@ function failUnit() {
       delete Session.keys["precalculation"];
     });
   };
-  resetQuestionFeedback();
   Session.set("triedUnits", {});
 };
 
