@@ -30,14 +30,15 @@ Template.examPage.onRendered(function() {
                 delay: 20
             });
             examExercisesAsSession();
+            Session.set("displayExamResults", false);
         }
     });
 });
 
 Template.examPage.events({
-    'submit .exerciseStringForm': function(event) {
-        event.preventDefault();
-    },
+    // 'submit .exerciseStringForm': function(event) {
+    //     event.preventDefault();
+    // },
     'change .exerciseStringForm': function(event) {
         event.preventDefault();
         var answerIsCorrect = null;
@@ -60,10 +61,6 @@ Template.examPage.events({
         }
     },
     'change .trueRadioButton': function(event, template) {
-        // $(".trueRadioButton").prop('disabled', 'disabled');
-        // $(".falseRadioButton").prop('disabled', 'disabled');
-        // $(".trueRadioButtonLabel").addClass("green-text");
-        // $(".falseRadioButtonLabel").addClass("red-text");
         if (Meteor.userId()) {
             var unitId = $(event.currentTarget).attr("unit_id");
             succeedUnitInExam(unitId);
@@ -71,10 +68,6 @@ Template.examPage.events({
     },
 
     'change .falseRadioButton': function(event) {
-        // $(".trueRadioButton").prop('disabled', 'disabled');
-        // $(".falseRadioButton").prop('disabled', 'disabled');
-        // $(".trueRadioButtonLabel").addClass("green-text");
-        // $(".falseRadioButtonLabel").addClass("red-text");
         if (Meteor.userId()) {
             var unitId = $(event.currentTarget).attr("unit_id");
             failUnitInExam(unitId);
@@ -102,6 +95,9 @@ Template.examPage.events({
         // FEEDBACK ON STRING EXERCISES
         $(".exerciseStringForm:not(.true_string)").addClass("red-text").attr("disabled", "disabled");
         $(".exerciseStringForm .true_string").addClass("green-text").attr("disabled", "disabled");
+
+        // SHOW PROGRESS AND PROPOSE GOAL
+        Session.set("displayExamResults", true);
 
         // CALL LEARNING METHODS
         if (Meteor.userId()) {
