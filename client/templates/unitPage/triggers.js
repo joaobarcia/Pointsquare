@@ -1,6 +1,10 @@
 function resetQuestionFeedback() {
-  $(".trueRadioButton").removeProp('disabled').removeClass("green-text");
-  $(".falseRadioButton").removeProp('disabled').removeClass("red-text");
+  // reset radio button elements
+  $(":radio").prop("checked", false);
+  $(".trueRadioButton").prop('disabled', false)
+  $(".trueRadioButtonLabel").removeClass("green-text");
+  $(".falseRadioButton").prop('disabled', false)
+  $(".falseRadioButtonLabel").removeClass("red-text");
 };
 
 function succeedUnit() {
@@ -67,7 +71,8 @@ function failUnit() {
       delete Session.keys["outcome"];
       delete Session.keys["precalculation"];
     });
-  }
+  };
+  resetQuestionFeedback();
   Session.set("triedUnits", {});
 };
 
