@@ -4,6 +4,7 @@
       <div class="nav-wrapper grey lighten-2">
         <div class="row">
           <div class="col s3">
+
             {{#unless goalIsCompleted}}
               <a class="waves-effect waves-light btn-flat red-text" id="remove_goal">
                 <i class="material-icons left">delete</i>reset goal</a>
@@ -12,12 +13,24 @@
           <div class="col s6">
             <h4 class="center-align black-text">
               {{#if goalIsCompleted}}
-                You have successfully learned
+                {{#if goalTypeIs 'concept'}}
+                  You have successfully learned
+                  <strong>{{goalName}}</strong>
+                {{/if}}
+                {{#if goalTypeIs 'content'}}
+                  Great! You are now ready to do
+                  <a href="/{{goalType}}/{{goalId}}" class="blue-text">{{goalName}}</a>
+                {{/if}}
+                {{#if goalTypeIs 'exam'}}
+                  Great! You are now ready to do
+                  <a href="/{{goalType}}/{{goalId}}" class="blue-text">{{goalName}}</a>
+                {{/if}}
               {{else}}
                 Studying for
+                <strong>{{goalName}}</strong>
               {{/if}}
-              <!-- <a href="/{{goalType}}/{{goalId}}" class="blue-text">{{goalName}}</a> -->
-              <strong>{{goalName}}</strong>
+              <!--  -->
+
             </h4>
           </div>
           <div class="col s3">
