@@ -107,9 +107,9 @@
 </template>
 <template name="exerciseRadioButton">
   {{#mathjax}}
-      <p class="section center-align">
-          {{#markdown}}{{question}}{{/markdown}}
-      </p>
+
+          {{#markdown}}<p class="section center-align">{{question}}</p>{{/markdown}}
+
   {{/mathjax}}
   <form id="exerciseRadioButtonForm" action="#">
     {{#if currentUser}}
