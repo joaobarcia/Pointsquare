@@ -452,7 +452,7 @@ testing_unit = function(concept_id,user_id){
             var node = Nodes.findOne(id);
             var type = node.type;
             var state = get_state(id,user_id);
-            if(node.isUnitFromModule){ continue; } //ALTERAR ESTA LINHA PARA SUGERIR O EXAME EM VEZ DE DESCARTAR
+            if(node.isUnitFromModule){ continue; } //ALT1: ALTERAR ESTA LINHA PARA SUGERIR O EXAME EM VEZ DE DESCARTAR
             if(node.type == "content" && state > READY){
                 var simulation = precompute(id,user_id);
                 var success_variation = simulation.success[concept_id] - concept_state;
@@ -1373,7 +1373,7 @@ simulate = function(target, user_id) {
             }
             if(type[node_id] == "exam"){
               var exercises = contains[node_id];
-              var norm = contains.length;
+              var norm = exercises.length;
               var score = 0;
               var id;
               for(var i in exercises) {
@@ -1663,12 +1663,10 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
     var bush = find.bush;
     var ids = find["ids"];
     var loose = find.loose;
-    console.log(loose);
     for(var id in loose){
         if(loose[id]){
           //find two units to test this concept in success and in failure
           tests = testing_unit(id,user_id);
-          console.log(tests);
         }
     }
     for(var n in bush){
@@ -1809,22 +1807,11 @@ Meteor.methods({
 
   submitExam: function(answers,user_id){
       for(var id in answers){
+          var result = precompute(id,user_id);
           if(answers[id]){
-            var target = {};
-            target[id] = true;
-            var grants = Nodes.findOne(id).grants;
-            if(grants){
-              for(var id in grants){
-                target[id] = true;
-              }
-            }
-            var result = simulate(target,user_id);
             succeed(result,user_id);
           }
           else{
-            var target = {};
-            target[id] = false;
-            var result = simulate(target,user_id);
             fail(result,user_id);
           }
       }
