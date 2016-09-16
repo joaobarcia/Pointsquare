@@ -5,7 +5,7 @@
               <h4>Editing
                 <a href="../{{_id}}">{{name}}</a>
               </h4>
-                {{#autoForm schema=examEditSchema id="editExam" resetOnSuccess=false}}
+                {{#autoForm schema=examEditSchema id="examEdit" resetOnSuccess=false}}
                     <fieldset>
                         <div class="card dropdown-overflow">
                             <div class="section">
@@ -28,7 +28,7 @@
                                 {{> smallLoading}}
                             {{else}}
                                 <button type="submit" class="btn btn-primary btn-large">Submit</button>
-                                {{!-- <button href="#" class="btn btn-default btn-large disabled">Preview</button> --}}
+                                <button id="deleteExam" class="btn btn-primary btn-large red">Delete</button>
                             {{/if}}
                         </div>
                     </fieldset>

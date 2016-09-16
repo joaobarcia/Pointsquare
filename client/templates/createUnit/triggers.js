@@ -45,11 +45,11 @@ function applyDropdown() { // jquery was being called before the changes were pr
 };
 
 Template.createUnitContent.rendered = function() {
-    console.log("rendered!")
     if (Session.get('tempContent') == undefined) { // if session variable 'tempContent' does not exist, create one
         Session.set('tempContent', []);
     };
 
+    console.log('rendered');
     //applySort(); // apply once the template is loaded
     applyDropdown();
     Tracker.autorun(function() { // apply on every change of Session.get('tempContent')
@@ -178,13 +178,13 @@ AutoForm.hooks({
                 }
                 doc.grants = grantsMappedAsObject;
             };
-            delete doc.grants;
 
             var unitDefinitions = {};
             unitDefinitions.type = 'content';
             unitDefinitions.parameters = doc;
             unitDefinitions.needs = needsWithLanguage;
             unitDefinitions.grants = grantsMappedAsObject;
+            Session.set('tempContent', []);
 
             console.log(unitDefinitions);
 

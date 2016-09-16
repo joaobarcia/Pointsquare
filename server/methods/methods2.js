@@ -1,5 +1,4 @@
 //math functions
-
 sigmoid = function(x) {
     return 1.0 / (1 + Math.exp(-x));
 };
@@ -16,9 +15,10 @@ cut_negative = function(x) {
     return x >= 0 ? x : 0;
 };
 
-ARG_READY = 2.5;
-ARG_NOT_READY = -5;
-WIDTH = ARG_READY - ARG_NOT_READY;
+//ARG_READY = 2.5;
+//ARG_NOT_READY = -5;
+WIDTH = 10;//ARG_READY - ARG_NOT_READY;
+DEFAULT_BIAS = -WIDTH/2;
 
 var RATE = 0.1;
 var ADJUSTMENT = 2.;
@@ -26,6 +26,9 @@ var MAX_STEPS = 10000;
 var MIN_STEPS = 100;
 var TOLERANCE = 0.01;
 
+var SOLIDITY_TOLERANCE = 0.09;
+READY = 0.5;
+NOT_READY = 0.5;
 
 is_in_array = function(array,value){
     return array.indexOf(value) > 0;
@@ -51,11 +54,11 @@ replace_ocurrences_in_array = function(array,old_value,new_value){
 compute_weights = function(concepts,operator) {
     var weights = {};
     if(Object.keys(concepts).length == 0) {
-        var bias = ARG_READY;
+        var bias = -DEFAULT_BIAS;//ARG_READY;
     }
     //aceso se qualquer um dos requesitos estiver activado
     else if(operator == "or"){
-        var bias = ARG_NOT_READY;
+        var bias = DEFAULT_BIAS;//ARG_NOT_READY;
         for (var id in concepts) {
             weights[id] = WIDTH;
         }
@@ -63,28 +66,28 @@ compute_weights = function(concepts,operator) {
     //aceso se todos os requesitos estiverem activados
     else if(operator == "and"){
         //definição estricta
-        /*var bias = ARG_READY - WIDTH*Object.keys(concepts).length;
+        var bias = -DEFAULT_BIAS*(1-2*Object.keys(concepts).length);//ARG_READY - WIDTH*Object.keys(concepts).length;
         for (var id in concepts) {
-            set[id] = WIDTH;
-        }*/
+            weights[id] = WIDTH;
+        }
         //definição relaxada
-        var bias = ARG_NOT_READY;
+        /*var bias = BIAS;//ARG_NOT_READY;
         for (var id in concepts) {
             weights[id] = WIDTH/Object.keys(concepts).length;
-        }
+        }*/
     }
     //aceso se todos os requesitos menos um estiverem activados
     else if(operator == "parand"){
         //definição estricta
-        /*var bias = ARG_READY - WIDTH*(Object.keys(concepts).length-1);
+        var bias = -DEFAULT_BIAS*(3-2*Object.keys(concepts).length);//ARG_READY - WIDTH*(Object.keys(concepts).length-1);
         for (var id in concepts) {
-            set[id] = WIDTH;
-        }*/
+            weights[id] = WIDTH;
+        }
         //definição relaxada
-        var bias = ARG_NOT_READY;
+        /*var bias = ARG_NOT_READY;
         for (var id in concepts) {
             weights[id] = WIDTH/(Object.keys(concepts).length-1);
-        }
+        }*/
     }
     return {
         weights: weights,
@@ -130,16 +133,16 @@ set_state = function(value,node_id,user_id) {
     return set_personal_property("state",value,node_id,user_id);
 };
 
-get_state = function(value,node_id,user_id) {
-    return get_personal_property("state",0,value,node_id,user_id);
+get_state = function(node_id,user_id) {
+    return get_personal_property("state",0,node_id,user_id);
 };
 
 set_solidity = function(value,node_id,user_id) {
     return set_personal_property("solidity",value,node_id,user_id);
 };
 
-get_solidity = function(value,node_id,user_id) {
-    return get_personal_property("solidity",0,value,node_id,user_id);
+get_solidity = function(node_id,user_id) {
+    return get_personal_property("solidity",0,node_id,user_id);
 };
 
 lock_state = function(node_id,user_id) {
@@ -166,12 +169,12 @@ set_SS = function(value,node_id,user_id) {
     set_personal_property("state",value,node_id,user_id);
 };
 
-compute_state = function(node_id, user_id, update) {
+compute_state = function(node_id, user_id, update=false) {
     var node = Nodes.findOne(node_id);
     var type = node.type;
     if(type == "exam"){
         var contains = node.contains;
-        var norm = contains;
+        var norm = contains.length;
         var score = 0;
         var id;
         for(var i in contains) {
@@ -219,16 +222,17 @@ reset_user = function(user_id) {
     }
 };
 
-//sum of all the needed_by
+//todos os nodos acessíveis por um grau de needed_by ou contained_in
 find_forward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
         var node = Nodes.findOne(node_id);
-        if (node.type == "content") {
-            continue;
-        }
         var needed_by = node.needed_by;
         for (var id in needed_by) {
+          layer[id] = true;
+        }
+        var contained_in = node.contained_in;
+        for (var id in contained_in) {
           layer[id] = true;
         }
     }
@@ -285,12 +289,18 @@ find_full_forward_tree = function(node_ids) {
     return tree;
 };
 
+//todos os nodos acessíveis por needs ou contains
 find_backward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
         var node = Nodes.findOne(node_id);
         var weights = node.needs;
         for (var id in weights) {
+            layer[id] = true;
+        }
+        var contains = node.contains;
+        for (var i in contains) {
+            var id = contains[i];
             layer[id] = true;
         }
     }
@@ -360,14 +370,14 @@ find_missing_subtree = function(node_ids,user_id) {
             if( type == "content" && !(node_id in bag) ){
                 tree[tree.length-1][node_id] = state;
                 bag[node_id] = true;
-                if( state < 0.9 ){ to_keep[node_id] = true; }
+                if( state < READY ){ to_keep[node_id] = true; }
             }
-            else if( type == "concept" && state < 0.9 && !(node_id in bag) ){
+            else if( type == "concept" && state < READY && !(node_id in bag) ){
                 tree[tree.length-1][node_id] = state;
                 bag[node_id] = true;
                 to_keep[node_id] = true;
             }
-            else if( ( type == "and" || type == "or" || type == "parand" ) && state < 0.9 && !(node_id in bag) ){
+            else if( ( type == "and" || type == "or" || type == "parand" ) && state < READY && !(node_id in bag) ){
                 //tree[tree.length-1][node_id] = state;
                 bag[node_id] = true;
                 to_keep[node_id] = true;
@@ -379,6 +389,7 @@ find_missing_subtree = function(node_ids,user_id) {
     return tree;
 };
 
+//retorna todos os nodos acessíveis por um grau de needs, needed_by, contained_in ou contains
 find_adjacent_nodes = function(node_ids){
     var adjacent_nodes = {};
     var backward_layer = find_backward_layer(node_ids);
@@ -412,6 +423,57 @@ find_wake_orb = function(node_ids){
     return orb;
 }
 
+find_adjacent_layer = function(node_ids){
+    var layer = {};
+    var forward_layer = find_forward_layer(node_ids);
+    for(var id in forward_layer){ layer[id] = true; }
+    var backward_layer = find_backward_layer(node_ids);
+    for(var id in backward_layer){ layer[id] = true; }
+    return layer;
+}
+
+//retorna a primeira unidade que testa um determinado conceito
+testing_unit = function(concept_id,user_id){
+    var tests = {};
+    var layer = {}; layer[concept_id] = true;
+    var visited = {}; visited[concept_id] = true;
+    var found_success = false;
+    var found_failure = false;
+    var concept_state = get_state(concept_id,user_id);
+    while( Object.keys(layer).length > 0 ){
+        layer = find_adjacent_layer(layer);
+        for(var id in layer){
+            //retirar se já tiver sido visitado
+            if(visited[id]){
+              delete layer[id];
+              continue;
+            }
+            visited[id] = true;
+            var node = Nodes.findOne(id);
+            var type = node.type;
+            var state = get_state(id,user_id);
+            if(node.isUnitFromModule){ continue; } //ALTERAR ESTA LINHA PARA SUGERIR O EXAME EM VEZ DE DESCARTAR
+            if(node.type == "content" && state > READY){
+                var simulation = precompute(id,user_id);
+                var success_variation = simulation.success[concept_id] - concept_state;
+                var failure_variation = simulation.failure[concept_id] - concept_state;
+                if(Math.abs(success_variation) > SOLIDITY_TOLERANCE){
+                  tests.success = id;
+                  found_success = true;
+                }
+                if(Math.abs(failure_variation) > SOLIDITY_TOLERANCE){
+                  tests.failure = id;
+                  found_failure = true;
+                }
+                if( found_success&&found_failure ){
+                    return tests;
+                }
+            }
+        }
+    }
+    return tests;
+}
+
 //creation functions
 create_content = function(parameters) {
     var id = Nodes.insert({
@@ -421,6 +483,8 @@ create_content = function(parameters) {
         description: "",
         content: [],
         needs: {},
+        requirements: {},
+        language: null,
         grants: {},
         contained_in: {},
         authors: {},
@@ -454,6 +518,7 @@ create_concept = function(parameters) {
         granted_by: {},
         needed_by: {},
         needs: {},
+        requirements: {},
         authors: {}
     });
     if (!_.isEmpty(parameters)) {
@@ -628,7 +693,7 @@ edit_contains = function(exam_id,new_contains){
       id = old_contains[i];
       if(!is_in_array(new_contains,id)){
         contained_in = Nodes.findOne(id).contained_in;
-        delete contained_in[id];
+        delete contained_in[exam_id];
         Nodes.update({
             _id: id
         }, {
@@ -639,7 +704,7 @@ edit_contains = function(exam_id,new_contains){
     for(var i in new_contains){
       id = new_contains[i];
       var contained_in = Nodes.findOne(id).contained_in;
-      contained_in[id] = i;
+      contained_in[exam_id] = i;
       Nodes.update({
           _id: id
       }, {
@@ -648,6 +713,11 @@ edit_contains = function(exam_id,new_contains){
     }
     Nodes.update({_id: exam_id},{ $set: {contains: new_contains} });
 };
+
+remove_exam = function(exam_id){
+    edit_contains(exam_id,[]);
+    Nodes.remove(exam_id);
+}
 
 //cria as ligações aos subnodos
 make_connector = function(subnodes,operator){
@@ -689,14 +759,14 @@ add_needs = function(node_id,needs){
         return "error";//ERROR
     }
     else if(type == "concept"){
-        //criar porta OR que agrupe os diferentes ANDs dos pré-requesitos
+        //o próprio nodo de conceito é uma porta OR que agrupa os diferentes ANDs dos pré-requesitos
         var subands = {};
         for(var i = 0; i < needs.concepts.length; i++){
-            var id = make_connector(needs.concepts[i],"and");
-            subands[id] = true;
-            var needed_by = Nodes.findOne(id).needed_by;
+            var and_id = make_connector(needs.concepts[i],"and");
+            subands[and_id] = true;
+            var needed_by = Nodes.findOne(and_id).needed_by;
             needed_by[node_id] = true;
-            Nodes.update({_id:id},{$set:
+            Nodes.update({_id:and_id},{$set:
               {needed_by: needed_by}
             });
         }
@@ -801,7 +871,7 @@ remove_node = function(node_id){
         for(var id in needed_by){
             other = Nodes.findOne(id).needs;
             delete other[node_id];
-            Nodes.update({_id: node_id},{$set:
+            Nodes.update({_id: id},{$set:
               {needs: other}
             });
         }
@@ -821,7 +891,8 @@ change_language_requisite = function(content_id,new_language_id){
     //requesitos actuais (um para língua e um para OR)
     var needs = content.needs;
     //tratar da língua anterior
-    var old_language_id = content.language;
+    var needs_info = get_needs(content_id);
+    var old_language_id = needs_info.language;
     var needed_language = old_language_id != null;
     //se havia já um pré-requesito linguístico
     if(needed_language){
@@ -849,8 +920,7 @@ change_language_requisite = function(content_id,new_language_id){
     var sublinks = compute_weights(needs,"and");
     Nodes.update({_id:content_id},{$set:{
       needs: sublinks.weights,
-      bias: sublinks.bias,
-      language: new_language_id
+      bias: sublinks.bias
     }});
 }
 //A-OK
@@ -915,6 +985,7 @@ edit_requirement = function(and_id,new_concepts){
         var or_is_empty = Object.keys(needs).length == 0;
         var is_an_or_gate = node.type == "or";
         if(or_is_empty && is_an_or_gate){
+          Nodes.update(Object.keys(node.needed_by)[0],{$set: {requirements:null}});
           remove_node(node_id);
           return true;
         }
@@ -931,16 +1002,20 @@ add_requirement = function(node_id, concepts){
     var and = Nodes.findOne(and_id);
     //se for um conteúdo o nodo a que queremos adicionar este conjunto é o seu subnodo OR
     var is_content = node.type == "content";
+    var needs_info = get_needs(node_id);
+    var has_sets = Object.keys(needs_info.sets).length;
+    var has_language = needs_info.language != null;
     if(is_content){
-        var or_id = node.requirements;
-        var needs = {};
+        var needs;
+        var or_id;
         //se o conteúdo ainda não tiver um OR criá-lo
-        if(or_id == null){
+        if(!has_sets){
+          needs = {};
           needs[and_id] = true;
-          var or_id = make_connector(needs,"or");
-          Nodes.update({_id: node_id}, {$set:{ requirements: or_id }});
+          or_id = make_connector(needs,"or");
         }
         else{
+          or_id = Object.keys(Nodes.findOne(Object.keys(needs_info.sets)[0]).needed_by)[0];
           var or = Nodes.findOne(or_id);
           //pegar nos diversos ANDs de requesitos
           needs = or.needs;
@@ -951,9 +1026,9 @@ add_requirement = function(node_id, concepts){
           needs = weights.weights;
           var bias = weights.bias;
           Nodes.update({_id: or_id},{$set:{needs:needs,bias:bias}});
+          //fazer a referência ao OR no AND
+          add_to_field(and_id,"needed_by",or_id,true);
         }
-        //fazer a referência ao OR no AND
-        add_to_field(and_id,"needed_by",or_id,true);
     }
     else{
         //pegar nos diversos ANDs de requesitos
@@ -965,22 +1040,27 @@ add_requirement = function(node_id, concepts){
         needs = weights.weights;
         var bias = weights.bias;
         Nodes.update({_id:node_id},{$set:{needs:needs,bias:bias}});
+        add_to_field(and_id,"needed_by",node_id,true);
     }
 }
+//A-OK!
 
 //função que retorna um objecto com a informação dos requesitos linguísticos e conceptuais
 get_needs = function(node_id){
     var info = {};
     var node = Nodes.findOne(node_id);
-    if(node.type == "content"){ info["language"] = node.language; }
-    if(typeof node.requirements !== undefined){ info["sets"] = null; }
-    else{
-      var set_ids = node.type == "concept"? node.needs : Nodes.findOne(node.requirements).needs;//adicionar uma RESSALVA para o caso do nodo ser um operador
-      for(var id in set_ids){
-          set_ids[id] = Nodes.findOne(id).needs;
-      }
-      info["sets"] = set_ids;
+    var or_id = node_id;
+    for(var id in node.needs){
+      var subnode = Nodes.findOne(id);
+      if(subnode.isLanguage){ info["language"] = node.language; }
+      else if(subnode.type == "or"){ or_id = id; }
     }
+    var or = Nodes.findOne(or_id);
+    var set_ids = or.needs;
+    for(var id in set_ids){
+        set_ids[id] = Nodes.findOne(id).needs;
+    }
+    info["sets"] = set_ids;
     return info;
 }
 //A-OK
@@ -1026,6 +1106,15 @@ find_micronodes = function(node_ids) {
     return micronodes;
 };
 
+down_search = function(node_ids){
+    var tree = node_ids;
+    for(var id in tree){
+        var needs = Nodes.findOne(id).needs;
+        tree[id] = down_search(needs);
+    }
+    return tree;
+};
+
 //update forward tree
 forward_update = function(node_ids, user_id) {
     var current_layer = node_ids;
@@ -1035,11 +1124,24 @@ forward_update = function(node_ids, user_id) {
             break;
         }
         for (var node_id in next_layer) {
-            update_state(node_id, user_id);
+            var state = update_state(node_id, user_id);
             //update_completion(node_id, user_id);
+            var node = Nodes.findOne(node_id);
         }
         current_layer = next_layer;
     }
+};
+
+change_states = function(state,user_id){
+    for(var id in state){
+        set_state(state[id],id,user_id);
+    }
+    forward_update(state,user_id);
+};
+
+change_state = function(state,node_id,user_id){
+    var states = {}; states[node_id] = state;
+    change_states(states,user_id);
 };
 
 //retorna os estados necessários dos nodos afectados pelas alterações
@@ -1050,14 +1152,23 @@ simulate = function(target, user_id) {
     forward_update(input_layer, user_id);
     //draw tree
     var tree = find_backward_tree(target);
-    //fill in state object
+    //get weights, types and states
     var state = {};
+    var needs = {};
+    var type = {};
+    var contains = {};
     var locked = {};
     for (var order in tree) {
         var layer = tree[order];
         for (var node_id in layer) {
             state[node_id] = get_state(node_id, user_id);
             locked[node_id] = is_locked(node_id, user_id);
+            var node = Nodes.findOne(node_id);
+            needs[node_id] = {};
+            needs[node_id]["weights"] = node.needs;
+            needs[node_id]["bias"] = node.bias;
+            type[node_id] = node.type;
+            contains[node_id] = node.contains;
         }
     }
     //compute maximum activations
@@ -1074,12 +1185,11 @@ simulate = function(target, user_id) {
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
         for (var node_id in layer) {
-            var node = Nodes.findOne(node_id);
-            var weights = node.needs;
+            var weights = needs[node_id].weights;
             if (Object.keys(weights).length == 0) {
                 continue;
             }
-            var arg = node.bias;
+            var arg = needs[node_id].bias;
             for (var subnode_id in weights) {
                 arg += weights[subnode_id] * max_state[subnode_id];
             }
@@ -1100,12 +1210,11 @@ simulate = function(target, user_id) {
     for (var order = tree.length - 2; order >= 0; order--) {
         var layer = tree[order];
         for (var node_id in layer) {
-            var node = Nodes.findOne(node_id);
-            var weights = node.needs;
+            var weights = needs[node_id].weights;
             if (Object.keys(weights).length == 0) {
                 continue;
             }
-            var arg = node.bias;
+            var arg = needs[node_id].bias;
             for (var subnode_id in weights) {
                 arg += weights[subnode_id] * min_state[subnode_id];
             }
@@ -1131,8 +1240,8 @@ simulate = function(target, user_id) {
     var max_error = 0;
     //update target micronode states
     for (var node_id in target) {
-        var node = Nodes.findOne(node_id);
-        if(Object.keys(node.needs).length == 0){
+        //var node = Nodes.findOne(node_id);
+        if(Object.keys(needs[node_id].weights).length == 0){
             state[node_id] = target[node_id];
         }
     }
@@ -1166,8 +1275,7 @@ simulate = function(target, user_id) {
         for (order in tree) {
             layer = tree[order];
             for (node_id in layer) {
-                node = Nodes.findOne(node_id);
-                weights = node.needs;
+                weights = needs[node_id].weights;
                 if (Object.keys(weights).length == 0) {
                     continue;
                 }
@@ -1189,12 +1297,11 @@ simulate = function(target, user_id) {
             for (var order = tree.length - 2; order >= 0; order--) {
                 var layer = tree[order];
                 for (var node_id in layer) {
-                    var node = Nodes.findOne(node_id);
-                    var weights = node.needs;
+                    var weights = needs[node_id].weights;
                     if (Object.keys(weights).length == 0) {
                         continue;
                     }
-                    var arg = node.bias;
+                    var arg = needs[node_id].bias;
                     for (var subnode_id in weights) {
                         arg += weights[subnode_id] * state[subnode_id];
                     }
@@ -1256,16 +1363,36 @@ simulate = function(target, user_id) {
     for (var order = 1; order < tree.length; order++) {
         var layer = tree[order];
         for (var node_id in layer) {
-            var node = Nodes.findOne(node_id);
-            var weights = node.needs;
-            if (Object.keys(weights).length == 0) {
-                continue;
+            if(typeof state[node_id] === "undefined"){
+              var node = Nodes.findOne(node_id);
+              needs[node_id] = {};
+              needs[node_id].weights = node.needs;
+              needs[node_id].bias = node.bias;
+              type[node_id] = node.type;
+              contains[node_id] = node.contains;
             }
-            var arg = node.bias;
-            for (var subnode_id in weights) {
-                arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
+            if(type[node_id] == "exam"){
+              var exercises = contains[node_id];
+              var norm = contains.length;
+              var score = 0;
+              var id;
+              for(var i in exercises) {
+                id = exercises[i];
+                score += get_state(id, user_id);
+              }
+              state[node_id] = score / norm;
             }
-            state[node_id] = sigmoid(arg);
+            else{
+              var weights = needs[node_id].weights;
+              var arg = needs[node_id].bias;
+              if (Object.keys(weights).length == 0) {
+                  continue;
+              }
+              for (var subnode_id in weights) {
+                  arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
+              }
+              state[node_id] = sigmoid(arg);
+            }
         }
     }
     return state;
@@ -1300,7 +1427,7 @@ succeed = function(result,user_id) {
     //se o estado variar de muito reduzir a solidez
     var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
     if( varies_significantly ){
-      set_solidity(solidity-1,id,user_id);
+      set_solidity(0,id,user_id);//set_solidity(solidity-1,id,user_id);
       set_state(success_state[id],id,user_id);
     }
     //se o estado não variar,
@@ -1331,7 +1458,7 @@ fail = function(result,user_id) {
     //se o estado variar de muito reduzir a solidez
     var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
     if( varies_significantly ){
-      set_solidity(solidity-1,id,user_id);
+      set_solidity(0,id,user_id);//set_solidity(solidity-1,id,user_id);
       set_state(failure_state[id],id,user_id);
     }
     //se o estado não variar,
@@ -1390,7 +1517,7 @@ testing_units = function(concept_id,user_id){
           highest_state["descending"] = unit_state;
         }
       }
-      if( highest_state["ascending"] > 0.9 && highest_state["descending"] > 0.9 ){ break; }
+      if( highest_state["ascending"] > READY && highest_state["descending"] > READY ){ break; }
     }
   }
   return testability;
@@ -1428,7 +1555,7 @@ positive_impact_units = function(unit_ids,user_id){
             found_unit_state = node_state;
           }
         }
-        if( found_unit_state > 0.9 ){ break; }
+        if( found_unit_state > READY ){ break; }
       }
     }
   }
@@ -1442,7 +1569,7 @@ find_starting_lesson = function(unit_ids,user_id) {
     while(true){
       var id = positive_impact_units(current,user_id);
       var state = get_state(id,user_id);
-      if( state > 0.9 || id == null || visited[id] ){ break; }
+      if( state > READY || id == null || visited[id] ){ break; }
       current = {};
       current[id] = true;
       visited[id] = true;
@@ -1488,6 +1615,7 @@ find_orb = function(node_ids,user_id) {
 //encontra toda a região da rede que pode potencialmente afectar positivamente o nodo de objectivo
 find_missing_bush = function(node_ids,user_id) {
     var bush = [];
+    var loose = {};
     var origin = {};
     for(var id in node_ids){
         origin[id] = get_state(id,user_id);
@@ -1505,19 +1633,28 @@ find_missing_bush = function(node_ids,user_id) {
             if( type == "content" && !bag[id] ){
                 bush[bush.length-1][id] = state;
                 bag[id] = true;
-                if( state < 0.9 ){ to_keep[id] = true; }
+                if( state < READY ){ to_keep[id] = true; }
             }
-            else if( type != "content" && state < 0.9 && !bag[id] ){
-                bush[bush.length-1][id] = state;
-                bag[id] = true;
-                to_keep[id] = current_layer[id];
+            else if( type != "content" && !bag[id] ){
+                if(state < READY){
+                  bush[bush.length-1][id] = state;
+                  bag[id] = true;
+                  to_keep[id] = current_layer[id];
+                }
+                var info = Personal.findOne({node:id,user:user_id});
+                if(info){
+                  loose[id] = info.solidity < 3;
+                }
+                else{
+                  loose[id] = false;
+                }
             }
         }
         current_layer = find_orb(to_keep);
         if( Object.keys(bush[bush.length-1]).length == 0 ){ bush.pop(); }
         if( Object.keys(current_layer).length == 0 ){ break; }
     }
-    return {"bush": bush, "ids": bag};
+    return {"bush": bush, "ids": bag, "loose": loose};
 };
 
 //fazer uma versão desta função para ser précalculada enquanto o utilizador faz a unidade
@@ -1525,22 +1662,33 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
     var find = find_missing_bush(node_ids,user_id);
     var bush = find.bush;
     var ids = find["ids"];
+    var loose = find.loose;
+    console.log(loose);
+    for(var id in loose){
+        if(loose[id]){
+          //find two units to test this concept in success and in failure
+          tests = testing_unit(id,user_id);
+          console.log(tests);
+        }
+    }
     for(var n in bush){
         var layer = bush[n];
         for(var id in layer){
             var node = Nodes.findOne(id);
             var state = get_state(id,user_id);
-            if(node.type == "content" && state > 0.8 && typeof not_in[id] === "undefined"){
-                /*var target = {};
+            if(node.type == "content" && state > READY && typeof not_in[id] === "undefined"){
+                var target = {};
                 target[id] = true;
                 for(var granted_id in node.grants){ target[granted_id] = true; }
                 var simulation = simulate(target,user_id);
                 for(var altered_id in simulation){
                     var change = simulation[altered_id] - get_state(altered_id,user_id);
                     var is_in_bush = ids[altered_id];
-                    if(change > 0.1 && is_in_bush){ return altered_id; }
-                }*/
-                return id;
+                    if(change > 0.1 && is_in_bush){
+                      return id;
+                    }
+                }
+                //return id;
             }
         }
     }
@@ -1569,6 +1717,10 @@ Meteor.methods({
 
   editNeed: function(setID, concepts) {
     return edit_requirement(setID, concepts);
+  },
+
+  editLanguage: function(unitId, newLanguageId) {
+    return change_language_requisite(unitId, newLanguageId);
   },
 
   addNeed: function(nodeID, concepts) {
@@ -1603,7 +1755,20 @@ Meteor.methods({
   },
 
   resetUser: function(userID) {
-    return reset_user(userID);
+    var knownLanguages = {};
+    var languages = Nodes.find({isLanguage:true}).fetch();
+    for(var i in languages){
+      var id = languages[i]._id;
+      knownLanguages[id] = get_state(id,userID);
+    }
+    reset_user(userID);
+    change_states(knownLanguages,userID);
+    var goalId = Meteor.users.findOne(userID).goal;
+    if(goalId){
+      var goal = {}; goal[goalId] = true;
+      var unit = find_useful_content(goal,userID);
+      if(unit !== null && typeof unit !== "undefined"){ Meteor.users.update({_id:userID},{$set:{goal:goalId,nextUnit:unit}}); }
+    }
   },
 
   //devolve um objecto que contem os requesitos linguisticos e conceptuais dum determinado nodo
@@ -1624,6 +1789,14 @@ Meteor.methods({
   },
 
   setGoal: function(node_id, user_id, not_in = {}){
+      /*var goalNode = Nodes.findOne(node_id);
+      var goalType = goalNode.type;
+      if(goalType == "exam"){
+        var goal = node.contains;
+      }
+      else{
+        var goal = {}; goal[node_id] = true;
+      }*/
       var goal = {}; goal[node_id] = true;
       var unit = find_useful_content(goal,user_id,not_in);
       if(unit !== null && typeof unit !== "undefined"){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
@@ -1655,6 +1828,26 @@ Meteor.methods({
             fail(result,user_id);
           }
       }
+  },
+
+  removeExam: function(examId){
+      return remove_exam(examId);
+  },
+
+  readyThreshold: function(){
+    return READY;
+  },
+
+  changeStates: function(nodeIds,userId){
+    change_states(nodeIds,userId);
+  },
+
+  changeState: function(state,nodeId,userId){
+    change_state(state,nodeId,userId);
+  },
+
+  downSearch: function(ids){
+    return down_search(ids);
   }
 
 });

@@ -16,6 +16,11 @@ Schema.Concept = new SimpleSchema({
             }
         }
     },
+    isLanguage: {
+       type: Boolean,
+       defaultValue: false,
+       label: "Concept is a language"
+    },
     needs: {
         type: Array,
         optional: true,
@@ -64,6 +69,11 @@ Schema.Unit = new SimpleSchema({
             }
         }
     },
+    isUnitFromModule: {
+       type: Boolean,
+       defaultValue: false,
+       label: "This Unit should only be presented as part of an Exam"
+    },
     language: {
         type: String,
         optional: true,
@@ -80,8 +90,7 @@ Schema.Unit = new SimpleSchema({
                 }
 
                 var conceptsMappedToSelectize = _.map(Nodes.find({
-                  // WARNING: TO BE REPLACED WITH PROPER IDENTIFIER OF LANGUAGE NODES
-                    name: {$in: ["English", "Portuguese"]}
+                    isLanguage: true
                 }).fetch(), nameAndRID);
 
                 return conceptsMappedToSelectize;

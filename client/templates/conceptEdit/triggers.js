@@ -10,7 +10,7 @@ Template.conceptEdit.onCreated(function() {
 Template.conceptEdit.rendered = function() {
     this.autorun(() => {
         if (this.subscriptionsReady()) {
-            //console.log('conceptEdit rendered > subs ready');
+            console.log('conceptEdit rendered > subs ready');
             Meteor.globalFunctions.needsAsJSONSession();
             var deletedNeedsSets = [];
             Session.set('deletedNeedsSets', deletedNeedsSets);
@@ -21,7 +21,7 @@ Template.conceptEdit.rendered = function() {
 Template.conceptEditSelectBox.rendered = function() {
     this.autorun(() => {
         if (Template.instance().parent(1).subscriptionsReady()) {
-            //console.log('conceptEditSelectBox rendered > subs ready');
+            console.log('conceptEditSelectBox rendered > subs ready');
             Meteor.globalFunctions.applySelectizeCode();
         }
     });
@@ -104,6 +104,7 @@ AutoForm.hooks({
             }
 
 
+            Meteor.globalFunctions.needsAsJSONSession();
             Materialize.toast('concept edited successfully', 3000);
             //FlowRouter.go('/concept/' + nodeId);
             this.done();

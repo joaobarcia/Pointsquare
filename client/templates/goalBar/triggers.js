@@ -37,5 +37,9 @@ Template.goalBar.events({
     event.preventDefault();
     var userId = Meteor.userId();
     Meteor.call('removeGoal', userId);
+  },
+  "click .reset-goal": function(event, template) {
+    var userId = Meteor.userId();
+    Meteor.call('removeGoal', userId);
   }
 });
