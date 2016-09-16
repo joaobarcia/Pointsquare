@@ -133,16 +133,16 @@ set_state = function(value,node_id,user_id) {
     return set_personal_property("state",value,node_id,user_id);
 };
 
-get_state = function(value,node_id,user_id) {
-    return get_personal_property("state",0,value,node_id,user_id);
+get_state = function(node_id,user_id) {
+    return get_personal_property("state",0,node_id,user_id);
 };
 
 set_solidity = function(value,node_id,user_id) {
     return set_personal_property("solidity",value,node_id,user_id);
 };
 
-get_solidity = function(value,node_id,user_id) {
-    return get_personal_property("solidity",0,value,node_id,user_id);
+get_solidity = function(node_id,user_id) {
+    return get_personal_property("solidity",0,node_id,user_id);
 };
 
 lock_state = function(node_id,user_id) {
@@ -1557,6 +1557,7 @@ find_orb = function(node_ids,user_id) {
 //encontra toda a região da rede que pode potencialmente afectar positivamente o nodo de objectivo
 find_missing_bush = function(node_ids,user_id) {
     var bush = [];
+    var loose = {};
     var origin = {};
     for(var id in node_ids){
         origin[id] = get_state(id,user_id);
@@ -1576,17 +1577,26 @@ find_missing_bush = function(node_ids,user_id) {
                 bag[id] = true;
                 if( state < READY ){ to_keep[id] = true; }
             }
-            else if( type != "content" && state < READY && !bag[id] ){
-                bush[bush.length-1][id] = state;
-                bag[id] = true;
-                to_keep[id] = current_layer[id];
+            else if( type != "content" && !bag[id] ){
+                if(state < READY){
+                  bush[bush.length-1][id] = state;
+                  bag[id] = true;
+                  to_keep[id] = current_layer[id];
+                }
+                var info = Personal.findOne({node:id,user:user_id});
+                if(info){
+                  loose[id] = info.solidity < 3;
+                }
+                else{
+                  loose[id] = false;
+                }
             }
         }
         current_layer = find_orb(to_keep);
         if( Object.keys(bush[bush.length-1]).length == 0 ){ bush.pop(); }
         if( Object.keys(current_layer).length == 0 ){ break; }
     }
-    return {"bush": bush, "ids": bag};
+    return {"bush": bush, "ids": bag, "loose": loose};
 };
 
 //fazer uma versão desta função para ser précalculada enquanto o utilizador faz a unidade
@@ -1594,6 +1604,14 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
     var find = find_missing_bush(node_ids,user_id);
     var bush = find.bush;
     var ids = find["ids"];
+    var loose = find.loose;
+    console.log(loose);
+    for(var id in loose){
+        if(loose[id]){
+          //find a unit to test this concept
+          //testing_units();
+        }
+    }
     for(var n in bush){
         var layer = bush[n];
         for(var id in layer){
