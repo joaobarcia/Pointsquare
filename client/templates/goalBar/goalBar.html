@@ -14,16 +14,16 @@
             <h4 class="center-align black-text">
               {{#if goalIsCompleted}}
                 {{#if goalTypeIs 'concept'}}
-                  You have successfully learned
-                  <strong>{{goalName}}</strong>
+                  Good work! You have successfully learned
+                  <strong>{{goalName}}</strong>!
                 {{/if}}
                 {{#if goalTypeIs 'content'}}
-                  Great! You are now ready to do
-                  <a href="/{{goalType}}/{{goalId}}" class="blue-text">{{goalName}}</a>
+                  Good work! You are now ready to do
+                  <a href="/{{goalType}}/{{goalId}}" class="reset-goal blue-text">{{goalName}}</a>
                 {{/if}}
                 {{#if goalTypeIs 'exam'}}
-                  Great! You are now ready to do
-                  <a href="/{{goalType}}/{{goalId}}" class="blue-text">{{goalName}}</a>
+                  Good work! You are now ready to do
+                  <a href="/{{goalType}}/{{goalId}}" class="reset-goal blue-text">{{goalName}}</a>
                 {{/if}}
               {{else}}
                 Studying for
@@ -42,6 +42,11 @@
                   SKIP THIS UNIT
                 {{/unless}}
               </a>
+            {{else}}
+              {{#if goalTypeIs 'concept'}}
+                <a href='{{pathFor 'search'}}' class="waves-effect waves-light btn-flat reset-goal" >
+                  search a new goal</a>
+              {{/if}}
             {{/unless}}
           </div>
         </div>

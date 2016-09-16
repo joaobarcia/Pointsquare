@@ -1,5 +1,16 @@
 <template name="notFound">
-<div class="container">
-<h1 class="center-align">OMGZ! PAGE NOT FOUND?!</h1>
-</div>
+  <div class="card">
+    <div class="container">
+      <div class="section">
+        <h4 class="center-align">It seems you have landed on one of them nasty 404 page not found.</h4>
+
+      </div>
+      <div class="section">
+        <h3 class="center-align">Go back and
+          <a href={{pathFor 'search'}}>search</a>
+          some knowledge!</h3>
+      </div>
+      <img class="responsive-img" src="/images/poincare.jpg">
+    </div>
+  </div>
 </template>

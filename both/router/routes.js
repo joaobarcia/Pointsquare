@@ -1,82 +1,114 @@
 FlowRouter.notFound = {
-    action: function() {
-      BlazeLayout.render("mainLayout", {
-          main: "notFound"
-      });
-    }
+  action: function() {
+    BlazeLayout.render("mainLayout", {
+      main: "notFound"
+    });
+  }
 };
 
 FlowRouter.route('/', {
-    name: 'home',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "home"
-        });
-    }
+  name: 'home',
+  action: function(params) {
+    BlazeLayout.render("mainLayout", {
+      main: "home"
+    });
+  }
 });
 
 FlowRouter.route('/exam/:nodeId', {
-    name: 'examPage',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "examPage"
-        });
-    }
+  name: 'examPage',
+  action: function(params) {
+    // if node exists, display page
+    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      BlazeLayout.render("mainLayout", {
+        main: "examPage"
+      })
+    } else {
+      // else show notFound
+      BlazeLayout.render("mainLayout", {
+        main: "notFound"
+      });
+    };
+  }
 });
 
 FlowRouter.route('/create/exam', {
-    name: 'examCreate',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "createExam"
-        });
-    }
+  name: 'examCreate',
+  action: function(params) {
+    BlazeLayout.render("mainLayout", {
+      main: "createExam"
+    });
+  }
 });
 
 FlowRouter.route('/exam/:nodeId/edit', {
-    name: 'examEdit',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "examEdit"
-        });
-    }
+  name: 'examEdit',
+  action: function(params) {
+    // if node exists, display page
+    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      BlazeLayout.render("mainLayout", {
+        main: "examEdit"
+      })
+    } else {
+      // else show notFound
+      BlazeLayout.render("mainLayout", {
+        main: "notFound"
+      });
+    };
+  }
 });
 // WARNING: END OF NEW ROUTES
 
 FlowRouter.route('/search', {
-    name: 'search',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "search"
-        });
-    }
+  name: 'search',
+  action: function(params) {
+    BlazeLayout.render("mainLayout", {
+      main: "search"
+    });
+  }
 });
 
 FlowRouter.route('/dashboard', {
-    name: 'dashboard',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "dashboard"
-        });
-    }
+  name: 'dashboard',
+  action: function(params) {
+    BlazeLayout.render("mainLayout", {
+      main: "dashboard"
+    });
+  }
 });
 
 FlowRouter.route('/content/:nodeId', {
-    name: 'unitPage',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "unitPage"
-        });
-    }
+  name: 'unitPage',
+  action: function(params) {
+    // if node exists, display page
+    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      BlazeLayout.render("mainLayout", {
+        main: "unitPage"
+      })
+    } else {
+      // else show notFound
+      BlazeLayout.render("mainLayout", {
+        main: "notFound"
+      });
+    };
+  }
 });
 
 FlowRouter.route('/content/:nodeId/edit', {
-    name: 'unitEdit',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "unitEdit"
-        });
-    }
+  name: 'unitEdit',
+  action: function(params) {
+    // if node exists, display page
+    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      BlazeLayout.render("mainLayout", {
+        main: "unitEdit"
+      })
+    } else {
+      // else show notFound
+      BlazeLayout.render("mainLayout", {
+        main: "notFound"
+      });
+    };
+  }
 });
 
 // WARNING: Concept page currently does not exist
@@ -90,30 +122,38 @@ FlowRouter.route('/content/:nodeId/edit', {
 // });
 
 FlowRouter.route('/concept/:nodeId/edit', {
-    name: 'conceptEdit',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "conceptEdit"
-        });
-    }
+  name: 'conceptEdit',
+  action: function(params) {
+    // if node exists, display page
+    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      BlazeLayout.render("mainLayout", {
+        main: "conceptEdit"
+      })
+    } else {
+      // else show notFound
+      BlazeLayout.render("mainLayout", {
+        main: "notFound"
+      });
+    };
+  }
 });
 
 FlowRouter.route('/create/concept', {
-    name: 'conceptCreate',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "createConcept"
-        });
-    }
+  name: 'conceptCreate',
+  action: function(params) {
+    BlazeLayout.render("mainLayout", {
+      main: "createConcept"
+    });
+  }
 });
 
 FlowRouter.route('/create/content', {
-    name: 'contentCreate',
-    action: function(params) {
-        BlazeLayout.render("mainLayout", {
-            main: "createUnit"
-        });
-    }
+  name: 'contentCreate',
+  action: function(params) {
+    BlazeLayout.render("mainLayout", {
+      main: "createUnit"
+    });
+  }
 });
 
 // FlowRouter.route('/goal', {
