@@ -26,7 +26,7 @@ var MAX_STEPS = 10000;
 var MIN_STEPS = 100;
 var TOLERANCE = 0.01;
 
-var SOLIDITY_TOLERANCE = 0.1;
+var SOLIDITY_TOLERANCE = 0.09;
 READY = 0.5;
 NOT_READY = 0.5;
 
@@ -222,7 +222,7 @@ reset_user = function(user_id) {
     }
 };
 
-//sum of all the needed_by and contained_in
+//todos os nodos acessíveis por um grau de needed_by ou contained_in
 find_forward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
@@ -289,12 +289,18 @@ find_full_forward_tree = function(node_ids) {
     return tree;
 };
 
+//todos os nodos acessíveis por needs ou contains
 find_backward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
         var node = Nodes.findOne(node_id);
         var weights = node.needs;
         for (var id in weights) {
+            layer[id] = true;
+        }
+        var contains = node.contains;
+        for (var i in contains) {
+            var id = contains[i];
             layer[id] = true;
         }
     }
@@ -383,6 +389,7 @@ find_missing_subtree = function(node_ids,user_id) {
     return tree;
 };
 
+//retorna todos os nodos acessíveis por um grau de needs, needed_by, contained_in ou contains
 find_adjacent_nodes = function(node_ids){
     var adjacent_nodes = {};
     var backward_layer = find_backward_layer(node_ids);
@@ -414,6 +421,57 @@ find_wake_orb = function(node_ids){
         layer = find_adjacent_nodes(to_keep); //proseguir sem os vizinhos dos nodos de conteúdo
     }
     return orb;
+}
+
+find_adjacent_layer = function(node_ids){
+    var layer = {};
+    var forward_layer = find_forward_layer(node_ids);
+    for(var id in forward_layer){ layer[id] = true; }
+    var backward_layer = find_backward_layer(node_ids);
+    for(var id in backward_layer){ layer[id] = true; }
+    return layer;
+}
+
+//retorna a primeira unidade que testa um determinado conceito
+testing_unit = function(concept_id,user_id){
+    var tests = {};
+    var layer = {}; layer[concept_id] = true;
+    var visited = {}; visited[concept_id] = true;
+    var found_success = false;
+    var found_failure = false;
+    var concept_state = get_state(concept_id,user_id);
+    while( Object.keys(layer).length > 0 ){
+        layer = find_adjacent_layer(layer);
+        for(var id in layer){
+            //retirar se já tiver sido visitado
+            if(visited[id]){
+              delete layer[id];
+              continue;
+            }
+            visited[id] = true;
+            var node = Nodes.findOne(id);
+            var type = node.type;
+            var state = get_state(id,user_id);
+            if(node.isUnitFromModule){ continue; } //ALTERAR ESTA LINHA PARA SUGERIR O EXAME EM VEZ DE DESCARTAR
+            if(node.type == "content" && state > READY){
+                var simulation = precompute(id,user_id);
+                var success_variation = simulation.success[concept_id] - concept_state;
+                var failure_variation = simulation.failure[concept_id] - concept_state;
+                if(Math.abs(success_variation) > SOLIDITY_TOLERANCE){
+                  tests.success = id;
+                  found_success = true;
+                }
+                if(Math.abs(failure_variation) > SOLIDITY_TOLERANCE){
+                  tests.failure = id;
+                  found_failure = true;
+                }
+                if( found_success&&found_failure ){
+                    return tests;
+                }
+            }
+        }
+    }
+    return tests;
 }
 
 //creation functions
@@ -1608,8 +1666,9 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
     console.log(loose);
     for(var id in loose){
         if(loose[id]){
-          //find a unit to test this concept
-          //testing_units();
+          //find two units to test this concept in success and in failure
+          tests = testing_unit(id,user_id);
+          console.log(tests);
         }
     }
     for(var n in bush){
