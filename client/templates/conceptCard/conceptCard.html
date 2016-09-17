@@ -1,8 +1,8 @@
 <template name="conceptCard">
-  <div class="item" >
-    <a class="ui tiny circular image" href="{{hyperlinkIfGodMode}}">
-      <img src="/images/poincare.jpg">
-    </a>
+  <div class="item">
+    <div class="ui tiny image center aligned">
+      <i class="big circular inverted {{mapConceptStateToColor state}} idea icon"></i>
+    </div>
     <div class="content">
       <a class="header" href="{{hyperlinkIfGodMode}}">{{name}}</a>
       <a class="description" href="{{hyperlinkIfGodMode}}">

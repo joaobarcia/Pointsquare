@@ -1,10 +1,12 @@
 <template name="unitCard">
   <div class="item">
-    <a class="ui tiny circular image" href="../content/{{_id}}">
-      <img src="/images/poincare.jpg">
-    </a>
+    <div class="ui tiny image center aligned">
+      <a href="../content/{{_id}}">
+        <i class="big bordered inverted {{mapUnitStateToColor state}} book icon"></i>
+      </a>
+    </div>
     <div class="content">
-      <a class="header" href="../content/{{_id}}">{{name}}</a>
+      <a class="ui small header" href="../content/{{_id}}">{{name}}</a>
       <div class="meta">
         <span class="cinema">by
           {{#each author in authorsInfo (authors)}}
@@ -17,7 +19,8 @@
         <p>{{description}}</p>
       </a>
       <div class="extra">
-        <p>in <span class="ui label">English</span></p>
+        <p class="ui tiny label">
+          <i class="world icon"></i>{{language}}</p>
         <div class="ui right floated">
           {{> setGoalButton}}
         </div>
