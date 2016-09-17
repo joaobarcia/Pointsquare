@@ -1,5 +1,6 @@
 Template.setGoalButton.events({
   'click .set-goal': function(event, template) {
+    console.log('click .set-goal');
     event.preventDefault();
     var nodeId = template.data._id;
     Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
@@ -10,6 +11,7 @@ Template.setGoalButton.events({
     });
   },
   'click .start-learning': function(event, template) {
+    console.log('click .start-learning');
     event.preventDefault();
     var nodeId = template.data._id;
     Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {

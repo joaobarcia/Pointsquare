@@ -8,7 +8,7 @@
                         {{#unless parentConcepts.count}}
                             <p>no parent concepts</p>
                         {{/unless}}
-                        <div class="collection">
+                        <div class="ui link items">
                             {{#each parentConcepts}}
                                 {{> conceptCard}}
                             {{/each}}
@@ -64,7 +64,7 @@
                         {{#unless childConcepts.count}}
                             <p>no child concepts</p>
                         {{/unless}}
-                        <div class="collection">
+                        <div class="ui link items">
                             {{#each childConcepts}}
                                 {{> conceptCard}}
                             {{/each}}

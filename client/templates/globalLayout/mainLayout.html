@@ -2,8 +2,9 @@
   {{> _header}}
   {{>Template.dynamic template=main}}
   {{ > _sidebar}}
-
-  {{#if goalExists}}
-    {{> goalBar}}
-  {{/if}}
+  {{#transition wrap="true" in="slideInUp" out="slideOutDown"}}
+    {{#if goalExists}}
+      {{> goalBar}}
+    {{/if}}
+  {{/transition}}
 </template>

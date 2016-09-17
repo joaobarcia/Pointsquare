@@ -33,22 +33,24 @@
 
             </h4>
           </div>
-          <div class="col s3">
             {{#unless goalIsCompleted}}
-              <a class="waves-effect waves-teal btn next-unit right-align">
                 {{#unless currentUnitIsOnPath}}
-                  START LEARNING
+                <div class="ui primary tiny positive button start-learning">
+                  Start learning
+                  <i class="right play icon"></i>
+                </div>
                 {{else}}
-                  SKIP THIS UNIT
+                <div class="ui primary tiny button next-unit">
+                  Skip unit
+                  <i class="right forward icon"></i>
+                </div>
                 {{/unless}}
-              </a>
             {{else}}
               {{#if goalTypeIs 'concept'}}
                 <a href='{{pathFor 'search'}}' class="waves-effect waves-light btn-flat reset-goal" >
                   search a new goal</a>
               {{/if}}
             {{/unless}}
-          </div>
         </div>
       </div>
     </nav>

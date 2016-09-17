@@ -1,15 +1,37 @@
 <template name="setGoalButton">
   {{#unless disableSetGoal}}
     {{#unless goalAlreadyReached state}}
+      {{#if thisIsGoal}}
+        <div class="ui primary tiny positive button start-learning">
+          Start learning
+          <i class="right play icon"></i>
+        </div>
+      {{else}}
+        <div class="ui primary tiny button set-goal">
+          Set as goal
+          <i class="right location arrow icon"></i>
+        </div>
+      {{/if}}
+    {{else}}
+      <div class="ui disabled tiny button">
+        You know this
+      </div>
+    {{/unless}}
+  {{/unless}}
+</template>
+
+<!-- <template name="setGoalButton_materialize">
+  {{#unless disableSetGoal}}
+    {{#unless goalAlreadyReached state}}
       <div class="col s6">
         <div class="right">
-            {{#if thisIsGoal}}
-              <a class="waves-effect waves-teal btn start-learning">
-                <i class="material-icons left">explore</i>Start learning</a>
-            {{else}}
-              <a class="waves-effect waves-teal btn set-goal">
-                <i class="material-icons left">explore</i>Set as goal</a>
-            {{/if}}
+          {{#if thisIsGoal}}
+            <a class="waves-effect waves-teal btn start-learning">
+              <i class="material-icons left">explore</i>Start learning</a>
+          {{else}}
+            <a class="waves-effect waves-teal btn set-goal">
+              <i class="material-icons left">explore</i>Set as goal</a>
+          {{/if}}
         </div>
       </div>
     {{else}}
@@ -21,5 +43,4 @@
       </div>
     {{/unless}}
   {{/unless}}
-
-</template>
+</template> -->
