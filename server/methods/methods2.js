@@ -452,7 +452,7 @@ testing_unit = function(concept_id,user_id){
             var node = Nodes.findOne(id);
             var type = node.type;
             var state = get_state(id,user_id);
-            if(node.isUnitFromModule){ continue; } //ALTERAR ESTA LINHA PARA SUGERIR O EXAME EM VEZ DE DESCARTAR
+            if(node.isUnitFromModule){ continue; } //ALT1: ALTERAR ESTA LINHA PARA SUGERIR O EXAME EM VEZ DE DESCARTAR
             if(node.type == "content" && state > READY){
                 var simulation = precompute(id,user_id);
                 var success_variation = simulation.success[concept_id] - concept_state;
@@ -897,10 +897,11 @@ change_language_requisite = function(content_id,new_language_id){
     //se havia já um pré-requesito linguístico
     if(needed_language){
       //apagar a sua referência no nodo da língua
-      var old_language = Nodes.findOne(old_language_id);
+      remove_from_field(old_language_id,"needed_by",content_id);
+      /*var old_language = Nodes.findOne(old_language_id);
       var other = old_language.needed_by;
       delete other[content_id];
-      Nodes.update({_id:old_language_id},{$set:{needed_by:other}});
+      Nodes.update({_id:old_language_id},{$set:{needed_by:other}});*/
       //apagar a referência à língua no objecto temporário de requesitos
       delete needs[old_language_id];
     }
@@ -910,9 +911,10 @@ change_language_requisite = function(content_id,new_language_id){
     //se ele precisar de pré-requesitos linguísticos
     if(needs_language){
       //meter a referência no nodo da nova língua
-      other = new_language.needed_by;
+      add_to_field(new_language_id,"needed_by",content_id,true);
+      /*other = new_language.needed_by;
       other[content_id] = true;
-      Nodes.update({_id:new_language_id},{$set:{needed_by:other}});
+      Nodes.update({_id:new_language_id},{$set:{needed_by:other}});*/
       //adicionar a nova língua ao objecto temporário de requesitos
       needs[new_language_id] = true;
     }
@@ -1052,7 +1054,7 @@ get_needs = function(node_id){
     var or_id = node_id;
     for(var id in node.needs){
       var subnode = Nodes.findOne(id);
-      if(subnode.isLanguage){ info["language"] = node.language; }
+      if(subnode.isLanguage){ info["language"] = id; }
       else if(subnode.type == "or"){ or_id = id; }
     }
     var or = Nodes.findOne(or_id);
@@ -1106,11 +1108,11 @@ find_micronodes = function(node_ids) {
     return micronodes;
 };
 
-down_search = function(node_ids){
+search = function(node_ids,link_type){
     var tree = node_ids;
     for(var id in tree){
-        var needs = Nodes.findOne(id).needs;
-        tree[id] = down_search(needs);
+        var next = Nodes.findOne(id)[link_type];
+        tree[id] = search(next,link_type);
     }
     return tree;
 };
@@ -1373,7 +1375,7 @@ simulate = function(target, user_id) {
             }
             if(type[node_id] == "exam"){
               var exercises = contains[node_id];
-              var norm = contains.length;
+              var norm = exercises.length;
               var score = 0;
               var id;
               for(var i in exercises) {
@@ -1425,7 +1427,7 @@ succeed = function(result,user_id) {
     var state = get_state(id,user_id);
     var solidity = get_solidity(id,user_id);
     //se o estado variar de muito reduzir a solidez
-    var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
+    var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > SOLIDITY_TOLERANCE;
     if( varies_significantly ){
       set_solidity(0,id,user_id);//set_solidity(solidity-1,id,user_id);
       set_state(success_state[id],id,user_id);
@@ -1435,7 +1437,7 @@ succeed = function(result,user_id) {
       //verificar se no caso contrário variaria,
       var other = failure_state[id]!=null? failure_state[id] : get_state(id,user_id);
       var current = get_state(id,user_id);
-      var would_vary_otherwise = Math.abs(other-current) > 0.1;
+      var would_vary_otherwise = Math.abs(other-current) > SOLIDITY_TOLERANCE;
       //se variar então aumentar a solidez,
       if( would_vary_otherwise ){
         set_solidity(solidity+1,id,user_id);
@@ -1456,7 +1458,7 @@ fail = function(result,user_id) {
     var state = get_state(id,user_id);
     var solidity = get_solidity(id,user_id);
     //se o estado variar de muito reduzir a solidez
-    var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
+    var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > SOLIDITY_TOLERANCE;
     if( varies_significantly ){
       set_solidity(0,id,user_id);//set_solidity(solidity-1,id,user_id);
       set_state(failure_state[id],id,user_id);
@@ -1466,7 +1468,7 @@ fail = function(result,user_id) {
       //verificar se no caso contrário variaria,
       var other = success_state[id]!=null? success_state[id] : get_state(id,user_id);
       var current = get_state(id,user_id);
-      var would_vary_otherwise = Math.abs(other-current) > 0.1;
+      var would_vary_otherwise = Math.abs(other-current) > SOLIDITY_TOLERANCE;
       //se variar então aumentar a solidez,
       if( would_vary_otherwise ){
         set_solidity(solidity+1,id,user_id);
@@ -1641,12 +1643,14 @@ find_missing_bush = function(node_ids,user_id) {
                   bag[id] = true;
                   to_keep[id] = current_layer[id];
                 }
-                var info = Personal.findOne({node:id,user:user_id});
-                if(info){
-                  loose[id] = info.solidity < 3;
-                }
-                else{
-                  loose[id] = false;
+                if(type == "concept"){
+                  var info = Personal.findOne({node:id,user:user_id});
+                  if(info){
+                    loose[id] = info.solidity < 3;
+                  }
+                  else{
+                    loose[id] = false;
+                  }
                 }
             }
         }
@@ -1663,12 +1667,11 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
     var bush = find.bush;
     var ids = find["ids"];
     var loose = find.loose;
-    console.log(loose);
     for(var id in loose){
         if(loose[id]){
           //find two units to test this concept in success and in failure
           tests = testing_unit(id,user_id);
-          console.log(tests);
+          if(tests.failure){ return tests.failure; }
         }
     }
     for(var n in bush){
@@ -1688,7 +1691,6 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
                       return id;
                     }
                 }
-                //return id;
             }
         }
     }
@@ -1809,22 +1811,12 @@ Meteor.methods({
 
   submitExam: function(answers,user_id){
       for(var id in answers){
+          var result = precompute(id,user_id);
+          //console.log(result);
           if(answers[id]){
-            var target = {};
-            target[id] = true;
-            var grants = Nodes.findOne(id).grants;
-            if(grants){
-              for(var id in grants){
-                target[id] = true;
-              }
-            }
-            var result = simulate(target,user_id);
             succeed(result,user_id);
           }
           else{
-            var target = {};
-            target[id] = false;
-            var result = simulate(target,user_id);
             fail(result,user_id);
           }
       }
@@ -1846,8 +1838,8 @@ Meteor.methods({
     change_state(state,nodeId,userId);
   },
 
-  downSearch: function(ids){
-    return down_search(ids);
+  search: function(ids,linkType){
+    return search(ids,linkType);
   }
 
 });

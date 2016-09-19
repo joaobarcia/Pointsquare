@@ -1,4 +1,10 @@
 Template.unitEdit.helpers({
+
+    unitLanguage: function() {
+        var nodeId = FlowRouter.getParam('nodeId');
+        return Meteor.globalFunctions.getNeeds(nodeId).language;
+    },
+
     contentEditPage: function() {
         var nodeId = FlowRouter.getParam('nodeId');
         var content = Nodes.findOne({
