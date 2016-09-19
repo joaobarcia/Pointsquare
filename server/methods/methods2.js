@@ -1108,11 +1108,11 @@ find_micronodes = function(node_ids) {
     return micronodes;
 };
 
-down_search = function(node_ids){
+search = function(node_ids,link_type){
     var tree = node_ids;
     for(var id in tree){
-        var needs = Nodes.findOne(id).needs;
-        tree[id] = down_search(needs);
+        var next = Nodes.findOne(id)[link_type];
+        tree[id] = search(next,link_type);
     }
     return tree;
 };
@@ -1427,7 +1427,7 @@ succeed = function(result,user_id) {
     var state = get_state(id,user_id);
     var solidity = get_solidity(id,user_id);
     //se o estado variar de muito reduzir a solidez
-    var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > 0.1;
+    var varies_significantly = Math.abs(success_state[id]-get_state(id,user_id)) > SOLIDITY_TOLERANCE;
     if( varies_significantly ){
       set_solidity(0,id,user_id);//set_solidity(solidity-1,id,user_id);
       set_state(success_state[id],id,user_id);
@@ -1437,7 +1437,7 @@ succeed = function(result,user_id) {
       //verificar se no caso contrário variaria,
       var other = failure_state[id]!=null? failure_state[id] : get_state(id,user_id);
       var current = get_state(id,user_id);
-      var would_vary_otherwise = Math.abs(other-current) > 0.1;
+      var would_vary_otherwise = Math.abs(other-current) > SOLIDITY_TOLERANCE;
       //se variar então aumentar a solidez,
       if( would_vary_otherwise ){
         set_solidity(solidity+1,id,user_id);
@@ -1458,7 +1458,7 @@ fail = function(result,user_id) {
     var state = get_state(id,user_id);
     var solidity = get_solidity(id,user_id);
     //se o estado variar de muito reduzir a solidez
-    var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > 0.1;
+    var varies_significantly = Math.abs(failure_state[id]-get_state(id,user_id)) > SOLIDITY_TOLERANCE;
     if( varies_significantly ){
       set_solidity(0,id,user_id);//set_solidity(solidity-1,id,user_id);
       set_state(failure_state[id],id,user_id);
@@ -1468,7 +1468,7 @@ fail = function(result,user_id) {
       //verificar se no caso contrário variaria,
       var other = success_state[id]!=null? success_state[id] : get_state(id,user_id);
       var current = get_state(id,user_id);
-      var would_vary_otherwise = Math.abs(other-current) > 0.1;
+      var would_vary_otherwise = Math.abs(other-current) > SOLIDITY_TOLERANCE;
       //se variar então aumentar a solidez,
       if( would_vary_otherwise ){
         set_solidity(solidity+1,id,user_id);
@@ -1643,12 +1643,14 @@ find_missing_bush = function(node_ids,user_id) {
                   bag[id] = true;
                   to_keep[id] = current_layer[id];
                 }
-                var info = Personal.findOne({node:id,user:user_id});
-                if(info){
-                  loose[id] = info.solidity < 3;
-                }
-                else{
-                  loose[id] = false;
+                if(type == "concept"){
+                  var info = Personal.findOne({node:id,user:user_id});
+                  if(info){
+                    loose[id] = info.solidity < 3;
+                  }
+                  else{
+                    loose[id] = false;
+                  }
                 }
             }
         }
@@ -1689,7 +1691,6 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
                       return id;
                     }
                 }
-                //return id;
             }
         }
     }
@@ -1811,6 +1812,7 @@ Meteor.methods({
   submitExam: function(answers,user_id){
       for(var id in answers){
           var result = precompute(id,user_id);
+          //console.log(result);
           if(answers[id]){
             succeed(result,user_id);
           }
@@ -1836,8 +1838,8 @@ Meteor.methods({
     change_state(state,nodeId,userId);
   },
 
-  downSearch: function(ids){
-    return down_search(ids);
+  search: function(ids,linkType){
+    return search(ids,linkType);
   }
 
 });

@@ -32,8 +32,10 @@ function succeedUnit() {
   if (Session.get("precalculation") != "waiting") {
     Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
       var goalId = Meteor.user().goal;
+      //do not accept this unit as a next unit towards goal
+      var neglectThisUnit = {}; neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
-        Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
+        Meteor.call("setGoal", goalId, Meteor.userId(), neglectThisUnit, function(e, r) {
           resetQuestionFeedback();
           FlowRouter.go('/content/' + Meteor.user().nextUnit);
           Session.set('isLoading', false);
@@ -69,8 +71,10 @@ function failUnit() {
   if (Session.get("precalculation") != "waiting") {
     Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {
       var goalId = Meteor.user().goal;
+      //do not accept this unit as a next unit towards goal
+      var neglectThisUnit = {}; neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
-        Meteor.call("setGoal", goalId, Meteor.userId(), function(e, r) {
+        Meteor.call("setGoal", goalId, Meteor.userId(), neglectThisUnit, function(e, r) {
           if (r) {
             FlowRouter.go("/content/" + r);
             resetQuestionFeedback();
