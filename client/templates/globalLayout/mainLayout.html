@@ -1,9 +1,10 @@
 <template name="mainLayout">
   {{> _header}}
-  <div class="ui main container">
-    {{>Template.dynamic template=main}}
+  <div class="pusher">
+    <div class="ui main container">
+      {{>Template.dynamic template=main}}
+    </div>
   </div>
-  {{ > _sidebar}}
   {{#transition wrap="true" in="slideInUp" out="slideOutDown"}}
     {{#if goalExists}}
       {{> goalBar}}

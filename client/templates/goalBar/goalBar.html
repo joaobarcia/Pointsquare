@@ -1,4 +1,53 @@
 <template name="goalBar">
+  <div class="ui bottom demo sidebar three item menu overlay visible">
+    <div class="container">
+      <div class="item">
+        <div class="ui negative left floated button" id="remove_goal">Reset Goal</div>
+      </div>
+      <div class="item">
+        {{#if goalIsCompleted}}
+          {{#if goalTypeIs 'concept'}}
+            Good work! You have successfully learned
+            <strong>{{goalName}}</strong>!
+          {{/if}}
+          {{#if goalTypeIs 'content'}}
+            Good work! You are now ready to do
+            <a href="/{{goalType}}/{{goalId}}" class="reset-goal blue-text">{{goalName}}</a>
+          {{/if}}
+          {{#if goalTypeIs 'exam'}}
+            Good work! You are now ready to do
+            <a href="/{{goalType}}/{{goalId}}" class="reset-goal blue-text">{{goalName}}</a>
+          {{/if}}
+        {{else}}
+          Studying for
+          <strong>{{goalName}}</strong>
+        {{/if}}
+      </div>
+      <div class="item">
+        {{#unless goalIsCompleted}}
+          {{#unless currentUnitIsOnPath}}
+            <div class="ui primary tiny positive button start-learning">
+              Start learning
+              <i class="right play icon"></i>
+            </div>
+          {{else}}
+            <div class="ui primary tiny button next-unit">
+              Skip unit
+              <i class="right forward icon"></i>
+            </div>
+          {{/unless}}
+        {{else}}
+          {{#if goalTypeIs 'concept'}}
+            <a href='{{pathFor ' search'}}' class="waves-effect waves-light btn-flat reset-goal">
+              search a new goal</a>
+          {{/if}}
+        {{/unless}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- <template name="goalBar_materialize">
   <div class="navbar-fixed bottom-goalbar grey lighten-2">
     <nav class="grey lighten-2">
       <div class="nav-wrapper grey lighten-2">
@@ -29,30 +78,29 @@
                 Studying for
                 <strong>{{goalName}}</strong>
               {{/if}}
-              <!--  -->
 
             </h4>
           </div>
-            {{#unless goalIsCompleted}}
-                {{#unless currentUnitIsOnPath}}
-                <div class="ui primary tiny positive button start-learning">
-                  Start learning
-                  <i class="right play icon"></i>
-                </div>
-                {{else}}
-                <div class="ui primary tiny button next-unit">
-                  Skip unit
-                  <i class="right forward icon"></i>
-                </div>
-                {{/unless}}
+          {{#unless goalIsCompleted}}
+            {{#unless currentUnitIsOnPath}}
+              <div class="ui primary tiny positive button start-learning">
+                Start learning
+                <i class="right play icon"></i>
+              </div>
             {{else}}
-              {{#if goalTypeIs 'concept'}}
-                <a href='{{pathFor 'search'}}' class="waves-effect waves-light btn-flat reset-goal" >
-                  search a new goal</a>
-              {{/if}}
+              <div class="ui primary tiny button next-unit">
+                Skip unit
+                <i class="right forward icon"></i>
+              </div>
             {{/unless}}
+          {{else}}
+            {{#if goalTypeIs 'concept'}}
+              <a href='{{pathFor ' search'}}' class="waves-effect waves-light btn-flat reset-goal">
+                search a new goal</a>
+            {{/if}}
+          {{/unless}}
         </div>
       </div>
     </nav>
   </div>
-</template>
+</template> -->
