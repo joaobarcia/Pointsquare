@@ -897,10 +897,11 @@ change_language_requisite = function(content_id,new_language_id){
     //se havia já um pré-requesito linguístico
     if(needed_language){
       //apagar a sua referência no nodo da língua
-      var old_language = Nodes.findOne(old_language_id);
+      remove_from_field(old_language_id,"needed_by",content_id);
+      /*var old_language = Nodes.findOne(old_language_id);
       var other = old_language.needed_by;
       delete other[content_id];
-      Nodes.update({_id:old_language_id},{$set:{needed_by:other}});
+      Nodes.update({_id:old_language_id},{$set:{needed_by:other}});*/
       //apagar a referência à língua no objecto temporário de requesitos
       delete needs[old_language_id];
     }
@@ -910,9 +911,10 @@ change_language_requisite = function(content_id,new_language_id){
     //se ele precisar de pré-requesitos linguísticos
     if(needs_language){
       //meter a referência no nodo da nova língua
-      other = new_language.needed_by;
+      add_to_field(new_language_id,"needed_by",content_id,true);
+      /*other = new_language.needed_by;
       other[content_id] = true;
-      Nodes.update({_id:new_language_id},{$set:{needed_by:other}});
+      Nodes.update({_id:new_language_id},{$set:{needed_by:other}});*/
       //adicionar a nova língua ao objecto temporário de requesitos
       needs[new_language_id] = true;
     }
@@ -1052,7 +1054,7 @@ get_needs = function(node_id){
     var or_id = node_id;
     for(var id in node.needs){
       var subnode = Nodes.findOne(id);
-      if(subnode.isLanguage){ info["language"] = node.language; }
+      if(subnode.isLanguage){ info["language"] = id; }
       else if(subnode.type == "or"){ or_id = id; }
     }
     var or = Nodes.findOne(or_id);
@@ -1667,6 +1669,7 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
         if(loose[id]){
           //find two units to test this concept in success and in failure
           tests = testing_unit(id,user_id);
+          if(tests.failure){ return tests.failure; }
         }
     }
     for(var n in bush){
