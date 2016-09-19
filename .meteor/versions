@@ -15,7 +15,7 @@ binary-heap@1.0.9
 blaze@2.1.9
 blaze-html-templates@1.0.5
 blaze-tools@1.0.10
-boilerplate-generator@1.0.9
+boilerplate-generator@1.0.10
 bojicas:howler2@2.0.0_9
 caching-compiler@1.1.7
 caching-html-compiler@1.0.7
@@ -50,7 +50,7 @@ email@1.1.17
 erasaur:meteor-lodash@3.10.1_1
 fabienb4:autoform-semantic-ui@0.9.3
 fastclick@1.0.12
-fourseven:scss@3.9.0
+fourseven:scss@3.10.0
 geojson-utils@1.0.9
 handlebars@1.0.7
 hot-code-push@1.0.4
@@ -71,7 +71,7 @@ kadira:flow-router@2.12.1
 kadira:runtime-dev@0.0.1
 lai:collection-extensions@0.1.4
 launch-screen@1.0.12
-less@2.7.4
+less@2.7.5
 livedata@1.0.18
 localstorage@1.0.11
 logging@1.1.15
@@ -103,7 +103,7 @@ mongo-livedata@1.0.12
 mrt:mathjax@0.7.1
 mrt:underscore-string-latest@2.3.3
 npm-bcrypt@0.9.1
-npm-mongo@1.5.48
+npm-mongo@1.5.49
 observe-sequence@1.0.12
 okgrow:router-autoscroll@0.1.8
 ordered-dict@1.0.8
@@ -112,7 +112,7 @@ peerlibrary:base-component@0.14.0
 peerlibrary:blaze-components@0.15.1
 peerlibrary:computed-field@0.3.1
 peerlibrary:reactive-field@0.1.0
-promise@0.8.4
+promise@0.8.7
 raix:eventemitter@0.1.3
 random@1.0.10
 rate-limit@1.0.5
@@ -203,7 +203,7 @@ rzymek:moment-locale-zh-cn@2.9.0
 rzymek:moment-locale-zh-tw@2.9.0
 rzymek:moment-locales@2.9.0
 semantic:ui@2.2.1
-semantic:ui-data@2.2.1
+semantic:ui-data@2.2.4
 sergeyt:typeahead@0.11.1_9
 service-configuration@1.0.10
 session@1.1.6

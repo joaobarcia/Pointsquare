@@ -1,4 +1,57 @@
 <template name="search">
+  <div class="ui fluid icon input search-input">
+    {{#EasySearch.IfSearching index=nodesSearchIndex}}
+      <i class="large notched circle loading icon"></i>
+    {{else}}
+      <i class="large search icon"></i>
+    {{/EasySearch.IfSearching}}
+    {{> EasySearch.Input index=nodesSearchIndex}}
+  </div>
+  <div class="ui vertically padded internally celled relaxed grid">
+    <div class="row">
+
+      <div class="four wide column">
+        <div class="ui sticky">
+          <div class="ui vertical fluid pointing menu" id="search-menu">
+            <!-- <div class="header item">Sort By</div> -->
+            <a class="item active" id="searchExams">
+              <i class="write square icon"></i>Exams
+            </a>
+            <a class="item" id="searchUnits">
+              <i class="book icon"></i>Units
+            </a>
+            <a class="item" id="searchConcepts">
+              <i class="idea icon"></i>Concepts
+            </a>
+            <a class="item" id="searchAll">
+              All
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="twelve wide column">
+        <div id="context">
+          <div class="ui divided items">
+            {{#EasySearch.Each index=nodesSearchIndex}}
+              {{#if isExam}}
+                <div class="col s4">{{> examCard _id=__originalId name=name description=description authors=authors created_on=created_on}}</div>
+              {{/if}}
+              {{#if isConcept}}{{> conceptCard _id=__originalId name=name description=description authors=authors created_on=created_on}}{{/if}}
+              {{#if isUnit}}{{> unitCard _id=__originalId name=name description=description
+        authors=authors created_on=created_on}}{{/if}}
+            {{/EasySearch.Each}}
+          </div>
+          {{> EasySearch.LoadMore index=nodesSearchIndex}}
+          {{#EasySearch.IfNoResults index=nodesSearchIndex}}
+            <div class="no-results center aligned">No results found!</div>
+          {{/EasySearch.IfNoResults}}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="search_materialize">
   <div class="container">
     <div class="section">
       <div class="row search-input">
