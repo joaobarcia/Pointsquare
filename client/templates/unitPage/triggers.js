@@ -111,21 +111,21 @@ Template.unitPage.onCreated(function() {
   });
 });
 
-// Template.unitPage.onRendered(function() {
-//   this.autorun(() => {
-//     if (this.subscriptionsReady()) {
-//       //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
-//       setTimeout(function() {
-//         $('ul.tabs').tabs();
-//         $('.tooltipped').tooltip({
-//           delay: 50
-//         });
-//       }, 20);
-//
-//
-//     }
-//   });
-// });
+Template.unitPage.onRendered(function() {
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      //WARNING: SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS, CHECK AGAIN LATER
+      setTimeout(function() {
+        $('.ui.embed').embed();
+        $('.unit-tabs .item').tab();
+        // set first tab as active
+        $("[data-tab=1]").addClass('active');
+      }, 20);
+
+
+    }
+  });
+});
 
 Template.unitPage.onRendered(function() {
   Tracker.autorun(function() {

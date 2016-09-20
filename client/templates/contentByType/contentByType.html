@@ -1,7 +1,8 @@
 <template name="contentByType">
   {{#let isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId}}
     {{#each content}}
-      <div id="unitTab{{increaseByOne @index}}" class="col s12">
+      <div class="ui tab" data-tab="{{increaseByOne @index}}">
+        <!-- <div id="unitTab{{increaseByOne @index}}"> -->
         {{#if isType 'unitSection'}}
           {{#each subContent}}
             {{#if isType 'text'}}
@@ -15,20 +16,17 @@
               <img class="responsive-img" src="../images/units/{{imgURL}}">
             {{/if}}
             {{#if isType 'remoteImage'}}
-              <div class="section center-align">
-                <img class="responsive-img" style="max-height: 300px;" src="{{remoteImgURL}}">
-              </div>
+              <img class="ui centered big fluid image" src="{{remoteImgURL}}">
             {{/if}}
             {{#if isType 'youtube'}}
-              <div class="section">
-                <div class="video-container no-controls">
-                  <iframe width="853" height="480" margin-bottom="100" src="//www.youtube.com/embed/{{youtubeVidID}}?rel=0;autohide=1" frameborder="0" allowfullscreen></iframe>
-                </div>
-              </div>
+              <div class="ui centered embed" data-source="youtube" data-id="{{youtubeVidID}}" style="max-width: 600px;"></div>
             {{/if}}
+            <!--  WARNING: REMOVE CSS AFTER REMOVING MATERIALIZE -->
+            <div class="ui hidden divider" style="visibility: hidden;"></div>
           {{/each }}
         {{/if}}
         {{#if isType 'unitEvaluationSection'}}
+          <div class="ui hidden divider" style="visibility: hidden;"></div>
           {{#if evaluationIsType 'exerciseRadioButton'}}
 
             {{> exerciseRadioButton unitId=unitId question=question options=options}}
@@ -63,6 +61,7 @@
               {{> userConfirmation}}
             {{/if}}
           {{/if}}
+          <div class="ui hidden divider" style="visibility: hidden;"></div>
         {{/if}}
       </div>
     {{/each }}
@@ -99,11 +98,11 @@
 </template>
 <template name="exerciseRadioButton">
   {{#mathjax}}
-<p>
-    {{#markdown}}
-      {{question}}
-    {{/markdown}}
-</p>
+    <p>
+      {{#markdown}}
+        {{question}}
+      {{/markdown}}
+    </p>
   {{/mathjax}}
   <form id="exerciseRadioButtonForm" action="#">
     {{#if currentUser}}

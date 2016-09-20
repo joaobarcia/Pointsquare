@@ -7,10 +7,14 @@
           <i class="right play icon"></i>
         </div>
       {{else}}
-        <div class="ui primary tiny button set-goal">
-          Set as goal
-          <i class="right location arrow icon"></i>
-        </div>
+        {{#unless isLoading}}
+          <div class="ui primary tiny button set-goal">
+            Set Unit as goal
+            <i class="right location arrow icon"></i>
+          </div>
+        {{else}}
+          {{> smallLoading}}
+        {{/unless}}
       {{/if}}
     {{else}}
       <div class="ui disabled tiny button">
