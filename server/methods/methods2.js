@@ -28,6 +28,7 @@ var TOLERANCE = 0.01;
 
 var SOLIDITY_TOLERANCE = 0.09;
 READY = 0.5;
+STRICT_READY = 0.85;
 NOT_READY = 0.5;
 
 is_in_array = function(array,value){
@@ -172,40 +173,27 @@ set_SS = function(value,node_id,user_id) {
 compute_state = function(node_id, user_id, update=false) {
     var node = Nodes.findOne(node_id);
     var type = node.type;
-    if(type == "exam"){
-        var contains = node.contains;
-        var norm = contains.length;
-        var score = 0;
-        var id;
-        for(var i in contains) {
-          id = contains[i];
-          score += get_state(id, user_id);
+    var state;
+    var weights = node.needs;
+    var bias = node.bias;
+    //if it's a microconcept, return its current state
+    if (Object.keys(weights).length === 0) {
+        if (node.type == "concept") {
+            state = get_state(node_id, user_id);
+        } else if (node.type == "content" || node.type == "exam") {
+            state = 1;
         }
-        return score / norm;
     }
-    else {
-      var state;
-      var weights = node.needs;
-      var bias = node.bias;
-      //if it's a microconcept, return its current state
-      if (Object.keys(weights).length === 0) {
-          if (node.type == "concept") {
-              state = get_state(node_id, user_id);
-          } else if (node.type == "content") {
-              state = 1;
-          }
-      }
-      else{
-          var arg = bias;
-          for(id in weights){
-              arg += weights[id]*get_state(id,user_id);
-          }
-          state = sigmoid(arg);
-      }
-      //if update is true then write this value to the database
-      if(update){ set_state(state, node_id, user_id); }
-      return state;
+    else{
+        var arg = bias;
+        for(id in weights){
+            arg += weights[id]*get_state(id,user_id);
+        }
+        state = sigmoid(arg);
     }
+    //if update is true then write this value to the database
+    if(update){ set_state(state, node_id, user_id); }
+    return state;
 };
 
 reset_user = function(user_id) {
@@ -222,17 +210,13 @@ reset_user = function(user_id) {
     }
 };
 
-//todos os nodos acessíveis por um grau de needed_by ou contained_in
+//todos os nodos acessíveis por um grau de needed_by
 find_forward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
         var node = Nodes.findOne(node_id);
         var needed_by = node.needed_by;
         for (var id in needed_by) {
-          layer[id] = true;
-        }
-        var contained_in = node.contained_in;
-        for (var id in contained_in) {
           layer[id] = true;
         }
     }
@@ -289,18 +273,13 @@ find_full_forward_tree = function(node_ids) {
     return tree;
 };
 
-//todos os nodos acessíveis por needs ou contains
+//todos os nodos acessíveis por needs
 find_backward_layer = function(nodes) {
     var layer = {};
     for (var node_id in nodes) {
         var node = Nodes.findOne(node_id);
         var weights = node.needs;
         for (var id in weights) {
-            layer[id] = true;
-        }
-        var contains = node.contains;
-        for (var i in contains) {
-            var id = contains[i];
             layer[id] = true;
         }
     }
@@ -389,7 +368,7 @@ find_missing_subtree = function(node_ids,user_id) {
     return tree;
 };
 
-//retorna todos os nodos acessíveis por um grau de needs, needed_by, contained_in ou contains
+//retorna todos os nodos acessíveis por um grau de needs, needed_by
 find_adjacent_nodes = function(node_ids){
     var adjacent_nodes = {};
     var backward_layer = find_backward_layer(node_ids);
@@ -483,10 +462,8 @@ create_content = function(parameters) {
         description: "",
         content: [],
         needs: {},
-        requirements: {},
-        language: null,
+        needed_by: {},
         grants: {},
-        contained_in: {},
         authors: {},
         likes: 0,
         dislikes: 0,
@@ -518,7 +495,6 @@ create_concept = function(parameters) {
         granted_by: {},
         needed_by: {},
         needs: {},
-        requirements: {},
         authors: {}
     });
     if (!_.isEmpty(parameters)) {
@@ -544,6 +520,7 @@ create_exam = function(parameters) {
         name: "",
         description: "",
         contains: [],
+        needs: {},
         authors: {},
         likes: 0,
         dislikes: 0,
@@ -567,20 +544,29 @@ create_exam = function(parameters) {
 };
 
 full_create = function(p) {
+    var needs;
     if (p.type == "concept") {
         var id = create_concept(p.parameters);
-        var needs = p.needs;
+        needs = p.needs;
         if(needs){ add_needs(id, needs); }
     } else if (p.type == "content") {
         var id = create_content(p.parameters);
         var grants = p.grants;
         if(grants){ add_grants(id, grants); }
-        var needs = p.needs;
+        needs = p.needs;
         if(needs){ add_needs(id, needs); }
     } else if (p.type == "exam") {
         var id = create_exam(p.parameters);
         var contains = p.contains;
-        if(contains){ add_contains(id, contains); }
+        if(contains){
+          var update = {}; update.contains = contains;
+          Nodes.update(id,{$set:update});
+          needs = {};
+          for(var i in contains){
+            needs[contains[i]]=true;
+          }
+          add_needs(id, needs);
+        }
     }
     var users = Meteor.users.find().fetch();
     for (var i in users){
@@ -665,53 +651,33 @@ edit_grants = function(node_id,new_grants){
     Nodes.update({_id: node_id},{ $set: {grants: new_grants} });
 };
 
-add_contains = function(exam_id,exercises){
-    var update = {contains: exercises};
-    Nodes.update({_id: exam_id},{
-        $set: update
+edit_contains = function(exam_id,contains){
+    var exam = Nodes.findOne(exam_id);
+    Nodes.update({_id: exam_id},{ $set: {contains: contains} });
+    var new_concepts = {};
+    for(var i in contains){
+      new_concepts[contains[i]]=true;
+    }
+    var dropped_concepts = {};
+    var inserted_concepts = {};
+    var old_concepts = exam.needs;
+    //encontrar os conceitos abandonados e retirar as suas referências correspondentes
+    for(var id in old_concepts){
+        var concept = Nodes.findOne(id);
+        if(!new_concepts[id]){
+            remove_from_field(id,"needed_by",exam_id);
+        }
+    }
+    var weights = compute_weights(new_concepts,"and");
+    var needs = weights.weights;
+    var bias = weights.bias;
+    Nodes.update({_id:exam_id},{$set:
+      { needs: needs, bias: bias }
     });
-    for (var i in exercises) {
-        var id = exercises[i];
-        var contained_in = Nodes.findOne(id).contained_in;
-        contained_in[exam_id] = true;
-        update = {
-            contained_in: contained_in
-        };
-        Nodes.update({
-            _id: id
-        }, {
-            $set: update
-        });
+    for(var id in new_concepts){
+        var concept = Nodes.findOne(id);
+        add_to_field(id,"needed_by",exam_id,true);
     }
-}
-
-edit_contains = function(exam_id,new_contains){
-    var old_contains = Nodes.findOne(exam_id).contains;
-    var id;
-    var contained_in;
-    for(var i in old_contains){
-      id = old_contains[i];
-      if(!is_in_array(new_contains,id)){
-        contained_in = Nodes.findOne(id).contained_in;
-        delete contained_in[exam_id];
-        Nodes.update({
-            _id: id
-        }, {
-            $set: { contained_in: contained_in }
-        });
-      }
-    }
-    for(var i in new_contains){
-      id = new_contains[i];
-      var contained_in = Nodes.findOne(id).contained_in;
-      contained_in[exam_id] = i;
-      Nodes.update({
-          _id: id
-      }, {
-          $set: { contained_in: contained_in }
-      });
-    }
-    Nodes.update({_id: exam_id},{ $set: {contains: new_contains} });
 };
 
 remove_exam = function(exam_id){
@@ -757,6 +723,15 @@ add_needs = function(node_id,needs){
     var type = node.type;
     if(type == "or" || type == "and" || type == "parand"){
         return "error";//ERROR
+    }
+    else if(type == "exam"){
+        sublinks = compute_weights(needs,"and");
+        Nodes.update({_id:node_id},{$set:
+          {needs: sublinks.weights, bias:sublinks.bias, requirements: or_id}
+        });
+        for(var id in needs){
+          add_to_field(id,"needed_by",node_id,true);
+        }
     }
     else if(type == "concept"){
         //o próprio nodo de conceito é uma porta OR que agrupa os diferentes ANDs dos pré-requesitos
@@ -929,21 +904,32 @@ change_language_requisite = function(content_id,new_language_id){
 
 //retira um elemento de um objecto dentro dum nodo
 remove_from_field = function(node_id, field_name, key){
-    var object = Nodes.findOne(node_id)[field_name];
-    delete object[key];
-    var update = {};
-    update[field_name] = object;
-    Nodes.update(node_id,{$set:update});
+    var node = Nodes.findOne(node_id);
+    if(node){
+      var object = node[field_name];
+      if(typeof object == "object"){
+        delete object[key];
+        var update = {};
+        update[field_name] = object;
+        Nodes.update(node_id,{$set:update});
+      }
+    }
 }
 //A-OK
 
 //modifica um elemento de um objecto dentro dum nodo
 add_to_field = function(node_id, field_name, key, value){
-    var object = Nodes.findOne(node_id)[field_name];
-    object[key] = value;
-    var update = {};
-    update[field_name] = object;
-    Nodes.update(node_id,{$set:update});
+    var node = Nodes.findOne(node_id);
+    if(node){
+      var object = node[field_name];
+      if(typeof object != "object"){
+        object = {};
+      }
+      object[key] = value;
+      var update = {};
+      update[field_name] = object;
+      Nodes.update(node_id,{$set:update});
+    }
 }
 //A-OK
 
@@ -1141,6 +1127,21 @@ change_states = function(state,user_id){
     forward_update(state,user_id);
 };
 
+change_known_languages = function(known_languages,user_id){
+    var all_languages = Nodes.find({isLanguage:true}).fetch();
+    var state = {};
+    for(var i in all_languages){
+      var language_id = all_languages[i]._id;
+      if(known_languages[language_id]){ state[language_id] = 1; }
+      else{ state[language_id] = 0; }
+    }
+    for(var id in state){
+        set_state(state[id],id,user_id);
+        lock_state(id,user_id);
+    }
+    forward_update(state,user_id);
+};
+
 change_state = function(state,node_id,user_id){
     var states = {}; states[node_id] = state;
     change_states(states,user_id);
@@ -1158,7 +1159,6 @@ simulate = function(target, user_id) {
     var state = {};
     var needs = {};
     var type = {};
-    var contains = {};
     var locked = {};
     for (var order in tree) {
         var layer = tree[order];
@@ -1170,7 +1170,6 @@ simulate = function(target, user_id) {
             needs[node_id]["weights"] = node.needs;
             needs[node_id]["bias"] = node.bias;
             type[node_id] = node.type;
-            contains[node_id] = node.contains;
         }
     }
     //compute maximum activations
@@ -1371,30 +1370,16 @@ simulate = function(target, user_id) {
               needs[node_id].weights = node.needs;
               needs[node_id].bias = node.bias;
               type[node_id] = node.type;
-              contains[node_id] = node.contains;
             }
-            if(type[node_id] == "exam"){
-              var exercises = contains[node_id];
-              var norm = exercises.length;
-              var score = 0;
-              var id;
-              for(var i in exercises) {
-                id = exercises[i];
-                score += get_state(id, user_id);
-              }
-              state[node_id] = score / norm;
+            var weights = needs[node_id].weights;
+            var arg = needs[node_id].bias;
+            if (Object.keys(weights).length == 0) {
+                continue;
             }
-            else{
-              var weights = needs[node_id].weights;
-              var arg = needs[node_id].bias;
-              if (Object.keys(weights).length == 0) {
-                  continue;
-              }
-              for (var subnode_id in weights) {
-                  arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
-              }
-              state[node_id] = sigmoid(arg);
+            for (var subnode_id in weights) {
+                arg += weights[subnode_id] * (state[subnode_id] != null? state[subnode_id] : get_state(subnode_id,user_id));
             }
+            state[node_id] = sigmoid(arg);
         }
     }
     return state;
@@ -1595,20 +1580,7 @@ find_orb = function(node_ids,user_id) {
         }
         var needed_by = node.needed_by;
         for(var id in needed_by){
-            if( !(id in orb) ){ orb[id] = true/*false*/; }
-        }
-        var contains = node.contains;
-        if(typeof contains !== "undefined"){
-            for(var i in contains){
-              var id = contains[i];
-              if( !(id in orb) ){ orb[id] = true; }
-            }
-        }
-        var contained_in = node.contained_in;
-        if(typeof contained_in !== "undefined"){
-            for(var id in contained_in){
-              if( !(id in orb) ){ orb[id] = true; }
-            }
+            if( !(id in orb) ){ orb[id] = true; }
         }
     }
     return orb;
@@ -1635,10 +1607,10 @@ find_missing_bush = function(node_ids,user_id) {
             if( type == "content" && !bag[id] ){
                 bush[bush.length-1][id] = state;
                 bag[id] = true;
-                if( state < READY ){ to_keep[id] = true; }
+                if( state < STRICT_READY ){ to_keep[id] = true; }
             }
             else if( type != "content" && !bag[id] ){
-                if(state < READY){
+                if(state < STRICT_READY){
                   bush[bush.length-1][id] = state;
                   bag[id] = true;
                   to_keep[id] = current_layer[id];
@@ -1674,6 +1646,9 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
           if(tests.failure){ return tests.failure; }
         }
     }
+    console.log("notests");
+    console.log("missing bush:");
+    console.log(bush);
     for(var n in bush){
         var layer = bush[n];
         for(var id in layer){
@@ -1687,13 +1662,14 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
                 for(var altered_id in simulation){
                     var change = simulation[altered_id] - get_state(altered_id,user_id);
                     var is_in_bush = ids[altered_id];
-                    if(change > 0.1 && is_in_bush){
+                    if(change > SOLIDITY_TOLERANCE && is_in_bush){
                       return id;
                     }
                 }
             }
         }
     }
+    console.log("nopath");
 }
 
 
@@ -1761,10 +1737,10 @@ Meteor.methods({
     var languages = Nodes.find({isLanguage:true}).fetch();
     for(var i in languages){
       var id = languages[i]._id;
-      knownLanguages[id] = get_state(id,userID);
+      knownLanguages[id] = get_state(id,userID)>0.5;
     }
     reset_user(userID);
-    change_states(knownLanguages,userID);
+    change_known_languages(knownLanguages,userID);
     var goalId = Meteor.users.findOne(userID).goal;
     if(goalId){
       var goal = {}; goal[goalId] = true;
@@ -1791,14 +1767,6 @@ Meteor.methods({
   },
 
   setGoal: function(node_id, user_id, not_in = {}){
-      /*var goalNode = Nodes.findOne(node_id);
-      var goalType = goalNode.type;
-      if(goalType == "exam"){
-        var goal = node.contains;
-      }
-      else{
-        var goal = {}; goal[node_id] = true;
-      }*/
       var goal = {}; goal[node_id] = true;
       var unit = find_useful_content(goal,user_id,not_in);
       if(unit !== null && typeof unit !== "undefined"){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
@@ -1812,7 +1780,6 @@ Meteor.methods({
   submitExam: function(answers,user_id){
       for(var id in answers){
           var result = precompute(id,user_id);
-          //console.log(result);
           if(answers[id]){
             succeed(result,user_id);
           }
@@ -1840,6 +1807,10 @@ Meteor.methods({
 
   search: function(ids,linkType){
     return search(ids,linkType);
+  },
+
+  changeKnownLanguages: function(languages,userId){
+    change_known_languages(languages,userId);
   }
 
 });

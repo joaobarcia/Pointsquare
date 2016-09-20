@@ -36,7 +36,7 @@ Template.dashboard.events({
     }
 
     var userId = Meteor.userId();
-    Meteor.call("changeStates", knownLanguagesAsBag, userId, function(error, result) {
+    Meteor.call("changeKnownLanguages", knownLanguagesAsBag, userId, function(error, result) {
       if (error) {
         console.log("error", error);
       }
