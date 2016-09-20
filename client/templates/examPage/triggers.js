@@ -10,14 +10,12 @@ function examExercisesAsSession() {
 };
 
 function succeedUnitInExam(unitId) {
-    console.log("true");
     var examResults = Session.get("examResults");
     examResults[unitId] = true;
     Session.set("examResults", examResults);
 };
 
 function failUnitInExam(unitId) {
-    console.log("false");
     var examResults = Session.get("examResults");
     examResults[unitId] = false;
     Session.set("examResults", examResults);
@@ -102,7 +100,10 @@ Template.examPage.events({
         // CALL LEARNING METHODS
         if (Meteor.userId()) {
             var examResults = Session.get("examResults");
-            Meteor.call("submitExam", examResults, Meteor.userId());
+            Session.set("isLoading",true);
+            Meteor.call("submitExam", examResults, Meteor.userId(), function(e,r){
+                Session.set("isLoading",false);
+            });
         }
 
     },

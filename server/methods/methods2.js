@@ -1785,12 +1785,18 @@ Meteor.methods({
   },
 
   submitExam: function(answers,user_id){
+      //actualizar primeiro as perguntas certas
+      var result;
       for(var id in answers){
-          var result = precompute(id,user_id);
           if(answers[id]){
+            result = precompute(id,user_id);
             succeed(result,user_id);
           }
-          else{
+      }
+      //e só em seguida os que falharam de modo a valorizar as falhas sobre os sucessos
+      for(var id in answers){
+          if(!answers[id]){
+            result = precompute(id,user_id);
             fail(result,user_id);
           }
       }
