@@ -991,10 +991,12 @@ add_requirement = function(node_id, concepts){
     //se for um conteúdo o nodo a que queremos adicionar este conjunto é o seu subnodo OR
     var is_content = node.type == "content";
     var needs_info = get_needs(node_id);
-    var has_sets = Object.keys(needs_info.sets).length;
+    var has_sets = Object.keys(needs_info.sets).length > 0;
     var has_language = needs_info.language != null;
     if(is_content){
         var needs;
+        var weights;
+        var bias;
         var or_id;
         //se o conteúdo ainda não tiver um OR criá-lo
         if(!has_sets){
@@ -1010,15 +1012,24 @@ add_requirement = function(node_id, concepts){
           //adicionar-lhes este conjunto de conceitos
           needs[and_id] = true;
           //recalcular os pesos do OR
-          var weights = compute_weights(needs,"or");
+          weights = compute_weights(needs,"or");
           needs = weights.weights;
-          var bias = weights.bias;
+          bias = weights.bias;
           Nodes.update({_id: or_id},{$set:{needs:needs,bias:bias}});
-          //fazer a referência ao OR no AND
-          add_to_field(and_id,"needed_by",or_id,true);
         }
+        //fazer a referência ao OR no AND
+        add_to_field(and_id,"needed_by",or_id,true);
+        //recalcular os pesos da unidade
+        needs = node.needs;
+        needs[or_id] = true;
+        weights = compute_weights(needs,"and");
+        needs = weights.weights;
+        bias = weights.bias;
+        Nodes.update(node_id,{$set:{needs:needs,bias:bias}});
+        //fazer a referência à unidade no OR
+        add_to_field(or_id,"needed_by",node_id,true);
     }
-    else{
+    else if(node.type == "concept"){
         //pegar nos diversos ANDs de requesitos
         var needs = node.needs;
         //adicionar-lhes este conjunto de conceitos
@@ -1114,7 +1125,7 @@ forward_update = function(node_ids, user_id) {
         for (var node_id in next_layer) {
             var state = update_state(node_id, user_id);
             //update_completion(node_id, user_id);
-            var node = Nodes.findOne(node_id);
+            //var node = Nodes.findOne(node_id);
         }
         current_layer = next_layer;
     }
@@ -1646,9 +1657,6 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
           if(tests.failure){ return tests.failure; }
         }
     }
-    console.log("notests");
-    console.log("missing bush:");
-    console.log(bush);
     for(var n in bush){
         var layer = bush[n];
         for(var id in layer){
@@ -1669,7 +1677,6 @@ find_useful_content = function(node_ids, user_id, not_in = {}){
             }
         }
     }
-    console.log("nopath");
 }
 
 
