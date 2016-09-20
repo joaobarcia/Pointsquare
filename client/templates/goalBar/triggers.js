@@ -46,7 +46,7 @@ Template.goalBar.events({
     Meteor.call('removeGoal', userId);
   },
   "click .reset-goal": function(event, template) {
-    event.preventDefault();
+    //event.preventDefault();
     var userId = Meteor.userId();
     Meteor.call('removeGoal', userId);
   }

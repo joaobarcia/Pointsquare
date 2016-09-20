@@ -17,7 +17,7 @@ Template.unitEdit.rendered = function() {
       };
       Session.set('tempContent', tempContent);
 
-      console.log('conceptEdit rendered > subs ready');
+      //console.log('conceptEdit rendered > subs ready');
       Meteor.globalFunctions.needsAsJSONSession();
       //grantsAsJSONSession();
 
@@ -50,8 +50,8 @@ Template.unitEdit.events({
       '_id': 'newSet-' + Math.random().toString(36).substr(2, 9),
       'contains': {}
     });
-    //console.log(uniqueId());
     Session.set('needsObject', needsObject);
+    //console.log(Session.get('needsObject'));
 
     //tempContent.splice(section, 1);
   },
@@ -292,16 +292,24 @@ AutoForm.hooks({
       //console.log(needsObject);
       _.forEach(needsObject, function(n) {
         var setId = n['_id'];
+        //console.log('setId:' + setId);
+        // WARNING SE SO DEVOLVER UM VALOR VEM UM NUMERO, TEM DE SE METER ARRAY
         var needsAsArrayOfId = $('#' + setId).selectize()[0].selectize.getValue();
+        //console.log('needsAsArrayOfId:' + needsAsArrayOfId);
         var needsMappedAsArrayofObjects = {};
         for (var i = 0; i < needsAsArrayOfId.length; i += 1) {
+          //console.log(i);
           needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
-        }
+        };
         if (_(setId).startsWith('newSet')) {
+          console.log("entrou no newSet");
+          console.log('meter novo need no node:' + nodeId);
+          console.log('com o array de objectos:' + needsMappedAsArrayofObjects);
+          console.log('primeiro elemento:' + needsMappedAsArrayofObjects[needsAsArrayOfId[0]]);
           Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
         } else {
           Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
-        }
+        };
       });
 
       // Handle deleted need sets
@@ -317,8 +325,8 @@ AutoForm.hooks({
           grantsMappedAsObject[doc.grants[i]] = true;
         }
       };
-      console.log(nodeId);
-      console.log(grantsMappedAsObject);
+      // console.log(nodeId);
+      // console.log(grantsMappedAsObject);
       Meteor.call('editGrants', nodeId, grantsMappedAsObject);
 
       // Handle NAME, DESCRIPTION AND CONTENT

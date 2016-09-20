@@ -12,16 +12,26 @@
       <div class="item">
         {{#if goalIsCompleted}}
           {{#if goalTypeIs 'concept'}}
-            <p>Good work! You have successfully learned
-            <strong>{{goalName}}</strong>!</p>
+            <h4 class="ui header">
+              <div class="sub header">Good work! You have successfully learned</div>
+              <div class="content">{{goalName}}</div>
+            </h4>
           {{/if}}
           {{#if goalTypeIs 'content'}}
-            <p>Good work! You are now ready to do
-            <a href="/{{goalType}}/{{goalId}}" class="reset-goal blue-text">{{goalName}}</a></p>
+            <h4 class="ui header">
+              <div class="sub header">Good work! You are now ready for</div>
+              <div class="content">
+                <a href="/{{goalType}}/{{goalId}}" class="reset-goal">{{goalName}}</a>
+              </div>
+            </h4>
           {{/if}}
           {{#if goalTypeIs 'exam'}}
-            <p>Good work! You are now ready to do
-            <a href="/{{goalType}}/{{goalId}}" class="reset-goal blue-text">{{goalName}}</a></p>
+            <h4 class="ui header">
+              <div class="sub header">Good work! You are now ready for</div>
+              <div class="content">
+                <a href="/{{goalType}}/{{goalId}}" class="reset-goal">{{goalName}}</a>
+              </div>
+            </h4>
           {{/if}}
         {{else}}
           <h4 class="ui header">
@@ -32,10 +42,12 @@
               </div>
             {{/if}}
             {{#if goalTypeIs 'content'}}
-              <a href="/content/{{goalId}}"><i class="book icon"></i>
-              <div class="content">
-                {{goalName}}
-              </div></a>
+              <a href="/content/{{goalId}}">
+                <i class="book icon"></i>
+                <div class="content">
+                  {{goalName}}
+                </div>
+              </a>
             {{/if}}
             {{#if goalTypeIs 'exam'}}
               <i class="write square icon"></i>
@@ -63,10 +75,15 @@
           {{/unless}}
         {{else}}
           {{#if goalTypeIs 'concept'}}
-          <a class="ui basic button reset-goal" href="{{pathFor 'search'}}">
-            <i class="search icon"></i>
-            Search new goal
-          </a>
+            <a class="ui basic button reset-goal" href="{{pathFor 'search'}}">
+              <i class="search icon"></i>
+              Search new goal
+            </a>
+          {{else}}
+            <a class="ui basic button reset-goal" href="/{{goalType}}/{{goalId}}">
+              <i class="location arrow icon"></i>
+              Go to goal
+            </a>
           {{/if}}
         {{/unless}}
       </div>

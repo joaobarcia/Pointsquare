@@ -41,7 +41,7 @@ Template.unitEdit.helpers({
             var unitEditDoc = {};
             unitEditDoc.name = Template.currentData().name;
             unitEditDoc.description = Template.currentData().description;
-            console.log(Template.currentData());
+            //console.log(Template.currentData());
 
             //unitEditDoc.requiredConcepts = _.pluck(Template.currentData().requires, 'rid');
             //unitEditDoc.grantedConcepts = _.pluck(Template.currentData().grants, 'rid');

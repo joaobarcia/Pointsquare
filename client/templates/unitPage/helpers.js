@@ -38,18 +38,20 @@ Template.relatedConcepts.helpers({
     return neededSetsOfConceptsArray;
   },
   subConceptsOf: function(setOfConceptsID) {
-    var setId = setOfConceptsID;
-    var subConcepts = {};
-    var needs = Session.get("needs");
-    if (typeof needs !== "undefined") {
-      var subConceptIds = Object.keys(needs[setId]);
-      var subConcepts = Nodes.find({
-        "_id": {
-          "$in": subConceptIds
-        }
-      }).fetch();
-    };
-    return subConcepts;
+    if (typeof setOfConceptsID !== "undefined" && setOfConceptsID !== null) {
+      var setId = setOfConceptsID;
+      var subConcepts = {};
+      var needs = Session.get("needs");
+      if (typeof needs[setId] !== "undefined" && needs[setId] !== null) {
+        var subConceptIds = Object.keys(needs[setId]);
+        var subConcepts = Nodes.find({
+          "_id": {
+            "$in": subConceptIds
+          }
+        }).fetch();
+      };
+      return subConcepts;
+    }
   },
   grantedConcepts: function() {
     var nodeId = FlowRouter.getParam('nodeId');

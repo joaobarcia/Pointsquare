@@ -106,29 +106,7 @@
 </div>
 </template>
 
-<template name="userConfirmation">
-<div class="section">
-{{#unless isLoading}}
-  {{#if currentUser}}
 
-  <div class="ui buttons understood-buttons">
-    <button class="ui positive button" id="understood">Yes</button>
-    <div class="or"></div>
-    <button class="ui negative button"  id="notUnderstood">No</button>
-  </div>
-  {{else}}
-    <div class="row center-align understood-buttons">
-      <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">I understood</a>
-      <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Didn't understand</a>
-    </div>
-  {{/if}}
-{{else}}
-  <div class="row center-align understood-buttons">
-    {{> smallLoading}}
-  </div>
-{{/unless}}
-</div>
-</template>
 <template name="relatedConcepts">
 <div class="card-action">
 <div class="row ">

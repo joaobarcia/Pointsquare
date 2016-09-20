@@ -99,9 +99,11 @@
 </template>
 <template name="exerciseRadioButton">
   {{#mathjax}}
-
-          {{#markdown}}<p class="section center-align">{{question}}</p>{{/markdown}}
-
+<p>
+    {{#markdown}}
+      {{question}}
+    {{/markdown}}
+</p>
   {{/mathjax}}
   <form id="exerciseRadioButtonForm" action="#">
     {{#if currentUser}}
@@ -109,7 +111,11 @@
         {{#each options}}
           <p class="center-align">
             <input name={{unitId}} class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton_{{unitId}}_{{@index}}" unit_id="{{unitId}}"/>
-            <label for="radioButton_{{unitId}}_{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{#mathjax}}{{#markdown}}{{label}}{{/markdown}}{{/mathjax}}</label>
+            <label for="radioButton_{{unitId}}_{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">
+              {{#mathjax}}
+                {{#markdown}}{{label}}{{/markdown}}
+              {{/mathjax}}
+            </label>
           </p>
         {{/each}}
       {{/let}}
@@ -117,7 +123,11 @@
       {{#each options}}
         <p class="center-align tooltipped" data-position="bottom" data-delay="20" data-tooltip="Login so we can follow your progress!">
           <input name="group1" class="{{isCorrectOption}}RadioButton" disabled="disabled" type="radio" id="radioButton{{@index}}"/>
-          <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">{{#mathjax}}{{#markdown}}{{label}}{{/markdown}}{{/mathjax}}</label>
+          <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">
+            {{#mathjax}}
+              {{#markdown}}{{label}}{{/markdown}}
+            {{/mathjax}}
+          </label>
         </p>
       {{/each}}
     {{/if}}
@@ -128,7 +138,36 @@
     {{/if}}
   </form>
 </template>
+<template name="userConfirmation">
+  <div class="center aligned ui grid">
+    {{#unless isLoading}}
+      {{#if currentUser}}
 
+        <div class="ui buttons understood-buttons">
+          <button class="ui positive button" id="understood">Understood</button>
+          <div class="or"></div>
+          <button class="ui negative button" id="notUnderstood">Not understood</button>
+        </div>
+      {{else}}
+        <div data-tooltip="Login so we can follow your progress!" data-inverted="" data-position="right center">
+          <div class="ui buttons understood-buttons">
+            <button class="ui disabled button">Understood</button>
+            <div class="or"></div>
+            <button class="ui disabled button">Not understood</button>
+          </div>
+        </div>
+        <!-- <div class="row center-align understood-buttons">
+          <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">I understood</a>
+          <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Didn't understand</a>
+        </div> -->
+      {{/if}}
+    {{else}}
+      <div class="row center-align understood-buttons">
+        {{> smallLoading}}
+      </div>
+    {{/unless}}
+  </div>
+</template>
 
 <!-- <template name="contentByType_materialize">
   {{#let isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId}}

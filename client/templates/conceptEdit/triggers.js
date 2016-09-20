@@ -21,7 +21,7 @@ Template.conceptEdit.rendered = function() {
 Template.conceptEditSelectBox.rendered = function() {
     this.autorun(() => {
         if (Template.instance().parent(1).subscriptionsReady()) {
-            console.log('conceptEditSelectBox rendered > subs ready');
+            //console.log('conceptEditSelectBox rendered > subs ready');
             Meteor.globalFunctions.applySelectizeCode();
         }
     });

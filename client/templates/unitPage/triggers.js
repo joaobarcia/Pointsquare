@@ -33,7 +33,8 @@ function succeedUnit() {
     Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
       var goalId = Meteor.user().goal;
       //do not accept this unit as a next unit towards goal
-      var neglectThisUnit = {}; neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
+      var neglectThisUnit = {};
+      neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
         Meteor.call("setGoal", goalId, Meteor.userId(), neglectThisUnit, function(e, r) {
           resetQuestionFeedback();
@@ -72,7 +73,8 @@ function failUnit() {
     Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {
       var goalId = Meteor.user().goal;
       //do not accept this unit as a next unit towards goal
-      var neglectThisUnit = {}; neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
+      var neglectThisUnit = {};
+      neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
         Meteor.call("setGoal", goalId, Meteor.userId(), neglectThisUnit, function(e, r) {
           if (r) {
@@ -109,21 +111,27 @@ Template.unitPage.onCreated(function() {
   });
 });
 
+// Template.unitPage.onRendered(function() {
+//   this.autorun(() => {
+//     if (this.subscriptionsReady()) {
+//       //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
+//       setTimeout(function() {
+//         $('ul.tabs').tabs();
+//         $('.tooltipped').tooltip({
+//           delay: 50
+//         });
+//       }, 20);
+//
+//
+//     }
+//   });
+// });
+
 Template.unitPage.onRendered(function() {
-  this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      //SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS IN MATERIALIZE, CHECK AGAIN LATER
-      setTimeout(function() {
-        $('ul.tabs').tabs();
-        $('.tooltipped').tooltip({
-          delay: 50
-        });
-      }, 20);
-
-
-    }
+  Tracker.autorun(function() {
+    $('[data-tooltip]').popup();
   });
-});
+})
 
 Template.unitContent.onCreated(function() {
   Session.set('failedUnitAndNoGoal', false);
