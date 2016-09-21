@@ -1,14 +1,13 @@
-function precompute(nodeId) {
-  Session.set("precalculation", "waiting");
+var precompute = function(nodeId) {
   if (Meteor.userId()) {
-    Meteor.call("precompute", nodeId, Meteor.userId(), function(e, r) {
-      Session.set("precalculation", r);
-      if (Session.get("outcome") == "success") {
-        succeedUnit();
-      } else if (Session.get("outcome") == "failure") {
-        failUnit();
-      }
-    });
+    Session.set("precalculation", "waiting");
+    var r = Meteor.globalFunctions.precompute(nodeId);
+    Session.set("precalculation", r);
+    if (Session.get("outcome") == "success") {
+      succeedUnit();
+    } else if (Session.get("outcome") == "failure") {
+      failUnit();
+    }
   };
 };
 
@@ -21,7 +20,7 @@ function resetQuestionFeedback() {
   $(".falseRadioButtonLabel").removeClass("red-text");
 };
 
-function succeedUnit() {
+var succeedUnit = function() {
   //definir que o utilizador já fez a sua escolha
   Session.set("outcome", "success");
   Session.set('isLoading', true);
@@ -35,14 +34,15 @@ function succeedUnit() {
       //do not accept this unit as a next unit towards goal
       var neglectThisUnit = {}; neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
-        Meteor.call("setGoal", goalId, Meteor.userId(), neglectThisUnit, function(e, r) {
-          resetQuestionFeedback();
-          FlowRouter.go('/content/' + Meteor.user().nextUnit);
-          Session.set('isLoading', false);
-          delete Session.keys["outcome"];
-          delete Session.keys["precalculation"];
-          precompute(FlowRouter.getParam('nodeId'));
-        });
+        var goal = {}; goal[goalId] = true;
+        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal,neglectThisUnit);
+        resetQuestionFeedback();
+        FlowRouter.go('/content/' + nextUnit);
+        Session.set('isLoading', false);
+        delete Session.keys["outcome"];
+        delete Session.keys["precalculation"];
+        precompute(FlowRouter.getParam('nodeId'));
+        Meteor.call("setGoal", goalId, nextUnit);
       } else {
         FlowRouter.go('/dashboard');
         Session.set('isLoading', false);
@@ -74,23 +74,27 @@ function failUnit() {
       //do not accept this unit as a next unit towards goal
       var neglectThisUnit = {}; neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
-        Meteor.call("setGoal", goalId, Meteor.userId(), neglectThisUnit, function(e, r) {
-          if (r) {
-            FlowRouter.go("/content/" + r);
-            resetQuestionFeedback();
-            precompute(FlowRouter.getParam('nodeId'));
-          } else {
-            FlowRouter.go("/dashboard");
-          }
-          //FlowRouter.go('goalPage');
-        });
+        var goal = {}; goal[goalId] = true;
+        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal,neglectThisUnit);
+        if(nextUnit){
+          Meteor.call("setGoal", goalId, nextUnit);
+          resetQuestionFeedback();
+          FlowRouter.go('/content/' + nextUnit);
+          Session.set('isLoading', false);
+          delete Session.keys["outcome"];
+          delete Session.keys["precalculation"];
+          precompute(FlowRouter.getParam('nodeId'));
+        }
+        else{
+          FlowRouter.go('/dashboard');
+        }
       } else {
+        Session.set('isLoading', false);
+        delete Session.keys["outcome"];
+        delete Session.keys["precalculation"];
         // otherwise prompt user about setting unit as goal
         Session.set('failedUnitAndNoGoal', true);
       }
-      Session.set('isLoading', false);
-      delete Session.keys["outcome"];
-      delete Session.keys["precalculation"];
     });
   };
   Session.set("triedUnits", {});
@@ -194,11 +198,10 @@ Template.unitPage.events({
     Session.set('isLoading', true);
     event.preventDefault();
     var nodeId = FlowRouter.getParam('nodeId');
-    console.log(nodeId);
-    Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
-      //FlowRouter.go('goalPage');
-      Session.set('isLoading', false);
-    });
+    var goal = {}; goal[nodeId] = true;
+    var nextUnit = Meteor.globalFunctions.findUsefulContent(goal);
+    Meteor.call("setGoal", nodeId, nextUnit);
+    Session.set('isLoading', false);
   }
 
 });
