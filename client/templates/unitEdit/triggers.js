@@ -1,9 +1,6 @@
 Template.unitEdit.rendered = function() {
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      $('.tooltipped').tooltip({
-        delay: 20
-      });
       var nodeId = FlowRouter.getParam('nodeId');
       var contentNode = Nodes.findOne({
         _id: nodeId

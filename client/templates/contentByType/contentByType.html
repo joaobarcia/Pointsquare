@@ -19,7 +19,11 @@
               <img class="ui centered big fluid image" src="{{remoteImgURL}}">
             {{/if}}
             {{#if isType 'youtube'}}
-              <div class="ui centered embed" data-source="youtube" data-id="{{youtubeVidID}}" style="max-width: 600px;"></div>
+              <div class="ui two column centered grid">
+                <div class="column">
+                  <div class="ui centered embed" data-source="youtube" data-id="{{youtubeVidID}}"></div>
+                </div>
+              </div>
             {{/if}}
             <!--  WARNING: REMOVE CSS AFTER REMOVING MATERIALIZE -->
             <div class="ui hidden divider" style="visibility: hidden;"></div>

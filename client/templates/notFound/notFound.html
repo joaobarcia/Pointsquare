@@ -1,16 +1,9 @@
 <template name="notFound">
-  <div class="card">
-    <div class="container">
-      <div class="section">
-        <h4 class="center-align">It seems you have landed on one of them nasty 404 page not found.</h4>
-
-      </div>
-      <div class="section">
-        <h3 class="center-align">Go back and
-          <a href={{pathFor 'search'}}>search</a>
-          some knowledge!</h3>
-      </div>
-      <img class="responsive-img" src="/images/poincare.jpg">
-    </div>
+  <div class="center aligned ui basic segment">
+      <h4 class="ui header">It seems you have landed on one of them nasty 404 page not found.</h4>
+      <img class="ui centered medium circular image" src="/images/poincare.jpg">
+      <h3 class="ui header">Go back and
+        <a href={{pathFor 'search'}}>search</a>
+        some knowledge!</h3>
   </div>
 </template>

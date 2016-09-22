@@ -90,13 +90,27 @@
               </i>
             </h4>
           </div>
-          <div class="col s6 right-align">
+          <!-- <div class="col s6 right-align">
             <a class='dropdown-button cyan-text right-align add-content' href='#!' data-activates='dropdown{{@index}}'>
               <i class="material-icons tiny">add_circle_outline</i>
               content</a>
+          </div> -->
+          <div class="ui compact menu">
+            <div class="ui simple dropdown item">
+              <i class="add circle icon"></i>Add Content
+              <i class="dropdown icon"></i>
+              <div class="menu">
+                <div class="item add-text" id="{{@index}}">
+                  <i class="font icon"></i>Text</div>
+                <div class="item add-video" id="{{@index}}">
+                  <i class="film icon"></i>Video</div>
+                <div class="item add-image" id="{{@index}}">
+                  <i class="image icon"></i>Image</div>
+              </div>
+            </div>
           </div>
         </div>
-        <ul id='dropdown{{@index}}' class='dropdown-content'>
+        <!-- <ul id='dropdown{{@index}}' class='dropdown-content'>
           <li>
             <a href="#!" class="cyan-text add-text" id="{{@index}}">text</a>
           </li>
@@ -108,7 +122,7 @@
           <li>
             <a href="#!" class="cyan-text add-image" id="{{@index}}">image</a>
           </li>
-        </ul>
+        </ul> -->
         <ul class="collection content-fields no-margin">
           {{#let sectionIndex=@index}}
             {{#each subContent}}

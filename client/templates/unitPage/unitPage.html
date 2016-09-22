@@ -1,11 +1,12 @@
 <template name="unitPage">
   <div class="template-unitPage">
     {{#with contentPage}}
+      {{> unitInfoBar}}
       {{> unitContent}}
-      {{> relatedConcepts grantedConcepts=grantedConcepts neededConcepts=neededConcepts }}
-      <div class="col s10">
+      <!-- {{> relatedConcepts grantedConcepts=grantedConcepts neededConcepts=neededConcepts }} -->
+      <!--<div class="col s10">
         <h3>{{name}}</h3>
-        <p>{{!-- <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> --}}
+        <p>{{! <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> }}
           <span class="grey-text">
             <p>by
               {{#each author in authorsInfo (authors)}}
@@ -18,7 +19,7 @@
           </span>
         </p>
       </div>
-      <div class="col s2 right-align">
+       <div class="col s2 right-align">
         {{#if isGodMode}}
           <a class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="left" data-delay="1" data-tooltip="Edit this unit." href="{{_id}}/edit">
             <i class="material-icons">create</i>
@@ -35,9 +36,27 @@
           </h6>
           <p class="pre">{{description}}</p>
         </div>
-      </div>
+      </div> -->
     {{/with}}
   </div>
+</template>
+<template name="unitInfoBar">
+
+  <div class="ui clearing segment">
+    <h3 class="ui header">{{name}}
+      <div class="sub header">{{description}}
+        by
+        {{#each author in authorsInfo (authors)}}
+          {{author.username}}
+        {{/each}}
+
+      </div>
+    </h3>
+    {{#if isGodMode}}
+      <a class="ui right floated button" href="/content/{{_id}}/edit">edit</a>
+    {{/if}}
+  </div>
+
 </template>
 <template name="unitContent">
   {{#unless failedUnitAndNoGoal}}
@@ -46,7 +65,7 @@
         {{> contentByType isUnitPage=true content=content}}
       </div>
     {{else}}
-      <div class="ui top attached tabular unit-tabs menu">
+      <div class="ui top attached tabular {{numberOfSections}} item unit-tabs menu">
         {{#each content}}
           {{#if isType 'unitSection'}}
             <a class="item" data-tab="{{increaseByOne @index}}">Part

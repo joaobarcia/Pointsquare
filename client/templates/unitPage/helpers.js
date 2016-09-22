@@ -9,6 +9,11 @@ Template.unitPage.helpers({
 });
 
 Template.unitContent.helpers({
+  'numberOfSections': function() {
+    const numbersToWord = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'sixteen'];
+    const numberOfSections = Template.currentData().content.length;
+    return numbersToWord[numberOfSections];
+  },
   'unitIsOneSectionAndNoExercise': function() {
     var unitContent = Template.currentData().content;
     var numberOfSections = _.filter(unitContent, {
