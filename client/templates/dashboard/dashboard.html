@@ -1,4 +1,155 @@
 <template name="dashboard">
+  <div class="ui center aligned grid">
+    <h5 class="ui header">Hi
+      {{currentUser.username}}, welcome to your dashboard</h5>
+  </div>
+  <div class="ui hidden divider"></div>
+  <div class="ui hidden divider"></div>
+  <div class="ui internally celled grid">
+    <div class="left aligned three wide column">
+      <div class="ui sticky">
+        <div class="ui fluid secondary vertical menu" id="dashboard-menu">
+          <a class="active item" id="settings">
+            User Settings
+          </a>
+          <a class="item" id="knowledge">
+            Knowledge
+          </a>
+          <a class="item" id="contributions">
+            Contributions
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="thirteen wide column" id="context">
+      <!--  WARNING: REMOVE INLINE CSS AFTER REMOVING MATERIALIZE-->
+      {{#if dashboardOptionIs 'settings'}}
+        <div class="row">
+          <h4 class="ui center aligned header">
+            <i class="icons">
+              <i class="user icon"></i>
+              <i class="corner setting icon"></i>
+            </i>
+            User Settings
+          </h4>
+          {{#if noLanguageSelected}}
+            <div class="ui info message">
+              <div class="header">
+                Select at least one language!
+              </div>
+              You must select the languages you know, so we can recommend you the right content.
+            </div>
+          {{/if}}
+          <div class="row">
+            <form class="ui form" name="user-settings">
+              <div class="six wide field">
+                <label>User name</label>
+                <input name="username" placeholder="User Name" type="text" value="{{currentUser.username}}">
+              </div>
+              <div class="field">
+                <label>Languages you know</label>
+                <div class="five fields">
+                  {{#each language in availableLanguages}}
+                    <div class="field">
+                      <div class="ui checkbox">
+                        <input type="checkbox" class="languageCheckbox" id="{{language._id}}" {{userKnowsLanguage (language._id)}}>
+                        <label for="{{language._id}}">{{language.name}}</label>
+                      </div>
+                    </div>
+                  {{/each}}
+                </div>
+
+              </div>
+              <div class="ui hidden divider"></div>
+              <button class="ui primary disabled button" id="submit-settings" type="submit">Save changes</button>
+            </form>
+          </div>
+        </div>
+      {{/if}}
+      {{#if dashboardOptionIs 'knowledge'}}
+        <div class="row">
+          <h4 class="ui center aligned header">
+            <i class="student icon"></i>
+            Knowledge
+          </h4>
+          <button class="ui floated right red circular icon button" id="resetUserKnowledge" data-tooltip="Reset your user knowledge" data-inverted="">
+            <i class="delete icon"></i>
+          </button>
+          <div class="ui very padded basic segment">
+            <div class="ui divided items">
+              {{#each knownConcepts}}
+                {{> conceptCard}}
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      {{/if}}
+      {{#if dashboardOptionIs 'contributions'}}
+        <div class="row">
+          <h4 class="ui center aligned header">
+            <i class="add circle icon"></i>
+            Contributions
+          </h4>
+          <div class="ui very padded basic segment">
+            {{> unitsFromAuthor}}
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  </div>
+  <!-- <div class="container">
+    <div class="row center">
+      <div class="section">
+        <h4>Hi
+          {{currentUser.username}}, this is your dashboard</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s8 offset-s2">
+        <div class="section center-align">
+          <h3>Check the languages you know</h3>
+          {{#each language in availableLanguages}}
+            <div class="col s3">
+              <input type="checkbox" class="languageCheckbox" id={{language._id}} {{userKnowsLanguage (language._id)}}/>
+              <label for={{language._id}}>{{language.name}}</label>
+            </div>
+          {{/each}}
+          <div class="col s3">
+            <a class="waves-effect waves-light btn-flat" id="submitKnownLanguages">submit</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="row">
+      <div class="col s8 offset-s2">
+        <div class="section center-align">
+          <h3>Concepts you know</h3>
+          <a class="waves-effect waves-light btn-flat red-text" id="resetUserKnowledge">
+            <i class="material-icons left">delete</i>reset your knowledge</a>
+          <div class="ui divided items">
+            {{#each knownConcepts}}
+              {{> conceptCard}}
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+    {{#if isGodMode}}
+      <div class="divider"></div>
+      <div class="row">
+        <div class="col s8 offset-s2">
+          <div class="section">
+            <h3 class="center-align">Lessons you created</h3>
+            {{> unitsFromAuthor}}
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  </div> -->
+</template>
+
+<!-- <template name="dashboard_materialize">
   <div class="container">
     <div class="row center">
       <div class="section">
@@ -49,4 +200,4 @@
       </div>
     {{/if}}
   </div>
-</template>
+</template> -->

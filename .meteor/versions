@@ -76,7 +76,6 @@ livedata@1.0.18
 localstorage@1.0.11
 logging@1.1.15
 markdown@1.0.10
-materialize:materialize@0.97.7
 matteodem:easy-search@2.0.0
 mdg:validation-error@0.2.0
 meteor@1.2.17

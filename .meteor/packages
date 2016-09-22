@@ -60,7 +60,6 @@ meteorhacks:kadira
 standard-minifier-js@1.1.8
 semantic:ui
 juliancwirko:postcss
-materialize:materialize
 fabienb4:autoform-semantic-ui
 useraccounts:semantic-ui
 webtempest:animate
