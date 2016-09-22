@@ -16,29 +16,40 @@ Template.goalBar.events({
   },
   "click .next-unit": function(event, template) {
     event.preventDefault();
+    var nodeId = FlowRouter.getParam('nodeId');
+    var unit = Meteor.user().nextUnit;
     var triedUnits = Session.get("triedUnits") || {};
-    var currentNextUnit = Meteor.user().nextUnit;
-    var goal = Meteor.user().goal;
-    Meteor.call("setGoal", goal, Meteor.userId(), triedUnits, function(e, r) {
-      if (r) {
-        triedUnits[r] = true;
+    if(unit == nodeId){
+      triedUnits[unit] = true;
+      Session.set("triedUnits", triedUnits);
+      var goalId = Meteor.user().goal;
+      var goal = {}; goal[goalId] = true;
+      Session.set('isLoading', true);
+      unit = Meteor.globalFunctions.findUsefulContent(goal,triedUnits);
+      if(unit){
+        FlowRouter.go('/content/' + unit);
+        Session.set('isLoading', false);
+        Meteor.call("setGoal",goalId,unit,Meteor.userId());
+      }
+      else{
+        //se não houver mais alternativas, voltar à primeira ou então avisar que não há hipóteses
+        var unit = Object.keys(triedUnits)[0];
+        Session.set("triedUnits", {});
+        FlowRouter.go('/content/' + unit);
+        Meteor.call("setGoal",goalId,unit,Meteor.userId());
+      }
+    }
+    else{
+      if (unit) {
+        FlowRouter.go('/content/' + unit);
+        triedUnits[unit] = true;
         Session.set("triedUnits", triedUnits);
         Session.set('isLoading', false);
-        FlowRouter.go('/content/' + r);
+        FlowRouter.go('/content/' + unit);
       } else {
-        triedUnits = {};
-        Meteor.call("setGoal", goal, Meteor.userId(), triedUnits, function(e2, r2) {
-          if (r2) {
-            triedUnits[r2] = true;
-            Session.set("triedUnits", triedUnits);
-            Session.set('isLoading', false);
-            FlowRouter.go('/content/' + r2);
-          } else {
-            console.log("No options found!");
-          }
-        });
+        Session.set("noOptionsFound", nodeId);
       }
-    });
+    }
   },
   "click #remove_goal": function(event, template) {
     event.preventDefault();

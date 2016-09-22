@@ -1,56 +1,37 @@
+WIDTH = 10;
+DEFAULT_BIAS = -WIDTH/2;
+
+var RATE = 0.1;
+const ADJUSTMENT = 2.;
+const MAX_STEPS = 10000;
+const MIN_STEPS = 100;
+const TOLERANCE = 0.01;
+
+const SOLIDITY_TOLERANCE = 0.09;
+const READY = 0.5;
+const STRICT_READY = 0.85;
+const NOT_READY = 0.5;
+
 //math functions
 sigmoid = function(x) {
     return 1.0 / (1 + Math.exp(-x));
 };
+//no cliente
 
 inverseSigmoid = function(x) {
     return -Math.log(x / (1 - x));
 };
+//no cliente
 
 box = function(x) {
     return x > 1 ? 1 : (x < 0 ? 0 : x);
 };
+//no cliente
 
 cut_negative = function(x) {
     return x >= 0 ? x : 0;
 };
-
-//ARG_READY = 2.5;
-//ARG_NOT_READY = -5;
-WIDTH = 10;//ARG_READY - ARG_NOT_READY;
-DEFAULT_BIAS = -WIDTH/2;
-
-var RATE = 0.1;
-var ADJUSTMENT = 2.;
-var MAX_STEPS = 10000;
-var MIN_STEPS = 100;
-var TOLERANCE = 0.01;
-
-var SOLIDITY_TOLERANCE = 0.09;
-READY = 0.5;
-STRICT_READY = 0.85;
-NOT_READY = 0.5;
-
-is_in_array = function(array,value){
-    return array.indexOf(value) > 0;
-}
-
-remove_ocurrences_from_array = function(array,value){
-    while(true){
-      var i = array.indexOf(value);
-      if(i < 0){ return array; }
-      array.splice(i,1);
-    }
-}
-
-replace_ocurrences_in_array = function(array,old_value,new_value){
-    if(old_value == new_value){ return array; }
-    while(true){
-      var i = array.indexOf(old_value);
-      if(i < 0){ return array; }
-      array.splice(i,1,new_value);
-    }
-}
+//no cliente
 
 compute_weights = function(concepts,operator) {
     var weights = {};
@@ -156,7 +137,7 @@ unlock_state = function(node_id,user_id) {
 
 is_locked = function(node_id,user_id) {
     return get_personal_property("locked",false,node_id,user_id);
-}
+};
 
 set_SS = function(value,node_id,user_id) {
     var state = get_state(node_id,user_id);
@@ -318,7 +299,6 @@ find_backward_tree = function(node_ids) {
     }
     return tree;
 };
-
 
 //find backward tree (all nodes that are within reach of incoming activation links)
 find_full_backward_tree = function(node_ids) {
@@ -1773,11 +1753,15 @@ Meteor.methods({
     fail(result,user_id);
   },
 
-  setGoal: function(node_id, user_id, not_in = {}){
+  /*setGoal: function(node_id, user_id, not_in = {}){
       var goal = {}; goal[node_id] = true;
       var unit = find_useful_content(goal,user_id,not_in);
       if(unit !== null && typeof unit !== "undefined"){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
       return unit;
+  },*/
+
+  setGoal: function(node_id, unit, user_id){
+      if(unit !== null && typeof unit !== "undefined"){ Meteor.users.update({_id:user_id},{$set:{goal:node_id,nextUnit:unit}}); }
   },
 
   removeGoal: function(user_id){
