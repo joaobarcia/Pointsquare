@@ -4,15 +4,16 @@ Template.goalBar.onRendered(function() {
 
 Template.goalBar.events({
   'click .start-learning': function(event, template) {
+    console.log('click .start-learning');
     event.preventDefault();
-    var nodeId = Meteor.user().goal;
-    Meteor.call("setGoal", nodeId, Meteor.userId(), function(e, r) {
-      if (r) {
-        FlowRouter.go('/content/' + r);
-      } else {
-        Session.set("noOptionsFound", nodeId);
-      }
-    });
+    const nodeId = template.data._id;
+    const nextUnitId = Meteor.user().nextUnit;
+    console.log(nextUnitId);
+    if (typeof nextUnitId !== 'undefined' && nextUnitId !== null) {
+      FlowRouter.go('/content/' + nextUnitId);
+    } else {
+      Session.set("noOptionsFound", nodeId);
+    }
   },
   "click .next-unit": function(event, template) {
     event.preventDefault();

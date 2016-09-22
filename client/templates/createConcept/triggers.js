@@ -29,7 +29,7 @@ AutoForm.hooks({
                 //          (https://github.com/aldeed/meteor-autoform/issues/1116)
                 window.location.reload();
 
-                 Materialize.toast('concept successfully created!', 3000);
+                 //Materialize.toast('concept successfully created!', 3000);
                  //FlowRouter.go('search');
              });
             this.done();

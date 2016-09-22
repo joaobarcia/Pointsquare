@@ -32,37 +32,39 @@
             </i>
             User Settings
           </h4>
-          {{#if noLanguageSelected}}
-            <div class="ui info message">
-              <div class="header">
-                Select at least one language!
-              </div>
-              You must select the languages you know, so we can recommend you the right content.
-            </div>
-          {{/if}}
-          <div class="row">
-            <form class="ui form" name="user-settings">
-              <div class="six wide field">
-                <label>User name</label>
-                <input name="username" placeholder="User Name" type="text" value="{{currentUser.username}}">
-              </div>
-              <div class="field">
-                <label>Languages you know</label>
-                <div class="five fields">
-                  {{#each language in availableLanguages}}
-                    <div class="field">
-                      <div class="ui checkbox">
-                        <input type="checkbox" class="languageCheckbox" id="{{language._id}}" {{userKnowsLanguage (language._id)}}>
-                        <label for="{{language._id}}">{{language.name}}</label>
-                      </div>
-                    </div>
-                  {{/each}}
+          <div class="ui very padded basic segment">
+            {{#if noLanguageSelected}}
+              <div class="ui info message">
+                <div class="header">
+                  Select at least one language!
                 </div>
-
+                You must select the languages you know, so we can recommend you the right content.
               </div>
-              <div class="ui hidden divider"></div>
-              <button class="ui primary disabled button" id="submit-settings" type="submit">Save changes</button>
-            </form>
+            {{/if}}
+            <div class="row">
+              <form class="ui form" name="user-settings">
+                <div class="six wide field">
+                  <label>User name</label>
+                  <input name="username" placeholder="User Name" type="text" value="{{currentUser.username}}">
+                </div>
+                <div class="field">
+                  <label>Languages you know</label>
+                  <div class="five fields">
+                    {{#each language in availableLanguages}}
+                      <div class="field">
+                        <div class="ui checkbox">
+                          <input type="checkbox" class="languageCheckbox" id="{{language._id}}" {{userKnowsLanguage (language._id)}}>
+                          <label for="{{language._id}}">{{language.name}}</label>
+                        </div>
+                      </div>
+                    {{/each}}
+                  </div>
+
+                </div>
+                <div class="ui hidden divider"></div>
+                <button class="ui primary disabled button" id="submit-settings" type="submit">Save changes</button>
+              </form>
+            </div>
           </div>
         </div>
       {{/if}}
@@ -72,10 +74,10 @@
             <i class="student icon"></i>
             Knowledge
           </h4>
-          <button class="ui floated right red circular icon button" id="resetUserKnowledge" data-tooltip="Reset your user knowledge" data-inverted="">
-            <i class="delete icon"></i>
-          </button>
           <div class="ui very padded basic segment">
+            <button class="ui floated right red circular icon button" id="resetUserKnowledge" data-tooltip="Reset your user knowledge" data-inverted="">
+              <i class="delete icon"></i>
+            </button>
             <div class="ui divided items">
               {{#each knownConcepts}}
                 {{> conceptCard}}

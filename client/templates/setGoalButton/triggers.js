@@ -9,17 +9,17 @@ Template.setGoalButton.events({
       Meteor.call("setGoal", nodeId, unit, Meteor.userId());
     }
     else{
-      Materialize.toast('Unfortunately there is no content to reach this goal yet', 3000)
+      //Materialize.toast('Unfortunately there is no content to reach this goal yet', 3000)
+      console.log("NO CONTENT YET");
       $(this).prop('disabled', true);
     }
   },
   'click .start-learning': function(event, template) {
-    console.log('click .start-learning');
     event.preventDefault();
-    var nodeId = template.data._id;
-    var unit = Meteor.user().nextUnit;
-    if (unit) {
-      FlowRouter.go('/content/' + unit);
+    const nodeId = template.data._id;
+    const nextUnitId = Meteor.user().nextUnit;
+    if (typeof nextUnitId !== 'undefined' && nextUnitId !== null) {
+      FlowRouter.go('/content/' + nextUnitId);
     } else {
       Session.set("noOptionsFound", nodeId);
     }
