@@ -1,59 +1,28 @@
 <template name="unitPage">
   <div class="template-unitPage">
+
     {{#with contentPage}}
+    {{> unitContent}}
       {{> unitInfoBar}}
-      {{> unitContent}}
       <!-- {{> relatedConcepts grantedConcepts=grantedConcepts neededConcepts=neededConcepts }} -->
-      <!--<div class="col s10">
-        <h3>{{name}}</h3>
-        <p>{{! <img src="../images/avatars/deslingo.jpg" alt=" " class="circle responsive-img" id="avatar-thumbnail"> }}
-          <span class="grey-text">
-            <p>by
-              {{#each author in authorsInfo (authors)}}
-                {{author.username}}
-              {{/each}}
-            </p>
-            <p>
-              {{readableDate created_on}}
-            </p>
-          </span>
-        </p>
-      </div>
-       <div class="col s2 right-align">
-        {{#if isGodMode}}
-          <a class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="left" data-delay="1" data-tooltip="Edit this unit." href="{{_id}}/edit">
-            <i class="material-icons">create</i>
-          </a>
-        {{else}}
-        {{/if}}
-      </div>
-      <div class="row">
-        <div class="col s12">
-          <h6 class="grey-text">
-            <span class="tooltipped" data-position="top" data-delay="1" data-tooltip="{{views}} people have done this lesson">
-              <i class="tiny material-icons data-icons ">done</i>
-              {{views}}</span>
-          </h6>
-          <p class="pre">{{description}}</p>
-        </div>
-      </div> -->
     {{/with}}
   </div>
 </template>
 <template name="unitInfoBar">
 
   <div class="ui clearing segment">
-    <h3 class="ui header">{{name}}
-      <div class="sub header">{{description}}
+    <h2 class="ui header">{{name}}
+      <div class="sub header">
         by
         {{#each author in authorsInfo (authors)}}
           {{author.username}}
         {{/each}}
-
+        {{readableDate created_on}}
       </div>
-    </h3>
+    </h2>
+    <p>{{description}}</p>
     {{#if isGodMode}}
-      <a class="ui right floated button" href="/content/{{_id}}/edit">edit</a>
+      <!-- <a class="ui right floated button" href="/content/{{_id}}/edit">edit</a> -->
     {{/if}}
   </div>
 

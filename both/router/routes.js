@@ -1,3 +1,10 @@
+FlowRouter.subscriptions = function() {
+  this.register('nodes', Meteor.subscribe('nodes'));
+  this.register('personal', Meteor.subscribe('personal'));
+  this.register('userNames', Meteor.subscribe('userNames'));
+  this.register('user', Meteor.subscribe('user', Meteor.userId()));
+};
+
 FlowRouter.notFound = {
   action: function() {
     BlazeLayout.render("mainLayout", {
@@ -80,17 +87,20 @@ FlowRouter.route('/dashboard', {
 FlowRouter.route('/content/:nodeId', {
   name: 'unitPage',
   action: function(params) {
-    // if node exists, display page
-    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
-      BlazeLayout.render("mainLayout", {
-        main: "unitPage"
-      })
-    } else {
-      // else show notFound
-      BlazeLayout.render("mainLayout", {
-        main: "notFound"
-      });
-    };
+    BlazeLayout.render("mainLayout", {
+      main: "unitPage"
+    })
+    // // if node exists, display page
+    // if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+    //   BlazeLayout.render("mainLayout", {
+    //     main: "unitPage"
+    //   })
+    // } else {
+    //   // else show notFound
+    //   BlazeLayout.render("mainLayout", {
+    //     main: "notFound"
+    //   });
+    // };
   }
 });
 

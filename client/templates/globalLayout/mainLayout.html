@@ -1,10 +1,17 @@
 <template name="mainLayout">
   {{> _header}}
+
   <div class="pusher">
     <div class="ui white main container">
+      {{#if subsReady}}
       {{>Template.dynamic template=main}}
+      {{else}}
+      {{> smallLoading}}
+
+      {{/if}}
     </div>
   </div>
+
   {{#transition wrap="true" in="slideInUp" out="slideOutDown"}}
     {{#if goalExists}}
       {{> goalBar}}

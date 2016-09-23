@@ -24,8 +24,9 @@ var succeedUnit = function() {
   //definir que o utilizador já fez a sua escolha
   Session.set("outcome", "success");
   Session.set('isLoading', true);
-  soundSuccess.play();
-  var $toastSuccess = $('<span class="green-text">Good job!</span>');
+  console.log('success ', +FlowRouter.getParam('nodeId'));
+  //soundSuccess.play();
+  //var $toastSuccess = $('<span class="green-text">Good job!</span>');
   //Materialize.toast($toastSuccess, 2000);
   //se ainda não tiverem chegado os resultados do servidor, não fazer nada
   if (Session.get("precalculation") != "waiting") {
@@ -35,8 +36,9 @@ var succeedUnit = function() {
       var neglectThisUnit = {};
       neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
-        var goal = {}; goal[goalId] = true;
-        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal,neglectThisUnit);
+        var goal = {};
+        goal[goalId] = true;
+        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
         resetQuestionFeedback();
         FlowRouter.go('/content/' + nextUnit);
         Session.set('isLoading', false);
@@ -59,9 +61,9 @@ function failUnit() {
   //definir que o utilizador já fez a sua escolha
   Session.set('isLoading', true);
   Session.set("outcome", "failure");
-  soundFail.play();
-  var $toastFailWithGoal = $('<span class="red-text">Try another unit next</span>');
-  var $toastFailWithoutGoal = $('<span class="red-text">Try setting this unit as goal!</span>');
+  //soundFail.play();
+  //var $toastFailWithGoal = $('<span class="red-text">Try another unit next</span>');
+  //var $toastFailWithoutGoal = $('<span class="red-text">Try setting this unit as goal!</span>');
   // if goal exists
   if (typeof Meteor.user().goal !== "undefined") {
     //Materialize.toast($toastFailWithGoal, 2000);
@@ -76,9 +78,10 @@ function failUnit() {
       var neglectThisUnit = {};
       neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
-        var goal = {}; goal[goalId] = true;
-        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal,neglectThisUnit);
-        if(nextUnit){
+        var goal = {};
+        goal[goalId] = true;
+        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
+        if (nextUnit) {
           Meteor.call("setGoal", goalId, nextUnit);
           resetQuestionFeedback();
           FlowRouter.go('/content/' + nextUnit);
@@ -86,8 +89,7 @@ function failUnit() {
           delete Session.keys["outcome"];
           delete Session.keys["precalculation"];
           precompute(FlowRouter.getParam('nodeId'));
-        }
-        else{
+        } else {
           FlowRouter.go('/dashboard');
         }
       } else {
@@ -103,25 +105,30 @@ function failUnit() {
 };
 
 Template.unitPage.onCreated(function() {
-  precompute(FlowRouter.getParam('nodeId'));
-  var nodeId = FlowRouter.getParam('nodeId');
-  Meteor.call("getNeeds", nodeId, function(e, r) {
-    if (typeof r !== "undefined") {
-      var needs = {};
-      Session.set("needs", r.sets)
-    } else {
-      return null
-    };
+  this.autorun(function() {
+    if (FlowRouter.subsReady()) {
+      const nodeId = FlowRouter.getParam('nodeId');
+      console.log('precompute(nodeId) ' + nodeId);
+      precompute(nodeId);
+    }
+  });
+  this.autorun(function() {
+    if (FlowRouter.subsReady()) {
+      const nodeId = FlowRouter.getParam('nodeId');
+      console.log('set needs ' + nodeId);
+      Session.set('needs', Meteor.globalFunctions.getNeeds(nodeId));
+    }
   });
 });
 
 Template.unitPage.onRendered(function() {
   this.autorun(() => {
-    if (this.subscriptionsReady()) {
+    if (FlowRouter.subsReady()) {
       //WARNING: SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS, CHECK AGAIN LATER
       setTimeout(function() {
         $('.ui.embed').embed();
         $('.unit-tabs .item').tab();
+        $('[data-tooltip]').popup();
         // set first tab as active
         $("[data-tab=1]").addClass('active');
       }, 20);
@@ -130,12 +137,6 @@ Template.unitPage.onRendered(function() {
     }
   });
 });
-
-Template.unitPage.onRendered(function() {
-  Tracker.autorun(function() {
-    $('[data-tooltip]').popup();
-  });
-})
 
 Template.unitContent.onCreated(function() {
   Session.set('failedUnitAndNoGoal', false);
@@ -206,7 +207,8 @@ Template.unitPage.events({
     Session.set('isLoading', true);
     event.preventDefault();
     var nodeId = FlowRouter.getParam('nodeId');
-    var goal = {}; goal[nodeId] = true;
+    var goal = {};
+    goal[nodeId] = true;
     var nextUnit = Meteor.globalFunctions.findUsefulContent(goal);
     Meteor.call("setGoal", nodeId, nextUnit);
     Session.set('isLoading', false);

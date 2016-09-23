@@ -34,11 +34,8 @@ Template.registerHelper('goalType', function() {
 });
 
 Template.registerHelper('goalTypeIs', function(type) {
-  console.log(type);
   if (typeof Meteor.user() !== 'undefined' && Meteor.user() !== null) {
     var goal = Meteor.user().goal;
-    console.log(Nodes.findOne(goal).type);
-    console.log(Nodes.findOne(goal).type == type);
     return Nodes.findOne(goal).type == type;
   }
 });

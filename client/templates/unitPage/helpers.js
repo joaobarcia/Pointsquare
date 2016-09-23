@@ -11,8 +11,9 @@ Template.unitPage.helpers({
 Template.unitContent.helpers({
   'numberOfSections': function() {
     const numbersToWord = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'sixteen'];
+    if(typeof Template.currentData().content !== 'undefined' && Template.currentData().content !== null){
     const numberOfSections = Template.currentData().content.length;
-    return numbersToWord[numberOfSections];
+    return numbersToWord[numberOfSections];}
   },
   'unitIsOneSectionAndNoExercise': function() {
     var unitContent = Template.currentData().content;
