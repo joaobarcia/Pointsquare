@@ -1,7 +1,7 @@
 <template name="unitPage">
   <div class="template-unitPage">
     {{#with contentPage}}
-      {{> unitInfoBar}}
+      <!-- {{> unitInfoBar}} -->
       {{> unitContent}}
       <!-- {{> relatedConcepts grantedConcepts=grantedConcepts neededConcepts=neededConcepts }} -->
       <!--<div class="col s10">
@@ -41,20 +41,22 @@
   </div>
 </template>
 <template name="unitInfoBar">
+  <div class="ui bottom sidebar overlay visible">
+    Blah
+    <!-- <div class="ui clearing segment">
+      <h3 class="ui header">{{name}}
+        <div class="sub header">{{description}}
+          by
+          {{#each author in authorsInfo (authors)}}
+            {{author.username}}
+          {{/each}}
 
-  <div class="ui clearing segment">
-    <h3 class="ui header">{{name}}
-      <div class="sub header">{{description}}
-        by
-        {{#each author in authorsInfo (authors)}}
-          {{author.username}}
-        {{/each}}
-
-      </div>
-    </h3>
-    {{#if isGodMode}}
-      <a class="ui right floated button" href="/content/{{_id}}/edit">edit</a>
-    {{/if}}
+        </div>
+      </h3>
+      {{#if isGodMode}}
+        <a class="ui right floated button" href="/content/{{_id}}/edit">edit</a>
+      {{/if}}
+    </div> -->
   </div>
 
 </template>
