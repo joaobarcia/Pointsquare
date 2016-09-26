@@ -1,7 +1,7 @@
 <template name="mainLayout">
   {{> _header}}
   <div class="pusher">
-    <div class="ui white main container">
+    <div class="ui white main container {{bottomPaddingIfGoalBar}}">
       {{>Template.dynamic template=main}}
     </div>
   </div>

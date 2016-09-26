@@ -1,0 +1,58 @@
+.main.container {
+    /*padding-top: 4.5em !important;
+    height: auto !important;*/
+    margin: 0 !important;
+    padding: 2em !important;
+    padding-top: 5em !important;
+    min-height: 100vh !important;
+    background-color: white !important;
+}
+
+.main.container.bottom-padding-for-goalbar {
+    padding-bottom: 4.5em !important;
+}
+
+.pusher {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+}
+
+body {
+    min-height: 100vh !important;
+    background-color: #EEEEEE !important;
+}
+
+#__blaze-root {
+    height: 100% !important;
+}
+
+.nav {
+    background-color: #333 !important;
+}
+
+.spaced.logo {
+    margin-right: 0.5em !important;
+}
+
+.main-unit-content {
+  margin-bottom: 12.5em;
+}
+
+.unit.header {
+  margin-top: 0em !important;
+}
+
+.unit.container {
+    background-color: white !important;
+    padding: 2em !important;
+}
+
+.unit.sidebar {
+    box-shadow: none !important;
+    /*padding-bottom: 1.5em !important;*/
+}
+
+.unit.sidebar.bottom-padding-for-goalbar {
+    padding-bottom: 4em !important;
+}

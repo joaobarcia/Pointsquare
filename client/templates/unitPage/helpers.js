@@ -1,10 +1,27 @@
 Template.unitPage.helpers({
   contentPage: function() {
-    var nodeId = FlowRouter.getParam('nodeId');
+    const nodeId = FlowRouter.getParam('nodeId');
     var content = Nodes.findOne({
       _id: nodeId
     }) || {};
     return content;
+  }
+});
+
+Template.unitInfoBar.helpers({
+  unitLanguageName: function() {
+    const nodeId = FlowRouter.getParam('nodeId');
+    if (typeof Meteor.globalFunctions.getNeeds(nodeId).language !== 'undefined' && Meteor.globalFunctions.getNeeds(nodeId).language !== null) {
+      const languageId = Meteor.globalFunctions.getNeeds(nodeId).language;
+      const languageName = Nodes.findOne(languageId).name;
+      return languageName;
+    }
+  },
+  bottomPaddingIfGoalBar: function() {
+    const goalExists = Blaze._globalHelpers.goalExists();
+    if (goalExists) {
+      return "bottom-padding-for-goalbar";
+    } else return "";
   }
 });
 
