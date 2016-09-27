@@ -1026,37 +1026,7 @@ add_requirement = function(node_id, concepts){
 
 //função que retorna um objecto com a informação dos requesitos linguísticos e conceptuais
 get_needs = function(node_id){
-  if (typeof Nodes.findOne(nodeId) !== 'undefined' && Nodes.findOne(nodeId) !== null) {
-    var info = {};
-    var node = Nodes.findOne(nodeId);
-    info.sets = {};
-    if(node.type == "content"){
-      for (var id in node.needs) {
-        var subnode = Nodes.findOne(id);
-        if (subnode.isLanguage) {
-          info["language"] = id;
-        } else if (subnode.type == "or") {
-          orId = id;
-        }
-      }
-      if(typeof orId !== "undefined"){
-        var or = Nodes.findOne(orId);
-        var setIds = or.needs;
-        for (var id in setIds) {
-          setIds[id] = Nodes.findOne(id).needs;
-        }
-        info["sets"] = setIds;
-      }
-    }
-    else if(node.type == "concept"){
-      var setIds = node.needs;
-      for (var id in setIds) {
-        setIds[id] = Nodes.findOne(id).needs;
-      }
-      info["sets"] = setIds;
-    }
-    return info;
-  }
+  return Meteor.globalFunctions.getNeeds(node_id);
 }
 //A-OK
 
