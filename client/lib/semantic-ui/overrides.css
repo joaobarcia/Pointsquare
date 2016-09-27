@@ -45,7 +45,10 @@ body {
 
 .unit.container {
     background-color: white !important;
-    padding: 2em !important;
+    padding-left: 2em !important;
+    padding-right: 2em !important;
+    padding-bottom: 2em !important;
+    padding-top: 0.8em !important;
 }
 
 .unit.sidebar {
@@ -55,4 +58,12 @@ body {
 
 .unit.sidebar.bottom-padding-for-goalbar {
     padding-bottom: 4em !important;
+}
+.ui.secondary.pointing.menu .active.item {
+  border-color: #2185d0 !important;
+  color: #2185d0 !important;
+}
+
+.tab-navigation-button {
+  margin-top: 1.5em !important;
 }

@@ -11,7 +11,6 @@
 <template name="unitInfoBar">
   <div class="ui bottom borderless unit sidebar {{bottomPaddingIfGoalBar}} visible">
     <div class="ui unit container">
-
       <div class="ui segment">
         <div class="ui basic right floated segment">
           {{#if isGodMode}}
@@ -25,7 +24,6 @@
             {{/each}}
             |
             {{readableDate created_on}}
-
           </div>
         </div>
         <div class="ui fitted divider"></div>
@@ -40,8 +38,10 @@
   {{#unless failedUnitAndNoGoal}}
     {{#if unitIsOneSectionAndNoExercise}}
       {{> contentByType isUnitPage=true content=content}}
+      {{> userConfirmation}}
+      <div class="ui hidden divider"></div>
     {{else}}
-      <div class="ui top attached tabular {{numberOfSections}} item unit-tabs menu">
+      <div class="ui pointing secondary {{numberOfSections}} item unit-tabs menu">
         {{#each content}}
           {{#if isType 'unitSection'}}
             <a class="item" data-tab="{{increaseByOne @index}}">Part
