@@ -25,7 +25,8 @@
                     </div>
                     {{> afQuickField name="name"}}
                     {{> afQuickField name="description"}}
-                    {{> afQuickField name="language" value = (unitLanguage) }}
+                    {{unitLanguage}}
+                    {{> afQuickField name="language" value=(unitLanguage) }}
                     {{> afQuickField name="isUnitFromModule" value=(isUnitFromModule)}}
                   </div>
                   <div class="section">

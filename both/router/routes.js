@@ -100,17 +100,20 @@ FlowRouter.route('/content/:nodeId', {
 FlowRouter.route('/content/:nodeId/edit', {
   name: 'unitEdit',
   action: function(params) {
-    // if node exists, display page
-    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
-      BlazeLayout.render("mainLayout", {
+    BlazeLayout.render("mainLayout", {
         main: "unitEdit"
       })
-    } else {
-      // else show notFound
-      BlazeLayout.render("mainLayout", {
-        main: "notFound"
-      });
-    };
+      // if node exists, display page
+      // if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "unitEdit"
+      //   })
+      // } else {
+      //   // else show notFound
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "notFound"
+      //   });
+      // };
   }
 });
 

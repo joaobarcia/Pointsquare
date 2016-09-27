@@ -307,9 +307,8 @@ AutoForm.hooks({
 
           console.log('addNeed: ');
           console.log(needsMappedAsArrayofObjects)
-          Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+          //Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
         } else {
-
           console.log('editNeed: ' + setId);
           console.log(needsMappedAsArrayofObjects);
           Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
@@ -354,6 +353,9 @@ AutoForm.hooks({
       doc.content = content;
 
       // change language
+      console.log('nodeId: ' + nodeId);
+      console.log('languageId: ' +doc.language)
+
       Meteor.call('editLanguage', nodeId, doc.language);
 
       delete doc.language;
