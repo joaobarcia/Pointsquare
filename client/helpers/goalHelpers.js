@@ -7,7 +7,9 @@ Template.registerHelper('goalExists', function() {
 Template.registerHelper("thisIsGoal", function() {
   if (typeof Meteor.user() !== 'undefined' && Meteor.user() !== null) {
     var goal = Meteor.user().goal;
+    console.log(goal);
     var thisNodeId = this._id;
+    console.log(thisNodeId);
     return thisNodeId == goal;
   }
 });

@@ -128,6 +128,7 @@ Template.unitPage.onRendered(function() {
         console.log('entrou nos semantic uis');
         $('.ui.embed').embed();
         $.tab();
+        $('.unit-tabs .item').tab();
         // set first tab as active
         $("[data-tab=1]").addClass('active');
       }, 200);
