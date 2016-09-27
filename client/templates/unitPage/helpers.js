@@ -11,7 +11,7 @@ Template.unitPage.helpers({
 Template.unitInfoBar.helpers({
   unitLanguageName: function() {
     const nodeId = FlowRouter.getParam('nodeId');
-    if (typeof Meteor.globalFunctions.getNeeds(nodeId).language !== 'undefined' && Meteor.globalFunctions.getNeeds(nodeId).language !== null) {
+    if (typeof Meteor.globalFunctions.getNeeds(nodeId) !== 'undefined' && Meteor.globalFunctions.getNeeds(nodeId) !== null) {
       const languageId = Meteor.globalFunctions.getNeeds(nodeId).language;
       const languageName = Nodes.findOne(languageId).name;
       return languageName;
@@ -27,9 +27,11 @@ Template.unitInfoBar.helpers({
 
 Template.unitContent.helpers({
   'numberOfSections': function() {
-    const numbersToWord = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'sixteen'];
-    const numberOfSections = Template.currentData().content.length;
-    return numbersToWord[numberOfSections];
+    if (typeof Template.currentData().content !== 'undefined' && Template.currentData().content !== null) {
+      const numbersToWord = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'sixteen'];
+      const numberOfSections = Template.currentData().content.length;
+      return numbersToWord[numberOfSections];
+    }
   },
   'unitIsOneSectionAndNoExercise': function() {
     var unitContent = Template.currentData().content;

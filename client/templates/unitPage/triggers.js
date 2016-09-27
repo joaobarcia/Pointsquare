@@ -35,8 +35,9 @@ var succeedUnit = function() {
       var neglectThisUnit = {};
       neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
-        var goal = {}; goal[goalId] = true;
-        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal,neglectThisUnit);
+        var goal = {};
+        goal[goalId] = true;
+        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
         resetQuestionFeedback();
         FlowRouter.go('/content/' + nextUnit);
         Session.set('isLoading', false);
@@ -76,9 +77,10 @@ function failUnit() {
       var neglectThisUnit = {};
       neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
-        var goal = {}; goal[goalId] = true;
-        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal,neglectThisUnit);
-        if(nextUnit){
+        var goal = {};
+        goal[goalId] = true;
+        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
+        if (nextUnit) {
           Meteor.call("setGoal", goalId, nextUnit);
           resetQuestionFeedback();
           FlowRouter.go('/content/' + nextUnit);
@@ -86,8 +88,7 @@ function failUnit() {
           delete Session.keys["outcome"];
           delete Session.keys["precalculation"];
           precompute(FlowRouter.getParam('nodeId'));
-        }
-        else{
+        } else {
           FlowRouter.go('/dashboard');
         }
       } else {
@@ -103,7 +104,6 @@ function failUnit() {
 };
 
 Template.unitPage.onCreated(function() {
-  precompute(FlowRouter.getParam('nodeId'));
   var nodeId = FlowRouter.getParam('nodeId');
   Meteor.call("getNeeds", nodeId, function(e, r) {
     if (typeof r !== "undefined") {
@@ -118,6 +118,7 @@ Template.unitPage.onCreated(function() {
 Template.unitPage.onRendered(function() {
   this.autorun(() => {
     if (this.subscriptionsReady()) {
+      precompute(FlowRouter.getParam('nodeId'));
       //WARNING: SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS, CHECK AGAIN LATER
       setTimeout(function() {
         $('.ui.embed').embed();
@@ -206,7 +207,8 @@ Template.unitPage.events({
     Session.set('isLoading', true);
     event.preventDefault();
     var nodeId = FlowRouter.getParam('nodeId');
-    var goal = {}; goal[nodeId] = true;
+    var goal = {};
+    goal[nodeId] = true;
     var nextUnit = Meteor.globalFunctions.findUsefulContent(goal);
     Meteor.call("setGoal", nodeId, nextUnit);
     Session.set('isLoading', false);

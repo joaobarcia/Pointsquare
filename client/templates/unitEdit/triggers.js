@@ -282,11 +282,12 @@ Template.unitEditContent.events({
 AutoForm.hooks({
   unitEdit: {
     onSubmit: function(doc) {
-      var nodeId = FlowRouter.getParam('nodeId');
+      const nodeId = FlowRouter.getParam('nodeId');
 
       // Handle new and edited need sets
       var needsObject = Session.get('needsObject');
-      //console.log(needsObject);
+      console.log('needsObject: ' + needsObject);
+
       _.forEach(needsObject, function(n) {
         var setId = n['_id'];
         //console.log('setId:' + setId);
@@ -299,12 +300,18 @@ AutoForm.hooks({
           needsMappedAsArrayofObjects[needsAsArrayOfId[i]] = true;
         };
         if (_(setId).startsWith('newSet')) {
-          console.log("entrou no newSet");
-          console.log('meter novo need no node:' + nodeId);
-          console.log('com o array de objectos:' + needsMappedAsArrayofObjects);
-          console.log('primeiro elemento:' + needsMappedAsArrayofObjects[needsAsArrayOfId[0]]);
+          // console.log("entrou no newSet");
+          // console.log('meter novo need no node:' + nodeId);
+          // console.log('com o array de objectos:' + needsMappedAsArrayofObjects);
+          // console.log('primeiro elemento:' + needsMappedAsArrayofObjects[needsAsArrayOfId[0]]);
+
+          console.log('addNeed: ');
+          console.log(needsMappedAsArrayofObjects)
           Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
         } else {
+
+          console.log('editNeed: ' + setId);
+          console.log(needsMappedAsArrayofObjects);
           Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
         };
       });
@@ -312,6 +319,9 @@ AutoForm.hooks({
       // Handle deleted need sets
       var deletedNeedsSets = Session.get('deletedNeedsSets');
       for (setId of deletedNeedsSets) {
+
+        console.log('removeNeed: ');
+        console.log(setId);
         Meteor.call('removeNeed', setId);
       };
 
@@ -358,7 +368,7 @@ AutoForm.hooks({
       // Set name, description, content
       Meteor.call('editNode', nodeId, parameters);
 
-      FlowRouter.go('/content/' + nodeId);
+      //FlowRouter.go('/content/' + nodeId);
       this.done();
       return false;
     }

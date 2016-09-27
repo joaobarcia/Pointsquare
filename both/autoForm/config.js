@@ -76,7 +76,7 @@ Schema.Unit = new SimpleSchema({
     },
     language: {
         type: String,
-        optional: true,
+        optional: false,
         label:"Language",
         autoform: {
             type: "select",

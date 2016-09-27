@@ -35,51 +35,11 @@
       </div>
     </div>
   </div>
-
-  <!-- <div class="ui vertically divided grid">
-    <div class="ui streched row">
-      <div class="ten wide column">
-        <h3 class="ui header">{{name}}</h3>
-      </div>
-      <div class="six wide column">
-
-      </div>
-    </div>
-    <div class="ui streched row"></div>
-  </div> -->
-  <!-- <h3 class="ui top attached header">
-    <i class="bordered inverted {{mapUnitStateToColor state}} small book icon"></i>
-    <div class="content">
-      {{name}}
-      <div class="sub header">{{description}}</div>
-    </div>
-
-    {{#if isGodMode}}
-      <a class="ui right floated button" href="/content/{{_id}}/edit">edit</a>
-    {{/if}}
-  </h3>
-  <div class="ui clearing segment">
-      <h3 class="ui header">{{name}}
-        <div class="sub header">{{description}}
-          by
-          {{#each author in authorsInfo (authors)}}
-            {{author.username}}
-          {{/each}} on
-
-        </div>
-      </h3>
-      {{#if isGodMode}}
-        <a class="ui right floated button" href="/content/{{_id}}/edit">edit</a>
-      {{/if}}
-    </div> -->
-
 </template>
 <template name="unitContent">
   {{#unless failedUnitAndNoGoal}}
     {{#if unitIsOneSectionAndNoExercise}}
-      <div class="ui segment">
-        {{> contentByType isUnitPage=true content=content}}
-      </div>
+      {{> contentByType isUnitPage=true content=content}}
     {{else}}
       <div class="ui top attached tabular {{numberOfSections}} item unit-tabs menu">
         {{#each content}}
