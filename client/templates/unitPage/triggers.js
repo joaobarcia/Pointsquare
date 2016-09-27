@@ -118,18 +118,21 @@ Template.unitPage.onCreated(function() {
 Template.unitPage.onRendered(function() {
   this.autorun(() => {
     if (this.subscriptionsReady()) {
+      console.log('enctrou no precompute');
       precompute(FlowRouter.getParam('nodeId'));
-      //WARNING: SET TIMEOUT NOT CORRECT, JUST TO OVERCOME LIMITATIONS, CHECK AGAIN LATER
+    }
+  }),
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
       setTimeout(function() {
+        console.log('entrou nos semantic uis');
         $('.ui.embed').embed();
-        $('.unit-tabs .item').tab();
+        $.tab();
         // set first tab as active
         $("[data-tab=1]").addClass('active');
-      }, 20);
-
-
+      }, 200);
     }
-  });
+  })
 });
 
 Template.unitPage.onRendered(function() {

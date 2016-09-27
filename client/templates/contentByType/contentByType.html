@@ -1,22 +1,25 @@
 <template name="contentByType">
-  {{#let isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId}}
+  {{#let isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId unitIsOneSectionAndNoExercise=unitIsOneSectionAndNoExercise}}
     {{#each content}}
       <div class="ui tab" data-tab="{{increaseByOne @index}}">
         <div class="ui hidden divider"></div>
-        <div class="tab-navigation">
-          <div class="ui compact basic left floated segment tab-navigation-button">
-            <button class="ui compact circular basic icon button {{isFirstTab (@index)}} previous-tab" current-tab={{increaseByOne @index}}>
-              <i class="white angle left icon {{isFirstTab (@index)}}" current-tab={{increaseByOne @index}}></i>
-            </button>
+        {{#unless unitIsOneSectionAndNoExercise}}
+          <div class="tab-navigation">
+            <div class="ui compact basic left floated segment tab-navigation-button">
+              <button class="ui compact circular basic icon button {{isFirstTab (@index)}} previous-tab" current-tab={{increaseByOne @index}}>
+                <i class="white angle left icon {{isFirstTab (@index)}}" current-tab={{increaseByOne @index}}></i>
+              </button>
+            </div>
+            <div class="ui compact basic right floated right aligned segment tab-navigation-button">
+              <button class="ui compact circular basic icon button {{isLastTab (@index)}} next-tab" current-tab={{increaseByOne @index}}>
+                <i class="white angle right icon {{isLastTab (@index)}}" current-tab={{increaseByOne @index}}></i>
+              </button>
+            </div>
           </div>
-          <div class="ui compact basic right floated right aligned segment tab-navigation-button">
-            <button class="ui compact circular basic icon button {{isLastTab (@index)}} next-tab" current-tab={{increaseByOne @index}}>
-              <i class="white angle right icon {{isLastTab (@index)}}" current-tab={{increaseByOne @index}}></i>
-            </button>
-          </div>
-        </div>
+        {{/unless}}
         <!-- <div id="unitTab{{increaseByOne @index}}"> -->
         {{#if isType 'unitSection'}}
+
           {{#each subContent}}
             {{#if isType 'text'}}
               {{#mathjax}}

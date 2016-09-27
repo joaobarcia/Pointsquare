@@ -37,7 +37,7 @@
 <template name="unitContent">
   {{#unless failedUnitAndNoGoal}}
     {{#if unitIsOneSectionAndNoExercise}}
-      {{> contentByType isUnitPage=true content=content}}
+      {{> contentByType isUnitPage=true content=content unitIsOneSectionAndNoExercise=true}}
       {{> userConfirmation}}
       <div class="ui hidden divider"></div>
     {{else}}
