@@ -1,4 +1,4 @@
-Template.contentByType.helpers({
+Template.contentByTypeWrapper.helpers({
   isFirstTab: function(tabIndex) {
     if (tabIndex == 0) {
       return "disabled grey";

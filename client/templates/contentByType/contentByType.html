@@ -1,88 +1,98 @@
-<template name="contentByType">
+<template name="contentByTypeWrapper">
   {{#let isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId unitIsOneSectionAndNoExercise=unitIsOneSectionAndNoExercise}}
-    {{#each content}}
-      <div class="ui tab" data-tab="{{increaseByOne @index}}">
+    {{#if isUnitPage}}
+      {{#each content}}
+        <div class="ui tab" data-tab="{{increaseByOne @index}}">
+          <div class="ui hidden divider"></div>
+          {{#unless unitIsOneSectionAndNoExercise}}
+            <div class="tab-navigation">
+              <div class="ui compact basic left floated segment tab-navigation-button">
+                <button class="ui compact circular basic icon button {{isFirstTab (@index)}} previous-tab" current-tab={{increaseByOne @index}}>
+                  <i class="white angle left icon {{isFirstTab (@index)}}" current-tab={{increaseByOne @index}}></i>
+                </button>
+              </div>
+              <div class="ui compact basic right floated right aligned segment tab-navigation-button">
+                <button class="ui compact circular basic icon button {{isLastTab (@index)}} next-tab" current-tab={{increaseByOne @index}}>
+                  <i class="white angle right icon {{isLastTab (@index)}}" current-tab={{increaseByOne @index}}></i>
+                </button>
+              </div>
+            </div>
+            {{> contentByType unitId=unitId isUnitPage='true' subContent=subContent type=type evaluationType=evaluationType question=question answers=answers}}
+          {{/unless}}
+        </div>
+      {{/each }}
+    {{/if}}
+    {{#if isExamPage}}
+      {{#each content}}
         <div class="ui hidden divider"></div>
-        {{#unless unitIsOneSectionAndNoExercise}}
-          <div class="tab-navigation">
-            <div class="ui compact basic left floated segment tab-navigation-button">
-              <button class="ui compact circular basic icon button {{isFirstTab (@index)}} previous-tab" current-tab={{increaseByOne @index}}>
-                <i class="white angle left icon {{isFirstTab (@index)}}" current-tab={{increaseByOne @index}}></i>
-              </button>
-            </div>
-            <div class="ui compact basic right floated right aligned segment tab-navigation-button">
-              <button class="ui compact circular basic icon button {{isLastTab (@index)}} next-tab" current-tab={{increaseByOne @index}}>
-                <i class="white angle right icon {{isLastTab (@index)}}" current-tab={{increaseByOne @index}}></i>
-              </button>
-            </div>
-          </div>
-        {{/unless}}
-        <!-- <div id="unitTab{{increaseByOne @index}}"> -->
-        {{#if isType 'unitSection'}}
-
-          {{#each subContent}}
-            {{#if isType 'text'}}
-              {{#mathjax}}
-                <p>
-                  {{#markdown}}{{text}}{{/markdown}}
-                </p>
-              {{/mathjax}}
-            {{/if}}
-            {{#if isType 'image'}}
-              <img class="responsive-img" src="../images/units/{{imgURL}}">
-            {{/if}}
-            {{#if isType 'remoteImage'}}
-              <img class="ui centered big fluid image" src="{{remoteImgURL}}">
-            {{/if}}
-            {{#if isType 'youtube'}}
-              <div class="ui two column centered grid">
-                <div class="column">
-                  <div class="ui centered embed" data-source="youtube" data-id="{{youtubeVidID}}"></div>
-                </div>
-              </div>
-            {{/if}}
-            <!--  WARNING: REMOVE CSS AFTER REMOVING MATERIALIZE -->
-            <div class="ui hidden divider" style="visibility: hidden;"></div>
-          {{/each }}
-        {{/if}}
-        {{#if isType 'unitEvaluationSection'}}
-          <div class="ui hidden divider" style="visibility: hidden;"></div>
-          {{#if evaluationIsType 'exerciseRadioButton'}}
-
-            {{> exerciseRadioButton unitId=unitId question=question options=options}}
-          {{/if}}
-          {{#if evaluationIsType 'exerciseString'}}
-            {{#if isUnitPage}}
-              {{> exerciseString isUnitPage=true unitId=unitId question=question answers=answers}}
-            {{/if}}
-            {{#if isExamPage}}
-              <div class="row">
-                <div class="col s9">
-                  {{> exerciseString unitId=unitId question=question answers=answers}}
-                </div>
-                <div class="col s3">
-                  <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Mark question as known, without solving">
-                    <i class="material-icons">done</i>
-                  </a>
-                  <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Set question as goal">
-                    <i class="material-icons">navigation</i>
-                  </a>
-                </div>
-              </div>
-            {{/if}}
-
-          {{/if}}
-          {{#if evaluationIsType 'userConfirmation'}}
-            {{#if isUnitPage}}
-              {{> userConfirmation}}
-            {{/if}}
-          {{/if}}
-          <div class="ui hidden divider" style="visibility: hidden;"></div>
-        {{/if}}
-      </div>
-    {{/each }}
+        {{> contentByType unitId=unitId isExamPage='true' subContent=subContent type=type evaluationType=evaluationType question=question answers=answers}}
+      {{/each }}
+    {{/if}}
   {{/let}}
 </template>
+
+<template name="contentByType">
+  {{#if isType 'unitSection'}}
+    {{#each subContent}}
+      {{#if isType 'text'}}
+        {{#mathjax}}
+          <p>
+            {{#markdown}}{{text}}{{/markdown}}
+          </p>
+        {{/mathjax}}
+      {{/if}}
+      {{#if isType 'image'}}
+        <img class="responsive-img" src="../images/units/{{imgURL}}">
+      {{/if}}
+      {{#if isType 'remoteImage'}}
+        <img class="ui centered big fluid image" src="{{remoteImgURL}}">
+      {{/if}}
+      {{#if isType 'youtube'}}
+        <div class="ui two column centered grid">
+          <div class="column">
+            <div class="ui centered embed" data-source="youtube" data-id="{{youtubeVidID}}"></div>
+          </div>
+        </div>
+      {{/if}}
+      <div class="ui hidden divider"></div>
+    {{/each }}
+  {{/if}}
+  {{#if isType 'unitEvaluationSection'}}
+    <div class="ui hidden divider"></div>
+    {{#if evaluationIsType 'exerciseRadioButton'}}
+
+      {{> exerciseRadioButton unitId=unitId question=question options=options}}
+    {{/if}}
+    {{#if evaluationIsType 'exerciseString'}}
+      {{#if isUnitPage}}
+        {{> exerciseString isUnitPage=true unitId=unitId question=question answers=answers}}
+      {{/if}}
+      {{#if isExamPage}}
+        <div class="row">
+          <div class="col s9">
+            {{> exerciseString unitId=unitId question=question answers=answers}}
+          </div>
+          <div class="col s3">
+            <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Mark question as known, without solving">
+              <i class="material-icons">done</i>
+            </a>
+            <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Set question as goal">
+              <i class="material-icons">navigation</i>
+            </a>
+          </div>
+        </div>
+      {{/if}}
+
+    {{/if}}
+    {{#if evaluationIsType 'userConfirmation'}}
+      {{#if isUnitPage}}
+        {{> userConfirmation}}
+      {{/if}}
+    {{/if}}
+    <div class="ui hidden divider" style="visibility: hidden;"></div>
+  {{/if}}
+</template>
+
 <template name="exerciseString">
   <div class="ui center aligned grid">
     <div class="row">

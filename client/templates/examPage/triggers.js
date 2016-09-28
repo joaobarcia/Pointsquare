@@ -24,9 +24,9 @@ function failUnitInExam(unitId) {
 Template.examPage.onRendered(function() {
     this.autorun(() => {
         if (this.subscriptionsReady()) {
-            $('.tooltipped').tooltip({
-                delay: 20
-            });
+            // $('.tooltipped').tooltip({
+            //     delay: 20
+            // });
             examExercisesAsSession();
             Session.set("displayExamResults", false);
         }

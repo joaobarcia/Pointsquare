@@ -1,4 +1,4 @@
-Template.contentByType.events({
+Template.contentByTypeWrapper.events({
   'click .next-tab': function(event, template) {
     event.preventDefault();
     const currentTab = parseInt($(event.target).attr('current-tab'));

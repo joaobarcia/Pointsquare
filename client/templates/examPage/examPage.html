@@ -1,23 +1,56 @@
 <template name="examPage">
   {{#with examPage}}
+    {{#each unit in examContents}}
+      {{> contentByTypeWrapper content=unit.content isExamPage=true unitId=unit._id}}
+    {{/each}}
+    {{> examInfoBar}}
+  {{/with}}
+</template>
+
+<template name="examInfoBar">
+  <div class="ui bottom borderless unit sidebar {{bottomPaddingIfGoalBar}} visible">
+    <div class="ui unit container">
+      <div class="ui segment">
+        <div class="ui basic right floated segment">
+          {{#if isGodMode}}
+            <a class="ui right floated button" href="/exam/{{_id}}/edit">edit</a>
+          {{/if}}
+        </div>
+        <div class="ui unit header">{{name}}
+          <div class="sub header">
+            {{#each author in authorsInfo (authors)}}
+              {{author.username}}
+            {{/each}}
+            |
+            {{readableDate created_on}}
+          </div>
+        </div>
+        <div class="ui fitted divider"></div>
+        <p>{{description}}</p>
+        <!-- <p class="ui tiny label">
+          <i class="world icon"></i>{{unitLanguageName}}</p> -->
+      </div>
+    </div>
+  </div>
+</template>
+<!-- <template name="examPage_materialize">
+  {{#with examPage}}
     <div class="container">
       <div class="card">
         <div class="container">
           <div class="section">
             <h2>{{name}}</h2>
             {{#if isGodMode}}
-              <!-- <a href="{{_id}}/edit" class="btn-floating btn-large waves-effect waves-light green tooltipped" data-position="left" data-delay="1" data-tooltip="Edit"> -->
               <a class="btn-floating btn-large waves-effect waves-light tooltipped" data-position="left" data-delay="1" data-tooltip="Edit this unit." href="{{_id}}/edit">
                 <i class="material-icons">create</i>
               </a>
             {{/if}}
           </div>
           {{#each unit in examContents}}
-            {{> contentByType content=unit.content isExamPage=true unitId=unit._id}}
+            {{> contentByTypeWrapper content=unit.content isExamPage=true unitId=unit._id}}
           {{/each}}
 
           <div class="section">
-            <!-- Modal Trigger -->
             {{#unless displayExamResults}}
               <p class="center-align">
                 <a class="waves-effect waves-light btn" id="submit_exam">Submit Exam</a>
@@ -39,4 +72,4 @@
       </div>
     </div>
   {{/with}}
-</template>
+</template> -->

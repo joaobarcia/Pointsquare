@@ -4,6 +4,7 @@ Template.examPage.helpers({
     var exam = Nodes.findOne({
       _id: examId
     }) || {};
+    console.log(exam);
     return exam;
   },
   examContents: function() {
