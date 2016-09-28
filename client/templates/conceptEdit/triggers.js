@@ -105,7 +105,7 @@ AutoForm.hooks({
 
 
             Meteor.globalFunctions.needsAsJSONSession();
-            //Materialize.toast('concept edited successfully', 3000);
+            toastr.success('concept edited successfully');
             //FlowRouter.go('/concept/' + nodeId);
             this.done();
             return false;

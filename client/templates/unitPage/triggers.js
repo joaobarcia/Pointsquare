@@ -25,8 +25,7 @@ var succeedUnit = function() {
   Session.set("outcome", "success");
   Session.set('isLoading', true);
   soundSuccess.play();
-  var $toastSuccess = $('<span class="green-text">Good job!</span>');
-  //Materialize.toast($toastSuccess, 2000);
+  toastr.success('Good job!');
   //se ainda não tiverem chegado os resultados do servidor, não fazer nada
   if (Session.get("precalculation") != "waiting") {
     Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
@@ -61,14 +60,14 @@ function failUnit() {
   Session.set('isLoading', true);
   Session.set("outcome", "failure");
   soundFail.play();
-  var $toastFailWithGoal = $('<span class="red-text">Try another unit next</span>');
-  var $toastFailWithoutGoal = $('<span class="red-text">Try setting this unit as goal!</span>');
-  // if goal exists
-  if (typeof Meteor.user().goal !== "undefined") {
-    //Materialize.toast($toastFailWithGoal, 2000);
-  } else {
-    //Materialize.toast($toastFailWithoutGoal, 2000);
-  }
+  // var $toastFailWithGoal = $('<span class="red-text">Try another unit next</span>');
+  // var $toastFailWithoutGoal = $('<span class="red-text">Try setting this unit as goal!</span>');
+  // // if goal exists
+  // if (typeof Meteor.user().goal !== "undefined") {
+  //   //Materialize.toast($toastFailWithGoal, 2000);
+  // } else {
+  //   //Materialize.toast($toastFailWithoutGoal, 2000);
+  // }
   //se ainda não tiverem chegado os resultados do servidor, não fazer nada
   if (Session.get("precalculation") != "waiting") {
     Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {

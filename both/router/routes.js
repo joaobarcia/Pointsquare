@@ -136,17 +136,20 @@ FlowRouter.route('/content/:nodeId/edit', {
 FlowRouter.route('/concept/:nodeId/edit', {
   name: 'conceptEdit',
   action: function(params) {
-    // if node exists, display page
-    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
-      BlazeLayout.render("mainLayout", {
+    BlazeLayout.render("mainLayout", {
         main: "conceptEdit"
       })
-    } else {
-      // else show notFound
-      BlazeLayout.render("mainLayout", {
-        main: "notFound"
-      });
-    };
+      // if node exists, display page
+      // if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "conceptEdit"
+      //   })
+      // } else {
+      //   // else show notFound
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "notFound"
+      //   });
+      // };
   }
 });
 
