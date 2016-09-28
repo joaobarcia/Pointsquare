@@ -1,8 +1,13 @@
 <template name="examPage">
   {{#with examPage}}
-    {{#each unit in examContents}}
-      {{> contentByTypeWrapper content=unit.content isExamPage=true unitId=unit._id}}
-    {{/each}}
+    <div class="exam container">
+      {{#each unit in examContents}}
+        {{> contentByTypeWrapper content=unit.content isExamPage=true unitId=unit._id}}
+      {{/each}}
+      <button class="ui primary button" id="submit_exam">
+        Submit Exam
+      </button>
+    </div>
     {{> examInfoBar}}
   {{/with}}
 </template>
@@ -28,8 +33,8 @@
         <div class="ui fitted divider"></div>
         <p>{{description}}</p>
         {{#each languageName in examLanguagesNames}}
-        <p class="ui tiny label">
-          <i class="world icon"></i>{{languageName}}</p>
+          <p class="ui tiny label">
+            <i class="world icon"></i>{{languageName}}</p>
         {{/each}}
       </div>
     </div>

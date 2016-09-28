@@ -17,15 +17,14 @@
                 </button>
               </div>
             </div>
-            {{> contentByType unitId=unitId isUnitPage='true' subContent=subContent type=type evaluationType=evaluationType question=question answers=answers}}
+            {{> contentByType unitId=unitId isUnitPage='true' subContent=subContent type=type evaluationType=evaluationType question=question answers=answers options=options}}
           {{/unless}}
         </div>
       {{/each }}
     {{/if}}
     {{#if isExamPage}}
       {{#each content}}
-        <div class="ui hidden divider"></div>
-        {{> contentByType unitId=unitId isExamPage='true' subContent=subContent type=type evaluationType=evaluationType question=question answers=answers}}
+        {{> contentByType unitId=unitId isExamPage='true' subContent=subContent type=type evaluationType=evaluationType question=question answers=answers options=options}}
       {{/each }}
     {{/if}}
   {{/let}}
@@ -60,29 +59,23 @@
   {{#if isType 'unitEvaluationSection'}}
     <div class="ui hidden divider"></div>
     {{#if evaluationIsType 'exerciseRadioButton'}}
-
-      {{> exerciseRadioButton unitId=unitId question=question options=options}}
+      {{> exerciseRadioButton isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId question=question options=options}}
     {{/if}}
     {{#if evaluationIsType 'exerciseString'}}
       {{#if isUnitPage}}
-        {{> exerciseString isUnitPage=true unitId=unitId question=question answers=answers}}
+        {{> exerciseString isUnitPage='true' unitId=unitId question=question answers=answers}}
       {{/if}}
       {{#if isExamPage}}
-        <div class="row">
-          <div class="col s9">
-            {{> exerciseString unitId=unitId question=question answers=answers}}
-          </div>
-          <div class="col s3">
+        {{> exerciseString isExamPage='true' unitId=unitId question=question answers=answers}}
+        <!-- <div class="col s3">
             <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Mark question as known, without solving">
               <i class="material-icons">done</i>
             </a>
             <a class="waves-effect waves-light btn tooltipped" data-position="top" data-tooltip="Set question as goal">
               <i class="material-icons">navigation</i>
             </a>
-          </div>
-        </div>
+          </div> -->
       {{/if}}
-
     {{/if}}
     {{#if evaluationIsType 'userConfirmation'}}
       {{#if isUnitPage}}
@@ -104,12 +97,17 @@
     </div>
     <div class="row">
       <div {{tooltipIfNoUser}}>
-        <form class="ui form">
+        <form class="ui form exerciseStringForm" id={{unitId}}>
           <div class="field {{disabledIfNoUser}}" id="exerciseStringField">
             {{#if isUnitPage}}
               <div class="ui action input">
                 <input placeholder="Your answer here" type="text" name="exerciseString" id="exerciseInputText">
                 <button class="ui button {{answerFeedback}} {{disabledIfNoUser}}" type="submit" id="exerciseButton">Submit</button>
+              </div>
+            {{/if}}
+            {{#if isExamPage}}
+              <div class="ui input">
+                <input placeholder="Your answer here" type="text" name="exerciseString" id="exerciseInputText">
               </div>
             {{/if}}
           </div>
@@ -124,35 +122,63 @@
   </div>
 </template>
 <template name="exerciseRadioButton">
-  <div class="ui middle aligned two column grid">
-    <div class="center aligned column">
-      {{#mathjax}}
-        <p>
-          {{#markdown}}{{question}}{{/markdown}}
-        </p>
-      {{/mathjax}}
-    </div>
-    <div class="column">
-      <div class="ui evaluation-font form">
-        {{#let unitId=unitId}}
-          {{#each options}}
-            <div class="grouped fields">
-              <div class="field">
-                <div class="ui evaluation-font radio {{disabledIfNoUser}} checkbox" {{tooltipIfNoUser}}>
-                  <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
-                  <label class="{{isCorrectOption}}RadioButtonLabel">
-                    {{#mathjax}}
-                      {{label}}
-                    {{/mathjax}}
-                  </label>
+  {{#if isUnitPage}}
+    <div class="ui middle aligned two column relaxed grid">
+      <div class="center aligned column">
+        {{#mathjax}}
+          <p>
+            {{#markdown}}{{question}}{{/markdown}}
+          </p>
+        {{/mathjax}}
+      </div>
+      <div class="column">
+        <div class="ui evaluation-font form">
+          {{#let unitId=unitId}}
+            {{#each options}}
+              <div class="grouped fields">
+                <div class="field">
+                  <div class="ui evaluation-font radio {{disabledIfNoUser}} checkbox" {{tooltipIfNoUser}}>
+                    <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
+                    <label class="{{isCorrectOption}}RadioButtonLabel">
+                      {{#mathjax}}
+                        {{label}}
+                      {{/mathjax}}
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
-          {{/each}}
-        {{/let}}
+            {{/each}}
+          {{/let}}
+        </div>
       </div>
     </div>
-  </div>
+  {{/if}}
+  {{#if isExamPage}}
+  sdasdas
+    {{#mathjax}}
+      <p>
+        {{#markdown}}{{question}}{{/markdown}}
+      </p>
+    {{/mathjax}}
+    <div class="ui evaluation-font form">
+      {{#let unitId=unitId}}
+        {{#each options}}
+          <div class="grouped fields">
+            <div class="field">
+              <div class="ui evaluation-font radio {{disabledIfNoUser}} checkbox" {{tooltipIfNoUser}}>
+                <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
+                <label class="{{isCorrectOption}}RadioButtonLabel">
+                  {{#mathjax}}
+                    {{label}}
+                  {{/mathjax}}
+                </label>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      {{/let}}
+    </div>
+  {{/if}}
   {{#if isLoading}}
     <div class="row center-align">
       {{> smallLoading}}

@@ -1,26 +1,27 @@
 /*******************************
          Site Overrides
 *******************************/
-
-@fontName          : 'Lato';
-@googleFontSizes   : '300,400,700,400italic,700italic';
-
+@fontName: 'Lato';
+@googleFontSizes: '300,400,700,400italic,700italic';
 @text-colors: blue, green, orange, pink, purple, red, teal, yellow, black, grey, white;
-.text {
-    .-(@i: length(@text-colors)) when (@i > 0) {
-        @c: extract(@text-colors, @i);
-        &.@{c} { color: @@c }
-        .-((@i - 1));
-    }.- !important;
-}
 
+.text {
+    .-(@i:length(@text-colors)) when (@i > 0) {
+        @c: extract(@text-colors, @i);
+
+        &.@{c} {
+            color: @@c
+        }
+        .-((@i - 1));
+    }
+    .- !important;
+}
 
 .main.container {
     /*padding-top: 4.5em !important;
     height: auto !important;*/
     margin: 0 !important;
-    padding: 2em !important;
-    padding-top: 5em !important;
+    padding: 5em 2em 2em !important;
     min-height: 100vh !important;
     background-color: white !important;
 }
@@ -53,19 +54,22 @@ body {
 }
 
 .main-unit-content {
-  margin-bottom: 12.5em;
+    margin-bottom: 12.5em !important;
 }
 
 .unit.header {
-  margin-top: 0em !important;
+    margin-top: 0 !important;
 }
 
 .unit.container {
     background-color: white !important;
-    padding-left: 2em !important;
-    padding-right: 2em !important;
-    padding-bottom: 2em !important;
-    padding-top: 0.8em !important;
+    padding: 0.8em 2em 2em !important;
+}
+
+.exam.container {
+    background-color: white !important;
+    padding: 0 2em 2em !important;
+    margin-bottom: 12.5em !important;
 }
 
 .unit.sidebar {
@@ -76,27 +80,28 @@ body {
 .unit.sidebar.bottom-padding-for-goalbar {
     padding-bottom: 4em !important;
 }
+
 .ui.secondary.pointing.menu .active.item {
-  border-color: #2185d0 !important;
-  color: #2185d0 !important;
+    border-color: #2185d0 !important;
+    color: #2185d0 !important;
 }
 
 .tab-navigation-button {
-  margin-top: 1.5em !important;
+    margin-top: 1.5em !important;
 }
 
 .unit-content {
-  font-size: larger !important;
+    font-size: larger !important;
 }
 
 .evaluation-font {
-  font-size: inherit !important;
+    font-size: inherit !important;
 }
 
 .toast-top-right {
-  top: 4em !important;
+    top: 4em !important;
 }
 
-#toast-container>div{
-  width: 250px !important;
+#toast-container > div {
+    width: 250px !important;
 }
