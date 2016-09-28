@@ -1,26 +1,38 @@
 <template name="setGoalButton">
   {{#unless disableSetGoal}}
-    {{#unless goalAlreadyReached state}}
-      {{#if thisIsGoal}}
-        <div class="ui primary tiny positive button start-learning">
-          Start learning
-          <i class="right play icon"></i>
-        </div>
+    {{#if thisIsGoal}}
+      <div class="ui primary tiny positive button start-learning">
+        Start learning
+        <i class="right play icon"></i>
+      </div>
+    {{else}}
+      {{#if goalAlreadyReached state}}
+        {{#if isUnit}}
+          <div class="ui disabled tiny button">
+            Ready for unit
+          </div>
+        {{/if}}
+        {{#if isConcept}}
+          <div class="ui disabled tiny button">
+            Known concept
+          </div>
+        {{/if}}
+        {{#if isExam}}
+          <div class="ui disabled tiny button">
+            Ready for exam
+          </div>
+        {{/if}}
       {{else}}
         {{#unless isLoading}}
           <div class="ui primary tiny button set-goal">
-            Set Unit as goal
+            Set as learning goal
             <i class="right location arrow icon"></i>
           </div>
         {{else}}
           {{> smallLoading}}
         {{/unless}}
       {{/if}}
-    {{else}}
-      <div class="ui disabled tiny button">
-        You know this
-      </div>
-    {{/unless}}
+    {{/if}}
   {{/unless}}
 </template>
 

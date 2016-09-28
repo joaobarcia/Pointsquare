@@ -307,9 +307,8 @@ AutoForm.hooks({
 
           console.log('addNeed: ');
           console.log(needsMappedAsArrayofObjects)
-          Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+            //Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
         } else {
-
           console.log('editNeed: ' + setId);
           console.log(needsMappedAsArrayofObjects);
           Meteor.call('editNeed', setId, needsMappedAsArrayofObjects);
@@ -354,21 +353,29 @@ AutoForm.hooks({
       doc.content = content;
 
       // change language
+      console.log('nodeId: ' + nodeId);
+      console.log('languageId: ' + doc.language)
+
       Meteor.call('editLanguage', nodeId, doc.language);
 
       delete doc.language;
       delete doc.needs;
       delete doc.grants;
       delete doc.evaluationType;
+
+      // If description is empty, set it as empty. Otherwise autoform does not return  description
+      if (typeof doc.description == 'undefined' || doc.description == null) {
+        doc.description = ""
+      };
       var parameters = doc;
-      //console.log(parameters);
+      console.log(parameters);
 
       Session.set('tempContent', []);
 
       // Set name, description, content
       Meteor.call('editNode', nodeId, parameters);
 
-      //FlowRouter.go('/content/' + nodeId);
+      FlowRouter.go('/content/' + nodeId);
       this.done();
       return false;
     }

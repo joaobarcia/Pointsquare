@@ -1,6 +1,5 @@
 Template.setGoalButton.events({
   'click .set-goal': function(event, template) {
-    console.log('click .set-goal');
     event.preventDefault();
     var nodeId = template.data._id;
     var goal = {}; goal[nodeId] = true;
@@ -9,9 +8,8 @@ Template.setGoalButton.events({
       Meteor.call("setGoal", nodeId, unit, Meteor.userId());
     }
     else{
-      //Materialize.toast('Unfortunately there is no content to reach this goal yet', 3000)
-      console.log("NO CONTENT YET");
-      $(this).prop('disabled', true);
+      toastr.info('Unfortunately there is no content to reach this goal yet');
+      $(event.target).addClass('disabled');
     }
   },
   'click .start-learning': function(event, template) {

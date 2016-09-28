@@ -23,6 +23,7 @@ Template.feedbackModal.events({
         event.target.name.value = "";
         event.target.opinion.value = "";
 
-        //Materialize.toast('Thanks! :)', 4000)
+
+        toastr.info('Thanks! :)');
     }
 });

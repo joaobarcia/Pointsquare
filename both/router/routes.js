@@ -18,18 +18,21 @@ FlowRouter.route('/', {
 FlowRouter.route('/exam/:nodeId', {
   name: 'examPage',
   action: function(params) {
-    // if node exists, display page
-    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
       BlazeLayout.render("mainLayout", {
         main: "examPage"
       })
-    } else {
-      // else show notFound
-      BlazeLayout.render("mainLayout", {
-        main: "notFound"
-      });
-    };
-  }
+    }
+    // if node exists, display page
+    // if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+    //   BlazeLayout.render("mainLayout", {
+    //     main: "examPage"
+    //   })
+    // } else {
+    //   // else show notFound
+    //   BlazeLayout.render("mainLayout", {
+    //     main: "notFound"
+    //   });
+    // };
 });
 
 FlowRouter.route('/create/exam', {
@@ -44,17 +47,20 @@ FlowRouter.route('/create/exam', {
 FlowRouter.route('/exam/:nodeId/edit', {
   name: 'examEdit',
   action: function(params) {
-    // if node exists, display page
-    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
-      BlazeLayout.render("mainLayout", {
+    BlazeLayout.render("mainLayout", {
         main: "examEdit"
       })
-    } else {
-      // else show notFound
-      BlazeLayout.render("mainLayout", {
-        main: "notFound"
-      });
-    };
+      // if node exists, display page
+      // if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "examEdit"
+      //   })
+      // } else {
+      //   // else show notFound
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "notFound"
+      //   });
+      // };
   }
 });
 // WARNING: END OF NEW ROUTES
@@ -100,17 +106,20 @@ FlowRouter.route('/content/:nodeId', {
 FlowRouter.route('/content/:nodeId/edit', {
   name: 'unitEdit',
   action: function(params) {
-    // if node exists, display page
-    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
-      BlazeLayout.render("mainLayout", {
+    BlazeLayout.render("mainLayout", {
         main: "unitEdit"
       })
-    } else {
-      // else show notFound
-      BlazeLayout.render("mainLayout", {
-        main: "notFound"
-      });
-    };
+      // if node exists, display page
+      // if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "unitEdit"
+      //   })
+      // } else {
+      //   // else show notFound
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "notFound"
+      //   });
+      // };
   }
 });
 
@@ -127,17 +136,20 @@ FlowRouter.route('/content/:nodeId/edit', {
 FlowRouter.route('/concept/:nodeId/edit', {
   name: 'conceptEdit',
   action: function(params) {
-    // if node exists, display page
-    if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
-      BlazeLayout.render("mainLayout", {
+    BlazeLayout.render("mainLayout", {
         main: "conceptEdit"
       })
-    } else {
-      // else show notFound
-      BlazeLayout.render("mainLayout", {
-        main: "notFound"
-      });
-    };
+      // if node exists, display page
+      // if (typeof Nodes.findOne(params.nodeId) !== 'undefined' && Nodes.findOne(params.nodeId) !== null) {
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "conceptEdit"
+      //   })
+      // } else {
+      //   // else show notFound
+      //   BlazeLayout.render("mainLayout", {
+      //     main: "notFound"
+      //   });
+      // };
   }
 });
 

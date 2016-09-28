@@ -53,11 +53,7 @@
           {{/if}}
           {{#if evaluationIsType 'exerciseString'}}
             {{#if isUnitPage}}
-              {{> exerciseString}}
-              <div class="section center-align">
-                <button class="btn waves-effect waves-light {{answerFeedback}}" type="submit" name="action" id="exerciseButton">Submit
-                </button>
-              </div>
+              {{> exerciseString isUnitPage=true unitId=unitId question=question answers=answers}}
             {{/if}}
             {{#if isExamPage}}
               <div class="row">
@@ -88,27 +84,28 @@
   {{/let}}
 </template>
 <template name="exerciseString">
-  <div class="section center-align">
-    {{#if currentUser}}
+  <div class="ui center aligned grid">
+    <div class="row">
       {{#mathjax}}
         <p>
           {{#markdown}}{{question}}{{/markdown}}
         </p>
       {{/mathjax}}
-      <form class="exerciseStringForm" id={{unitId}}>
-        <input type="text" name="exerciseString" class="exerciseInputText">
-      </form>
-    {{else}}
-      {{#mathjax}}
-        <p>
-          {{#markdown}}{{question}}{{/markdown}}
-        </p>
-      {{/mathjax}}
-      <form class="exerciseStringForm" id={{unitId}}>
-        <!-- <input disabled value="Login so we can follow your progress " type="text" name="exerciseString" id="exerciseInputText"> -->
-        <button class="btn waves-effect waves-light {{answerFeedback}} disabled disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!" type="submit" name="action" id="exerciseButton">Submit</button>
-      </form>
-    {{/if}}
+    </div>
+    <div class="row">
+      <div {{tooltipIfNoUser}}>
+        <form class="ui form">
+          <div class="field {{disabledIfNoUser}}" id="exerciseStringField">
+            {{#if isUnitPage}}
+              <div class="ui action input">
+                <input placeholder="Your answer here" type="text" name="exerciseString" id="exerciseInputText">
+                <button class="ui button {{answerFeedback}} {{disabledIfNoUser}}" type="submit" id="exerciseButton">Submit</button>
+              </div>
+            {{/if}}
+          </div>
+        </form>
+      </div>
+    </div>
     {{#if isLoading}}
       <div class="row center-align">
         {{> smallLoading}}
@@ -117,68 +114,51 @@
   </div>
 </template>
 <template name="exerciseRadioButton">
-  {{#mathjax}}
-    <p>
-      {{#markdown}}
-        {{question}}
-      {{/markdown}}
-    </p>
-  {{/mathjax}}
-  <form id="exerciseRadioButtonForm" action="#">
-    {{#if currentUser}}
-      {{#let unitId=unitId}}
-        {{#each options}}
-          <p class="center-align">
-            <input name={{unitId}} class="{{isCorrectOption}}RadioButton" type="radio" id="radioButton_{{unitId}}_{{@index}}" unit_id="{{unitId}}"/>
-            <label for="radioButton_{{unitId}}_{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">
-              {{#mathjax}}
-                {{#markdown}}{{label}}{{/markdown}}
-              {{/mathjax}}
-            </label>
-          </p>
-        {{/each}}
-      {{/let}}
-    {{else}}
-      {{#each options}}
-        <p class="center-align tooltipped" data-position="bottom" data-delay="20" data-tooltip="Login so we can follow your progress!">
-          <input name="group1" class="{{isCorrectOption}}RadioButton" disabled="disabled" type="radio" id="radioButton{{@index}}"/>
-          <label for="radioButton{{@index}}" class="{{isCorrectOption}}RadioButtonLabel">
-            {{#mathjax}}
-              {{#markdown}}{{label}}{{/markdown}}
-            {{/mathjax}}
-          </label>
+  <div class="ui middle aligned two column grid">
+    <div class="center aligned column">
+      {{#mathjax}}
+        <p>
+          {{#markdown}}{{question}}{{/markdown}}
         </p>
-      {{/each}}
-    {{/if}}
-    {{#if isLoading}}
-      <div class="row center-align">
-        {{> smallLoading}}
+      {{/mathjax}}
+    </div>
+    <div class="column">
+      <div class="ui evaluation-font form">
+        {{#let unitId=unitId}}
+          {{#each options}}
+            <div class="grouped fields">
+              <div class="field">
+                <div class="ui evaluation-font radio {{disabledIfNoUser}} checkbox" {{tooltipIfNoUser}}>
+                  <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
+                  <label class="{{isCorrectOption}}RadioButtonLabel">
+                    {{#mathjax}}
+                      {{label}}
+                    {{/mathjax}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        {{/let}}
       </div>
-    {{/if}}
-  </form>
+    </div>
+  </div>
+  {{#if isLoading}}
+    <div class="row center-align">
+      {{> smallLoading}}
+    </div>
+  {{/if}}
 </template>
 <template name="userConfirmation">
   <div class="center aligned ui grid">
     {{#unless isLoading}}
-      {{#if currentUser}}
+      <div {{tooltipIfNoUser}}>
         <div class="ui buttons understood-buttons">
-          <button class="ui positive button" id="understood">Understood</button>
+          <button class="ui {{disabledIfNoUser}} positive button" id="understood">Understood</button>
           <div class="or"></div>
-          <button class="ui negative button" id="notUnderstood">Not understood</button>
+          <button class="ui {{disabledIfNoUser}} negative button" id="notUnderstood">Not understood</button>
         </div>
-      {{else}}
-        <div data-tooltip="Login so we can follow your progress!" data-inverted="" data-position="right center">
-          <div class="ui buttons understood-buttons">
-            <button class="ui disabled button">Understood</button>
-            <div class="or"></div>
-            <button class="ui disabled button">Not understood</button>
-          </div>
-        </div>
-        <!-- <div class="row center-align understood-buttons">
-          <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">I understood</a>
-          <a href="#!" class="white-text green btn disabled tooltipped" data-position="right" data-delay="20" data-tooltip="Login so we can follow your progress!">Didn't understand</a>
-        </div> -->
-      {{/if}}
+      </div>
     {{else}}
       <div class="row center-align understood-buttons">
         {{> smallLoading}}

@@ -32,6 +32,7 @@ Template.dashboard.rendered = function() {
     }),
     Tracker.autorun(function() {
       $('[data-tooltip]').popup();
+      $('.ui.checkbox').checkbox();
     }),
     Session.set('dashboardOption', 'settings');
 };
