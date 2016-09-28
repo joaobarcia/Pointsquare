@@ -1,23 +1,24 @@
 AutoForm.hooks({
-    createExam: {
-        onSubmit: function(doc) {
+  createExam: {
+    onSubmit: function(doc) {
 
-            var examDefinitions = {}
-            examDefinitions.type = 'exam';
-            examDefinitions.contains = doc.exercises;//exercisesMappedAsObject;
-            delete doc.exercises;
-            examDefinitions.parameters = doc;
+      var examDefinitions = {}
+      examDefinitions.type = 'exam';
+      examDefinitions.contains = doc.exercises; //exercisesMappedAsObject;
+      delete doc.exercises;
+      examDefinitions.parameters = doc;
 
 
-            console.log(examDefinitions);
+      console.log(examDefinitions);
 
-            Meteor.call('create', examDefinitions, function(error, result) {
-                nodeId = result;
-                FlowRouter.go('/exam/' + nodeId);
-                //FlowRouter.go('search');
-            });
-            this.done();
-            return false;
-        }
+      Meteor.call('create', examDefinitions, function(error, result) {
+        const nodeId = result;
+        Meteor.call("addAuthor", nodeId, Meteor.userId(), function(error, result) {
+          FlowRouter.go('/exam/' + nodeId);
+        });
+      });
+      this.done();
+      return false;
     }
+  }
 });

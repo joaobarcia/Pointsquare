@@ -117,23 +117,31 @@ Template.unitPage.onCreated(function() {
 
 Template.unitPage.onRendered(function() {
   this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      console.log('enctrou no precompute');
-      precompute(FlowRouter.getParam('nodeId'));
-    }
-  }),
-  this.autorun(() => {
-    if (this.subscriptionsReady()) {
-      setTimeout(function() {
-        console.log('entrou nos semantic uis');
-        $('.ui.embed').embed();
-        $.tab();
-        $('.unit-tabs .item').tab();
-        // set first tab as active
-        $("[data-tab=1]").addClass('active');
-      }, 200);
-    }
-  })
+      if (this.subscriptionsReady()) {
+        precompute(FlowRouter.getParam('nodeId'));
+      }
+    }),
+    this.autorun(() => {
+      if (this.subscriptionsReady()) {
+        // WARNING: 1 - TIMEOUT SHOULDN'T BE DONE. 2 - TWO TIMEOUTS ARE EVEN WORSE, BUT ONE HANDLES QUICK LOADED PAGES AND OTHER REFRESHES
+        setTimeout(function() {
+          $('.ui.embed').embed();
+          $.tab();
+          $('.unit-tabs .item').tab();
+          // set first tab as active
+          $("[data-tab=1]").addClass('active');
+          $('.ui.checkbox').checkbox();
+        }, 50);
+        setTimeout(function() {
+          $('.ui.embed').embed();
+          $.tab();
+          $('.unit-tabs .item').tab();
+          // set first tab as active
+          $("[data-tab=1]").addClass('active');
+          $('.ui.checkbox').checkbox();
+        }, 300);
+      }
+    })
 });
 
 Template.unitPage.onRendered(function() {
@@ -165,46 +173,48 @@ Template.unitPage.events({
     }
   },
 
-  'submit .exerciseStringForm': function(event) {
+  'submit form': function(event) {
     event.preventDefault();
+
+    console.log('entrou no string');
+
     var answerIsCorrect = null;
     if (this.answers.indexOf(event.target.exerciseString.value) > -1) {
       answerIsCorrect = true;
     } else answerIsCorrect = false;
     if (answerIsCorrect) {
-      $("#exerciseButton").removeClass("orange red").addClass("green");
-      $("#exerciseInputText").removeClass("red-text").addClass("green-text");
+      $("#exerciseStringField").addClass("disabled");
+      $("#exerciseButton").removeClass("red").addClass("green").addClass("disabled");
+      $("#exerciseInputText").removeClass("red text").addClass("green text");
       if (Meteor.userId()) {
-        succeedUnit();
+        // succeedUnit();
       }
     } else if (!answerIsCorrect) {
-      $("#exerciseButton").removeClass("orange");
-      $("#exerciseButton").removeClass("green");
-      $("#exerciseButton").addClass("red");
-      $("#exerciseInputText").removeClass("green-text");
-      $("#exerciseInputText").addClass("red-text");
+      $("#exerciseStringField").addClass("disabled");
+      $("#exerciseButton").removeClass("green").addClass("red").addClass("disabled");
+      $("#exerciseInputText").removeClass("green text").addClass("red text");
       if (Meteor.userId()) {
-        failUnit();
+        // failUnit();
       }
     }
   },
   'change .trueRadioButton': function(event) {
     $(".trueRadioButton").prop('disabled', 'disabled');
     $(".falseRadioButton").prop('disabled', 'disabled');
-    $(".trueRadioButtonLabel").addClass("green-text");
-    $(".falseRadioButtonLabel").addClass("red-text");
+    $(".trueRadioButtonLabel").addClass("green text");
+    $(".falseRadioButtonLabel").addClass("red text");
     if (Meteor.userId()) {
-      succeedUnit();
+      // succeedUnit();
     }
   },
 
   'change .falseRadioButton': function(event) {
     $(".trueRadioButton").prop('disabled', 'disabled');
     $(".falseRadioButton").prop('disabled', 'disabled');
-    $(".trueRadioButtonLabel").addClass("green-text");
-    $(".falseRadioButtonLabel").addClass("red-text");
+    $(".trueRadioButtonLabel").addClass("green text");
+    $(".falseRadioButtonLabel").addClass("red text");
     if (Meteor.userId()) {
-      failUnit();
+      // failUnit();
     }
   },
   'click .set-goal': function(event, template) {

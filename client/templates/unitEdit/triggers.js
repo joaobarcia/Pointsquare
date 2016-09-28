@@ -370,7 +370,7 @@ AutoForm.hooks({
       // Set name, description, content
       Meteor.call('editNode', nodeId, parameters);
 
-      //FlowRouter.go('/content/' + nodeId);
+      FlowRouter.go('/content/' + nodeId);
       this.done();
       return false;
     }

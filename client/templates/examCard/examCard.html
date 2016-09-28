@@ -1,5 +1,35 @@
 <template name="examCard">
-  <div class="card">
+  <div class="item">
+    <div class="ui tiny image center aligned">
+      <a href="../exam/{{_id}}">
+        <i class="big bordered inverted {{mapUnitStateToColor state}} write square icon"></i>
+      </a>
+    </div>
+    <div class="content">
+      <a class="ui small header" href="../exam/{{_id}}">{{name}}</a>
+      <div class="meta">
+        <span class="cinema">by
+          {{#each author in authorsInfo (authors)}}
+            {{author.username}}
+          {{/each}}
+          |
+          {{readableDate created_on}}</span>
+      </div>
+      <a class="description" href="../examx/{{_id}}">
+        <p>{{description}}</p>
+      </a>
+      <div class="extra">
+        <p class="ui tiny label">
+          <i class="world icon"></i>{{unitLanguageName}}</p>
+        <div class="ui right floated">
+          {{> setGoalButton _id=_id isExam='true'}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- <div class="card">
     <div class="card-image">
       <img src="https://eebatou.files.wordpress.com/2011/10/particle-physics.jpg">
       <span class="card-title">{{name}}</span>
@@ -10,7 +40,7 @@
     <div class="card-action">
       <a href="../exam/{{_id}}">Get ready for this test</a>
     </div>
-    WARNING: BOTAO FEIO
+    WARNING: BOTAO FEIO -->
     <!-- {{#unless disableSetGoal}}
       {{#unless goalAlreadyReached state}}
         <div class="col s6">
@@ -33,6 +63,6 @@
         </div>
       {{/unless}}
     {{/unless}} -->
-    {{> setGoalButton}}
-  </div>
+    <!-- {{> setGoalButton}} -->
+  <!-- </div> -->
 </template>

@@ -9,12 +9,17 @@
       {{#if goalAlreadyReached state}}
         {{#if isUnit}}
           <div class="ui disabled tiny button">
-            Ready for Unit
+            Ready for unit
           </div>
         {{/if}}
         {{#if isConcept}}
           <div class="ui disabled tiny button">
-            Known Concept
+            Known concept
+          </div>
+        {{/if}}
+        {{#if isExam}}
+          <div class="ui disabled tiny button">
+            Ready for exam
           </div>
         {{/if}}
       {{else}}

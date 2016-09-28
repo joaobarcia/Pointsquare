@@ -191,7 +191,7 @@ AutoForm.hooks({
       console.log(unitDefinitions);
 
       Meteor.call('create', unitDefinitions, function(error, result) {
-        nodeId = result;
+        const nodeId = result;
         Meteor.call("addAuthor", nodeId, Meteor.userId(), function(error, result) {
           FlowRouter.go('/content/' + nodeId);
         });

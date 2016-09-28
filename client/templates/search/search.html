@@ -34,11 +34,14 @@
           <div class="ui divided items">
             {{#EasySearch.Each index=nodesSearchIndex}}
               {{#if isExam}}
-                <div class="col s4">{{> examCard _id=__originalId name=name description=description authors=authors created_on=created_on}}</div>
+                {{> examCard _id=__originalId name=name description=description authors=authors created_on=created_on}}
               {{/if}}
-              {{#if isConcept}}{{> conceptCard _id=__originalId name=name description=description authors=authors created_on=created_on}}{{/if}}
-              {{#if isUnit}}{{> unitCard _id=__originalId name=name description=description
-        authors=authors created_on=created_on}}{{/if}}
+              {{#if isConcept}}
+                {{> conceptCard _id=__originalId name=name description=description authors=authors created_on=created_on}}
+              {{/if}}
+              {{#if isUnit}}
+                {{> unitCard _id=__originalId name=name description=description authors=authors created_on=created_on}}
+              {{/if}}
             {{/EasySearch.Each}}
           </div>
           {{> EasySearch.LoadMore index=nodesSearchIndex}}
