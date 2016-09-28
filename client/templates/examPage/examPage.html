@@ -27,8 +27,10 @@
         </div>
         <div class="ui fitted divider"></div>
         <p>{{description}}</p>
-        <!-- <p class="ui tiny label">
-          <i class="world icon"></i>{{unitLanguageName}}</p> -->
+        {{#each languageName in examLanguagesNames}}
+        <p class="ui tiny label">
+          <i class="world icon"></i>{{languageName}}</p>
+        {{/each}}
       </div>
     </div>
   </div>

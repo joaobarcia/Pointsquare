@@ -19,8 +19,11 @@
         <p>{{description}}</p>
       </a>
       <div class="extra">
-        <!-- <p class="ui tiny label">
-          <i class="world icon"></i>{{unitLanguageName}}</p> -->
+        {{#each languageName in examLanguagesNames}}
+        <p class="ui tiny label">
+          <i class="world icon"></i>{{languageName}}</p>
+        {{/each}}
+
         <div class="ui right floated">
           {{> setGoalButton _id=_id isExam='true'}}
         </div>
