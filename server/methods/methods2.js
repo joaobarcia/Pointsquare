@@ -578,25 +578,13 @@ create_gate = function(operator) {
 };
 
 add_author = function(node_id,author_id){
-    var authors = Nodes.findOne(node_id).authors;
-    authors[author_id] = true;
-    Nodes.update({_id: node_id},{$set: {authors: authors}});
-    var works = Meteor.users.findOne(author_id).works;
-    works[node_id] = true;
-    Meteor.users.update({_id: author_id},{$set: {works: works}});
+    add_to_field(node_id,"authors",author_id,true);
+    add_to_field(author_id,"works",node_id,true);
 }
 
 remove_author = function(node_id,author_id){
-    var authors = Nodes.findOne(node_id).authors;
-    delete authors[author_id];
-    Nodes.update({_id: node_id},{$set: {authors: authors}});
-    var works = Meteor.users.findOne(author_id).works;
-    delete works[node_id];
-    Meteor.users.update({
-        _id: author_id
-    },{
-        $set: {works: works}}
-    );
+    remove_from_field(node_id,"authors",author_id);
+    remove_from_field(author_id,"works",node_id);
 }
 
 add_grants = function(node_id,concepts){
