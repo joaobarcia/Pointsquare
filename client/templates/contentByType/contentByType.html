@@ -87,7 +87,7 @@
 </template>
 
 <template name="exerciseString">
-  <div class="ui center aligned grid">
+  <div class="{{centeredIfUnit}}">
     <div class="row">
       {{#mathjax}}
         <p>
@@ -106,8 +106,8 @@
               </div>
             {{/if}}
             {{#if isExamPage}}
-              <div class="ui input">
-                <input placeholder="Your answer here" type="text" name="exerciseString" id="exerciseInputText">
+              <div class="ui input exerciseStringInputDiv">
+                <input placeholder="Your answer here" type="text" class="exerciseStringInput">
               </div>
             {{/if}}
           </div>
@@ -154,7 +154,6 @@
     </div>
   {{/if}}
   {{#if isExamPage}}
-  sdasdas
     {{#mathjax}}
       <p>
         {{#markdown}}{{question}}{{/markdown}}
@@ -164,7 +163,7 @@
       {{#let unitId=unitId}}
         {{#each options}}
           <div class="grouped fields">
-            <div class="field">
+            <div class="field exerciseRadioButtonField">
               <div class="ui evaluation-font radio {{disabledIfNoUser}} checkbox" {{tooltipIfNoUser}}>
                 <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
                 <label class="{{isCorrectOption}}RadioButtonLabel">

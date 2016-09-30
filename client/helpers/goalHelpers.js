@@ -7,9 +7,13 @@ Template.registerHelper('goalExists', function() {
 Template.registerHelper("thisIsGoal", function() {
   if (typeof Meteor.user() !== 'undefined' && Meteor.user() !== null) {
     var goal = Meteor.user().goal;
-    // console.log(goal);
-    var thisNodeId = this._id;
-    // console.log(thisNodeId);
+
+    // different to check if it is goal for cards or pages
+    var thisNodeId;
+    if(typeof this._id == 'undefined' || this._id == null){
+      thisNodeId = FlowRouter.getParam('nodeId');
+    } else thisNodeId = this._id;
+
     return thisNodeId == goal;
   }
 });

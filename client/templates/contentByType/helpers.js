@@ -14,3 +14,9 @@ Template.contentByTypeWrapper.helpers({
     }
   }
 });
+
+Template.exerciseString.helpers({
+  centeredIfUnit: function() {
+    if (this.isUnitPage) return "ui center aligned grid"
+  }
+});

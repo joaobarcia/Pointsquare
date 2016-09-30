@@ -4,17 +4,42 @@
       {{#each unit in examContents}}
         {{> contentByTypeWrapper content=unit.content isExamPage=true unitId=unit._id}}
       {{/each}}
-      <button class="ui primary button" id="submit_exam">
-        Submit Exam
-      </button>
+      <div class="ui center aligned grid">
+        {{#unless displayExamResults}}
+          <div class="ui hidden divider"></div>
+          <div class="ui row">
+            <button class="ui large primary button" id="submit_exam">
+              Check your results
+            </button>
+          </div>
+        {{else}}
+          <div class="ui row">
+            <div class="ui teal progress exam-progress" data-percent="{{correctPercentage}}" id="exam-results-bar">
+              <div class="bar"></div>
+              <div class="label">You got
+                {{correctAnswers}}
+                out of
+                {{totalQuestions}}
+                answers right</div>
+            </div>
+          </div>
+          <div class="ui row">
+            {{#unless allAnswersAreCorrect}}
+              {{> setGoalButton isExam='true'}}
+            {{else}}
+              <h3 class="ui header">Great Job!</h3>
+            {{/unless}}
+          </div>
+        {{/unless}}
+      </div>
     </div>
     {{> examInfoBar}}
   {{/with}}
 </template>
 
 <template name="examInfoBar">
-  <div class="ui bottom borderless unit sidebar {{bottomPaddingIfGoalBar}} visible">
-    <div class="ui unit container">
+  <div class="ui bottom borderless info-bar sidebar {{bottomPaddingIfGoalBar}} visible">
+    <div class="ui info-bar container">
       <div class="ui segment">
         <div class="ui basic right floated segment">
           {{#if isGodMode}}

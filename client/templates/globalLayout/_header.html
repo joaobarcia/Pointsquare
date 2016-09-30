@@ -1,31 +1,9 @@
 <template name="_header">
-  <!-- <div class="navbar-fixed">
-    <nav>
-      <div class="nav-wrapper cyan">
-        <div class="container">
-          <div class="row">
-            <a href="{{pathFor 'home'}}"><img height="50px" alt="Logo" src="../images/pointsquare-logo-white.svg" style="padding-top:12px; margin-right:8px"></a><a class="brand-logo" style="position:absolute" href="{{pathFor 'home'}}">Pointsquare<sub><small> αlpha</small></sub></a>
-
-
-
-            <ul class="right">
-              <li><a href="{{ pathFor 'search' }}"><i class="material-icons left">search</i> Search</a></li>
-              {{#if currentUser}} {{>_headerUserIsLogged}} {{else}}
-              <li>
-                <a href="{{ pathFor 'atSignIn' }}">Sign in</a>
-              </li>
-              {{/if}}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </div> -->
   <div class="ui huge inverted fixed stackable nav menu">
     <div class="ui container">
       <a href="{{pathFor 'home'}}" class="active blue header item">
         <img class="spaced logo" src="/images/pointsquare-logo-white.svg">
-         Pointsquare
+        Pointsquare
       </a>
       <div class="right menu">
         <a class="item" href="{{ pathFor 'search' }}">
@@ -43,22 +21,23 @@
 
 </template>
 <template name="_headerUserIsLogged">
-  <div class="ui simple dropdown item">
-    Create
-    <i class="dropdown icon"></i>
-    <div class="menu">
-      <a class="item" href="{{ pathFor 'contentCreate' }}">
-        <i class="book icon"></i>
-        Unit</a>
-      <a class="item" href="{{ pathFor 'conceptCreate' }}">
-        <i class="idea icon"></i>
-        Concept</a>
-      <a class="item" href="{{ pathFor 'examCreate' }}">
-        <i class="write square icon"></i>
-        Exam</a>
+  {{#if isGodMode}}
+    <div class="ui simple dropdown item">
+      Create
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <a class="item" href="{{ pathFor 'contentCreate' }}">
+          <i class="book icon"></i>
+          Unit</a>
+        <a class="item" href="{{ pathFor 'conceptCreate' }}">
+          <i class="idea icon"></i>
+          Concept</a>
+        <a class="item" href="{{ pathFor 'examCreate' }}">
+          <i class="write square icon"></i>
+          Exam</a>
+      </div>
     </div>
-
-  </div>
+  {{/if}}
   <a href="{{ pathFor 'dashboard' }}" class="item">Dashboard</a>
   <a href="#" class="item" data-action="logout">Sign Out</a>
   <!-- <li>

@@ -1,12 +1,15 @@
 Meteor.startup(function() {
-    $('body').on('click', '[data-action=logout]', function(event) {
-        event.preventDefault();
-        AccountsTemplates.logout();
-    });
+  $('body').on('click', '[data-action=logout]', function(event) {
+    event.preventDefault();
+    AccountsTemplates.logout();
+  });
 
-    // WARNING: REMOVE WHEN DEPLOY
+  if (Meteor.isDevelopment) {
     Session.set("godMode", true);
-    Meteor.call("readyThreshold",function(e,r){
-      Session.set("readyThreshold",r);
-    });
+  } else if (Meteor.isProduction) {
+    Session.set("godMode", false);
+  };
+  Meteor.call("readyThreshold", function(e, r) {
+    Session.set("readyThreshold", r);
+  });
 });
