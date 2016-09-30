@@ -33,17 +33,18 @@ Template.unitContent.helpers({
       return numbersToWord[numberOfSections];
     }
   },
-  'unitIsOneSectionAndNoExercise': function() {
+  'disableTabsMenu': function() {
+    // Disable tabs if unit is is only evaluation or section + evaluation
     var unitContent = Template.currentData().content;
     var numberOfSections = _.filter(unitContent, {
       'type': 'unitSection'
     }).length;
-    var noExercise = _.includes(_.find(unitContent, {
-      'type': 'unitEvaluationSection'
-    }), 'userConfirmation');
-    if (numberOfSections == 1 && noExercise) {
-      return 1;
-    } else return 0;
+    // var noExercise = _.includes(_.find(unitContent, {
+    //   'type': 'unitEvaluationSection'
+    // }), 'userConfirmation');
+    if (numberOfSections < 2) {
+      return true;
+    } else return false;
   },
 
   'failedUnitAndNoGoal': function() {

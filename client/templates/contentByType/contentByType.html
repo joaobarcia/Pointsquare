@@ -1,10 +1,12 @@
 <template name="contentByTypeWrapper">
-  {{#let isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId unitIsOneSectionAndNoExercise=unitIsOneSectionAndNoExercise}}
+  {{#let isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId disableTabsMenu=disableTabsMenu}}
     {{#if isUnitPage}}
       {{#each content}}
-        <div class="ui tab" data-tab="{{increaseByOne @index}}">
-          <div class="ui hidden divider"></div>
-          {{#unless unitIsOneSectionAndNoExercise}}
+        {{#if disableTabsMenu}}
+          {{> contentByType unitId=unitId isUnitPage='true' subContent=subContent type=type evaluationType=evaluationType question=question answers=answers options=options}}
+        {{else}}
+          <div class="ui tab" data-tab="{{increaseByOne @index}}">
+            <div class="ui hidden divider"></div>
             <div class="tab-navigation">
               <div class="ui compact basic left floated segment tab-navigation-button">
                 <button class="ui compact circular basic icon button {{isFirstTab (@index)}} previous-tab" current-tab={{increaseByOne @index}}>
@@ -18,8 +20,8 @@
               </div>
             </div>
             {{> contentByType unitId=unitId isUnitPage='true' subContent=subContent type=type evaluationType=evaluationType question=question answers=answers options=options}}
-          {{/unless}}
-        </div>
+          </div>
+        {{/if}}
       {{/each }}
     {{/if}}
     {{#if isExamPage}}
