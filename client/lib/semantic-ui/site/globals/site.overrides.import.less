@@ -49,6 +49,10 @@ body {
     background-color: #333 !important;
 }
 
+.transparent.nav {
+  background-color: transparent !important;
+}
+
 .spaced.logo {
     margin-right: 0.5em !important;
 }
@@ -102,10 +106,128 @@ body {
     top: 4em !important;
 }
 
-#toast-container > div {
-    width: 250px !important;
-}
+// #toast-container > div {
+//     width: 250px !important;
+// }
 
 .exam-progress {
-  width: 80% !important;
+    width: 80% !important;
+}
+
+.hidden.menu {
+    display: none;
+}
+
+.masthead.segment {
+  height: 400px !important;
+  background-image: url('/images/book.jpg') !important;
+  background-size: cover !important;
+  background-position: center center !important;
+    padding: 1em 0;
+}
+
+.masthead .logo.item img {
+    margin-right: 1em;
+}
+
+.masthead .ui.menu .ui.button {
+    margin-left: 0.5em;
+}
+
+.masthead h1.ui.header {
+    margin-top: 1em;
+    margin-bottom: 0;
+    font-size: 2.5em;
+    font-weight: normal;
+}
+
+.masthead h2 {
+    font-size: 1.5em;
+    font-weight: normal;
+}
+
+// .ui.vertical.stripe {
+//     padding: 8em 0;
+// }
+
+.ui.vertical.stripe {
+    padding: 2.5em 0;
+}
+
+.ui.vertical.stripe h3 {
+    font-size: 2em;
+}
+
+.ui.vertical.stripe .button + h3,
+.ui.vertical.stripe p + h3 {
+    margin-top: 3em;
+}
+
+.ui.vertical.stripe .floated.image {
+    clear: both;
+}
+
+.ui.vertical.stripe p {
+    font-size: 1.33em;
+}
+
+.ui.vertical.stripe .horizontal.divider {
+    margin: 3em 0;
+}
+
+.quote.stripe.segment {
+    padding: 0;
+}
+
+.quote.stripe.segment .grid .column {
+    padding-top: 5em;
+    padding-bottom: 5em;
+}
+
+.footer.segment {
+    padding: 5em 0;
+}
+
+.secondary.pointing.menu .toc.item {
+    display: none;
+}
+@media only screen and (max-width: 700px) {
+    .ui.fixed.menu {
+        display: none !important;
+    }
+
+    .secondary.pointing.menu .item,
+    .secondary.pointing.menu .menu {
+        display: none;
+    }
+
+    .secondary.pointing.menu .toc.item {
+        display: block;
+    }
+
+    .masthead.segment {
+        min-height: 350px;
+    }
+
+    .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+    }
+
+    .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+    }
+}
+.ui.secondary.inverted.pointing.menu{
+  border-width: 0px !important;
+}
+.home {
+  background: white !important;
+}
+.ui.inverted.white.vertical.masthead.center.aligned.segment{
+  padding: 0em !important;
+}
+.home-page.cards{
+  margin-top: 1em !important;
 }

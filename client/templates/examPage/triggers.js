@@ -91,7 +91,7 @@ Template.examPage.events({
   //     });
   // }
   'click #submit_exam': function(event) {
-    console.log("SUBMIT EXAM!");
+    // console.log("SUBMIT EXAM!");
 
     // FEEDBACK ON RADIO BUTTON EXERCISES
     $(".exerciseRadioButtonField").addClass('disabled');

@@ -1,11 +1,11 @@
-// Template._headerUserIsLogged.onRendered(
-//         function() {
-//             this.autorun(() => {
-//                     if (this.subscriptionsReady()) {
-//                         $('.ui.dropdown').dropdown({
-//                                 on: 'hover'
-//                             });
-//                         }
-//                     })
-//             }
-//         )
+Template._header.helpers({
+  transparentIfHome: function() {
+    FlowRouter.watchPathChange();
+    const isRouteHome = (FlowRouter.current().route.name == 'home');
+    if (isRouteHome) {
+      return "transparent"
+    } else {
+      return "fixed"
+    };
+  }
+});

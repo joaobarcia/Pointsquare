@@ -45,7 +45,7 @@ var succeedUnit = function() {
         precompute(FlowRouter.getParam('nodeId'));
         Meteor.call("setGoal", goalId, nextUnit);
       } else {
-        FlowRouter.go('/dashboard');
+        //FlowRouter.go('/dashboard');
         Session.set('isLoading', false);
         delete Session.keys["outcome"];
         delete Session.keys["precalculation"];

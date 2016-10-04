@@ -1,89 +1,47 @@
 <template name="goalBar">
   <div class="ui bottom demo borderless sidebar three item small menu overlap visible">
     <div class="item">
-      {{#unless goalIsCompleted}}
-        <div class="ui labeled icon button reset-goal">
-          Reset goal
-          <i class="delete icon"></i>
-        </div>
-      {{/unless}}
+      <div class="ui labeled icon button reset-goal">
+        Reset goal
+        <i class="delete icon"></i>
+      </div>
     </div>
     <div class="item">
-      {{#if goalIsCompleted}}
+      <h4 class="ui header">
         {{#if goalTypeIs 'concept'}}
-          <h4 class="ui header">
-            <div class="sub header">Good work! You have successfully learned</div>
-            <div class="content">{{goalName}}</div>
-          </h4>
+          <i class="small idea icon"></i>
+          <div class="content">
+            {{goalName}}
+          </div>
         {{/if}}
         {{#if goalTypeIs 'content'}}
-          <h4 class="ui header">
-            <div class="sub header">Good work! You are now ready for</div>
-            <div class="content">
-              <a href="/{{goalType}}/{{goalId}}" class="reset-goal">{{goalName}}</a>
-            </div>
-          </h4>
-        {{/if}}
-        {{#if goalTypeIs 'exam'}}
-          <h4 class="ui header">
-            <div class="sub header">Good work! You are now ready for</div>
-            <div class="content">
-              <a href="/{{goalType}}/{{goalId}}" class="reset-goal">{{goalName}}</a>
-            </div>
-          </h4>
-        {{/if}}
-      {{else}}
-        <h4 class="ui header">
-          {{#if goalTypeIs 'concept'}}
-            <i class="small idea icon"></i>
+          <a href="/content/{{goalId}}">
+            <i class="book icon"></i>
             <div class="content">
               {{goalName}}
             </div>
-          {{/if}}
-          {{#if goalTypeIs 'content'}}
-            <a href="/content/{{goalId}}">
-              <i class="book icon"></i>
-              <div class="content">
-                {{goalName}}
-              </div>
-            </a>
-          {{/if}}
-          {{#if goalTypeIs 'exam'}}
-            <i class="write square icon"></i>
-            <div class="content">
-              <a href="/exam/{{goalId}}">{{goalName}}</a>
-            </div>
-          {{/if}}
-          <div class="sub header">learning goal</div>
-        </h4>
-      {{/if}}
-    </div>
-
-    <div class="item">
-      {{#unless goalIsCompleted}}
-        {{#unless currentUnitIsOnPath}}
-          <div class="ui primary positive button start-learning">
-            Start learning
-            <i class="right play icon"></i>
-          </div>
-        {{else}}
-          <div class="ui right labeled icon button next-unit">
-            Skip unit
-            <i class="right forward icon"></i>
-          </div>
-        {{/unless}}
-      {{else}}
-        {{#if goalTypeIs 'concept'}}
-          <a class="ui basic button reset-goal" href="{{pathFor 'search'}}">
-            <i class="search icon"></i>
-            Search new goal
-          </a>
-        {{else}}
-          <a class="ui basic button reset-goal" href="/{{goalType}}/{{goalId}}">
-            <i class="location arrow icon"></i>
-            Go to goal
           </a>
         {{/if}}
+        {{#if goalTypeIs 'exam'}}
+          <i class="write square icon"></i>
+          <div class="content">
+            <a href="/exam/{{goalId}}">{{goalName}}</a>
+          </div>
+        {{/if}}
+        <div class="sub header">learning goal</div>
+      </h4>
+    </div>
+    <div class="item">
+      {{#unless currentUnitIsOnPath}}
+        <div class="ui primary positive button start-learning">
+          Start learning
+          <i class="right play icon"></i>
+        </div>
+      {{else}}
+        <div class="ui right labeled icon button next-unit">
+          Skip unit
+          <i class="right forward icon"></i>
+        </div>
       {{/unless}}
     </div>
   </div>

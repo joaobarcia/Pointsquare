@@ -1,4 +1,110 @@
 <template name="home">
+  <div class="pusher">
+    <div class="home">
+      <div class="ui inverted white vertical masthead center aligned segment">
+        {{> _header }}
+        <div class="ui text container">
+          <h1 class="ui inverted header">
+            learning reimagined
+          </h1>
+          <h2>Prepare for an exam or select a concept as a goal.<br>We help you find your learning path.</h2>
+          <div class="ui category search">
+            <div class="ui big fluid icon input">
+              <input class="prompt" placeholder="Search Exam, Unit or Concept" type="text">
+              <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
+          </div>
+        </div>
+      </div>
+      <div class="ui vertical stripe segment">
+        <div class="ui center aligned container">
+          <div class="row">
+            <h4 class="ui header">Jump straight into one of these exams.<br>We evaluate your knowledge and generate your own study path.</h4>
+          </div>
+          <div class="row">
+            <div class="ui centered home-page cards">
+              {{#each exam in mainPageExams}}
+                <a class="ui card" href="../exam/{{exam._id}}">
+                  <div class="left aligned content">
+                    <div class="header">
+                      <i class="write icon"></i>
+                      {{exam.name}}
+                    </div>
+                    <div class="meta">
+                      by
+                      {{#each author in authorsInfo (exam.authors)}}
+                        {{author.username}}
+                      {{/each}}
+                      |
+                      {{readableDate exam.created_on}}
+                    </div>
+                    <div class="description">
+                      {{exam.description}}
+                    </div>
+                  </div>
+                </a>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ui vertical stripe segment">
+        <div class="ui middle aligned stackable grid container">
+          <div class="row">
+            <div class="eight wide column">
+              <h3 class="ui header">The most advanced algorithms to help you find your learning path</h3>
+              <p>The internet is a fertile ground for knowledge.</p>
+            </div>
+            <div class="six wide right floated column">
+              <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
+            </div>
+          </div>
+          <div class="row">
+            <div class="center aligned column">
+              <a class="ui huge button">Check Them Out</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui vertical stripe quote segment">
+        <div class="ui equal width stackable internally celled grid">
+          <div class="center aligned row">
+            <div class="column">
+              <h3>"What a Company"</h3>
+              <p>That is what they all say about us</p>
+            </div>
+            <div class="column">
+              <h3>"I shouldn't have gone with their competitor."</h3>
+              <p>
+                <img src="assets/images/avatar/nan.jpg" class="ui avatar image">
+                <b>Nan</b>
+                Chief Fun Officer Acme Toys
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ui vertical stripe segment">
+        <div class="ui text container">
+          <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
+          <p>Instead of focusing on content creation and hard work, we have learned how to master the art of doing nothing by providing massive amounts of whitespace and generic content that can seem massive, monolithic and worth your attention.</p>
+          <a class="ui large button">Read More</a>
+          <h4 class="ui horizontal header divider">
+            <a href="#">Case Studies</a>
+          </h4>
+          <h3 class="ui header">Did We Tell You About Our Bananas?</h3>
+          <p>Yes I know you probably disregarded the earlier boasts as non-sequitur filler content, but its really true. It took years of gene splicing and combinatory DNA research, but our bananas can really dance.</p>
+          <a class="ui large button">I'm Still Quite Interested</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<!-- <template name="home_materialize">
     <div id="index-banner" class="parallax-container" style="min-height:380px">
         <div class="section no-pad-bot">
             <div class="container">
@@ -28,7 +134,6 @@
             <div class="row center">
                 <h3 class="header col s12 light">Get ready for one of these tests</h3>
             </div>
-            <!--   Icon Section   -->
             <div class="row">
                 {{#each exam in mainPageExams}}
                     <div class="col s12 m3">
@@ -79,4 +184,4 @@
         </div>
         <div class="parallax"><img style="display:block" src="/images/background3.jpg" alt="Unsplashed background img 3"></div>
     </div>
-</template>
+</template> -->

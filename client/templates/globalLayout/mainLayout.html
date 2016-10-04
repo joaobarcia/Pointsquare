@@ -1,13 +1,21 @@
 <template name="mainLayout">
-  {{> _header}}
-  <div class="pusher">
-    <div class="ui white main container {{bottomPaddingIfGoalBar}}">
-      {{>Template.dynamic template=main}}
+  {{#if isHome}}
+    {{>Template.dynamic template=main}}
+  {{else}}
+    {{> _header}}
+    <div class="pusher">
+      <div class="ui white main container {{bottomPaddingIfGoalBar}}">
+        {{>Template.dynamic template=main}}
+      </div>
     </div>
-  </div>
-  {{#transition wrap="true" in="slideInUp" out="slideOutDown"}}
-    {{#if goalExists}}
-      {{> goalBar}}
+  {{/if}}
+  {{#if goalExists}}
+    {{#if goalIsCompleted}}
+      {{> goalReachedModal}}
+    {{else}}
+      {{#transition wrap="true" in="slideInUp" out="slideOutDown"}}
+        {{> goalBar}}
+      {{/transition}}
     {{/if}}
-  {{/transition}}
+  {{/if}}
 </template>

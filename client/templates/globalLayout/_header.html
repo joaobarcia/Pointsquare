@@ -1,5 +1,5 @@
 <template name="_header">
-  <div class="ui huge inverted fixed stackable nav menu">
+  <div class="ui huge inverted stackable {{transparentIfHome}} nav menu">
     <div class="ui container">
       <a href="{{pathFor 'home'}}" class="active blue header item">
         <img class="spaced logo" src="/images/pointsquare-logo-white.svg">
@@ -13,7 +13,9 @@
         {{else}}
 
           <a class="item" href="{{ pathFor 'atSignIn' }}">Sign in</a>
-
+          {{#if isHome}}
+            <a class="ui inverted button item" href="{{ pathFor 'atSignUp' }}">Sign up!</a>
+          {{/if}}
         {{/if}}
       </div>
     </div>

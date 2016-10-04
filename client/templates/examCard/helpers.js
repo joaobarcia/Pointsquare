@@ -8,7 +8,7 @@ Template.examCard.helpers({
       for (let id of languagesIds){
         examLanguagesNames.push(Nodes.findOne(id).name);
       }
-      console.log(examLanguagesNames);
+      // console.log(examLanguagesNames);
       return examLanguagesNames
     }
   }
