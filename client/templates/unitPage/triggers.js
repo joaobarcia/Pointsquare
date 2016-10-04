@@ -36,6 +36,9 @@ var succeedUnit = function() {
       if (goalId) {
         var goal = {};
         goal[goalId] = true;
+        if(Meteor.globalFunctions.getState(goalId) > 0.5){
+          console.log("goal reached!");
+        }
         var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
         resetQuestionFeedback();
         Session.set('isLoading', false);
