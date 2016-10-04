@@ -58,6 +58,10 @@ Template.unitEdit.helpers({
       unitEditDoc.exerciseRadioButton.question = evaluation.question;
       unitEditDoc.exerciseRadioButton.options = evaluation.options;
 
+      unitEditDoc.exerciseImageSelection = {};
+      unitEditDoc.exerciseImageSelection.question = evaluation.question;
+      unitEditDoc.exerciseImageSelection.options = evaluation.options;
+
       unitEditDoc.exerciseString = {};
       unitEditDoc.exerciseString.question = evaluation.question;
       unitEditDoc.exerciseString.answers = evaluation.answers;

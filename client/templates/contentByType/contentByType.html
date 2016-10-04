@@ -63,6 +63,9 @@
     {{#if evaluationIsType 'exerciseRadioButton'}}
       {{> exerciseRadioButton isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId question=question options=options questionImageURL=questionImageURL}}
     {{/if}}
+    {{#if evaluationIsType 'exerciseImageSelection'}}
+      {{> exerciseImageSelection isUnitPage=isUnitPage isExamPage=isExamPage unitId=unitId question=question options=options questionImageURL=questionImageURL}}
+    {{/if}}
     {{#if evaluationIsType 'exerciseString'}}
       {{#if isUnitPage}}
         {{> exerciseString isUnitPage='true' unitId=unitId question=question answers=answers questionImageURL=questionImageURL}}
@@ -174,6 +177,72 @@
           </div>
         {{/each}}
       {{/let}}
+    </div>
+  {{/if}}
+  {{#if isLoading}}
+    <div class="row center-align">
+      {{> smallLoading}}
+    </div>
+  {{/if}}
+</template>
+<template name="exerciseImageSelection">
+  {{#if isUnitPage}}
+    <div class="ui middle aligned two column internally celled relaxed grid">
+      <div class="center aligned column">
+        {{#mathjax}}
+          <p>
+            {{#markdown}}{{question}}{{/markdown}}
+          </p>
+        {{/mathjax}}
+        <img class="ui centered big fluid image" src="{{questionImageURL}}">
+      </div>
+      <div class="column">
+        <div class="ui small images">
+          {{#let unitId=unitId}}
+            {{#each options}}
+              <!-- <a href="">
+                <img src="{{imgURL}}">
+              </a> -->
+              <div class="grouped fields">
+                <div class="field">
+                  <div class="ui evaluation-font radio {{disabledIfNoUser}} checkbox" {{tooltipIfNoUser}}>
+                    <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
+                    <label class="{{isCorrectOption}}RadioButtonLabel">
+                      <img src="{{imgURL}}">
+                    </label>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          {{/let}}
+        </div>
+      </div>
+    </div>
+  {{/if}}
+  {{#if isExamPage}}
+    {{#mathjax}}
+      <p>
+        {{#markdown}}{{question}}{{/markdown}}
+      </p>
+    {{/mathjax}}
+    <div class="ui evaluation-font form">
+
+      <div class="ui medium images">
+        {{#let unitId=unitId}}
+          {{#each options}}
+            <div class="grouped fields">
+              <div class="field exerciseRadioButtonField">
+                <div class="ui evaluation-font radio {{disabledIfNoUser}} checkbox" {{tooltipIfNoUser}}>
+                  <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
+                  <label class="{{isCorrectOption}}RadioButtonLabel">
+                    <img src="{{imgURL}}">
+                  </label>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        {{/let}}
+      </div>
     </div>
   {{/if}}
   {{#if isLoading}}
