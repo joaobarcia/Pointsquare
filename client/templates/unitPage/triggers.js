@@ -24,6 +24,7 @@ var succeedUnit = function() {
   //definir que o utilizador já fez a sua escolha
   Session.set("outcome", "success");
   Session.set('isLoading', true);
+  console.log('succeed');
   soundSuccess.play();
   toastr.success('Good job!');
   //se ainda não tiverem chegado os resultados do servidor, não fazer nada
