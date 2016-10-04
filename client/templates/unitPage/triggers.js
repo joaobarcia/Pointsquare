@@ -38,10 +38,10 @@ var succeedUnit = function() {
         goal[goalId] = true;
         var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
         resetQuestionFeedback();
-        FlowRouter.go('/content/' + nextUnit);
         Session.set('isLoading', false);
         delete Session.keys["outcome"];
         delete Session.keys["precalculation"];
+        FlowRouter.go('/content/' + nextUnit);
         precompute(FlowRouter.getParam('nodeId'));
         Meteor.call("setGoal", goalId, nextUnit);
       } else {
@@ -82,10 +82,10 @@ function failUnit() {
         if (nextUnit) {
           Meteor.call("setGoal", goalId, nextUnit);
           resetQuestionFeedback();
-          FlowRouter.go('/content/' + nextUnit);
           Session.set('isLoading', false);
           delete Session.keys["outcome"];
           delete Session.keys["precalculation"];
+          FlowRouter.go('/content/' + nextUnit);
           precompute(FlowRouter.getParam('nodeId'));
         } else {
           FlowRouter.go('/dashboard');
@@ -186,14 +186,14 @@ Template.unitPage.events({
       $("#exerciseButton").removeClass("red").addClass("green").addClass("disabled");
       $("#exerciseInputText").removeClass("red text").addClass("green text");
       if (Meteor.userId()) {
-        // succeedUnit();
+        succeedUnit();
       }
     } else if (!answerIsCorrect) {
       $("#exerciseStringField").addClass("disabled");
       $("#exerciseButton").removeClass("green").addClass("red").addClass("disabled");
       $("#exerciseInputText").removeClass("green text").addClass("red text");
       if (Meteor.userId()) {
-        // failUnit();
+        failUnit();
       }
     }
   },
@@ -203,7 +203,7 @@ Template.unitPage.events({
     $(".trueRadioButtonLabel").addClass("green text");
     $(".falseRadioButtonLabel").addClass("red text");
     if (Meteor.userId()) {
-      // succeedUnit();
+      succeedUnit();
     }
   },
 
@@ -213,7 +213,7 @@ Template.unitPage.events({
     $(".trueRadioButtonLabel").addClass("green text");
     $(".falseRadioButtonLabel").addClass("red text");
     if (Meteor.userId()) {
-      // failUnit();
+      failUnit();
     }
   },
   'click .set-goal': function(event, template) {
