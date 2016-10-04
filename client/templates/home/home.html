@@ -28,16 +28,17 @@
                 <a class="ui card" href="../exam/{{exam._id}}">
                   <div class="left aligned content">
                     <div class="header">
-                      <i class="write icon"></i>
                       {{exam.name}}
                     </div>
                     <div class="meta">
-                      by
-                      {{#each author in authorsInfo (exam.authors)}}
-                        {{author.username}}
-                      {{/each}}
-                      |
-                      {{readableDate exam.created_on}}
+                      <span class="right floated">
+                        {{readableDate exam.created_on}}</span>
+                      <span>
+                        by
+                        {{#each author in authorsInfo (exam.authors)}}
+                          {{author.username}}
+                        {{/each}}
+                      </span>
                     </div>
                     <div class="description">
                       {{exam.description}}
