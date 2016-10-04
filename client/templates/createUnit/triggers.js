@@ -147,10 +147,14 @@ AutoForm.hooks({
       evaluation.evaluationType = doc.evaluationType; // define evaluation type from autoform
       if (doc.evaluationType == "exerciseRadioButton") { // add options or answers to evaluation
         evaluation.question = doc.exerciseRadioButton.question;
+        evaluation.questionImageURL = doc.exerciseRadioButton.questionImageURL;
         evaluation.options = doc.exerciseRadioButton.options;
+        delete doc.exerciseRadioButton;
       } else if (doc.evaluationType == "exerciseString") {
         evaluation.question = doc.exerciseString.question;
+        evaluation.questionImageURL = doc.exerciseString.questionImageURL;
         evaluation.answers = doc.exerciseString.answers;
+        delete doc.exerciseString;
       };
 
       content.push(evaluation); // push evaluation object into content array

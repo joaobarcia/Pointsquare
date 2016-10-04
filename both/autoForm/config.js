@@ -186,6 +186,11 @@ Schema.Unit = new SimpleSchema({
       }
     },
   },
+  "exerciseRadioButton.questionImageURL": {
+    label: "Question image URL",
+    type: String,
+    optional: true,
+  },
   "exerciseRadioButton.options": {
     type: Array,
     optional: true,
@@ -233,6 +238,11 @@ Schema.Unit = new SimpleSchema({
       }
     },
   },
+  "exerciseImageSelection.questionImageURL": {
+    label: "Question image URL",
+    type: String,
+    optional: true,
+  },
   "exerciseImageSelection.options": {
     type: Array,
     optional: true,
@@ -274,6 +284,11 @@ Schema.Unit = new SimpleSchema({
         type: "textarea"
       }
     }
+  },
+  "exerciseString.questionImageURL": {
+    label: "Question image URL",
+    type: String,
+    optional: true,
   },
   "exerciseString.answers": {
     type: Array,
