@@ -37,7 +37,7 @@ var succeedUnit = function() {
       if (goalId) {
         var goal = {};
         goal[goalId] = true;
-        if(Meteor.globalFunctions.getState(goalId) > 0.5){
+        if (Meteor.globalFunctions.getState(goalId) > 0.5) {
           console.log("goal reached!");
         }
         var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
@@ -220,15 +220,39 @@ Template.unitPage.events({
       failUnit();
     }
   },
-  'click .set-goal': function(event, template) {
-    Session.set('isLoading', true);
+  'click #reload-unit': function(event, template) {
     event.preventDefault();
-    var nodeId = FlowRouter.getParam('nodeId');
-    var goal = {};
-    goal[nodeId] = true;
-    var nextUnit = Meteor.globalFunctions.findUsefulContent(goal);
-    Meteor.call("setGoal", nodeId, nextUnit);
-    Session.set('isLoading', false);
+    Session.set('failedUnitAndNoGoal', false);
+    precompute();
+    setTimeout(function() {
+      $('.ui.embed').embed();
+      $.tab();
+      $('.unit-tabs .item').tab();
+      // set first tab as active
+      $("[data-tab=1]").addClass('active');
+      $('.ui.checkbox').checkbox();
+    }, 200);
   }
+
+  // 'click .set-goal': function(event, template) {
+  //   event.preventDefault();
+  //   Session.set('isLoading', true);
+  //   var nodeId = FlowRouter.getParam('nodeId');
+  //   var goal = {};
+  //   goal[nodeId] = true;
+  //   var unit = Meteor.globalFunctions.findUsefulContent(goal);
+  //
+  //   console.log(nodeId);
+  //
+  //   console.log(unit);
+  //
+  //   console.log(Meteor.userId());
+  //   if (unit) {
+  //     Meteor.call("setGoal", nodeId, unit, Meteor.userId());
+  //   } else {
+  //     toastr.info('Unfortunately there is no content to reach this goal yet');
+  //     $(event.target).addClass('disabled');
+  //   }
+  // }
 
 });

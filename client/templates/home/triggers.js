@@ -2,7 +2,7 @@ Template.home.onCreated(function() {
   this.autorun(() => {
     if (this.subscriptionsReady()) {
       if (!Session.equals("alreadyClosedNotification", true)) {
-        toastr.info('Pointsquare is in beta. This means you will probably find some bugs. Help us find them! Blah Blah!', '', {
+        toastr.info('Pointsquare is in beta. Help us build a great education platform by giving your feedback and reporting bugs', '', {
           "closeButton": true,
           "debug": false,
           "newestOnTop": false,

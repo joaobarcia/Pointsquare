@@ -125,9 +125,11 @@
         <input class="mailchimp-email form-control" placeholder="Your email address goes here" type="email">
         <button class="ui submit button mailchimp-subscribe" type="submit">Submit</button>
       </div>
-    </div>
-    <div class="ui tiny info message">
-      <p class="mailchimp-message">{{message}}</p>
+      {{#if message}}
+        <div class="ui pointing label mailchimp-message">
+          {{message}}
+        </div>
+      {{/if}}
     </div>
   </form>
 </template>
