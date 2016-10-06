@@ -85,9 +85,14 @@
           <div class="row">
             <p>Are you a creator of educational content?<br>Do you have a favourite educational youtubber or blogger and would like to help us indexing his content?</p>
             <h3 class="ui home-page header">Be the first to know when our contributor program opens!</h3>
-            <div class="ui large action input">
+            <!-- <div class="ui large action input">
               <input placeholder="Enter your email" type="text">
               <button class="ui button">Submit</button>
+            </div> -->
+            <div class="ui grid">
+              <div class="ui right floated eight wide column">
+                {{> MailChimpListSubscribe}}
+              </div>
             </div>
           </div>
           <div class="ui hidden divider"></div>
@@ -113,84 +118,16 @@
   </div>
 </template>
 
-<!-- <template name="home_materialize">
-    <div id="index-banner" class="parallax-container" style="min-height:380px">
-        <div class="section no-pad-bot">
-            <div class="container">
-                <br><br>
-                <h1 class="header center light white-text">Learning reimagined</h1>
-                <div class="row center">
-                    <h5 class="header col s12 light white-text">Search for an exam or skill to set as a learning goal</h5>
-                    <h5 class="header col s12 light white-text">We help you find your learning path</h5>
-                    <div>
-                        <input id="search" class="white-text">
-                        <i class="material-icons">search</i>
-                    </div>
-                </div>
-
-                <div class="row center">
-                    <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
-                </div>
-                <br><br>
-
-            </div>
-        </div>
-        <div class="parallax"><img style="display:block" src="/images/background1.jpg" alt="Unsplashed background img 1"></div>
+<template name="MailChimpListSubscribe">
+  <form class="ui info form">
+    <div class="field">
+      <div class="ui action input">
+        <input class="mailchimp-email form-control" placeholder="Your email address goes here" type="email">
+        <button class="ui submit button mailchimp-subscribe" type="submit">Submit</button>
+      </div>
     </div>
-
-    <div class="container">
-        <div class="section">
-            <div class="row center">
-                <h3 class="header col s12 light">Get ready for one of these tests</h3>
-            </div>
-            <div class="row">
-                {{#each exam in mainPageExams}}
-                    <div class="col s12 m3">
-                        {{> examCard name=exam.name _id=exam._id}}
-                    </div>
-                {{/each}}
-            </div>
-
-        </div>
+    <div class="ui tiny info message">
+      <p class="mailchimp-message">{{message}}</p>
     </div>
-
-    <div class="parallax-container valign-wrapper">
-        <div class="section no-pad-bot">
-            <div class="container">
-                <div class="row center">
-                    <h5 class="header col s12 white-text light">A modern responsive front-end framework based on Material Design</h5>
-                </div>
-            </div>
-        </div>
-        <div class="parallax"><img style="display:block" src="/images/background2.jpg" alt="Unsplashed background img 2"></div>
-    </div>
-
-    <div class="container">
-        <div class="section">
-
-            <div class="row">
-                <div class="col s12 center">
-                    <h3>
-                        <i class="mdi-content-send brown-text"></i>
-                    </h3>
-                    <h4>Contact Us</h4>
-                    <p class="left-align light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque id nunc nec volutpat. Etiam pellentesque tristique arcu, non consequat magna fermentum ac. Cras ut ultricies eros. Maecenas eros justo,
-                        ullamcorper a sapien id, viverra ultrices eros. Morbi sem neque, posuere et pretium eget, bibendum sollicitudin lacus. Aliquam eleifend sollicitudin diam, eu mattis nisl maximus sed. Nulla imperdiet semper molestie. Morbi massa odio, condimentum sed
-                        ipsum ac, gravida ultrices erat. Nullam eget dignissim mauris, non tristique erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="parallax-container valign-wrapper">
-        <div class="section no-pad-bot">
-            <div class="container">
-                <div class="row center">
-                    <h5 class="header col white-text s12 light">A modern responsive front-end framework based on Material Design</h5>
-                </div>
-            </div>
-        </div>
-        <div class="parallax"><img style="display:block" src="/images/background3.jpg" alt="Unsplashed background img 3"></div>
-    </div>
-</template> -->
+  </form>
+</template>

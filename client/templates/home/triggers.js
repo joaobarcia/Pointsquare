@@ -79,3 +79,18 @@ Template.home.onRendered(function() {
     }
   });
 });
+
+Template.MailChimpListSubscribe.onRendered(function() {
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      Session.set('submitedMailChimp', false);
+    }
+  });
+});
+
+Template.MailChimpListSubscribe.events({
+  'submit form': function(event) {
+    console.log('SUBMIT');
+    Session.set('submitedMailChimp', true);
+  }
+});
