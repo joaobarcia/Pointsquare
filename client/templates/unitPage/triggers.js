@@ -24,12 +24,13 @@ var succeedUnit = function() {
   //definir que o utilizador já fez a sua escolha
   Session.set("outcome", "success");
   Session.set('isLoading', true);
-  console.log('succeed');
   soundSuccess.play();
   toastr.success('Good job!');
   //se ainda não tiverem chegado os resultados do servidor, não fazer nada
   if (Session.get("precalculation") != "waiting") {
+    delete Session.keys["outcome"];
     Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
+      delete Session.keys["precalculation"];
       var goalId = Meteor.user().goal;
       //do not accept this unit as a next unit towards goal
       var neglectThisUnit = {};
@@ -37,17 +38,21 @@ var succeedUnit = function() {
       if (goalId) {
         var goal = {};
         goal[goalId] = true;
+        //se o objectivo tiver sido alcançado seguir para a sua página
         if (Meteor.globalFunctions.getState(goalId) > 0.5) {
-          console.log("goal reached!");
+          goalType = Nodes.findOne(goalId).type;
+          if(goalType == "exam"){
+            FlowRouter.go("/exam/"+goalId);
+          }
         }
-        var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
-        resetQuestionFeedback();
-        Session.set('isLoading', false);
-        delete Session.keys["outcome"];
-        delete Session.keys["precalculation"];
-        FlowRouter.go('/content/' + nextUnit);
-        precompute(FlowRouter.getParam('nodeId'));
-        Meteor.call("setGoal", goalId, nextUnit);
+        else{
+          var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
+          resetQuestionFeedback();
+          Session.set('isLoading', false);
+          FlowRouter.go('/content/' + nextUnit);
+          precompute(nextUnit);
+          Meteor.call("setGoal", goalId, nextUnit);
+        }
       } else {
         //FlowRouter.go('/dashboard');
         Session.set('isLoading', false);
@@ -74,7 +79,9 @@ function failUnit() {
   // }
   //se ainda não tiverem chegado os resultados do servidor, não fazer nada
   if (Session.get("precalculation") != "waiting") {
+    delete Session.keys["outcome"];
     Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {
+      delete Session.keys["precalculation"];
       var goalId = Meteor.user().goal;
       //do not accept this unit as a next unit towards goal
       var neglectThisUnit = {};
@@ -87,10 +94,8 @@ function failUnit() {
           Meteor.call("setGoal", goalId, nextUnit);
           resetQuestionFeedback();
           Session.set('isLoading', false);
-          delete Session.keys["outcome"];
-          delete Session.keys["precalculation"];
           FlowRouter.go('/content/' + nextUnit);
-          precompute(FlowRouter.getParam('nodeId'));
+          precompute(nextUnit);
         } else {
           FlowRouter.go('/dashboard');
         }
