@@ -9,3 +9,11 @@ Template._header.helpers({
     };
   }
 });
+
+Template._header.events({
+  'click #feedback': function(event) {
+    $('.ui.feedback.modal')
+      .modal('setting', 'transition', 'scale')
+      .modal('show');
+  }
+});

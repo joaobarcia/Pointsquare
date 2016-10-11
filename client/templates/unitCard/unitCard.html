@@ -1,8 +1,11 @@
 <template name="unitCard">
   <div class="item">
-    <div class="ui tiny image center aligned">
+    <div class="ui tiny image centered middle aligned">
       <a href="../content/{{_id}}">
-        <i class="big bordered inverted {{mapUnitStateToColor state}} book icon"></i>
+        <i class="big icons">
+          <i class="big {{mapUnitStateToColor state}} square icon"></i>
+          <i class="inverted book icon"></i>
+        </i>
       </a>
     </div>
     <div class="content">

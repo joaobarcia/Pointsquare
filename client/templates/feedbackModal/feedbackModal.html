@@ -1,29 +1,44 @@
 <template name="feedbackModal">
-    <div class="modal-content">
-        <h4>Send us your opinion!</h4>
-        <p>Let us know how you think we could improve Pointsquare, {{currentUser.username}}</p>
-        <div class="section">
-            <form id="feedbackForm">
-                {{!-- Code for when we didnt have usernames
-<div class="row">
-    <div class="input-field">
-        <i class="material-icons prefix">account_circle</i>
-        <input name="name" type="text" class="validate">
-        <label for="name">Name</label>
+  <div class="ui feedback small modal">
+    <i class="close icon"></i>
+    <div class="header">
+      We'd be glad to hear what you have to say!
     </div>
-</div>
- --}}
-                <div class="row">
-                    <div class="input-field">
-                        <i class="material-icons prefix">chat</i>
-                        <textarea name="opinion" class="materialize-textarea"></textarea>
-                        <label for="opinion">Your opinion</label>
-                    </div>
-                </div>
-                <div class="row right-align">
-                    <input type="submit" class="modal-action modal-close waves-effect waves-green btn" value="Send">
-                </div>
-            </form>
+    <div class="ui content">
+      <div class="ui feedback form">
+        <div class="field">
+          {{#if currentUser}}
+            <label>E-mail
+            </label>
+          {{/if}}
+          <input type="email" placeholder="Your email goes here" value='{{mainUserEmail}}'>
         </div>
+        <div class="field">
+          <label>Your feedback</label>
+          <textarea></textarea>
+        </div>
+        <div class="inline field">
+          <div class="ui toggle checkbox">
+            <input type="checkbox" tabindex="0" class="hidden" checked="checked">
+            <label>Can we get in touch with you?</label>
+          </div>
+          <label></label>
+        </div>
+      </div>
     </div>
+    <div class="actions">
+      <div class="ui black deny button">
+        Cancel
+      </div>
+      <button class="ui primary positive right labeled icon button" id="sendFeedback">
+        Send!
+        <i class="location arrow icon"></i>
+      </button>
+    </div>
+  </div>
 </template>
+<!-- <template name="feedbackModal">
+<div class="modal-content"> <h4>Send us your opinion!</h4> <p>Let us know how you think we could improve Pointsquare, {{currentUser.username}}</p> <div class="section"> <form id="feedbackForm"> {{!-- Code for when we didnt have usernames <div
+class="row"> <div class="input-field"> <i class="material-icons prefix">account_circle</i> <input name="name" type="text" class="validate"> <label for="name">Name</label> </div> </div> --}} <div class="row"> <div class="input-field"> <i
+class="material-icons prefix">chat</i> <textarea name="opinion" class="materialize-textarea"></textarea> <label for="opinion">Your opinion</label> </div> </div> <div class="row right-align"> <input type="submit" class="modal-action modal-close
+waves-effect waves-green btn" value="Send"> </div> </form> </div> </div> </template> -->

@@ -2,28 +2,95 @@
   <div class="ui goal-reached modal">
     <i class="close icon"></i>
     <div class="header">
-      Good job! You have reached your goal
+      Awesome! You have reached your goal
     </div>
-    <div class="image content">
-      <div class="ui medium image">
-        <img src="/images/avatar/large/chris.jpg">
-      </div>
-      <div class="description">
-        <div class="ui header">We've auto-chosen a profile image for you.</div>
-        <p>We've grabbed the following image from the
-          <a href="https://www.gravatar.com" target="_blank">gravatar</a>
-          image associated with your registered e-mail address.</p>
-        <p>Is it okay to use this photo?</p>
+    <div class="ui content">
+      <div class="ui middle aligned centered relaxed grid">
+        <div class="ui five wide column">
+          <div class="ui segment">
+            <div class="ui center aligned icon header">
+              {{#if goalTypeIs 'concept'}}
+                <i class="circular inverted yellow idea icon"></i>
+                <div class="ui center content">{{goalName}}
+                </div>
+              {{/if}}
+              {{#if goalTypeIs 'content'}}
+                <a href="/content/{{goalId}}">
+                  <i class="big icons">
+                    <i class="big green square icon"></i>
+                    <i class="small inverted book icon"></i>
+                  </i>
+                  <div class="ui center content">
+                    {{goalName}}</div>
+                </a>
+              {{/if}}
+              {{#if goalTypeIs 'exam'}}
+                <a href="/exam/{{goalId}}">
+                  <i class="big icons">
+                    <i class="big green square icon"></i>
+                    <i class="inverted write square icon"></i>
+                  </i>
+                  <div class="ui center content">
+                    {{goalName}}</div>
+                </a>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+        <div class="eleven wide column">
+          {{#if goalTypeIs 'concept'}}
+            <p>
+              You should now understand the concept</p>
+            <p>
+              <i class="small idea icon"></i>{{goalName}}
+            </p>
+          {{/if}}
+          {{#if goalTypeIs 'content'}}
+            <p>
+              You should now be ready for unit</p>
+            <p>
+              <a href="/content/{{goalId}}">
+                <i class="book icon"></i>
+                {{goalName}}
+              </a>
+            </p>
+          {{/if}}
+          {{#if goalTypeIs 'exam'}}
+            <p>
+              You should now be ready for exam</p>
+            <p>
+              <a href="/exam/{{goalId}}">
+                <i class="pencil icon"></i>
+                {{goalName}}
+              </a>
+            </p>
+          {{/if}}
+        </div>
       </div>
     </div>
     <div class="actions">
-      <div class="ui black deny button">
-        Nope
-      </div>
-      <div class="ui positive right labeled icon button">
-        Yep, that's me
-        <i class="checkmark icon"></i>
-      </div>
+      <!-- <div class="ui black deny button">
+      Nope
+    </div> -->
+      {{#if goalTypeIs 'concept'}}
+        <a class="ui positive primary icon button" href="{{pathFor 'search'}}">
+          Search more knowledge!
+          <i class="location arrow icon"></i>
+        </a>
+      {{/if}}
+      {{#if goalTypeIs 'content'}}
+        <a class="ui positive right labeled icon button" href="/content/{{goalId}}">
+          Take me to it!
+          <i class="location arrow icon"></i>
+        </a>
+      {{/if}}
+      {{#if goalTypeIs 'exam'}}
+        <a class="ui positive right labeled icon button" href="/exam/{{goalId}}">
+          Take me to it!
+          <i class="location arrow icon"></i>
+        </a>
+      {{/if}}
+
     </div>
   </div>
 </template>
