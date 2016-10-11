@@ -1,11 +1,14 @@
 var precompute = function(nodeId) {
+  console.log("precomputing for "+nodeId);
   if (Meteor.userId()) {
     Session.set("precalculation", "waiting");
     var r = Meteor.globalFunctions.precompute(nodeId);
     Session.set("precalculation", r);
     if (Session.get("outcome") == "success") {
+      console.log("already ready to succeed");
       succeedUnit();
     } else if (Session.get("outcome") == "failure") {
+      console.log("already ready to fail");
       failUnit();
     }
   };
@@ -21,6 +24,7 @@ function resetQuestionFeedback() {
 };
 
 var succeedUnit = function() {
+  console.log("succeeding unit "+FlowRouter.getParam('nodeId'));
   //definir que o utilizador já fez a sua escolha
   Session.set("outcome", "success");
   Session.set('isLoading', true);
@@ -28,24 +32,31 @@ var succeedUnit = function() {
   toastr.success('Good job!');
   //se ainda não tiverem chegado os resultados do servidor, não fazer nada
   if (Session.get("precalculation") != "waiting") {
+    console.log("precalculation done and answer is known");
+    console.log("calling succeed method");
+    delete Session.keys["outcome"];
     Meteor.call("succeed", Session.get("precalculation"), Meteor.userId(), function(e, r) {
+      delete Session.keys["precalculation"];
+      console.log("callback succeed method");
       var goalId = Meteor.user().goal;
       //do not accept this unit as a next unit towards goal
       var neglectThisUnit = {};
       neglectThisUnit[FlowRouter.getParam('nodeId')] = true;
       if (goalId) {
+        console.log("there is a goal: "+goalId);
         var goal = {};
         goal[goalId] = true;
         if(Meteor.globalFunctions.getState(goalId) > 0.5){
           console.log("goal reached!");
         }
+        console.log("searching for nextUnit");
         var nextUnit = Meteor.globalFunctions.findUsefulContent(goal, neglectThisUnit);
+        console.log("found a nextUnit");
         resetQuestionFeedback();
         Session.set('isLoading', false);
-        delete Session.keys["outcome"];
-        delete Session.keys["precalculation"];
+        console.log("moving on to "+nextUnit);
         FlowRouter.go('/content/' + nextUnit);
-        precompute(FlowRouter.getParam('nodeId'));
+        precompute(nextUnit);
         Meteor.call("setGoal", goalId, nextUnit);
       } else {
         //FlowRouter.go('/dashboard');
@@ -59,6 +70,7 @@ var succeedUnit = function() {
 };
 
 function failUnit() {
+  console.log("failing unit "+FlowRouter.getParam('nodeId'));
   //definir que o utilizador já fez a sua escolha
   Session.set('isLoading', true);
   Session.set("outcome", "failure");
@@ -73,7 +85,10 @@ function failUnit() {
   // }
   //se ainda não tiverem chegado os resultados do servidor, não fazer nada
   if (Session.get("precalculation") != "waiting") {
+    console.log("precalculation done and answer is known");
+    delete Session.keys["outcome"];
     Meteor.call("fail", Session.get("precalculation"), Meteor.userId(), function(e, r) {
+      delete Session.keys["precalculation"];
       var goalId = Meteor.user().goal;
       //do not accept this unit as a next unit towards goal
       var neglectThisUnit = {};
@@ -86,10 +101,9 @@ function failUnit() {
           Meteor.call("setGoal", goalId, nextUnit);
           resetQuestionFeedback();
           Session.set('isLoading', false);
-          delete Session.keys["outcome"];
-          delete Session.keys["precalculation"];
+          console.log("moving on to "+nextUnit);
           FlowRouter.go('/content/' + nextUnit);
-          precompute(FlowRouter.getParam('nodeId'));
+          precompute(nextUnit);
         } else {
           FlowRouter.go('/dashboard');
         }
