@@ -8,24 +8,26 @@
             learning reimagined
           </h1>
           <h2>Prepare for an exam or select a concept as a goal.<br>We help you find your learning path.</h2>
-          <div class="ui category search">
-            <div class="ui big fluid icon input">
-              <input class="prompt" placeholder="Search Exam, Unit or Concept" type="text">
-              <i class="search icon"></i>
+          <div class="ui basic left aligned segment">
+            <div class="ui fluid category search">
+              <div class="ui big fluid icon input">
+                <input class="prompt" placeholder="Search Exam, Unit or Concept" type="text">
+                <i class="search icon"></i>
+              </div>
+              <div class="results"></div>
             </div>
-            <div class="results"></div>
           </div>
         </div>
       </div>
       <div class="ui vertical stripe segment">
         <div class="ui center aligned container">
           <div class="row">
-            <h4 class="ui header">Jump straight into one of these exams.<br>We evaluate your knowledge and generate your own study path.</h4>
+            <h4 class="ui header">Jump straight into one of these exams.<br>We'll generate your personal study path based on your results.</h4>
           </div>
           <div class="row">
             <div class="ui centered home-page cards">
               {{#each exam in mainPageExams}}
-                <a class="ui card" href="../exam/{{exam._id}}">
+                <a class="ui blue card" href="../exam/{{exam._id}}">
                   <div class="left aligned content">
                     <div class="header">
                       {{exam.name}}
@@ -52,137 +54,82 @@
       </div>
       <div class="ui vertical stripe segment">
         <div class="ui middle aligned stackable grid container">
+          <div class="ui hidden divider"></div>
           <div class="row">
             <div class="eight wide column">
               <h3 class="ui header">The most advanced algorithms to help you find your learning path</h3>
-              <p>The internet is a fertile ground for knowledge.</p>
+              <p>The internet is a fertile ground for knowledge. Everyday independent creators post new content about virtually anything.</p>
+              <p>Pointsquare is bringing structure to that content, so that every learner may have a course accurately tailored to their skill set and personal goals.</p>
             </div>
             <div class="six wide right floated column">
-              <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
+              <img src="/images/girl-reading.jpg" class="ui large image">
             </div>
           </div>
-          <div class="row">
-            <div class="center aligned column">
-              <a class="ui huge button">Check Them Out</a>
+          <div class="ui hidden divider"></div>
+        </div>
+      </div>
+      <div class="ui blue inverted vertical stripe quote segment">
+        <div class="ui equal width stackable internally celled grid">
+          <div class="center aligned row">
+            <div class="column">
+              <div class="ui hidden section divider"></div>
+              <h1 class="ui white text header">Our goal is to create a global<br>collaborative platform for adaptive education</h1>
+              <div class="ui hidden section divider"></div>
             </div>
           </div>
         </div>
       </div>
-
+      <div class="ui vertical stripe segment">
+        <div class="ui right aligned container">
+          <div class="ui hidden divider"></div>
+          <div class="row">
+            <p>Are you a creator of educational content?<br>Do you have a favourite educational youtubber or blogger and would like to help us indexing his content?</p>
+            <h3 class="ui home-page header">Be the first to know when our contributor program opens!</h3>
+            <!-- <div class="ui large action input">
+              <input placeholder="Enter your email" type="text">
+              <button class="ui button">Submit</button>
+            </div> -->
+            <div class="ui grid">
+              <div class="ui right floated eight wide column">
+                {{> MailChimpListSubscribe}}
+              </div>
+            </div>
+          </div>
+          <div class="ui hidden divider"></div>
+        </div>
+      </div>
       <div class="ui vertical stripe quote segment">
         <div class="ui equal width stackable internally celled grid">
           <div class="center aligned row">
             <div class="column">
-              <h3>"What a Company"</h3>
-              <p>That is what they all say about us</p>
-            </div>
-            <div class="column">
-              <h3>"I shouldn't have gone with their competitor."</h3>
-              <p>
-                <img src="assets/images/avatar/nan.jpg" class="ui avatar image">
-                <b>Nan</b>
-                Chief Fun Officer Acme Toys
-              </p>
+              <div class="ui hidden divider"></div>
+              <img class="ui centered medium image" src="/images/pointsquare-logo-blue.svg">
+              <h1 class="ui header">Join the Pointsquare community.</h1>
+              <p>Track your knowledge. Find the perfect learning paths for you.<br>Free. Forever.</p>
+              <a href="{{ pathFor 'atSignUp' }}" class="ui huge primary button">
+                Sign Up!
+              </a>
+              <div class="ui hidden section divider"></div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="ui vertical stripe segment">
-        <div class="ui text container">
-          <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
-          <p>Instead of focusing on content creation and hard work, we have learned how to master the art of doing nothing by providing massive amounts of whitespace and generic content that can seem massive, monolithic and worth your attention.</p>
-          <a class="ui large button">Read More</a>
-          <h4 class="ui horizontal header divider">
-            <a href="#">Case Studies</a>
-          </h4>
-          <h3 class="ui header">Did We Tell You About Our Bananas?</h3>
-          <p>Yes I know you probably disregarded the earlier boasts as non-sequitur filler content, but its really true. It took years of gene splicing and combinatory DNA research, but our bananas can really dance.</p>
-          <a class="ui large button">I'm Still Quite Interested</a>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<!-- <template name="home_materialize">
-    <div id="index-banner" class="parallax-container" style="min-height:380px">
-        <div class="section no-pad-bot">
-            <div class="container">
-                <br><br>
-                <h1 class="header center light white-text">Learning reimagined</h1>
-                <div class="row center">
-                    <h5 class="header col s12 light white-text">Search for an exam or skill to set as a learning goal</h5>
-                    <h5 class="header col s12 light white-text">We help you find your learning path</h5>
-                    <div>
-                        <input id="search" class="white-text">
-                        <i class="material-icons">search</i>
-                    </div>
-                </div>
-
-                <div class="row center">
-                    <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light teal lighten-1">Get Started</a>
-                </div>
-                <br><br>
-
-            </div>
+<template name="MailChimpListSubscribe">
+  <form class="ui info form">
+    <div class="field">
+      <div class="ui action input">
+        <input class="mailchimp-email form-control" placeholder="Your email address goes here" type="email">
+        <button class="ui submit button mailchimp-subscribe" type="submit">Submit</button>
+      </div>
+      {{#if message}}
+        <div class="ui pointing label mailchimp-message">
+          {{message}}
         </div>
-        <div class="parallax"><img style="display:block" src="/images/background1.jpg" alt="Unsplashed background img 1"></div>
+      {{/if}}
     </div>
-
-    <div class="container">
-        <div class="section">
-            <div class="row center">
-                <h3 class="header col s12 light">Get ready for one of these tests</h3>
-            </div>
-            <div class="row">
-                {{#each exam in mainPageExams}}
-                    <div class="col s12 m3">
-                        {{> examCard name=exam.name _id=exam._id}}
-                    </div>
-                {{/each}}
-            </div>
-
-        </div>
-    </div>
-
-    <div class="parallax-container valign-wrapper">
-        <div class="section no-pad-bot">
-            <div class="container">
-                <div class="row center">
-                    <h5 class="header col s12 white-text light">A modern responsive front-end framework based on Material Design</h5>
-                </div>
-            </div>
-        </div>
-        <div class="parallax"><img style="display:block" src="/images/background2.jpg" alt="Unsplashed background img 2"></div>
-    </div>
-
-    <div class="container">
-        <div class="section">
-
-            <div class="row">
-                <div class="col s12 center">
-                    <h3>
-                        <i class="mdi-content-send brown-text"></i>
-                    </h3>
-                    <h4>Contact Us</h4>
-                    <p class="left-align light">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque id nunc nec volutpat. Etiam pellentesque tristique arcu, non consequat magna fermentum ac. Cras ut ultricies eros. Maecenas eros justo,
-                        ullamcorper a sapien id, viverra ultrices eros. Morbi sem neque, posuere et pretium eget, bibendum sollicitudin lacus. Aliquam eleifend sollicitudin diam, eu mattis nisl maximus sed. Nulla imperdiet semper molestie. Morbi massa odio, condimentum sed
-                        ipsum ac, gravida ultrices erat. Nullam eget dignissim mauris, non tristique erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="parallax-container valign-wrapper">
-        <div class="section no-pad-bot">
-            <div class="container">
-                <div class="row center">
-                    <h5 class="header col white-text s12 light">A modern responsive front-end framework based on Material Design</h5>
-                </div>
-            </div>
-        </div>
-        <div class="parallax"><img style="display:block" src="/images/background3.jpg" alt="Unsplashed background img 3"></div>
-    </div>
-</template> -->
+  </form>
+</template>

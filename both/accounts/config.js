@@ -2,6 +2,7 @@ AccountsTemplates.configure({
   defaultLayout: 'mainLayout',
   defaultLayoutRegions: {},
   defaultContentRegion: 'main',
+  showForgotPasswordLink: true,
 });
 
 AccountsTemplates.addField({
@@ -24,6 +25,13 @@ AccountsTemplates.addField({
 AccountsTemplates.configureRoute('signIn');
 AccountsTemplates.configureRoute('signUp', {
     redirect: '/dashboard',
+});
+
+AccountsTemplates.configureRoute('forgotPwd');
+
+AccountsTemplates.configureRoute('resetPwd', {
+  name: 'resetPwd',
+  path: '/reset-password'
 });
 
 /*

@@ -150,6 +150,11 @@ AutoForm.hooks({
         evaluation.questionImageURL = doc.exerciseRadioButton.questionImageURL;
         evaluation.options = doc.exerciseRadioButton.options;
         delete doc.exerciseRadioButton;
+      } else if (doc.evaluationType == "exerciseImageSelection") {
+        evaluation.question = doc.exerciseImageSelection.question;
+        evaluation.questionImageURL = doc.exerciseImageSelection.questionImageURL;
+        evaluation.options = doc.exerciseImageSelection.options;
+        delete doc.exerciseImageSelection;
       } else if (doc.evaluationType == "exerciseString") {
         evaluation.question = doc.exerciseString.question;
         evaluation.questionImageURL = doc.exerciseString.questionImageURL;
