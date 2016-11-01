@@ -1,23 +1,22 @@
-Template.feedbackModal.events({
-    'click #sendFeedback': function(event) {
-        event.preventDefault();
+Template.feedbackModalContent.events({
+  'click #sendFeedback': function(event) {
+    event.preventDefault();
+    const sender = $('#feedbackEmail')[0].value;
+    const msg = $('#feedbackMessage')[0].value;
+    const availableForContact = $('#feedbackContact')[0].value;
+    const emailContents = "Sender: " + sender + "<br>" + "Message: " + msg + "<br>" + "Available for contact: " + availableForContact;
+    Meteor.call('sendFeedbackEmail',
+      'joaobarcia@gmail.com', 'contact@pointsquare.org',
+      'Pointsquare - Website Feedback Email', emailContents);
 
-        console.log();
-        //var name = event.target.name.value;
-        // var name = people.findOne({
-        //     'email': Meteor.user().emails[0].address
-        // }).name;
-        // var sender = Meteor.user().emails[0].address;
-        // var msg = event.target.opinion.value;
-        //
-        // Meteor.call('sendFeedbackEmail',
-        //     'contact@pointsquare.org', sender,
-        //     'Feedback Email from ' + name, msg);
-        //
-        // event.target.name.value = "";
-        // event.target.opinion.value = "";
+    toastr.info('Thanks! :)');
+  }
+});
 
-
-        toastr.info('Thanks! :)');
+Template.feedbackModalContent.onRendered(function() {
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      $('.ui.checkbox').checkbox()
     }
+  });
 });

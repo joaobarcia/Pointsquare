@@ -142,7 +142,7 @@
                     <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
                     <label class="{{isCorrectOption}}RadioButtonLabel">
                       {{#mathjax}}
-                        {{label}}
+                          {{#markdown}}{{label}}{{/markdown}}
                       {{/mathjax}}
                     </label>
                   </div>
@@ -169,7 +169,7 @@
                 <input name="{{unitId}}" type="radio" class="{{isCorrectOption}}RadioButton" unit_id="{{unitId}}">
                 <label class="{{isCorrectOption}}RadioButtonLabel">
                   {{#mathjax}}
-                    {{label}}
+                      {{#markdown}}{{label}}{{/markdown}}
                   {{/mathjax}}
                 </label>
               </div>
