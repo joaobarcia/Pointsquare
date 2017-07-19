@@ -2,6 +2,11 @@
 
 **This read-me is under construction**
 
+** How to restore database **
+- Start meteor project
+- In MongoDB /bin folder (i.e. C:\MongoDB\Server\3.2\bin) run: 'mongorestore.exe -h 127.0.0.1 --port 3001 -d meteor c:\backup', where c:\backup is the directory of your backup folder
+
+
 - - - -
 
 ## Alpha 2 Milestone ##
@@ -18,25 +23,25 @@
 - - - -
 
 ## App structure ##
-	
-	├── both/				> code runs both on client-side and server-side 
-	|   ├── accounts/			> config files for the Accounts package (manages users, logins, pwds, etc.) 
-	|   ├── collections/		> instantiates MongoDB collections and connects them to the Easy Search package 
-	|   ├── controllers/		> not really sure :P have to look into it. traces from the boilerplate 
+
+	├── both/				> code runs both on client-side and server-side
+	|   ├── accounts/			> config files for the Accounts package (manages users, logins, pwds, etc.)
+	|   ├── collections/		> instantiates MongoDB collections and connects them to the Easy Search package
+	|   ├── controllers/		> not really sure :P have to look into it. traces from the boilerplate
 	|   └── router/				> config files for Iron Router package (manages URL structure and logic)
-	| 
+	|
 	├── client/				> code runs ONLY on client-side
 	|   ├── compatibility/		> js libraries which must be loaded before any other code
 	|   ├── helpers/			> Meteor Helpers, organized by template where they are needed
 	|   ├── stylesheets/		> CSS files
 	|   ├── subscriptions/		> Meteor Subscriptions
 	|   └── templates/			> Meteor Templates, organized by folders with template name. Folders contain html and js
-	| 
+	|
 	├── public/				> files which can be publicly accessed
 	|   ├── fonts/				> fonts
 	|   └── images/				> images
 	|
-	├── server/				> code runs ONLY on server-side 
+	├── server/				> code runs ONLY on server-side
 	|   ├── emails/				> configuration of Email package (sends emails to users)
 	|   ├── kadira/				> configuration of Kadira package (awesome analytics)
 	|   ├── methods/			> Meteor Methods (basically OrientDB interaction right now)
