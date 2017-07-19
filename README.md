@@ -2,7 +2,7 @@
 
 **This read-me is under construction**
 
-** How to restore database **
+**How to restore database**
 1. Start meteor project
 2. In MongoDB /bin folder (i.e. C:\MongoDB\Server\3.2\bin) run: 'mongorestore.exe -h 127.0.0.1 --port 3001 -d meteor c:\backup', where c:\backup is the directory of your backup folder
 
