@@ -56,7 +56,6 @@ meteorhacks:aggregate
 ecmascript@0.8.3
 bojicas:howler2
 kadira:debug
-meteorhacks:kadira
 standard-minifier-js@2.1.2
 semantic:ui
 juliancwirko:postcss
