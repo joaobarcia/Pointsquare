@@ -21,28 +21,36 @@ Template.registerHelper("thisIsGoal", function() {
 Template.registerHelper('goalId', function() {
   if (typeof Meteor.user() !== 'undefined' && Meteor.user() !== null) {
     var goal = Meteor.user().goal;
-    return Nodes.findOne(goal)._id;
+    if (typeof goal !== 'undefined' && goal != null) {
+      return Nodes.findOne(goal)._id;
+    }
   }
 });
 
 Template.registerHelper('goalName', function() {
   if (typeof Meteor.user() !== 'undefined' && Meteor.user() !== null) {
     var goal = Meteor.user().goal;
-    return Nodes.findOne(goal).name;
+    if (typeof goal !== 'undefined' && goal != null) {
+      return Nodes.findOne(goal).name;
+    }
   }
 });
 
 Template.registerHelper('goalType', function() {
   if (typeof Meteor.user() !== 'undefined' && Meteor.user() !== null) {
     var goal = Meteor.user().goal;
-    return Nodes.findOne(goal).type;
+    if (typeof goal !== 'undefined' && goal != null) {
+      return Nodes.findOne(goal).type;
+    }
   }
 });
 
 Template.registerHelper('goalTypeIs', function(type) {
   if (typeof Meteor.user() !== 'undefined' && Meteor.user() !== null) {
     var goal = Meteor.user().goal;
-    return Nodes.findOne(goal).type == type;
+    if (typeof goal !== 'undefined' && goal != null) {
+      return Nodes.findOne(goal).type == type;
+    }
   }
 });
 

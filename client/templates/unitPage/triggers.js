@@ -40,6 +40,7 @@ var succeedUnit = function() {
         goal[goalId] = true;
         //se o objectivo tiver sido alcançado seguir para a sua página
         if (Meteor.globalFunctions.getState(goalId) > 0.5) {
+          Session.set('isLoading', false);
           goalType = Nodes.findOne(goalId).type;
           if(goalType == "exam"){
             FlowRouter.go("/exam/"+goalId);
@@ -113,10 +114,11 @@ function failUnit() {
 
 Template.unitPage.onCreated(function() {
   var nodeId = FlowRouter.getParam('nodeId');
+  localneeds = Meteor.globalFunctions.getNeeds(nodeId);
   Meteor.call("getNeeds", nodeId, function(e, r) {
     if (typeof r !== "undefined") {
       var needs = {};
-      Session.set("needs", r.sets)
+      Session.set("needs", r.sets);
     } else {
       return null
     };
