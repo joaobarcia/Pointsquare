@@ -11,3 +11,8 @@ Pointsquare is an open online platform being developed with the goal of connecti
 **Learning**
 
 ## How can you help? ##
+**As a contributor of educational content**
+
+**As a programmer**
+
+**As a user**
