@@ -27,7 +27,7 @@
           </div>
           <div class="ui row">
             {{#unless allAnswersAreCorrect}}
-              {{> setGoalButton isExam='true'}}
+              {{> setGoalButton isExam='true' _id=examPage._id}}
             {{else}}
               <h3 class="ui header">Great Job!</h3>
             {{/unless}}
