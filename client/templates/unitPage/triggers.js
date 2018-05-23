@@ -115,14 +115,6 @@ function failUnit() {
 Template.unitPage.onCreated(function() {
   var nodeId = FlowRouter.getParam('nodeId');
   localneeds = Meteor.globalFunctions.getNeeds(nodeId);
-  Meteor.call("getNeeds", nodeId, function(e, r) {
-    if (typeof r !== "undefined") {
-      var needs = {};
-      Session.set("needs", r.sets);
-    } else {
-      return null
-    };
-  });
 });
 
 Template.unitPage.onRendered(function() {
