@@ -5,9 +5,8 @@ Pointsquare is an open online platform being developed with the goal of connecti
 **[Demo Page](https://pointsquare.herokuapp.com/)**  
 **[Presentation Page](http://pointsquare.org/)**  
 
-The internet is a fertile ground for knowledge. Everyday independent creators post new content about virtually anything. Pointsquare is bringing structure to that content, so that every learner may have a course accurately tailored to their skill set and personal goals. 
+The internet is a fertile ground for knowledge. Everyday independent creators post new content about virtually anything. Pointsquare is bringing structure to that content, so that every learner may have a course accurately tailored to their skill set and personal goals. This means that if a student fails a lesson, the next lesson will change based on this outcome. Or that you are never presented content which you already know "just because that is how the course was designed".
 
-This means that if a student fails a lesson, the next lesson will change based on this outcome. Or that you are never presented content which you already know "just because that is how the course was designed"
 
 ## How does it work? ##
 **Types of content**  
