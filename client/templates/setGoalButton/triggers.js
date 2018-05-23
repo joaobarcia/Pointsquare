@@ -2,6 +2,8 @@ Template.setGoalButton.events({
   'click .set-goal': function(event, template) {
     event.preventDefault();
     var nodeId = template.data._id;
+    console.log("setGoalButton");
+    console.log(template.data._id);
     var goal = {}; goal[nodeId] = true;
     var unit = Meteor.globalFunctions.findUsefulContent(goal);
     if (unit) {
