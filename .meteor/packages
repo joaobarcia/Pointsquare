@@ -14,7 +14,6 @@ yasinuslu:blaze-meta
 http@1.4.0
 email@1.2.3
 accounts-base@1.4.2
-meteorhacks:fast-render
 cmather:handlebars-server
 zimme:active-route
 erasaur:meteor-lodash
@@ -55,7 +54,6 @@ jquery@1.11.10
 meteorhacks:aggregate
 ecmascript@0.10.6
 bojicas:howler2
-kadira:debug
 standard-minifier-js@2.3.1
 semantic:ui
 juliancwirko:postcss
