@@ -307,7 +307,7 @@ AutoForm.hooks({
 
           console.log('addNeed: ');
           console.log(needsMappedAsArrayofObjects)
-            //Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
+          Meteor.call('addNeed', nodeId, needsMappedAsArrayofObjects);
         } else {
           console.log('editNeed: ' + setId);
           console.log(needsMappedAsArrayofObjects);
