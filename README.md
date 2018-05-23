@@ -18,9 +18,10 @@ the theoretical concepts discussed in each unit - such as *power notation* or *t
 bundles of exercises which you can try to solve. In case you fail any exercise we will find the shortest learning path for you to learn it and get ready for the exam
 
 ### Indexing content ###  
-**Units** of content which already exist in other open platforms are added to Pointsquare by contributors. During this process the units are tagged for the **concepts** they require to know beforehand and the **concepts** they will teach the student. **concepts** are defined and created by the contributors.
+**Units** of content which already exist in other open platforms are added to Pointsquare by contributors. During this process the units are tagged for the **concepts** they require to know beforehand and the **concepts** they will teach the student. These **concepts** are defined and created by the contributors.
 
 ### Student goals and paths ###
+Students set a learning goal (which can be any of the types of content) and Pointsquare recommends the shortest learning path - it's that simple. If the student fails any content, the learning path will be automatically re-designed. Just like a GPS if you took a wrong turn.
 
 ## How can you help? ##
 **As a contributor of educational content**
