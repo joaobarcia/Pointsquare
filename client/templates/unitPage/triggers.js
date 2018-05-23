@@ -51,6 +51,16 @@ var succeedUnit = function() {
           resetQuestionFeedback();
           Session.set('isLoading', false);
           FlowRouter.go('/content/' + nextUnit);
+
+          // Reset UI feeresults from previous unit
+          $("#exerciseStringField").removeClass("disabled");
+          $("#exerciseButton").removeClass("red").removeClass("green").removeClass("disabled");
+          $("#exerciseInputText").removeClass("red text").removeClass("green text").val("");
+          $(".trueRadioButton").removeProp('disabled');
+          $(".falseRadioButton").removeProp('disabled');
+          $(".trueRadioButtonLabel").removeClass("green text");
+          $(".falseRadioButtonLabel").removeClass("red text");
+
           precompute(nextUnit);
           Meteor.call("setGoal", goalId, nextUnit);
         }
@@ -141,6 +151,9 @@ Template.unitPage.onRendered(function() {
           // set first tab as active
           $("[data-tab=1]").addClass('active');
           $('.ui.checkbox').checkbox();
+          $("#exerciseStringField").removeClass("disabled");
+          $("#exerciseButton").removeClass("red").removeClass("green").removeClass("disabled");
+          $("#exerciseInputText").removeClass("red text").removeClass("green text");
         }, 300);
       }
     })
@@ -177,8 +190,6 @@ Template.unitPage.events({
 
   'submit form': function(event) {
     event.preventDefault();
-
-    console.log('entrou no string');
 
     var answerIsCorrect = null;
     if (this.answers.indexOf(event.target.exerciseString.value) > -1) {
