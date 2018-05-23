@@ -18,7 +18,7 @@ the theoretical concepts discussed in each unit - such as *power notation* or *t
 bundles of exercises which you can try to solve. In case you fail any exercise we will find the shortest learning path for you to learn it and get ready for the exam
 
 ### Indexing content ###  
-**Units** of content which already exist in other open platforms are added to Pointsquare by contributors. During this process the units are tagged for the **concepts** they require to know beforehand and the **concepts** they will teach the student. 
+**Units** of content which already exist in other open platforms are added to Pointsquare by contributors. During this process the units are tagged for the **concepts** they require to know beforehand and the **concepts** they will teach the student. **concepts** are defined and created by the contributors.
 
 ### Student goals and paths ###
 
