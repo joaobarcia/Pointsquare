@@ -11,9 +11,9 @@ The internet is a fertile ground for knowledge. Everyday independent creators po
 ## How does it work? ##
 ### Types of content ###  
 - **Units**   
-any type of learning content - videos, exercises, pictures, text
+any type of learning content - such as videos, exercises, markdown text
 - **Concepts**  
-the theoretical concepts discussed in each unit - *power notation* or *the square root of a number* 
+the theoretical concepts discussed in each unit - such as *power notation* or *the square root of a number* 
 - **Exams**  
 bundles of exercises which you can try to solve. In case you fail any exercise we will find the shortest learning path for you to learn it and get ready for the exam
 
