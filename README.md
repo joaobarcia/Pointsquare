@@ -15,7 +15,7 @@ any type of learning content - videos, exercises, pictures, text
 - **Concepts**  
 the theoretical concepts discussed in each unit - *power notation* or *the square root of a number* 
 - **Exams**  
-bundles of exercises which you can try to solve. In case you fail any exercise we will find the shortest learning path for you to learn it
+bundles of exercises which you can try to solve. In case you fail any exercise we will find the shortest learning path for you to learn it and get ready for the exam
 
 ### Indexing content ###  
 **Units** of (usually) existing content are added to the platform. During this process they are tagged for the **concepts** they require to know beforehand and the **concepts** they will teach the student. 
