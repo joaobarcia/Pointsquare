@@ -143,7 +143,7 @@ Template.unitPage.onRendered(function() {
           // set first tab as active
           $("[data-tab=1]").addClass('active');
           $('.ui.checkbox').checkbox();
-        }, 50);
+        }, 150);
         setTimeout(function() {
           $('.ui.embed').embed();
           $.tab();
@@ -154,7 +154,7 @@ Template.unitPage.onRendered(function() {
           $("#exerciseStringField").removeClass("disabled");
           $("#exerciseButton").removeClass("red").removeClass("green").removeClass("disabled");
           $("#exerciseInputText").removeClass("red text").removeClass("green text");
-        }, 300);
+        }, 500);
       }
     })
 });
