@@ -55,7 +55,7 @@ Template.examPage.events({
     if (answerIsCorrect) {
       // $("#exerciseInputText").removeClass("red-text").addClass("green-text").attr("disabled", "disabled");
       if (Meteor.userId()) {
-        console.log(event.currentTarget);
+        // console.log(event.currentTarget);
         $(event.currentTarget).find(".exerciseStringInput").addClass("true_string");
         succeedUnitInExam(unitId);
       }
@@ -112,7 +112,8 @@ Template.examPage.events({
       Session.set("isLoading", true);
       Meteor.call("submitExam", examResults, Meteor.userId(), function(e, r) {
         Session.set("isLoading", false);
-        $('#exam-results-bar').progress();
+        $('#exam-results-bar').progress({'showActivity': false});
+        // $('#exam-results-bar').removeClass('active');
       });
     }
 

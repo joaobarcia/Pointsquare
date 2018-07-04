@@ -34,7 +34,7 @@ Template.contentByTypeWrapper.events({
 
 Template.exerciseString.onRendered(function() {
   Tracker.autorun(function() {
-    console.log('entrou no contentbytype')
+    // console.log('entrou no contentbytype')
     $("#exerciseStringField").removeClass("disabled");
     $("#exerciseButton").removeClass("red").removeClass("green").removeClass("disabled");
     $("#exerciseInputText").removeClass("red text").removeClass("green text");
