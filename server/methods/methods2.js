@@ -687,6 +687,8 @@ make_connector = function(subnodes,operator){
                 ]
     }*/
 add_needs = function(node_id,needs){
+    console.log("add_needs");
+    console.log(needs);
     var node = Nodes.findOne(node_id);
     var type = node.type;
     if(type == "or" || type == "and" || type == "parand"){
@@ -903,6 +905,9 @@ add_to_field = function(node_id, field_name, key, value){
 
 //modifica um dos conjuntos de requesitos
 edit_requirement = function(and_id,new_concepts){
+    console.log("editting requirement");
+    console.log(and_id)
+    console.log(new_concepts)
     var and = Nodes.findOne(and_id);
     var dropped_concepts = {};
     var inserted_concepts = {};
@@ -926,6 +931,7 @@ edit_requirement = function(and_id,new_concepts){
     }
     //apagar o nodo AND do conjunto se ele ficar sem subconceitos
     if(Object.keys(new_concepts).length == 0){
+        console.log("AND is empty");
         // o nodo que precisa deste conjunto (que será sempre um OR,
         //    um conceito ou um conteúdo mas cuja lógica será sempre do tipo OR)
         var node_id = Object.keys(and.needed_by)[0];
@@ -941,6 +947,7 @@ edit_requirement = function(and_id,new_concepts){
         var or_is_empty = Object.keys(needs).length == 0;
         var is_an_or_gate = node.type == "or";
         if(or_is_empty && is_an_or_gate){
+          console.log("OR is empty");
           Nodes.update(Object.keys(node.needed_by)[0],{$set: {requirements:null}});
           remove_node(node_id);
           return true;
@@ -952,6 +959,11 @@ edit_requirement = function(and_id,new_concepts){
 
 //adiciona um conjunto de requesitos conceptuais a um nodo já existente
 add_requirement = function(node_id, concepts){
+    console.log("adding requirement");
+    console.log(concepts);
+    if(Object.keys(concepts).length == 0){
+      return false
+    }
     var node = Nodes.findOne(node_id);
     //criar o AND do conjunto
     var and_id = make_connector(concepts,"and");
